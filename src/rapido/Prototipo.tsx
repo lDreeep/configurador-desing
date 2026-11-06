@@ -125,7 +125,15 @@ function Metrica({ etq, valor, cambio, meta }: { etq: string; valor: string; cam
 export function Prototipo(props: { config: Config; setConfig: (fn: (c: Config) => Config) => void; onAtras: () => void; onListo: () => void }) {
   const c = props.config;
   const s = useMemo(() => sistemaDeDiseno(c), [c]);
-  const [dispositivo, setDispositivo] = useState<'computadora' | 'celular'>(c.proyecto.tipo === 'app_movil' ? 'celular' : 'computadora');
+  // En un teléfono (o en una app para celular) arranca en celular.
+  const enTelefono = () => {
+    try {
+      return window.matchMedia('(max-width: 600px)').matches;
+    } catch {
+      return false;
+    }
+  };
+  const [dispositivo, setDispositivo] = useState<'computadora' | 'celular'>(c.proyecto.tipo === 'app_movil' || enTelefono() ? 'celular' : 'computadora');
   const [pantalla, setPantalla] = useState<Pantalla>('portada');
   const [editando, setEditando] = useState(false);
   const [abierto, setAbierto] = useState<Editable | null>(null);
@@ -465,11 +473,34 @@ export function Prototipo(props: { config: Config; setConfig: (fn: (c: Config) =
     ),
   };
 
+  const nombrePantalla = PANTALLAS.find((x) => x.id === pantalla)?.nombre ?? '';
+  const appBar = (
+    <div className="proto-appbar">
+      <span className="proto-appbar-titulo">{pantalla === 'portada' ? c.proyecto.nombre.trim() || 'Tu marca' : nombrePantalla}</span>
+      <Zona e="boton_icono" clase="proto-appbar-iconos">
+        {[
+          ['buscar', 'Buscar'],
+          ['corazon', 'Favoritos'],
+        ].map(([ic, n]) => (
+          <button key={ic} type="button" className={cl('boton_icono')} aria-label={n} onClick={(ev) => {
+            ev.currentTarget.toggleAttribute('data-activo');
+            reanimar(ev.currentTarget, 'toque');
+          }}>
+            <Icono nombre={ic} tamano={20} />
+          </button>
+        ))}
+      </Zona>
+    </div>
+  );
+
   const pantallaActual = (
+    <>
     <div className="proto-escena">
+      {dispositivo === 'celular' && appBar}
       <div key={`${pantalla}-${c.visual.cambio}`} className={`proto-contenido proto-cambio-${c.visual.cambio}`}>
         {contenido[pantalla]}
       </div>
+    </div>
       {aviso && (
         <div className="proto-aviso-lugar">
           <div ref={avisoRef} className={`${cl('aviso')} cm-entra`} role="status">
@@ -506,7 +537,7 @@ export function Prototipo(props: { config: Config; setConfig: (fn: (c: Config) =
           </div>
         </div>
       )}
-    </div>
+    </>
   );
 
   return (
@@ -527,7 +558,7 @@ export function Prototipo(props: { config: Config; setConfig: (fn: (c: Config) =
             ))}
           </div>
           <button type="button" className={`proto-editar ${editando ? 'activo' : ''}`} aria-pressed={editando} onClick={() => { setEditando(!editando); if (editando) setAbierto(null); }}>
-            {editando ? 'Listo, dejar de editar' : '✎ Editar'}
+            {editando ? 'Listo' : '✎ Editar'}
           </button>
         </header>
 
@@ -535,6 +566,7 @@ export function Prototipo(props: { config: Config; setConfig: (fn: (c: Config) =
           <div className="proto-area">
             <div
               className={`proto-marco proto-${dispositivo} pg ${estilo} ${dispositivo === 'computadora' && lateral ? 'con-lateral' : ''}`}
+              data-dispositivo={dispositivo}
               style={s.tokens as CSSProperties}
             >
               {dispositivo === 'computadora' ? (
@@ -544,8 +576,18 @@ export function Prototipo(props: { config: Config; setConfig: (fn: (c: Config) =
                 </>
               ) : (
                 <>
+                  <div className="proto-estado" aria-hidden="true">
+                    <span className="proto-hora">9:41</span>
+                    <span className="proto-isla" />
+                    <span className="proto-indicadores">
+                      <svg width="18" height="12" viewBox="0 0 18 12" fill="currentColor"><rect x="0" y="8" width="3" height="4" rx="1" /><rect x="5" y="5" width="3" height="7" rx="1" /><rect x="10" y="2.5" width="3" height="9.5" rx="1" /><rect x="15" y="0" width="3" height="12" rx="1" /></svg>
+                      <svg width="16" height="12" viewBox="0 0 16 12" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"><path d="M1.5 4.5a9.5 9.5 0 0 1 13 0M4 7.3a6 6 0 0 1 8 0M6.6 10a2.4 2.4 0 0 1 2.8 0" /></svg>
+                      <svg width="26" height="12" viewBox="0 0 26 12" fill="none"><rect x="0.75" y="0.75" width="21.5" height="10.5" rx="3" stroke="currentColor" strokeWidth="1.5" opacity=".5" /><rect x="2.5" y="2.5" width="16" height="7" rx="1.6" fill="currentColor" /><rect x="23.5" y="4" width="1.8" height="4" rx=".9" fill="currentColor" opacity=".5" /></svg>
+                    </span>
+                  </div>
                   {pantallaActual}
                   {navMovil}
+                  <span className="proto-inicio" aria-hidden="true" />
                 </>
               )}
             </div>

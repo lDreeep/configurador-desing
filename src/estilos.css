@@ -592,8 +592,23 @@ button:disabled { cursor: not-allowed; opacity: 0.4; }
 .proto-marco { position: relative; display: flex; flex-direction: column; overflow: hidden; background: var(--color-fondo); color: var(--color-texto); font-family: var(--fuente-texto); box-shadow: 0 20px 60px rgba(0,0,0,.45); }
 .proto-computadora { width: 100%; border-radius: 14px; }
 .proto-computadora.con-lateral { flex-direction: row; }
-.proto-celular { width: 390px; max-width: 100%; height: min(780px, 100%); border-radius: 36px; border: 10px solid #000; }
-.proto-escena { position: relative; flex: 1; min-height: 0; min-width: 0; overflow-y: auto; overflow-x: hidden; }
+.proto-area:has(.proto-celular) { align-items: center; }
+.proto-celular {
+  /* Proporción de un smartphone (390 × 844) lo más grande que entre. */
+  height: min(100%, 880px); width: auto; aspect-ratio: 390 / 844; max-width: 100%;
+  border-radius: 54px; border: 12px solid #0b0b0d; outline: 2px solid #2c2d33;
+  box-shadow: 0 30px 80px rgba(0,0,0,.55), inset 0 0 0 1px rgba(255,255,255,.04);
+}
+.proto-estado { position: relative; flex-shrink: 0; display: flex; align-items: center; justify-content: space-between; height: 50px; padding: 0 26px 0 32px; font: 600 15px/1 -apple-system, 'SF Pro Text', Inter, system-ui, sans-serif; color: var(--color-texto); background: var(--color-fondo); z-index: 3; }
+.proto-isla { position: absolute; left: 50%; top: 11px; width: 32%; height: 30px; border-radius: 999px; background: #000; transform: translateX(-50%); }
+.proto-indicadores { display: inline-flex; align-items: center; gap: 6px; }
+.proto-inicio { position: absolute; left: 50%; bottom: 7px; width: 36%; height: 5px; border-radius: 999px; background: var(--color-texto); opacity: .8; transform: translateX(-50%); z-index: 9; pointer-events: none; }
+.proto-celular .cm-nav_movil { padding-bottom: 20px; }
+.proto-celular .cm-nav_movil-flotante, .proto-celular .cm-nav_movil-vidrio { margin-bottom: 22px; padding-bottom: 6px; }
+.proto-appbar { position: sticky; top: 0; z-index: 4; display: flex; align-items: center; justify-content: space-between; gap: 10px; min-height: 52px; padding: 4px 12px 4px 18px; background: color-mix(in srgb, var(--color-fondo) 86%, transparent); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid color-mix(in srgb, var(--color-borde) 60%, transparent); }
+.proto-appbar-titulo { font-family: var(--fuente-titulos); font-weight: var(--titulos-peso); font-size: 17px; letter-spacing: var(--titulos-espaciado); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.proto-appbar-iconos { display: flex; gap: 4px; }
+.proto-escena { position: relative; flex: 1; min-height: 0; min-width: 0; overflow-y: auto; overflow-x: hidden; container-type: inline-size; container-name: escena; overscroll-behavior: contain; }
 .proto-zona-nav { flex-shrink: 0; }
 .proto-zona-nav.es-lateral { display: flex; }
 .proto-zona-nav.es-lateral > nav { height: 100%; }
@@ -630,7 +645,9 @@ button:disabled { cursor: not-allowed; opacity: 0.4; }
 .proto-editables-sueltos { display: none; gap: 10px; flex-wrap: wrap; }
 .proto-zona.editando ~ .proto-editables-sueltos, .proto-pantalla:has(.proto-zona.editando) .proto-editables-sueltos { display: flex; }
 .proto-nota { display: inline-block; padding: 8px 12px; font-size: 12px; color: var(--color-texto-suave); border: 1px dashed var(--color-borde); border-radius: 8px; }
-.proto-aviso-lugar { position: sticky; bottom: 16px; display: flex; justify-content: flex-end; padding: 0 16px; pointer-events: none; z-index: 5; margin-top: -90px; }
+.proto-aviso-lugar { position: absolute; right: 16px; bottom: 16px; left: 16px; display: flex; justify-content: flex-end; pointer-events: none; z-index: 7; }
+.proto-celular .proto-aviso-lugar { top: 58px; bottom: auto; left: 10px; right: 10px; justify-content: center; }
+.proto-celular .proto-aviso-lugar .cm-aviso { max-width: none; }
 .proto-aviso-lugar > * { pointer-events: auto; }
 .proto-modal { position: absolute !important; inset: 0; height: auto !important; border-radius: 0 !important; background: transparent !important; z-index: 8; }
 
@@ -675,7 +692,67 @@ button:disabled { cursor: not-allowed; opacity: 0.4; }
   .proto-area { min-height: 640px; }
   .proto-editor { width: auto; max-height: 60vh; }
   .proto-ayuda { display: none; }
-  .proto-celular { border-width: 6px; border-radius: 28px; height: 680px; }
+  .proto-celular { height: min(760px, calc(100dvh - 150px)); }
 }
 .proto-zona-nav .proto-lapiz { top: 6px; left: auto; right: 8px; }
 .proto-zona-nav.es-lateral .proto-lapiz { top: auto; bottom: 8px; left: 8px; right: auto; }
+
+/* ---------- Contenido adaptado a celular (según el ancho de la pantalla de la app) ---------- */
+@container escena (max-width: 560px) {
+  .proto-pantalla { padding: 14px 16px 28px; gap: 16px; }
+  .proto-h { font-size: 30px; }
+  .proto-sub { font-size: 14px; }
+  .proto-botones { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; width: 100%; }
+  .proto-botones > .proto-zona, .proto-botones .bt, .proto-botones .cm-boton_sec { width: 100%; }
+  .proto-botones .bt, .proto-botones .cm-boton_sec { padding: 0 10px; }
+  .proto-fila { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: 10px; margin: 0 -16px; padding: 2px 16px 6px; scrollbar-width: none; }
+  .proto-fila::-webkit-scrollbar { display: none; }
+  .proto-fila .cm-metrica { flex: 0 0 76%; scroll-snap-align: start; }
+  .proto-dos { grid-template-columns: minmax(0, 1fr); gap: 12px; }
+  .proto-dos > .proto-caja-base, .proto-dos > .caja { padding: 14px; }
+  .proto-filtros { flex-direction: column; align-items: stretch; gap: 10px; }
+  .proto-filtros .cm-selector { display: grid; width: 100%; }
+  .proto-crece { min-width: 0; }
+  .proto-etiquetas { flex-wrap: nowrap; overflow-x: auto; margin: 0 -16px; padding: 2px 16px; scrollbar-width: none; }
+  .proto-etiquetas::-webkit-scrollbar { display: none; }
+  .proto-etiquetas > * { flex-shrink: 0; }
+  .proto-grilla { grid-template-columns: minmax(0, 1fr); gap: 10px; }
+  .proto-form { max-width: none; gap: 14px; }
+  .proto-form .cm-selector { display: grid; width: 100%; }
+  .proto-form .cm-selector.cm-grande button { padding: 0 8px; font-size: 14px; white-space: normal; line-height: 1.2; }
+  .proto-dos-campos { grid-template-columns: minmax(0, 1fr); gap: 12px; }
+  .proto-acciones { width: 100%; }
+  /* Tabla → lista: nombre y estado a la izquierda, monto a la derecha */
+  .proto-dos .cm-tabla thead { display: none; }
+  .proto-dos .cm-tabla, .proto-dos .cm-tabla tbody { display: block; }
+  .proto-dos .cm-tabla tr { display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: 12px; row-gap: 2px; padding: 12px 4px; border-bottom: 1px solid var(--color-borde); background: none !important; }
+  .proto-dos .cm-tabla td { padding: 0 !important; border: none !important; background: none !important; }
+  .proto-dos .cm-tabla td:first-child { font-weight: 600; }
+  .proto-dos .cm-tabla td:nth-child(2) { grid-row: 2; }
+  .proto-dos .cm-tabla td:nth-child(3) { grid-column: 2; grid-row: 1 / 3; align-self: center; font-weight: 700; }
+  .proto-soporte .proto-botones { grid-template-columns: 1fr; }
+  .proto-encabezado { gap: 2px; }
+}
+
+/* Si el prototipo se abre desde un teléfono: la app ocupa la pantalla, sin marco. */
+@media (max-width: 600px) {
+  .proto-barra { padding: 8px 12px; gap: 8px; }
+  .proto-barra-titulo h1 { font-size: 18px; }
+  .proto-paso { display: none; }
+  .proto-cuerpo { padding: 0; }
+  .proto-area { min-height: 0; flex: 1; }
+  .proto { height: 100dvh; }
+  .proto-barra { flex-wrap: nowrap; }
+  .proto-barra-titulo { flex: 1; min-width: 0; }
+  .proto-seg { display: none; }
+  .proto-editar { min-height: 38px; padding: 0 12px; font-size: 13px; white-space: nowrap; }
+  .proto-cuerpo { overflow: hidden; }
+  .proto-area { min-height: 0 !important; }
+  .proto-celular, .proto-computadora { width: 100%; height: 100%; aspect-ratio: auto; border: none; outline: none; border-radius: 0; box-shadow: none; }
+  .proto-editor { position: absolute; left: 8px; right: 8px; bottom: 70px; max-height: 55dvh; z-index: 30; box-shadow: 0 -10px 40px rgba(0,0,0,.5); }
+  .proto-celular .proto-estado, .proto-celular .proto-inicio { display: none; }
+  .proto-celular .cm-nav_movil { padding-bottom: calc(6px + env(safe-area-inset-bottom, 0px)); }
+  .proto-pie { padding: 8px 12px 10px; }
+  .proto-pie-texto { display: none; }
+  .proto-btn-final { flex: 1; min-height: 46px; font-size: 15px; }
+}
