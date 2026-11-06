@@ -4,19 +4,22 @@
 import type { ComponentType } from 'react';
 import {
   DIRECCIONES,
+  ESTILOS_BOTON,
   FUENTES,
+  HOVERS,
   INTEGRACIONES,
   MOVIMIENTOS,
-  PALETAS,
   PATRONES_NAV,
   PLATAFORMAS,
   RADIOS,
+  TAMANOS_BOTON,
   TIPOS_PROYECTO,
 } from '../catalogo';
-import { aplicarDireccion, aplicarTipo, nuevoId, pantallasDePlantilla } from '../estado';
-import { contraste } from '../export/sistema';
-import type { Config, DireccionId, FuenteId, MovimientoId, PaletaId, Pantalla, PasoId, PatronNav, RadioId, SiNo, TipoProyecto } from '../tipos';
+import { aplicarTipo, nuevoId, pantallasDePlantilla } from '../estado';
+import { paletaActiva } from '../export/sistema';
+import type { Config, Pantalla, PasoId, PatronNav, SiNo, TipoProyecto } from '../tipos';
 import { Campo, Casillas, ListaEditable, Opciones, Seccion } from '../componentes/ui';
+import { PasoBotones, PasoColor, PasoDireccion, PasoForma, PasoMovimiento, PasoTipografia } from './visual';
 import { PasoExportar } from './PasoExportar';
 
 export interface PropsPaso {
@@ -229,117 +232,6 @@ function PasoFunciones({ config: c, setConfig }: PropsPaso) {
   );
 }
 
-function PasoDireccion({ config: c, setConfig }: PropsPaso) {
-  return (
-    <Seccion
-      titulo="¿Qué sensación querés transmitir?"
-      ayuda="La dirección propone color, tipografía, forma y movimiento que combinan. Después ajustás cada uno."
-    >
-      <Opciones<DireccionId>
-        etiqueta="Dirección"
-        opciones={opcionesDe(DIRECCIONES, (d) => {
-          const r = PALETAS[d.paleta].roles;
-          return { muestras: [r.fondo, r.superficie, r.acento, r.texto], fuente: FUENTES[d.fuenteTitulos].pila };
-        })}
-        valor={c.visual.direccion}
-        onElegir={(id) => setConfig((x) => aplicarDireccion(x, id))}
-      />
-      <ListaEditable
-        etiqueta="¿Qué NO querés que parezca?"
-        items={c.visual.antiReferencias}
-        onCambiar={(v) => setConfig((x) => ({ ...x, visual: { ...x.visual, antiReferencias: v } }))}
-        placeholder="Ej.: un banco"
-      />
-    </Seccion>
-  );
-}
-
-function PasoColor({ config: c, setConfig }: PropsPaso) {
-  const r = PALETAS[c.visual.paleta].roles;
-  const pares: [string, string, string][] = [
-    ['Texto sobre fondo', r.texto, r.fondo],
-    ['Texto suave sobre superficie', r.texto_suave, r.superficie],
-    ['Botón principal', r.sobre_acento, r.acento],
-  ];
-  return (
-    <Seccion titulo="Paleta" ayuda="Fondo, superficie, acento y texto, definidos por rol.">
-      <Opciones<PaletaId>
-        etiqueta="Paleta"
-        opciones={opcionesDe(PALETAS, (pal) => ({
-          muestras: [pal.roles.fondo, pal.roles.superficie, pal.roles.acento, pal.roles.texto],
-        })).map((o) => ({ ...o, descripcion: `Modo ${PALETAS[o.id].modo} · acento ${PALETAS[o.id].roles.acento}` }))}
-        valor={c.visual.paleta}
-        onElegir={(v) => setConfig((x) => ({ ...x, visual: { ...x.visual, paleta: v } }))}
-      />
-      <div className="grupo">
-        <div className="grupo-titulo">Contraste (mínimo AA: 4.5)</div>
-        <ul className="contrastes">
-          {pares.map(([nombre, a, b]) => {
-            const v = contraste(a, b);
-            return (
-              <li key={nombre}>
-                <span className="contraste-muestra" style={{ background: b, color: a }}>
-                  Aa
-                </span>
-                <span>{nombre}</span>
-                <strong>{v.toFixed(1)}</strong>
-                <span className={v >= 4.5 ? 'ok' : 'mal'}>{v >= 4.5 ? 'Pasa' : 'No pasa'}</span>
-              </li>
-            );
-          })}
-        </ul>
-      </div>
-    </Seccion>
-  );
-}
-
-function PasoTipografia({ config: c, setConfig }: PropsPaso) {
-  const opts = opcionesDe(FUENTES, (f) => ({ fuente: f.pila }));
-  return (
-    <Seccion titulo="Tipografía" ayuda="Una para títulos y otra para leer. Pueden ser la misma.">
-      <Opciones<FuenteId>
-        etiqueta="Títulos"
-        opciones={opts}
-        valor={c.visual.fuenteTitulos}
-        onElegir={(v) => setConfig((x) => ({ ...x, visual: { ...x.visual, fuenteTitulos: v } }))}
-      />
-      <Opciones<FuenteId>
-        etiqueta="Texto"
-        opciones={opts}
-        valor={c.visual.fuenteTexto}
-        onElegir={(v) => setConfig((x) => ({ ...x, visual: { ...x.visual, fuenteTexto: v } }))}
-      />
-    </Seccion>
-  );
-}
-
-function PasoForma({ config: c, setConfig }: PropsPaso) {
-  return (
-    <Seccion titulo="Forma" ayuda="El radio de las esquinas define gran parte del carácter.">
-      <Opciones<RadioId>
-        etiqueta="Esquinas"
-        opciones={opcionesDe(RADIOS)}
-        valor={c.visual.radio}
-        onElegir={(v) => setConfig((x) => ({ ...x, visual: { ...x.visual, radio: v } }))}
-      />
-    </Seccion>
-  );
-}
-
-function PasoMovimiento({ config: c, setConfig }: PropsPaso) {
-  return (
-    <Seccion titulo="Movimiento" ayuda="Pasá el mouse por los botones de la vista previa y cambiá de pantalla para sentirlo.">
-      <Opciones<MovimientoId>
-        etiqueta="Nivel"
-        columnas={1}
-        opciones={opcionesDe(MOVIMIENTOS)}
-        valor={c.visual.movimiento}
-        onElegir={(v) => setConfig((x) => ({ ...x, visual: { ...x.visual, movimiento: v } }))}
-      />
-    </Seccion>
-  );
-}
-
 const corto = (s: string, n = 24) => (s.length > n ? s.slice(0, n - 1) + '…' : s);
 
 export const PASOS: DefPaso[] = [
@@ -374,7 +266,7 @@ export const PASOS: DefPaso[] = [
   {
     id: 'color',
     nombre: 'Color',
-    resumen: (c) => PALETAS[c.visual.paleta].nombre,
+    resumen: (c) => paletaActiva(c).nombre,
     componente: PasoColor,
     placeholderNota: 'Ej.: "el acento un poco menos saturado"',
   },
@@ -393,9 +285,16 @@ export const PASOS: DefPaso[] = [
     placeholderNota: 'Ej.: "cards suaves, pero inputs rectos"',
   },
   {
+    id: 'botones',
+    nombre: 'Botones',
+    resumen: (c) => `${ESTILOS_BOTON[c.botones.estilo].nombre} · ${TAMANOS_BOTON[c.botones.tamano].nombre}`,
+    componente: PasoBotones,
+    placeholderNota: 'Ej.: "el botón de reservar tiene que ser enorme"',
+  },
+  {
     id: 'movimiento',
     nombre: 'Movimiento',
-    resumen: (c) => MOVIMIENTOS[c.visual.movimiento].nombre,
+    resumen: (c) => `${MOVIMIENTOS[c.visual.movimiento].nombre} · ${HOVERS[c.visual.hover].nombre}`,
     componente: PasoMovimiento,
     placeholderNota: 'Ej.: "nada que rebote en formularios"',
   },

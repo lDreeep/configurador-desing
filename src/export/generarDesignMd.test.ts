@@ -1,6 +1,7 @@
 import { parse } from 'yaml';
-import { aplicarDireccion, configInicial } from '../estado';
-import { PALETAS } from '../catalogo';
+import { aplicarDireccion, aplicarMovimiento, configInicial, normalizar, pesoDisponible } from '../estado';
+import { derivarRoles, paresDeContraste } from '../color';
+import { COMBINACIONES, DIRECCIONES, FUENTES, PALETAS } from '../catalogo';
 import type { Config } from '../tipos';
 import { contraste } from './sistema';
 import { generarDesignMd, VERSION_FORMATO } from './generarDesignMd';
@@ -68,15 +69,84 @@ describe('generarDesignMd', () => {
   });
 });
 
-describe('catálogo de paletas', () => {
-  it('todas pasan contraste AA en los pares principales', () => {
+describe('catálogo', () => {
+  it('todas las paletas pasan contraste en todos los pares', () => {
     for (const [id, p] of Object.entries(PALETAS)) {
-      const r = p.roles;
-      expect(contraste(r.texto, r.fondo), `${id} texto/fondo`).toBeGreaterThanOrEqual(4.5);
-      expect(contraste(r.texto_suave, r.superficie), `${id} texto_suave/superficie`).toBeGreaterThanOrEqual(4.5);
-      expect(contraste(r.sobre_acento, r.acento), `${id} sobre_acento/acento`).toBeGreaterThanOrEqual(4.5);
+      for (const par of paresDeContraste(p.roles)) expect(par.valor, `${id}: ${par.nombre}`).toBeGreaterThanOrEqual(par.minimo);
       for (const [e, color] of Object.entries(p.estados))
-        expect(contraste(color, r.fondo), `${id} estado ${e}`).toBeGreaterThanOrEqual(4.5);
+        expect(contraste(color, p.roles.fondo), `${id} estado ${e}`).toBeGreaterThanOrEqual(4.5);
     }
+  });
+
+  it('las direcciones y combinaciones usan fuentes que existen', () => {
+    for (const d of Object.values(DIRECCIONES)) {
+      expect(FUENTES[d.fuenteTitulos]).toBeDefined();
+      expect(FUENTES[d.fuenteTexto]).toBeDefined();
+    }
+    for (const x of COMBINACIONES) expect(FUENTES[x.titulos] && FUENTES[x.texto]).toBeTruthy();
+  });
+
+  it('cada dirección genera un export válido', () => {
+    for (const id of Object.keys(DIRECCIONES) as (keyof typeof DIRECCIONES)[]) {
+      const md = generarDesignMd(aplicarDireccion(configCompleta(), id));
+      for (const b of bloquesYaml(md)) expect(() => parse(b)).not.toThrow();
+    }
+  });
+});
+
+describe('paleta personalizada', () => {
+  it('con fondo, texto y acento razonables, los colores calculados pasan contraste', () => {
+    const casos: [string, string, string][] = [
+      ['#FFFFFF', '#111111', '#E11D48'],
+      ['#FDF6E3', '#2B2B2B', '#2AA198'],
+      ['#0A0A0A', '#F5F5F5', '#FACC15'],
+      ['#101828', '#E5E7EB', '#7C3AED'],
+      ['#FFFFFF', '#1F2937', '#808080'],
+    ];
+    for (const [fondo, texto, acento] of casos) {
+      const r = derivarRoles(fondo, texto, acento);
+      const textos = paresDeContraste(r).filter((p) => p.minimo === 4.5);
+      for (const p of textos) expect(p.valor, `${fondo}/${texto}/${acento}: ${p.nombre}`).toBeGreaterThanOrEqual(4.5);
+    }
+  });
+
+  it('respeta los ajustes manuales y avisa si no pasan contraste', () => {
+    const c = configInicial();
+    c.visual.paleta = 'personalizada';
+    c.visual.paletaPersonalizada = { fondo: '#FFFFFF', texto: '#111111', acento: '#FFE600', manual: { sobre_acento: '#FFFFFF' } };
+    const md = generarDesignMd(c);
+    const color = parse(bloquesYaml(md).find((b) => b.startsWith('paleta:'))!);
+    expect(color.paleta).toBe('personalizada');
+    expect(color.roles.sobre_acento).toBe('#FFFFFF');
+    expect(color.personalizada.ajustados_a_mano).toEqual(['sobre_acento']);
+    const pend = parse(bloquesYaml(md).find((b) => b.startsWith('sin_definir:'))!);
+    expect(pend.sin_definir.some((p: { seccion: number }) => p.seccion === 6)).toBe(true);
+  });
+});
+
+describe('tipografía, botones y movimiento', () => {
+  it('ajusta el peso al disponible en la fuente', () => {
+    expect(pesoDisponible('instrument_serif', 700)).toBe(400);
+    expect(pesoDisponible('space_mono', 600)).toBe(700);
+    expect(pesoDisponible('inter', 600)).toBe(600);
+  });
+
+  it('exporta botones y cada efecto de movimiento', () => {
+    let c = aplicarMovimiento(configCompleta(), 'expresivo');
+    c = { ...c, botones: { estilo: 'tonal', tamano: 'grande', mayusculas: true, icono: 'derecha' }, visual: { ...c.visual, hover: 'brillo' } };
+    const md = generarDesignMd(c);
+    const comp = parse(bloquesYaml(md).find((b) => b.startsWith('botones:'))!);
+    expect(comp.botones).toMatchObject({ estilo: 'tonal', tamano: 'grande', alto: '56px', mayusculas: 'si', icono: 'derecha' });
+    const mov = parse(bloquesYaml(md).find((b) => b.startsWith('nivel:'))!);
+    expect(mov.que_se_anima).toEqual({ hover_botones: 'brillo', al_presionar: 'hundir', aparicion_listas: 'escalonada', cambio_de_pantalla: 'deslizar' });
+    expect(md).toContain('--boton-mayusculas: uppercase;');
+  });
+
+  it('una config guardada con la versión anterior se abre sin romperse', () => {
+    const vieja = { visual: { direccion: 'calmo', paleta: 'azul_electrico', fuenteTitulos: 'inter', fuenteTexto: 'inter', radio: 'suave', movimiento: 'sutil' } };
+    const c = normalizar(vieja as never);
+    expect(c.botones.estilo).toBeDefined();
+    expect(c.visual.hover).toBeDefined();
+    expect(() => generarDesignMd(c)).not.toThrow();
   });
 });

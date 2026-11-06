@@ -6,6 +6,10 @@ export interface Opcion<T extends string> {
   descripcion?: string;
   muestras?: string[];
   fuente?: string;
+  /** Peso para mostrar el nombre (por ejemplo, el peso de títulos elegido). */
+  peso?: number;
+  /** Contenido visual extra a la derecha: una mini vista previa. */
+  extra?: ReactNode;
 }
 
 export function Opciones<T extends string>(props: {
@@ -28,11 +32,16 @@ export function Opciones<T extends string>(props: {
             onClick={() => props.onElegir(o.id)}
           >
             <span className="opcion-texto">
-              <span className="opcion-nombre" style={o.fuente ? { fontFamily: o.fuente } : undefined}>
+              <span className="opcion-nombre" style={o.fuente ? { fontFamily: o.fuente, fontWeight: o.peso } : undefined}>
                 {o.nombre}
               </span>
               {o.descripcion && <span className="opcion-desc">{o.descripcion}</span>}
             </span>
+            {o.extra && (
+              <span className="opcion-extra" aria-hidden="true">
+                {o.extra}
+              </span>
+            )}
             {o.muestras && (
               <span className="muestras" aria-hidden="true">
                 {o.muestras.map((m, i) => (
@@ -190,5 +199,68 @@ export function Seccion(props: { titulo: string; ayuda: string; children: ReactN
       </header>
       {props.children}
     </>
+  );
+}
+
+export function Filtros<T extends string>(props: {
+  etiqueta: string;
+  opciones: Record<T, string>;
+  valor: T | 'todas';
+  onElegir: (v: T | 'todas') => void;
+}) {
+  const todas: [T | 'todas', string][] = [['todas', 'Todas'], ...(Object.entries(props.opciones) as [T, string][])];
+  return (
+    <div className="filtros" role="group" aria-label={props.etiqueta}>
+      {todas.map(([id, nombre]) => (
+        <button key={id} type="button" className="chip" aria-pressed={props.valor === id} onClick={() => props.onElegir(id)}>
+          {nombre}
+        </button>
+      ))}
+    </div>
+  );
+}
+
+const esHexValido = (s: string) => /^#[0-9a-fA-F]{6}$/.test(s);
+
+/** Selector de color: muestra nativa + campo hex. */
+export function CampoColor(props: { etiqueta: string; valor: string; onCambiar: (v: string) => void; ayuda?: string; calculado?: boolean }) {
+  const id = useId();
+  const [texto, setTexto] = useState(props.valor);
+  const [editando, setEditando] = useState(false);
+  const mostrado = editando ? texto : props.valor;
+  return (
+    <div className="campo-color">
+      <input
+        type="color"
+        aria-label={`${props.etiqueta}: elegir color`}
+        value={props.valor.toLowerCase()}
+        onChange={(e) => props.onCambiar(e.target.value.toUpperCase())}
+      />
+      <div className="campo-color-texto">
+        <label htmlFor={id}>
+          {props.etiqueta}
+          {props.calculado && <span className="calculado"> · calculado</span>}
+        </label>
+        <input
+          id={id}
+          type="text"
+          inputMode="text"
+          spellCheck={false}
+          value={mostrado}
+          onFocus={() => {
+            setTexto(props.valor);
+            setEditando(true);
+          }}
+          onBlur={() => setEditando(false)}
+          onChange={(e) => {
+            const v = e.target.value.trim();
+            setTexto(v);
+            const conNumeral = v.startsWith('#') ? v : `#${v}`;
+            if (esHexValido(conNumeral)) props.onCambiar(conNumeral.toUpperCase());
+          }}
+        />
+      </div>
+      {props.ayuda && <span className="ayuda">{props.ayuda}</span>}
+    </div>
   );
 }

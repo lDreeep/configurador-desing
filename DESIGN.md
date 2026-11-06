@@ -1,8 +1,8 @@
 # DESIGN.md: especificación del formato
 
-> **Versión del formato:** 0.1.0 (borrador)
+> **Versión del formato:** 0.2.0 (borrador)
 > **Última actualización:** 2026-11-06
-> **Estado:** MVP del configurador construido (9 pasos + export). Falta la primera ronda de pruebas con IA (§9).
+> **Estado:** configurador en v0.2 (10 pasos + export): 8 direcciones, 13 paletas + personalizada, 23 fuentes, botones y movimiento detallados. Falta la primera ronda de pruebas con IA (§9).
 
 Este documento define **qué archivo exporta el configurador** y **cómo lo tiene que leer una IA** para construir una web o una app. Es también el documento vivo del proyecto: acá se registran las decisiones, lo que aprendemos en las pruebas y lo que falta hacer.
 
@@ -134,7 +134,7 @@ Todo archivo exportado empieza con este bloque, que permite saber con qué versi
 
 ```yaml
 formato: design-md
-version_formato: 0.1.0
+version_formato: 0.2.0
 generado_por: configurador-diseno
 fecha: 2026-11-06
 idioma: es
@@ -180,7 +180,7 @@ Ver [§2.5](#25-encabezado-obligatorio). Va al principio, antes del título del 
 
 **Texto fijo**, igual en todos los exports de la misma versión. El configurador no lo modifica. Es lo que reemplaza a una skill: viaja adentro del archivo.
 
-Texto actual (v0.1.0):
+Texto actual (v0.1.0, sin cambios en 0.2.0):
 
 ```markdown
 ## 1. Instrucciones para la IA
@@ -313,14 +313,18 @@ nota: "calmo, pero que no parezca un banco"
 - Elegir una `direccion` en el configurador **precarga** valores coherentes en §6 a §12. Si después la persona cambia algo, gana lo que cambió.
 - Las `anti_referencias` son muy útiles y casi ninguna herramienta las pide.
 
-Valores precargados por dirección (v0.1.0, catálogo inicial):
+Valores precargados por dirección (v0.2.0). La fuente de verdad es `src/catalogo.ts` (`DIRECCIONES`):
 
-| Dirección | Paleta | Tipografía | Radio | Movimiento | Densidad |
-|---|---|---|---|---|---|
-| calmo | azul_electrico | inter | 14px | sutil | aireada |
-| audaz | tinta_y_lima | space_grotesk + inter | 0px | expresivo | normal |
-| tecnico | bosque | inter | 6px | minimo | compacta |
-| calido | coral_calido | fraunces + inter | píldora | sutil | aireada |
+| Dirección | Paleta | Tipografía (títulos + texto, peso) | Tamaños | Radio | Sombras · bordes | Botón | Movimiento | Densidad |
+|---|---|---|---|---|---|---|---|---|
+| calmo | azul_electrico | inter + inter, 700 | sutil | suave | suave · ninguno | relleno | sutil | aireada |
+| audaz | tinta_y_lima | space_grotesk + inter, 700 | dramatico | recto | plana · sutil | relleno | expresivo | normal |
+| tecnico | bosque | manrope + inter, 600 | sutil | apenas_suave | plana · sutil | relleno | rapido | compacta |
+| calido | coral_calido | fraunces + dm_sans, 600 | medio | pildora | suave · ninguno | relleno | sutil | aireada |
+| lujoso | noche_dorada | playfair + inter, 500 | dramatico | recto | plana · sutil | contorno | sutil | aireada |
+| jugueton | caramelo | unbounded + nunito, 700 | dramatico | pildora | dura · marcado | sombra_dura | expresivo | normal |
+| editorial | papel | instrument_serif + source_serif, 400 | extremo | recto | plana · sutil | contorno | sutil | aireada |
+| brutalista | alto_contraste | archivo + ibm_plex_sans, 800 | extremo | recto | dura · marcado | sombra_dura | rapido | normal |
 
 ---
 
@@ -329,9 +333,12 @@ Valores precargados por dirección (v0.1.0, catálogo inicial):
 **Responde:** qué colores hay y para qué se usa cada uno. Se definen **por rol**, no por nombre ("acento", no "azul").
 
 ```yaml
-paleta: azul_electrico            # id del catálogo | personalizada
+paleta: azul_electrico            # id del catálogo (13) | personalizada
 modo: claro                       # claro | oscuro | ambos
 modo_por_defecto: claro           # si modo: ambos
+personalizada:                    # solo si paleta: personalizada
+  base: { fondo: "#FFFFFF", texto: "#121826", acento: "#2F5BFF" }
+  ajustados_a_mano: [borde]       # roles que la persona cambió; el resto se calculó desde la base
 roles:
   fondo:           "#FFFFFF"
   superficie:      "#F2F4F8"      # cards, barras, zonas agrupadas
@@ -341,6 +348,7 @@ roles:
   texto_suave:     "#5B6474"      # secundario, ayudas
   acento:          "#2F5BFF"      # acción principal, links, foco
   sobre_acento:    "#FFFFFF"      # texto encima del acento
+  acento_suave:    "#DCE4FF"      # acento mezclado al 16% con el fondo (botón tonal, resaltados)
 estados:
   exito:   "#1F7A4D"
   aviso:   "#B45309"
@@ -354,7 +362,8 @@ nota: "el azul un poco menos frío"
 ```
 
 **Reglas del formato:**
-- Todos los pares texto/fondo cumplen **contraste 4.5:1** (3:1 para texto de 24px o más). El configurador lo verifica antes de exportar; si una combinación personalizada no pasa, avisa y no exporta sin confirmación.
+- Todos los pares texto/fondo cumplen **contraste 4.5:1** (3:1 para texto de 24px o más, y para el acento usado como link o contorno sobre el fondo). Las paletas del catálogo lo cumplen siempre (lo verifican los tests).
+- **Paleta personalizada:** la persona elige fondo, texto y acento; superficie, superficie alta, borde, texto suave y texto sobre acento se calculan para que combinen y pasen contraste. Puede ajustar cualquiera a mano. Si un par no pasa, el configurador lo muestra en vivo, **deja exportar igual** y lo anota en §18 con su valor; la IA lo corrige respetando §14.
 - Los colores de estado nunca se distinguen solo por el tono: llevan icono o texto.
 - `uso_del_acento` le dice a la IA cuánto color poner: `minimo` es solo el botón primario y el foco; `generoso` incluye fondos de sección y encabezados.
 
@@ -376,12 +385,17 @@ escala:                           # tamaño / interlineado / peso
   cuerpo:  { tamano: 16px, interlineado: 1.5,  peso: 400 }
   pequeno: { tamano: 14px, interlineado: 1.45, peso: 400 }
   etiqueta:{ tamano: 12px, interlineado: 1.3,  peso: 600, mayusculas: si, espaciado: 0.06em }
+peso_titulos: 700                 # ajustado a los pesos que tiene la fuente
+espaciado_titulos: apretado       # apretado (-0.03em) | normal (0em) | amplio (0.04em)
+contraste_tamanos: medio          # sutil (1.2) | medio (1.25) | dramatico (1.333) | extremo (1.5)
 proporcion_escala: 1.25           # cómo se generó la escala (informativo)
 largo_de_linea_max: 70ch
 nota: "títulos más grandes de lo normal"
 ```
 
-- El configurador genera la escala a partir de un tamaño base y una proporción; la persona elige entre 3 opciones de "contraste de tamaños" (sutil, medio, dramático), no número por número.
+- El configurador genera la escala a partir de 16px y la proporción de `contraste_tamanos`; la persona elige entre 4 opciones, no número por número.
+- Catálogo: 23 fuentes de Google Fonts en 6 categorías (sans, geométricas, serif, display, mono, redondeadas) y 10 combinaciones recomendadas. Cualquier par se puede combinar.
+- Si la fuente de títulos no tiene el peso pedido, se usa el más cercano disponible y se exporta ese.
 - El cuerpo nunca baja de 16px en pantallas móviles.
 
 ---
@@ -414,10 +428,10 @@ radio:
   grande:  20px                   # modales, contenedores grandes
   boton:   14px                   # o 999px para píldora
 bordes:
-  grosor: 1px
-  uso: sutil                      # ninguno | sutil | marcado
+  uso: sutil                      # ninguno | sutil (1px --color-borde) | marcado (2px --color-texto)
+  componente: "1px solid #C9D0DE" # borde de cards y bloques
 elevacion:                        # sombras
-  estilo: suave                   # plana | suave | marcada
+  estilo: suave                   # plana | suave | marcada | dura (sombra sólida desplazada)
   nivel_1: "0 1px 2px rgba(18,24,38,.06)"
   nivel_2: "0 4px 16px rgba(18,24,38,.08)"
   nivel_3: "0 12px 32px rgba(18,24,38,.12)"
@@ -432,10 +446,16 @@ nota: "cards suaves, pero inputs rectos"
 
 ```yaml
 botones:
+  estilo: relleno                 # relleno | contorno | tonal | elevado | sombra_dura
   variantes: [primario, secundario, fantasma, peligro]
-  primario: { fondo: acento, texto: sobre_acento }
-  secundario: { fondo: transparente, borde: borde, texto: texto }
-  alto_minimo: 44px
+  primario: "fondo --color-acento, texto --color-sobre-acento"   # se describe según el estilo
+  secundario: "fondo transparente, borde --color-borde, texto --color-texto"
+  tamano: normal                  # compacto (44px) | normal (48px) | grande (56px); nunca menos de 44px
+  alto: 48px
+  padding_horizontal: 20px
+  texto: 15px
+  mayusculas: no
+  icono: ninguno                  # ninguno | izquierda | derecha
   estados: [normal, hover, presionado, foco, deshabilitado, cargando]
   regla: "un solo botón primario visible por pantalla"
 inputs:
@@ -486,7 +506,7 @@ nota: ""
 ### §12. Movimiento
 
 ```yaml
-nivel: sutil                      # minimo | sutil | expresivo
+nivel: sutil                      # minimo | rapido | sutil | expresivo (precarga los efectos de abajo)
 duraciones:
   rapida: 120ms                   # hover, foco
   media: 160ms                    # aparición de elementos, cambios de estado
@@ -495,9 +515,10 @@ curvas:
   entrada: "cubic-bezier(.2,.7,.3,1)"
   salida:  "cubic-bezier(.4,0,1,1)"
 que_se_anima:
-  hover_botones: elevar           # nada | elevar | oscurecer | escalar
-  aparicion_listas: escalonada    # nada | fundido | escalonada
-  cambio_de_pantalla: fundido     # nada | fundido | deslizar
+  hover_botones: elevar           # nada | oscurecer | brillo | elevar | escalar | sombra | desplazar
+  al_presionar: hundir            # nada | hundir
+  aparicion_listas: escalonada    # nada | fundido | subir | escalonada | zoom
+  cambio_de_pantalla: fundido     # nada | fundido | deslizar | subir | zoom
   modales: fundido_y_escala
 no_animar: ["formularios mientras se escribe"]
 respetar_movimiento_reducido: si  # fijo en "si": no se puede desactivar
@@ -687,12 +708,13 @@ Este es el plan de construcción. Estados: `[MVP]` primera versión · `[v0.2]` 
 | 2. Pantallas y navegación | §3 | `[MVP]` hecho | Plantillas por tipo de proyecto (se agregan o quitan pantallas); patrón de navegación con vista previa |
 | 3. Qué hace | §4 | `[MVP]` hecho | Acciones clave como texto; integraciones con casillas; "fuera de alcance" |
 | 4. Dirección visual | §5, precarga §6–§12 | `[MVP]` hecho | 4 direcciones con vista previa; anti-referencias como texto |
-| 5. Color | §6 | `[MVP]` hecho | 4 paletas del catálogo · `[v0.2]` paleta personalizada con verificación de contraste · `[v0.2]` modo oscuro |
-| 6. Tipografía | §7 | `[MVP]` hecho | 4 fuentes, elegidas por separado para títulos y texto · `[v0.2]` contraste de tamaños (sutil/medio/dramático) |
-| 7. Forma | §9 | `[MVP]` hecho | 4 radios · `[v0.2]` sombras y bordes |
+| 5. Color | §6 | `[v0.2]` hecho | 13 paletas (claras y oscuras) · paleta personalizada (fondo, texto, acento + ajuste a mano) con contraste en vivo · `[futuro]` modo claro y oscuro a la vez |
+| 6. Tipografía | §7 | `[v0.2]` hecho | 23 fuentes con filtro por categoría, 10 combinaciones, peso y espaciado de títulos, contraste de tamaños (4 niveles) |
+| 7. Forma | §9 | `[v0.2]` hecho | 4 radios, 4 sombras (incluida la dura), 3 bordes, con mini vista previa |
+| 7b. Botones | §10 (botones) | `[v0.2]` hecho | 5 estilos, 3 tamaños, mayúsculas, icono; cada opción con su botón de muestra |
 | 8. Espaciado | §8 | `[v0.2]` | Densidad con vista previa |
-| 9. Componentes | §10 | `[v0.2]` | Estilo de inputs, cards, indicador de navegación · `[futuro]` estados especiales con vista previa |
-| 10. Movimiento | §12 | `[MVP]` hecho | 3 niveles que se ven en movimiento · `[v0.2]` qué se anima, uno por uno |
+| 9. Componentes | §10 | `[v0.3]` | Estilo de inputs, cards, indicador de navegación · `[futuro]` estados especiales con vista previa |
+| 10. Movimiento | §12 | `[v0.2]` hecho | 4 niveles + hover (7), al presionar (2), aparición (5) y cambio de pantalla (5), cada uno por separado; «Repetir animación» en la vista previa |
 | 11. Iconos e imágenes | §11 | `[v0.2]` | Librerías con muestra |
 | 12. Contenido y tono | §13 | `[v0.2]` | Voz y tratamiento con frases de ejemplo |
 | 13. Revisar y exportar | §17, §18, genera §1, §14, §15, §16 | `[MVP]` hecho | Resumen, notas generales, lista de pendientes, descarga |
@@ -707,7 +729,7 @@ Este es el plan de construcción. Estados: `[MVP]` primera versión · `[v0.2]` 
 | Copiar el contenido al portapapeles | `[MVP]` hecho |
 | Guardar el progreso en el navegador | `[MVP]` hecho |
 | **Importar un `DESIGN.md` para seguir editándolo** | `[v0.2]`. Clave para iterar: el archivo es a la vez salida y entrada. |
-| Verificación automática de contraste | `[v0.2]` |
+| Verificación automática de contraste | `[v0.2]` hecho (en vivo en el paso de color y anotada en §18) |
 | Exportar `preview.html` con la vista previa del estilo | `[v0.2]` |
 | Exportar tokens como Tailwind y JSON | `[v0.2]` |
 | Opción "que decida la IA" (`libre`) en cada paso | `[v0.2]` |
@@ -723,7 +745,7 @@ Así se vería un archivo real generado por el MVP. Las secciones `[v0.2]` apare
 ````markdown
 ```yaml
 formato: design-md
-version_formato: 0.1.0
+version_formato: 0.2.0
 generado_por: configurador-diseno
 fecha: 2026-11-06
 idioma: es
@@ -994,6 +1016,11 @@ Formato: fecha · decisión · por qué · alternativas descartadas.
 | D11 | 2026-11-06 | La vista previa y el export derivan de la misma función (`sistemaDeDiseno`) | Garantiza que lo que se ve es lo que se exporta | Calcular la vista previa por separado |
 | D12 | 2026-11-06 | En el MVP, §8 y §10 se exportan con valores derivados o por defecto; §11 y §13 no se exportan todavía | Le dan contexto útil a la IA sin agregar pasos; §11 y §13 necesitan su propio paso | Exportar todas las secciones con `sin_definir` |
 | D13 | 2026-11-06 | El paso de color muestra el contraste de los pares principales; las paletas del catálogo se verifican en los tests | Adelanta parte de la verificación `[v0.2]` sin costo | Esperar a tener paleta personalizada |
+| D14 | 2026-11-06 | Paleta personalizada con 3 colores base (fondo, texto, acento) y el resto calculado, con ajuste a mano opcional | Elegir 8 colores desde cero casi siempre termina en algo que no combina o no se lee | Pedir los 8 roles siempre |
+| D15 | 2026-11-06 | Un contraste que no pasa no bloquea el export: se avisa y se anota en §18 | Bloquear frustra; la IA puede corregirlo con §14 como regla | Bloquear el export (lo que decía la v0.1.0) |
+| D16 | 2026-11-06 | Botones como paso propio, antes de Movimiento | Es lo que más se toca y lo que más carácter da; mezclado con Forma quedaba escondido | Meterlos en Forma o Componentes |
+| D17 | 2026-11-06 | Los niveles de movimiento precargan cada efecto, que después se ajusta por separado | Mismo criterio que las direcciones (D5): coherente por defecto, fino si se quiere | Solo niveles, o solo efectos sueltos |
+| D18 | 2026-11-06 | Las fuentes se cargan todas desde Google Fonts al abrir el configurador | Cada opción se ve con su forma real; una sola petición | Cargar cada fuente al elegirla (la lista se vería con la fuente equivocada) |
 
 ---
 
@@ -1003,9 +1030,9 @@ Cada vez que pasamos un export por una IA, se anota acá. Es lo que valida (o co
 
 | # | Fecha | Versión | Proyecto de prueba | IA | Respetó | Ignoró o inventó | Cambio que generó |
 |---|---|---|---|---|---|---|---|
-| P1 | | 0.1.0 | Barbería (app web, calmo) | | | | |
-| P2 | | 0.1.0 | Landing de producto (audaz) | | | | |
-| P3 | | 0.1.0 | Dashboard interno (técnico) | | | | |
+| P1 | | 0.2.0 | Barbería (app web, calmo) | | | | |
+| P2 | | 0.2.0 | Landing de producto (audaz) | | | | |
+| P3 | | 0.2.0 | Dashboard interno (técnico) | | | | |
 
 **Qué mirar en cada prueba:**
 - ¿Usó los tokens o metió colores y medidas sueltos?
@@ -1054,3 +1081,4 @@ Lo que todavía no tiene lugar en §5. Se mueve allá cuando se decide hacerlo.
 |---|---|---|
 | 0.1.0 | 2026-11-06 | Primera versión del formato: 19 secciones, reglas generales, prioridades, plan del configurador, ejemplo completo y registros. |
 | 0.1.0 | 2026-11-06 | Sin cambios de formato. Primer configurador implementado (D10 a D13); el export cumple §3 según D12. |
+| 0.2.0 | 2026-11-06 | Cambios que no rompen nada: §6 suma `paleta: personalizada`, el bloque `personalizada` y el rol `acento_suave`; un contraste que no pasa se anota en §18 en vez de bloquear (D15). §7 suma `peso_titulos`, `espaciado_titulos` y `contraste_tamanos` (4 niveles). §9 suma `elevacion: dura` y `bordes.componente`. §10 suma `botones.estilo`, `tamano`, `alto`, `padding_horizontal`, `texto`, `mayusculas` e `icono`. §12 suma el nivel `rapido`, `al_presionar` y más valores en `hover_botones`, `aparicion_listas` y `cambio_de_pantalla`. §5 pasa de 4 a 8 direcciones. Tokens nuevos en §16: `--color-acento-suave`, `--titulos-peso`, `--subtitulos-peso`, `--titulos-espaciado`, `--borde-componente`, `--boton-*`. |

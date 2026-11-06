@@ -2,118 +2,191 @@
 // entrada acá: los pasos, la vista previa y el export la toman solos.
 // Cualquier cambio de ids o valores tiene que reflejarse en DESIGN.md (§3, §5).
 
+import { ESTADOS_CLAROS, ESTADOS_OSCUROS, type Roles } from './color';
 import type {
+  AparicionId,
+  BordesId,
+  BotonEstiloId,
+  BotonTamano,
+  CambioId,
   Densidad,
   DireccionId,
+  ElevacionId,
+  EscalaId,
+  EspaciadoTitulos,
   FuenteId,
+  HoverId,
   MovimientoId,
   PaletaId,
   PatronNav,
   Pantalla,
+  PresionarId,
   RadioId,
   TipoProyecto,
 } from './tipos';
 
+// ---------- Color ----------
+
 export interface Paleta {
   nombre: string;
   modo: 'claro' | 'oscuro';
-  roles: {
-    fondo: string;
-    superficie: string;
-    superficie_alta: string;
-    borde: string;
-    texto: string;
-    texto_suave: string;
-    acento: string;
-    sobre_acento: string;
-  };
+  roles: Roles;
   estados: { exito: string; aviso: string; error: string; info: string };
-  sombra: string; // color base de las sombras, en "r,g,b"
 }
 
+const claro = (nombre: string, roles: Roles): Paleta => ({ nombre, modo: 'claro', roles, estados: ESTADOS_CLAROS });
+const oscuro = (nombre: string, roles: Roles): Paleta => ({ nombre, modo: 'oscuro', roles, estados: ESTADOS_OSCUROS });
+
 export const PALETAS: Record<PaletaId, Paleta> = {
-  azul_electrico: {
-    nombre: 'Azul eléctrico',
-    modo: 'claro',
-    roles: {
-      fondo: '#FFFFFF',
-      superficie: '#F2F4F8',
-      superficie_alta: '#FFFFFF',
-      borde: '#C9D0DE',
-      texto: '#121826',
-      texto_suave: '#5B6474',
-      acento: '#2F5BFF',
-      sobre_acento: '#FFFFFF',
-    },
-    estados: { exito: '#1F7A4D', aviso: '#B45309', error: '#C2272D', info: '#2F5BFF' },
-    sombra: '18,24,38',
-  },
-  tinta_y_lima: {
-    nombre: 'Tinta y lima',
-    modo: 'oscuro',
-    roles: {
-      fondo: '#0E0F12',
-      superficie: '#1A1C22',
-      superficie_alta: '#23262E',
-      borde: '#3A3E48',
-      texto: '#F3F4F6',
-      texto_suave: '#A0A6B2',
-      acento: '#C6F24E',
-      sobre_acento: '#0E0F12',
-    },
-    estados: { exito: '#4ADE80', aviso: '#FBBF24', error: '#F87171', info: '#93C5FD' },
-    sombra: '0,0,0',
-  },
-  bosque: {
-    nombre: 'Bosque',
-    modo: 'claro',
-    roles: {
-      fondo: '#F7F8F4',
-      superficie: '#E9EDE3',
-      superficie_alta: '#FFFFFF',
-      borde: '#C3CBBA',
-      texto: '#17251C',
-      texto_suave: '#4F5E53',
-      acento: '#1F7A4D',
-      sobre_acento: '#FFFFFF',
-    },
-    estados: { exito: '#1F7A4D', aviso: '#B45309', error: '#B42318', info: '#1D5FA8' },
-    sombra: '23,37,28',
-  },
-  coral_calido: {
-    nombre: 'Coral cálido',
-    modo: 'claro',
-    roles: {
-      fondo: '#FFF8F4',
-      superficie: '#FBE9DF',
-      superficie_alta: '#FFFFFF',
-      borde: '#E8C6B4',
-      texto: '#2A1712',
-      texto_suave: '#6E4D44',
-      acento: '#C2410C',
-      sobre_acento: '#FFFFFF',
-    },
-    estados: { exito: '#1F7A4D', aviso: '#9A5B00', error: '#B42318', info: '#1D5FA8' },
-    sombra: '42,23,18',
-  },
+  azul_electrico: claro('Azul eléctrico', {
+    fondo: '#FFFFFF', superficie: '#F2F4F8', superficie_alta: '#FFFFFF', borde: '#C9D0DE',
+    texto: '#121826', texto_suave: '#5B6474', acento: '#2F5BFF', sobre_acento: '#FFFFFF',
+  }),
+  bosque: claro('Bosque', {
+    fondo: '#F7F8F4', superficie: '#E9EDE3', superficie_alta: '#FFFFFF', borde: '#C3CBBA',
+    texto: '#17251C', texto_suave: '#4F5E53', acento: '#1F7A4D', sobre_acento: '#FFFFFF',
+  }),
+  coral_calido: claro('Coral cálido', {
+    fondo: '#FFF8F4', superficie: '#FBE9DF', superficie_alta: '#FFFFFF', borde: '#E8C6B4',
+    texto: '#2A1712', texto_suave: '#6E4D44', acento: '#C2410C', sobre_acento: '#FFFFFF',
+  }),
+  caramelo: claro('Caramelo', {
+    fondo: '#FFF9EC', superficie: '#FFEFC7', superficie_alta: '#FFFFFF', borde: '#EBD39B',
+    texto: '#1F1A3D', texto_suave: '#554E72', acento: '#6D28D9', sobre_acento: '#FFFFFF',
+  }),
+  papel: claro('Papel y tinta roja', {
+    fondo: '#FBFAF7', superficie: '#F1EFE9', superficie_alta: '#FFFFFF', borde: '#D6D2C8',
+    texto: '#1B1B1B', texto_suave: '#5E5C57', acento: '#B4232C', sobre_acento: '#FFFFFF',
+  }),
+  alto_contraste: claro('Alto contraste', {
+    fondo: '#FFFFFF', superficie: '#F0F0F0', superficie_alta: '#FFFFFF', borde: '#000000',
+    texto: '#000000', texto_suave: '#4A4A4A', acento: '#FF5A1F', sobre_acento: '#000000',
+  }),
+  lavanda: claro('Lavanda', {
+    fondo: '#FAF8FF', superficie: '#EFEAFB', superficie_alta: '#FFFFFF', borde: '#D3CAEE',
+    texto: '#1E1636', texto_suave: '#5B5275', acento: '#6741D9', sobre_acento: '#FFFFFF',
+  }),
+  arena: claro('Arena', {
+    fondo: '#F8F4EC', superficie: '#EDE6D8', superficie_alta: '#FFFFFF', borde: '#D5CAB4',
+    texto: '#2B2620', texto_suave: '#5F574B', acento: '#8A5A2B', sobre_acento: '#FFFFFF',
+  }),
+  grafito: claro('Grafito', {
+    fondo: '#FFFFFF', superficie: '#F4F4F5', superficie_alta: '#FFFFFF', borde: '#D4D4D8',
+    texto: '#18181B', texto_suave: '#52525B', acento: '#18181B', sobre_acento: '#FFFFFF',
+  }),
+  menta: claro('Menta', {
+    fondo: '#F5FBF8', superficie: '#E2F3EA', superficie_alta: '#FFFFFF', borde: '#B9DCC9',
+    texto: '#0F2A1F', texto_suave: '#44604F', acento: '#0F766E', sobre_acento: '#FFFFFF',
+  }),
+  tinta_y_lima: oscuro('Tinta y lima', {
+    fondo: '#0E0F12', superficie: '#1A1C22', superficie_alta: '#23262E', borde: '#3A3E48',
+    texto: '#F3F4F6', texto_suave: '#A0A6B2', acento: '#C6F24E', sobre_acento: '#0E0F12',
+  }),
+  noche_dorada: oscuro('Noche dorada', {
+    fondo: '#0F0E0C', superficie: '#1C1A16', superficie_alta: '#26231D', borde: '#3D382E',
+    texto: '#F5F0E6', texto_suave: '#B3A994', acento: '#D4AF6A', sobre_acento: '#1A1405',
+  }),
+  oceano: oscuro('Océano', {
+    fondo: '#0B1220', superficie: '#131C2E', superficie_alta: '#1A2540', borde: '#2A3756',
+    texto: '#E8EEF9', texto_suave: '#9AA8C2', acento: '#38BDF8', sobre_acento: '#06202E',
+  }),
+};
+
+// ---------- Tipografía ----------
+
+export type CategoriaFuente = 'sans' | 'geometrica' | 'serif' | 'display' | 'mono' | 'redondeada';
+
+export const CATEGORIAS_FUENTE: Record<CategoriaFuente, string> = {
+  sans: 'Sans',
+  geometrica: 'Geométricas',
+  serif: 'Serif',
+  display: 'Display',
+  mono: 'Mono',
+  redondeada: 'Redondeadas',
 };
 
 export interface Fuente {
   nombre: string;
   pila: string;
+  categoria: CategoriaFuente;
+  pesos: number[];
   descripcion: string;
 }
 
+const f = (nombre: string, respaldo: string, categoria: CategoriaFuente, pesos: number[], descripcion: string): Fuente => ({
+  nombre,
+  pila: `"${nombre}", ${respaldo}`,
+  categoria,
+  pesos,
+  descripcion,
+});
+const SANS = 'system-ui, sans-serif';
+const SERIF = 'Georgia, serif';
+const MONO = 'ui-monospace, monospace';
+const P4_8 = [400, 500, 600, 700, 800];
+const P4_7 = [400, 500, 600, 700];
+
 export const FUENTES: Record<FuenteId, Fuente> = {
-  inter: { nombre: 'Inter', pila: 'Inter, system-ui, sans-serif', descripcion: 'Neutra y muy legible' },
-  space_grotesk: {
-    nombre: 'Space Grotesk',
-    pila: '"Space Grotesk", Inter, sans-serif',
-    descripcion: 'Geométrica, con carácter',
-  },
-  fraunces: { nombre: 'Fraunces', pila: 'Fraunces, Georgia, serif', descripcion: 'Serif editorial y cálida' },
-  dm_sans: { nombre: 'DM Sans', pila: '"DM Sans", system-ui, sans-serif', descripcion: 'Redondeada y amable' },
+  inter: f('Inter', SANS, 'sans', P4_8, 'Neutra y muy legible'),
+  dm_sans: f('DM Sans', SANS, 'sans', P4_8, 'Suave y amable'),
+  manrope: f('Manrope', SANS, 'sans', P4_8, 'Moderna, un poco técnica'),
+  plus_jakarta: f('Plus Jakarta Sans', SANS, 'sans', P4_8, 'Fresca, de producto digital'),
+  work_sans: f('Work Sans', SANS, 'sans', P4_8, 'Clara, con carácter de afiche'),
+  ibm_plex_sans: f('IBM Plex Sans', SANS, 'sans', P4_7, 'Corporativa con personalidad'),
+  archivo: f('Archivo', SANS, 'sans', P4_8, 'Robusta, ideal en negrita'),
+  outfit: f('Outfit', SANS, 'geometrica', P4_8, 'Geométrica y limpia'),
+  sora: f('Sora', SANS, 'geometrica', P4_8, 'Geométrica, tecnológica'),
+  space_grotesk: f('Space Grotesk', SANS, 'geometrica', P4_7, 'Geométrica, con rarezas'),
+  syne: f('Syne', SANS, 'display', P4_8, 'Expresiva, de estudio creativo'),
+  bricolage: f('Bricolage Grotesque', SANS, 'display', P4_8, 'Grotesca con personalidad'),
+  unbounded: f('Unbounded', SANS, 'display', P4_8, 'Ancha y juguetona'),
+  fraunces: f('Fraunces', SERIF, 'serif', P4_8, 'Serif cálida y blanda'),
+  playfair: f('Playfair Display', SERIF, 'serif', P4_8, 'Elegante, de alto contraste'),
+  lora: f('Lora', SERIF, 'serif', P4_7, 'Serif para leer largo'),
+  dm_serif: f('DM Serif Display', SERIF, 'serif', [400], 'Títulos con mucho estilo'),
+  instrument_serif: f('Instrument Serif', SERIF, 'serif', [400], 'Editorial, finita y fina'),
+  source_serif: f('Source Serif 4', SERIF, 'serif', P4_8, 'Serif sobria y versátil'),
+  jetbrains_mono: f('JetBrains Mono', MONO, 'mono', P4_8, 'Monoespaciada de programador'),
+  space_mono: f('Space Mono', MONO, 'mono', [400, 700], 'Mono retro, con carácter'),
+  nunito: f('Nunito', SANS, 'redondeada', P4_8, 'Redondeada y simpática'),
+  quicksand: f('Quicksand', SANS, 'redondeada', P4_7, 'Redondeada y liviana'),
 };
+
+/** URL de Google Fonts que carga todo el catálogo (para mostrar cada fuente con su forma real). */
+export const urlGoogleFonts = () =>
+  'https://fonts.googleapis.com/css2?' +
+  Object.values(FUENTES)
+    .map((x) => `family=${x.nombre.replace(/ /g, '+')}:wght@${x.pesos.join(';')}`)
+    .join('&') +
+  '&display=swap';
+
+export const COMBINACIONES: { nombre: string; titulos: FuenteId; texto: FuenteId }[] = [
+  { nombre: 'Neutra', titulos: 'inter', texto: 'inter' },
+  { nombre: 'Tech', titulos: 'space_grotesk', texto: 'inter' },
+  { nombre: 'Cálida', titulos: 'fraunces', texto: 'dm_sans' },
+  { nombre: 'Elegante', titulos: 'playfair', texto: 'inter' },
+  { nombre: 'Editorial', titulos: 'instrument_serif', texto: 'source_serif' },
+  { nombre: 'Juguetona', titulos: 'unbounded', texto: 'nunito' },
+  { nombre: 'Creativa', titulos: 'syne', texto: 'manrope' },
+  { nombre: 'Moderna', titulos: 'bricolage', texto: 'plus_jakarta' },
+  { nombre: 'Developer', titulos: 'jetbrains_mono', texto: 'ibm_plex_sans' },
+  { nombre: 'Robusta', titulos: 'archivo', texto: 'work_sans' },
+];
+
+export const ESCALAS: Record<EscalaId, { nombre: string; descripcion: string; proporcion: number }> = {
+  sutil: { nombre: 'Sutil', descripcion: 'Títulos apenas más grandes', proporcion: 1.2 },
+  medio: { nombre: 'Medio', descripcion: 'Jerarquía clara', proporcion: 1.25 },
+  dramatico: { nombre: 'Dramático', descripcion: 'Títulos grandes, mucho contraste', proporcion: 1.333 },
+  extremo: { nombre: 'Extremo', descripcion: 'Títulos enormes, tipo afiche', proporcion: 1.5 },
+};
+
+export const ESPACIADOS_TITULOS: Record<EspaciadoTitulos, { nombre: string; descripcion: string; valor: string }> = {
+  apretado: { nombre: 'Apretado', descripcion: 'Letras juntas, compacto', valor: '-0.03em' },
+  normal: { nombre: 'Normal', descripcion: 'El de la fuente', valor: '0em' },
+  amplio: { nombre: 'Amplio', descripcion: 'Aireado, elegante', valor: '0.04em' },
+};
+
+// ---------- Forma ----------
 
 export interface Radio {
   nombre: string;
@@ -131,6 +204,37 @@ export const RADIOS: Record<RadioId, Radio> = {
   pildora: { nombre: 'Píldora', descripcion: 'Botones redondos · cercano', pequeno: 8, medio: 20, grande: 28, boton: 999 },
 };
 
+export const ELEVACIONES: Record<ElevacionId, { nombre: string; descripcion: string }> = {
+  plana: { nombre: 'Plana', descripcion: 'Sin sombras, todo al mismo nivel' },
+  suave: { nombre: 'Suave', descripcion: 'Sombras difusas y livianas' },
+  marcada: { nombre: 'Marcada', descripcion: 'Las cards flotan claramente' },
+  dura: { nombre: 'Dura', descripcion: 'Sombra sólida desplazada, estilo brutalista' },
+};
+
+export const BORDES: Record<BordesId, { nombre: string; descripcion: string }> = {
+  ninguno: { nombre: 'Sin bordes', descripcion: 'Se separa con color de fondo' },
+  sutil: { nombre: 'Sutiles', descripcion: 'Línea fina y clara' },
+  marcado: { nombre: 'Marcados', descripcion: 'Línea gruesa del color del texto' },
+};
+
+// ---------- Botones ----------
+
+export const ESTILOS_BOTON: Record<BotonEstiloId, { nombre: string; descripcion: string }> = {
+  relleno: { nombre: 'Relleno', descripcion: 'Color de acento sólido' },
+  contorno: { nombre: 'Contorno', descripcion: 'Solo el borde, liviano' },
+  tonal: { nombre: 'Tonal', descripcion: 'Fondo suave del acento' },
+  elevado: { nombre: 'Elevado', descripcion: 'Relleno con sombra' },
+  sombra_dura: { nombre: 'Sombra dura', descripcion: 'Borde y sombra sólida, brutalista' },
+};
+
+export const TAMANOS_BOTON: Record<BotonTamano, { nombre: string; descripcion: string; alto: number; padding: number; texto: number }> = {
+  compacto: { nombre: 'Compacto', descripcion: '44 px de alto', alto: 44, padding: 14, texto: 14 },
+  normal: { nombre: 'Normal', descripcion: '48 px de alto', alto: 48, padding: 20, texto: 15 },
+  grande: { nombre: 'Grande', descripcion: '56 px de alto', alto: 56, padding: 28, texto: 17 },
+};
+
+// ---------- Movimiento ----------
+
 export interface Movimiento {
   nombre: string;
   descripcion: string;
@@ -139,49 +243,75 @@ export interface Movimiento {
   lenta: number;
   curvaEntrada: string;
   curvaSalida: string;
-  hoverBotones: 'nada' | 'elevar' | 'escalar';
-  aparicionListas: 'nada' | 'fundido' | 'escalonada';
-  cambioDePantalla: 'nada' | 'fundido' | 'deslizar';
+  hover: HoverId;
+  presionar: PresionarId;
+  aparicion: AparicionId;
+  cambio: CambioId;
 }
 
 export const MOVIMIENTOS: Record<MovimientoId, Movimiento> = {
   minimo: {
     nombre: 'Mínimo',
     descripcion: 'Sin animación. Los cambios son instantáneos.',
-    rapida: 0,
-    media: 0,
-    lenta: 0,
-    curvaEntrada: 'linear',
-    curvaSalida: 'linear',
-    hoverBotones: 'nada',
-    aparicionListas: 'nada',
-    cambioDePantalla: 'nada',
+    rapida: 0, media: 0, lenta: 0,
+    curvaEntrada: 'linear', curvaSalida: 'linear',
+    hover: 'oscurecer', presionar: 'nada', aparicion: 'nada', cambio: 'nada',
+  },
+  rapido: {
+    nombre: 'Rápido',
+    descripcion: '100 ms, seco y preciso. Se siente ágil.',
+    rapida: 80, media: 120, lenta: 200,
+    curvaEntrada: 'cubic-bezier(.2,0,0,1)', curvaSalida: 'cubic-bezier(.4,0,1,1)',
+    hover: 'oscurecer', presionar: 'hundir', aparicion: 'fundido', cambio: 'fundido',
   },
   sutil: {
     nombre: 'Sutil',
     descripcion: '160 ms, suave al frenar. Se nota sin distraer.',
-    rapida: 120,
-    media: 160,
-    lenta: 280,
-    curvaEntrada: 'cubic-bezier(.2,.7,.3,1)',
-    curvaSalida: 'cubic-bezier(.4,0,1,1)',
-    hoverBotones: 'elevar',
-    aparicionListas: 'escalonada',
-    cambioDePantalla: 'fundido',
+    rapida: 120, media: 160, lenta: 280,
+    curvaEntrada: 'cubic-bezier(.2,.7,.3,1)', curvaSalida: 'cubic-bezier(.4,0,1,1)',
+    hover: 'elevar', presionar: 'hundir', aparicion: 'escalonada', cambio: 'fundido',
   },
   expresivo: {
     nombre: 'Expresivo',
     descripcion: '420 ms con rebote. Tiene personalidad.',
-    rapida: 180,
-    media: 420,
-    lenta: 560,
-    curvaEntrada: 'cubic-bezier(.3,1.6,.5,1)',
-    curvaSalida: 'cubic-bezier(.5,0,.75,0)',
-    hoverBotones: 'escalar',
-    aparicionListas: 'escalonada',
-    cambioDePantalla: 'deslizar',
+    rapida: 180, media: 420, lenta: 560,
+    curvaEntrada: 'cubic-bezier(.3,1.6,.5,1)', curvaSalida: 'cubic-bezier(.5,0,.75,0)',
+    hover: 'escalar', presionar: 'hundir', aparicion: 'escalonada', cambio: 'deslizar',
   },
 };
+
+export const HOVERS: Record<HoverId, { nombre: string; descripcion: string }> = {
+  nada: { nombre: 'Nada', descripcion: 'El botón no cambia' },
+  oscurecer: { nombre: 'Oscurecer', descripcion: 'Cambia apenas el tono' },
+  brillo: { nombre: 'Brillo', descripcion: 'Se ilumina un poco' },
+  elevar: { nombre: 'Elevar', descripcion: 'Sube y gana sombra' },
+  escalar: { nombre: 'Agrandar', descripcion: 'Crece un poco' },
+  sombra: { nombre: 'Sombra', descripcion: 'Solo aparece la sombra' },
+  desplazar: { nombre: 'Desplazar', descripcion: 'Se corre en diagonal, ideal con sombra dura' },
+};
+
+export const PRESIONAR: Record<PresionarId, { nombre: string; descripcion: string }> = {
+  nada: { nombre: 'Nada', descripcion: 'Sin respuesta al tocar' },
+  hundir: { nombre: 'Hundir', descripcion: 'Se achica al tocar, se siente físico' },
+};
+
+export const APARICIONES: Record<AparicionId, { nombre: string; descripcion: string }> = {
+  nada: { nombre: 'Nada', descripcion: 'Aparece de golpe' },
+  fundido: { nombre: 'Fundido', descripcion: 'Aparece transparente y se completa' },
+  subir: { nombre: 'Subir', descripcion: 'Sube un poco mientras aparece' },
+  escalonada: { nombre: 'Escalonada', descripcion: 'Sube uno detrás del otro' },
+  zoom: { nombre: 'Zoom', descripcion: 'Crece desde un poco más chico' },
+};
+
+export const CAMBIOS: Record<CambioId, { nombre: string; descripcion: string }> = {
+  nada: { nombre: 'Nada', descripcion: 'Cambio instantáneo' },
+  fundido: { nombre: 'Fundido', descripcion: 'Se desvanece y aparece' },
+  deslizar: { nombre: 'Deslizar', descripcion: 'Entra desde el costado' },
+  subir: { nombre: 'Subir', descripcion: 'Entra desde abajo' },
+  zoom: { nombre: 'Zoom', descripcion: 'Se acerca levemente' },
+};
+
+// ---------- Direcciones ----------
 
 export interface Direccion {
   nombre: string;
@@ -190,73 +320,70 @@ export interface Direccion {
   paleta: PaletaId;
   fuenteTitulos: FuenteId;
   fuenteTexto: FuenteId;
+  pesoTitulos: number;
+  espaciadoTitulos: EspaciadoTitulos;
+  escala: EscalaId;
   radio: RadioId;
+  elevacion: ElevacionId;
+  bordes: BordesId;
+  boton: BotonEstiloId;
   movimiento: MovimientoId;
   densidad: Densidad;
-  /** Proporción de la escala tipográfica (cuánto crece cada nivel). */
-  escala: number;
   usoDelAcento: 'minimo' | 'moderado' | 'generoso';
-  elevacion: 'plana' | 'suave' | 'marcada';
 }
 
 export const DIRECCIONES: Record<DireccionId, Direccion> = {
   calmo: {
-    nombre: 'Calmo y claro',
-    descripcion: 'Mucho aire, poco ruido',
-    palabrasClave: ['claro', 'aireado', 'confiable'],
-    paleta: 'azul_electrico',
-    fuenteTitulos: 'inter',
-    fuenteTexto: 'inter',
-    radio: 'suave',
-    movimiento: 'sutil',
-    densidad: 'aireada',
-    escala: 1.2,
-    usoDelAcento: 'moderado',
-    elevacion: 'suave',
+    nombre: 'Calmo y claro', descripcion: 'Mucho aire, poco ruido', palabrasClave: ['claro', 'aireado', 'confiable'],
+    paleta: 'azul_electrico', fuenteTitulos: 'inter', fuenteTexto: 'inter', pesoTitulos: 700, espaciadoTitulos: 'apretado',
+    escala: 'sutil', radio: 'suave', elevacion: 'suave', bordes: 'ninguno', boton: 'relleno', movimiento: 'sutil',
+    densidad: 'aireada', usoDelAcento: 'moderado',
   },
   audaz: {
-    nombre: 'Audaz',
-    descripcion: 'Contraste alto, títulos grandes',
-    palabrasClave: ['contundente', 'moderno', 'con energía'],
-    paleta: 'tinta_y_lima',
-    fuenteTitulos: 'space_grotesk',
-    fuenteTexto: 'inter',
-    radio: 'recto',
-    movimiento: 'expresivo',
-    densidad: 'normal',
-    escala: 1.333,
-    usoDelAcento: 'generoso',
-    elevacion: 'plana',
+    nombre: 'Audaz', descripcion: 'Contraste alto, títulos grandes', palabrasClave: ['contundente', 'moderno', 'con energía'],
+    paleta: 'tinta_y_lima', fuenteTitulos: 'space_grotesk', fuenteTexto: 'inter', pesoTitulos: 700, espaciadoTitulos: 'apretado',
+    escala: 'dramatico', radio: 'recto', elevacion: 'plana', bordes: 'sutil', boton: 'relleno', movimiento: 'expresivo',
+    densidad: 'normal', usoDelAcento: 'generoso',
   },
   tecnico: {
-    nombre: 'Técnico',
-    descripcion: 'Denso y preciso, tipo panel',
-    palabrasClave: ['preciso', 'ordenado', 'eficiente'],
-    paleta: 'bosque',
-    fuenteTitulos: 'inter',
-    fuenteTexto: 'inter',
-    radio: 'apenas_suave',
-    movimiento: 'minimo',
-    densidad: 'compacta',
-    escala: 1.2,
-    usoDelAcento: 'minimo',
-    elevacion: 'plana',
+    nombre: 'Técnico', descripcion: 'Denso y preciso, tipo panel', palabrasClave: ['preciso', 'ordenado', 'eficiente'],
+    paleta: 'bosque', fuenteTitulos: 'manrope', fuenteTexto: 'inter', pesoTitulos: 600, espaciadoTitulos: 'normal',
+    escala: 'sutil', radio: 'apenas_suave', elevacion: 'plana', bordes: 'sutil', boton: 'relleno', movimiento: 'rapido',
+    densidad: 'compacta', usoDelAcento: 'minimo',
   },
   calido: {
-    nombre: 'Cálido',
-    descripcion: 'Cercano, redondeado, amable',
-    palabrasClave: ['cercano', 'amable', 'humano'],
-    paleta: 'coral_calido',
-    fuenteTitulos: 'fraunces',
-    fuenteTexto: 'dm_sans',
-    radio: 'pildora',
-    movimiento: 'sutil',
-    densidad: 'aireada',
-    escala: 1.25,
-    usoDelAcento: 'moderado',
-    elevacion: 'suave',
+    nombre: 'Cálido', descripcion: 'Cercano, redondeado, amable', palabrasClave: ['cercano', 'amable', 'humano'],
+    paleta: 'coral_calido', fuenteTitulos: 'fraunces', fuenteTexto: 'dm_sans', pesoTitulos: 600, espaciadoTitulos: 'normal',
+    escala: 'medio', radio: 'pildora', elevacion: 'suave', bordes: 'ninguno', boton: 'relleno', movimiento: 'sutil',
+    densidad: 'aireada', usoDelAcento: 'moderado',
+  },
+  lujoso: {
+    nombre: 'Lujoso', descripcion: 'Oscuro, sobrio, detalles dorados', palabrasClave: ['exclusivo', 'sobrio', 'elegante'],
+    paleta: 'noche_dorada', fuenteTitulos: 'playfair', fuenteTexto: 'inter', pesoTitulos: 500, espaciadoTitulos: 'normal',
+    escala: 'dramatico', radio: 'recto', elevacion: 'plana', bordes: 'sutil', boton: 'contorno', movimiento: 'sutil',
+    densidad: 'aireada', usoDelAcento: 'minimo',
+  },
+  jugueton: {
+    nombre: 'Juguetón', descripcion: 'Colorido, redondo, con rebote', palabrasClave: ['divertido', 'colorido', 'liviano'],
+    paleta: 'caramelo', fuenteTitulos: 'unbounded', fuenteTexto: 'nunito', pesoTitulos: 700, espaciadoTitulos: 'normal',
+    escala: 'dramatico', radio: 'pildora', elevacion: 'dura', bordes: 'marcado', boton: 'sombra_dura', movimiento: 'expresivo',
+    densidad: 'normal', usoDelAcento: 'generoso',
+  },
+  editorial: {
+    nombre: 'Editorial', descripcion: 'Como una revista: tipografía primero', palabrasClave: ['culto', 'pausado', 'tipográfico'],
+    paleta: 'papel', fuenteTitulos: 'instrument_serif', fuenteTexto: 'source_serif', pesoTitulos: 400, espaciadoTitulos: 'apretado',
+    escala: 'extremo', radio: 'recto', elevacion: 'plana', bordes: 'sutil', boton: 'contorno', movimiento: 'sutil',
+    densidad: 'aireada', usoDelAcento: 'minimo',
+  },
+  brutalista: {
+    nombre: 'Brutalista', descripcion: 'Crudo, bordes negros, sin adornos', palabrasClave: ['directo', 'crudo', 'honesto'],
+    paleta: 'alto_contraste', fuenteTitulos: 'archivo', fuenteTexto: 'ibm_plex_sans', pesoTitulos: 800, espaciadoTitulos: 'apretado',
+    escala: 'extremo', radio: 'recto', elevacion: 'dura', bordes: 'marcado', boton: 'sombra_dura', movimiento: 'rapido',
+    densidad: 'normal', usoDelAcento: 'generoso',
   },
 };
+
+// ---------- Proyecto y estructura ----------
 
 export const TIPOS_PROYECTO: Record<TipoProyecto, { nombre: string; descripcion: string }> = {
   landing: { nombre: 'Landing', descripcion: 'Una página que presenta y convierte' },

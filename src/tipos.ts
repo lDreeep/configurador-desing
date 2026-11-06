@@ -18,14 +18,82 @@ export type PatronNav =
   | 'hamburguesa'
   | 'sin_navegacion';
 
-export type DireccionId = 'calmo' | 'audaz' | 'tecnico' | 'calido';
-export type PaletaId = 'azul_electrico' | 'tinta_y_lima' | 'bosque' | 'coral_calido';
-export type FuenteId = 'inter' | 'space_grotesk' | 'fraunces' | 'dm_sans';
+export type DireccionId =
+  | 'calmo'
+  | 'audaz'
+  | 'tecnico'
+  | 'calido'
+  | 'lujoso'
+  | 'jugueton'
+  | 'editorial'
+  | 'brutalista';
+
+export type PaletaId =
+  | 'azul_electrico'
+  | 'tinta_y_lima'
+  | 'bosque'
+  | 'coral_calido'
+  | 'noche_dorada'
+  | 'caramelo'
+  | 'papel'
+  | 'alto_contraste'
+  | 'lavanda'
+  | 'oceano'
+  | 'arena'
+  | 'grafito'
+  | 'menta';
+
+export type FuenteId =
+  | 'inter'
+  | 'dm_sans'
+  | 'manrope'
+  | 'plus_jakarta'
+  | 'work_sans'
+  | 'ibm_plex_sans'
+  | 'archivo'
+  | 'outfit'
+  | 'sora'
+  | 'space_grotesk'
+  | 'syne'
+  | 'bricolage'
+  | 'unbounded'
+  | 'fraunces'
+  | 'playfair'
+  | 'lora'
+  | 'dm_serif'
+  | 'instrument_serif'
+  | 'source_serif'
+  | 'jetbrains_mono'
+  | 'space_mono'
+  | 'nunito'
+  | 'quicksand';
+
+export type EscalaId = 'sutil' | 'medio' | 'dramatico' | 'extremo';
+export type EspaciadoTitulos = 'apretado' | 'normal' | 'amplio';
 export type RadioId = 'recto' | 'apenas_suave' | 'suave' | 'pildora';
-export type MovimientoId = 'minimo' | 'sutil' | 'expresivo';
+export type ElevacionId = 'plana' | 'suave' | 'marcada' | 'dura';
+export type BordesId = 'ninguno' | 'sutil' | 'marcado';
+export type MovimientoId = 'minimo' | 'rapido' | 'sutil' | 'expresivo';
+export type HoverId = 'nada' | 'oscurecer' | 'brillo' | 'elevar' | 'escalar' | 'sombra' | 'desplazar';
+export type PresionarId = 'nada' | 'hundir';
+export type AparicionId = 'nada' | 'fundido' | 'subir' | 'escalonada' | 'zoom';
+export type CambioId = 'nada' | 'fundido' | 'deslizar' | 'subir' | 'zoom';
+export type BotonEstiloId = 'relleno' | 'contorno' | 'tonal' | 'elevado' | 'sombra_dura';
+export type BotonTamano = 'compacto' | 'normal' | 'grande';
+export type BotonIcono = 'ninguno' | 'izquierda' | 'derecha';
 export type Densidad = 'compacta' | 'normal' | 'aireada';
 export type NivelTecnico = 'bajo' | 'medio' | 'alto';
 export type SiNo = 'si' | 'no' | 'opcional';
+
+export type RolColor =
+  | 'fondo'
+  | 'superficie'
+  | 'superficie_alta'
+  | 'borde'
+  | 'texto'
+  | 'texto_suave'
+  | 'acento'
+  | 'sobre_acento';
 
 export type PasoId =
   | 'proyecto'
@@ -35,6 +103,7 @@ export type PasoId =
   | 'color'
   | 'tipografia'
   | 'forma'
+  | 'botones'
   | 'movimiento'
   | 'exportar';
 
@@ -44,6 +113,14 @@ export interface Pantalla {
   proposito: string;
   secciones: string[];
   accionPrincipal: string;
+}
+
+export interface PaletaPersonalizada {
+  fondo: string;
+  texto: string;
+  acento: string;
+  /** Roles ajustados a mano; los que no están se calculan a partir de fondo, texto y acento. */
+  manual: Partial<Record<RolColor, string>>;
 }
 
 export interface Config {
@@ -73,11 +150,27 @@ export interface Config {
   visual: {
     direccion: DireccionId;
     antiReferencias: string[];
-    paleta: PaletaId;
+    paleta: PaletaId | 'personalizada';
+    paletaPersonalizada: PaletaPersonalizada;
     fuenteTitulos: FuenteId;
     fuenteTexto: FuenteId;
+    pesoTitulos: number;
+    espaciadoTitulos: EspaciadoTitulos;
+    escala: EscalaId;
     radio: RadioId;
+    elevacion: ElevacionId;
+    bordes: BordesId;
     movimiento: MovimientoId;
+    hover: HoverId;
+    presionar: PresionarId;
+    aparicion: AparicionId;
+    cambio: CambioId;
+  };
+  botones: {
+    estilo: BotonEstiloId;
+    tamano: BotonTamano;
+    mayusculas: boolean;
+    icono: BotonIcono;
   };
   notas: Partial<Record<PasoId, string>>;
   notasGenerales: string;

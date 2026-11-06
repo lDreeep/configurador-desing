@@ -1,11 +1,13 @@
 // Genera el DESIGN.md exportado según la especificación (DESIGN.md §3, versión del formato abajo).
 // Si cambiás la salida, actualizá la especificación y su historial de cambios.
 
-import { INTEGRACIONES, PATRONES_NAV } from '../catalogo';
+import { ESTILOS_BOTON, INTEGRACIONES, PATRONES_NAV, TAMANOS_BOTON } from '../catalogo';
+import type { BotonEstiloId } from '../tipos';
 import type { Config } from '../tipos';
-import { sistemaDeDiseno, tokensCss } from './sistema';
+import { paresDeContraste } from '../color';
+import { paletaActiva, sistemaDeDiseno, tokensCss } from './sistema';
 
-export const VERSION_FORMATO = '0.1.0';
+export const VERSION_FORMATO = '0.2.0';
 
 const q = (s: string) => JSON.stringify(s);
 const valor = (s: string) => (s.trim() ? q(s.trim()) : 'sin_definir');
@@ -16,6 +18,14 @@ const yaml = (cuerpo: string) => '```yaml\n' + cuerpo.trim() + '\n```';
 const nota = (c: Config, paso: keyof Config['notas']) => {
   const n = c.notas[paso]?.trim();
   return n ? `\nnota: ${q(n)}` : '';
+};
+
+const PRIMARIO: Record<BotonEstiloId, string> = {
+  relleno: 'fondo --color-acento, texto --color-sobre-acento',
+  contorno: 'fondo transparente, borde 2px --color-acento, texto --color-acento',
+  tonal: 'fondo --color-acento-suave, texto --color-texto',
+  elevado: 'fondo --color-acento, texto --color-sobre-acento, sombra --sombra-2',
+  sombra_dura: 'fondo --color-acento, texto --color-sobre-acento, borde 2px --color-texto, sombra sólida 4px 4px 0 --color-texto',
 };
 
 export const INSTRUCCIONES_IA = `Este archivo describe una web o app que tenés que construir. Fue generado
@@ -72,6 +82,9 @@ export function calcularPendientes(c: Config): { sinDefinir: Pendiente[]; pregun
   c.estructura.pantallas.forEach((s) => falta(!s.accionPrincipal.trim(), 3, `pantallas.${s.id}.accion_principal`, false));
   falta(c.funciones.acciones.length === 0, 4, 'acciones_clave', true);
   sinDefinir.push({ seccion: 4, campo: 'datos', bloquea: false });
+  paresDeContraste(paletaActiva(c).roles)
+    .filter((x) => !x.pasa)
+    .forEach((x) => sinDefinir.push({ seccion: 6, campo: `contraste: ${x.nombre} (${x.valor.toFixed(1)}, mínimo ${x.minimo})`, bloquea: false }));
   sinDefinir.push({ seccion: 11, campo: 'logo', bloquea: false });
 
   const preguntas: string[] = [];
@@ -168,13 +181,27 @@ anti_referencias:${lista(c.visual.antiReferencias)}${nota(c, 'direccion')}`,
 
   const r = s.paleta.roles;
   const est = s.paleta.estados;
+  const pp = c.visual.paletaPersonalizada;
+  const esPersonalizada = c.visual.paleta === 'personalizada';
+  const fallas = s.contrastes.filter((x) => !x.pasa);
+  const manuales = Object.keys(pp.manual).filter((k) => pp.manual[k as keyof typeof pp.manual]);
   add(
     6,
     'Color',
-    `Paleta ${s.paleta.nombre.toLowerCase()}, modo ${s.paleta.modo}. Todos los pares de texto y fondo pasan contraste AA.`,
+    `${esPersonalizada ? 'Paleta personalizada' : `Paleta ${s.paleta.nombre.toLowerCase()}`}, modo ${s.paleta.modo}. ` +
+      (fallas.length
+        ? `Atención: ${fallas.length} ${fallas.length === 1 ? 'par no pasa' : 'pares no pasan'} contraste AA (ver sección 18); la sección 14 tiene prioridad.`
+        : 'Todos los pares de texto y fondo pasan contraste AA.'),
     `
 paleta: ${c.visual.paleta}
-modo: ${s.paleta.modo}
+modo: ${s.paleta.modo}${
+      esPersonalizada
+        ? `
+personalizada:
+  base: { fondo: ${q(pp.fondo)}, texto: ${q(pp.texto)}, acento: ${q(pp.acento)} }
+  ajustados_a_mano: ${ids(manuales)}`
+        : ''
+    }
 roles:
   fondo: ${q(r.fondo)}
   superficie: ${q(r.superficie)}
@@ -184,6 +211,7 @@ roles:
   texto_suave: ${q(r.texto_suave)}
   acento: ${q(r.acento)}
   sobre_acento: ${q(r.sobre_acento)}
+  acento_suave: ${q(s.tokens['--color-acento-suave'])}
 estados:
   exito: ${q(est.exito)}
   aviso: ${q(est.aviso)}
@@ -206,7 +234,10 @@ familias:
 fuente_origen: google_fonts
 escala:
 ${esc}
-proporcion_escala: ${s.dir.escala}
+peso_titulos: ${s.pesoTitulos}
+espaciado_titulos: ${c.visual.espaciadoTitulos}   # ${s.espaciadoTitulos}
+contraste_tamanos: ${c.visual.escala}
+proporcion_escala: ${s.proporcion}
 largo_de_linea_max: 70ch${nota(c, 'tipografia')}`,
   );
 
@@ -237,33 +268,40 @@ radio:
   grande: ${s.radio.grande}px
   boton: ${s.radio.boton}px
 bordes:
-  grosor: 1px
-  uso: sutil
+  uso: ${c.visual.bordes}
+  componente: ${q(s.bordeBloque)}
 elevacion:
-  estilo: ${s.dir.elevacion}
+  estilo: ${c.visual.elevacion}
   nivel_1: ${q(s.elevacion.nivel_1)}
   nivel_2: ${q(s.elevacion.nivel_2)}
   nivel_3: ${q(s.elevacion.nivel_3)}${nota(c, 'forma')}`,
   );
 
+  const b = c.botones;
   add(
     10,
     'Componentes',
-    'Valores por defecto del formato: todavía no se eligen en el configurador.',
+    `Botones ${ESTILOS_BOTON[b.estilo].nombre.toLowerCase()}, tamaño ${TAMANOS_BOTON[b.tamano].nombre.toLowerCase()}. El resto de los componentes usa los valores por defecto del formato.`,
     `
 botones:
+  estilo: ${b.estilo}
   variantes: [primario, secundario, fantasma, peligro]
-  primario: { fondo: acento, texto: sobre_acento }
-  secundario: { fondo: transparente, borde: borde, texto: texto }
-  alto_minimo: 44px
+  primario: ${q(PRIMARIO[b.estilo])}
+  secundario: "fondo transparente, borde --color-borde, texto --color-texto"
+  tamano: ${b.tamano}
+  alto: ${s.boton.alto}px
+  padding_horizontal: ${s.boton.padding}px
+  texto: ${s.boton.texto}px
+  mayusculas: ${b.mayusculas ? 'si' : 'no'}
+  icono: ${b.icono}
   estados: [normal, hover, presionado, foco, deshabilitado, cargando]
   regla: "un solo botón primario visible por pantalla"
 inputs: { estilo: borde_completo, etiqueta: arriba, ayuda_y_error: debajo }
-cards: { estilo: superficie }
+cards: { fondo: superficie, borde: ${q(s.bordeBloque)}, sombra: "--sombra-1" }
 estados_especiales:
   vacio: "texto + acción"
   cargando: esqueleto
-  error: "mensaje claro + cómo resolverlo + reintentar"`,
+  error: "mensaje claro + cómo resolverlo + reintentar"${nota(c, 'botones')}`,
   );
 
   add(
@@ -280,9 +318,10 @@ curvas:
   entrada: ${q(s.mov.curvaEntrada)}
   salida: ${q(s.mov.curvaSalida)}
 que_se_anima:
-  hover_botones: ${s.mov.hoverBotones}
-  aparicion_listas: ${s.mov.aparicionListas}
-  cambio_de_pantalla: ${s.mov.cambioDePantalla}
+  hover_botones: ${c.visual.hover}
+  al_presionar: ${c.visual.presionar}
+  aparicion_listas: ${c.visual.aparicion}
+  cambio_de_pantalla: ${c.visual.cambio}
 respetar_movimiento_reducido: si${nota(c, 'movimiento')}`,
   );
 
@@ -323,7 +362,7 @@ comportamientos:
   if (notasGen.length) add(17, 'Notas generales', '', `notas:${lista(notasGen)}`);
 
   const pend = sinDefinir.length
-    ? sinDefinir.map((x) => `  - { seccion: ${x.seccion}, campo: ${x.campo}, bloquea: ${x.bloquea ? 'si' : 'no'} }`).join('\n')
+    ? sinDefinir.map((x) => `  - { seccion: ${x.seccion}, campo: ${/^[a-z0-9_.]+$/.test(x.campo) ? x.campo : q(x.campo)}, bloquea: ${x.bloquea ? 'si' : 'no'} }`).join('\n')
     : '';
   add(
     18,

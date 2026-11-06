@@ -1,6 +1,7 @@
 import { useMemo, useState, type CSSProperties } from 'react';
 import { sistemaDeDiseno } from '../export/sistema';
 import type { Config } from '../tipos';
+import { IconoFlecha } from '../pasos/visual';
 
 const humanizar = (s: string) => {
   const t = s.replace(/_/g, ' ');
@@ -13,6 +14,7 @@ export function Preview({ config }: { config: Config }) {
   const [dispositivo, setDispositivo] = useState<'escritorio' | 'celular'>('escritorio');
   const [activa, setActiva] = useState(0);
   const [menuAbierto, setMenuAbierto] = useState(false);
+  const [repeticion, setRepeticion] = useState(0);
 
   const pantallas = config.estructura.pantallas;
   const indice = Math.min(activa, Math.max(0, pantallas.length - 1));
@@ -98,6 +100,9 @@ export function Preview({ config }: { config: Config }) {
     <section className="preview" aria-label="Vista previa en vivo">
       <div className="preview-barra">
         <span className="preview-titulo">Vista previa en vivo</span>
+        <button type="button" className="boton fantasma chico" onClick={() => setRepeticion((n) => n + 1)}>
+          Repetir animación
+        </button>
         <div className="segmentado" role="group" aria-label="Dispositivo">
           {(['escritorio', 'celular'] as const).map((d) => (
             <button key={d} type="button" aria-pressed={dispositivo === d} onClick={() => setDispositivo(d)}>
@@ -108,11 +113,11 @@ export function Preview({ config }: { config: Config }) {
       </div>
       <div className={`pv-marco pv-${dispositivo}`}>
         <div
-          className={`pv ${layout} pv-hover-${s.mov.hoverBotones} pv-cambio-${s.mov.cambioDePantalla} pv-aparicion-${s.mov.aparicionListas}`}
+          className={`pv ${layout} pv-hover-${config.visual.hover} pv-presionar-${config.visual.presionar} pv-cambio-${config.visual.cambio} pv-aparicion-${config.visual.aparicion}`}
           style={estilo}
         >
           {nav}
-          <main className="pv-contenido" key={`${pantalla?.id ?? 'vacia'}-${config.visual.movimiento}`}>
+          <main className="pv-contenido" key={`${pantalla?.id ?? 'vacia'}-${config.visual.movimiento}-${config.visual.cambio}-${config.visual.aparicion}-${repeticion}`}>
             {pantalla ? (
               <>
                 <div className="pv-encabezado">
@@ -129,11 +134,13 @@ export function Preview({ config }: { config: Config }) {
                 </div>
                 <div className="pv-botones">
                   {pantalla.accionPrincipal && (
-                    <button type="button" className="pv-boton pv-primario">
+                    <button type="button" className={`pv-boton pv-primario est-${config.botones.estilo}`}>
+                      {config.botones.icono === 'izquierda' && <IconoFlecha />}
                       {pantalla.accionPrincipal}
+                      {config.botones.icono === 'derecha' && <IconoFlecha />}
                     </button>
                   )}
-                  <button type="button" className="pv-boton pv-secundario">
+                  <button type="button" className={`pv-boton pv-secundario est-${config.botones.estilo}`}>
                     Ver más
                   </button>
                 </div>
