@@ -17,6 +17,19 @@ import { aplicarCombinacion } from './combinar';
 import { COLORES } from './PanelBotones';
 import { Pagina } from './Pagina';
 
+/** ¿Se está viendo desde un teléfono? */
+const enTelefono = () => {
+  try {
+    return window.matchMedia('(max-width: 600px)').matches;
+  } catch {
+    return false;
+  }
+};
+
+/** Tamaño real del teléfono con su marco (pantalla de 390 × 844 y 12px de borde). */
+const TEL_ANCHO = 414;
+const TEL_ALTO = 868;
+
 type Pantalla = 'portada' | 'explorar' | 'crear' | 'panel' | 'ayuda';
 const PANTALLAS: { id: Pantalla; nombre: string; icono: string }[] = [
   { id: 'portada', nombre: 'Portada', icono: 'inicio' },
@@ -125,14 +138,7 @@ function Metrica({ etq, valor, cambio, meta }: { etq: string; valor: string; cam
 export function Prototipo(props: { config: Config; setConfig: (fn: (c: Config) => Config) => void; onAtras: () => void; onListo: () => void }) {
   const c = props.config;
   const s = useMemo(() => sistemaDeDiseno(c), [c]);
-  // En un teléfono (o en una app para celular) arranca en celular.
-  const enTelefono = () => {
-    try {
-      return window.matchMedia('(max-width: 600px)').matches;
-    } catch {
-      return false;
-    }
-  };
+
   const [dispositivo, setDispositivo] = useState<'computadora' | 'celular'>(c.proyecto.tipo === 'app_movil' || enTelefono() ? 'celular' : 'computadora');
   const [pantalla, setPantalla] = useState<Pantalla>('portada');
   const [editando, setEditando] = useState(false);
@@ -144,6 +150,24 @@ export function Prototipo(props: { config: Config; setConfig: (fn: (c: Config) =
   const [filtro, setFiltro] = useState(0);
   const [presupuesto, setPresupuesto] = useState(40);
   const avisoRef = useRef<HTMLDivElement>(null);
+
+  // El celular se dibuja a tamaño real (390 × 844 + marco) y se escala entero para entrar en el espacio disponible.
+  const area = useRef<HTMLDivElement>(null);
+  const [escala, setEscala] = useState(1);
+  const [pantallaChica, setPantallaChica] = useState(enTelefono());
+  useEffect(() => {
+    const el = area.current;
+    if (!el) return;
+    const medir = () => {
+      setPantallaChica(enTelefono());
+      const r = el.getBoundingClientRect();
+      setEscala(Math.max(0.4, Math.min(1, (r.height - 8) / TEL_ALTO, (r.width - 8) / TEL_ANCHO)));
+    };
+    medir();
+    const ro = new ResizeObserver(medir);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
 
   const d = (cat: CategoriaId) => c.componentes[cat] ?? DISENO_INICIAL[cat];
   const cl = (cat: CategoriaId) => claseDe(cat, d(cat));
@@ -563,11 +587,15 @@ export function Prototipo(props: { config: Config; setConfig: (fn: (c: Config) =
         </header>
 
         <div className="proto-cuerpo">
-          <div className="proto-area">
+          <div className="proto-area" ref={area}>
             <div
-              className={`proto-marco proto-${dispositivo} pg ${estilo} ${dispositivo === 'computadora' && lateral ? 'con-lateral' : ''}`}
+              className={dispositivo === 'celular' && !pantallaChica ? 'proto-tel-hueco' : 'proto-sin-hueco'}
+              style={dispositivo === 'celular' && !pantallaChica ? { width: TEL_ANCHO * escala, height: TEL_ALTO * escala } : undefined}
+            >
+            <div
+              className={`proto-marco proto-${dispositivo} pg ${estilo} ${dispositivo === 'computadora' && lateral ? 'con-lateral' : ''} ${pantallaChica ? 'en-telefono' : ''}`}
               data-dispositivo={dispositivo}
-              style={s.tokens as CSSProperties}
+              style={{ ...(s.tokens as CSSProperties), ...(dispositivo === 'celular' && !pantallaChica ? { transform: `scale(${escala})` } : {}) }}
             >
               {dispositivo === 'computadora' ? (
                 <>
@@ -590,6 +618,7 @@ export function Prototipo(props: { config: Config; setConfig: (fn: (c: Config) =
                   <span className="proto-inicio" aria-hidden="true" />
                 </>
               )}
+            </div>
             </div>
           </div>
 
