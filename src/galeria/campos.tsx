@@ -153,6 +153,100 @@ export const CAMPOS: Categoria = {
 & .cm-caja:focus-within { border-color: var(--color-acento); }
 & .cm-caja.escribiendo { animation: cm-tecla 180ms var(--curva-entrada); }`,
     },
+    esquinas: {
+      nombre: 'Esquinas', descripcion: 'Marcas en las esquinas que se cierran al enfocar',
+      css: `& .cm-caja { border-radius: 0; --e: 10px; background:
+  linear-gradient(var(--color-texto), var(--color-texto)) 0 0 / var(--e) 2px no-repeat, linear-gradient(var(--color-texto), var(--color-texto)) 0 0 / 2px var(--e) no-repeat,
+  linear-gradient(var(--color-texto), var(--color-texto)) 100% 0 / var(--e) 2px no-repeat, linear-gradient(var(--color-texto), var(--color-texto)) 100% 0 / 2px var(--e) no-repeat,
+  linear-gradient(var(--color-texto), var(--color-texto)) 0 100% / var(--e) 2px no-repeat, linear-gradient(var(--color-texto), var(--color-texto)) 0 100% / 2px var(--e) no-repeat,
+  linear-gradient(var(--color-texto), var(--color-texto)) 100% 100% / var(--e) 2px no-repeat, linear-gradient(var(--color-texto), var(--color-texto)) 100% 100% / 2px var(--e) no-repeat;
+  transition: --e 0s, background-size var(--duracion-lenta) var(--curva-entrada); }
+& .cm-caja:focus-within { --e: 50%; }`,
+    },
+    se_dibuja: {
+      nombre: 'Borde que se dibuja', descripcion: 'Al enfocar, el borde se traza alrededor',
+      css: `& .cm-caja { border-radius: 0; box-shadow: inset 0 0 0 1px var(--color-borde); background:
+  linear-gradient(var(--color-acento), var(--color-acento)) 0 0 / 0 2px no-repeat,
+  linear-gradient(var(--color-acento), var(--color-acento)) 100% 0 / 2px 0 no-repeat,
+  linear-gradient(var(--color-acento), var(--color-acento)) 100% 100% / 0 2px no-repeat,
+  linear-gradient(var(--color-acento), var(--color-acento)) 0 100% / 2px 0 no-repeat;
+  transition: background-size 500ms var(--curva-entrada); }
+& .cm-caja:focus-within { background-size: 100% 2px, 2px 100%, 100% 2px, 2px 100%; }`,
+    },
+    tarjeta: {
+      nombre: 'Tarjeta', descripcion: 'Campo dentro de una tarjeta con sombra',
+      css: `& { padding: 14px 16px 12px; border-radius: 14px; background: var(--color-superficie-alta); box-shadow: 0 6px 20px rgba(0,0,0,.10); gap: 2px; }
+& .cm-etq { font-size: 12px; color: var(--color-texto-suave); }
+& .cm-caja { padding: 0; min-height: 36px; }
+& input { padding: 4px 0; font-size: 17px; }
+&:focus-within { box-shadow: 0 6px 20px rgba(0,0,0,.10), 0 0 0 2px var(--color-acento); }`,
+    },
+    leyenda: {
+      nombre: 'Leyenda', descripcion: 'La etiqueta corta el borde de arriba',
+      css: `& { padding-top: 10px; }
+& .cm-etq { position: absolute; top: 2px; left: 12px; padding: 0 6px; background: var(--color-fondo); font-size: 12px; z-index: 1; }
+& .cm-caja { border: 1.5px solid var(--color-borde); background: var(--color-fondo); border-radius: 10px; }
+& .cm-caja:focus-within { border-color: var(--color-acento); }
+&:focus-within .cm-etq { color: var(--color-acento); }`,
+    },
+    invertido: {
+      nombre: 'Invertido', descripcion: 'Oscuro sobre claro (o al revés)',
+      css: `& .cm-caja { background: var(--color-texto); color: var(--color-fondo); border-radius: 12px; }
+& input { color: var(--color-fondo); caret-color: var(--color-fondo); }
+& input::placeholder { color: color-mix(in srgb, var(--color-fondo) 70%, transparent); }
+& .cm-caja:focus-within { box-shadow: 0 0 0 3px var(--color-acento); }`,
+    },
+    doble_linea: {
+      nombre: 'Doble línea', descripcion: 'Dos líneas finas abajo',
+      css: `& .cm-caja { padding: 0; border-radius: 0; border-bottom: 4px double var(--color-texto); }
+& .cm-caja:focus-within { border-bottom-color: var(--color-acento); }`,
+    },
+    punteado: {
+      nombre: 'Punteado', descripcion: 'Borde de puntos que se vuelve línea al enfocar',
+      css: `& .cm-caja { border: 2px dotted var(--color-texto-suave); border-radius: 10px; }
+& .cm-caja:focus-within { border-style: solid; border-color: var(--color-acento); }`,
+    },
+    icono_derecha: {
+      nombre: 'Icono a la derecha', descripcion: 'Con un icono al final, como un buscador',
+      css: `& .cm-caja { border: 1.5px solid var(--color-borde); border-radius: 999px; padding: 0 6px 0 18px; }
+& .cm-icono { display: grid; place-items: center; order: 3; width: 36px; height: 36px; border-radius: 50%; background: var(--color-acento); color: var(--color-sobre-acento); }
+& .cm-caja:focus-within { border-color: var(--color-acento); }`,
+    },
+    maquina: {
+      nombre: 'Máquina de escribir', descripcion: 'Monoespaciado; cada tecla deja un destello',
+      css: `& .cm-caja { background: var(--color-superficie); border-radius: 4px; border: 1px solid var(--color-borde); }
+& input, & .cm-etq { font-family: ui-monospace, Menlo, monospace; }
+& .cm-caja:focus-within { border-color: var(--color-texto); }
+& .cm-caja.escribiendo { animation: cm-maquina 140ms steps(2); }
+@keyframes cm-maquina { 50% { background: color-mix(in srgb, var(--color-acento) 18%, var(--color-superficie)); } }`,
+    },
+    invisible: {
+      nombre: 'Invisible', descripcion: 'Sin bordes; aparece un fondo al enfocar',
+      css: `& .cm-caja { border-radius: 10px; background: transparent; }
+& .cm-caja:hover { background: color-mix(in srgb, var(--color-superficie) 60%, transparent); }
+& .cm-caja:focus-within { background: var(--color-superficie); box-shadow: inset 0 0 0 2px var(--color-acento); }`,
+    },
+    retro: {
+      nombre: 'Retro', descripcion: 'Hundido, como un formulario de los 90',
+      css: `& .cm-caja { border-radius: 0; background: #FFFFFF; color: #000000; border: 2px solid; border-color: #404040 #FFFFFF #FFFFFF #404040; box-shadow: inset 1px 1px 0 #000; }
+& input { color: #000000; font-family: ui-monospace, Menlo, monospace; }
+& .cm-caja:focus-within { outline: 1px dotted #000; outline-offset: 2px; }`,
+    },
+    degradado_suave: {
+      nombre: 'Fondo degradado', descripcion: 'Fondo con un degradado sutil del acento',
+      css: `& .cm-caja { border-radius: 14px; border: 1px solid color-mix(in srgb, var(--color-acento) 30%, var(--color-borde)); background: linear-gradient(120deg, color-mix(in srgb, var(--color-acento) 10%, var(--color-fondo)), var(--color-fondo)); }
+& .cm-caja:focus-within { background: linear-gradient(120deg, color-mix(in srgb, var(--color-acento) 18%, var(--color-fondo)), var(--color-fondo)); border-color: var(--color-acento); }`,
+    },
+    linea_izquierda: {
+      nombre: 'Línea lateral', descripcion: 'Una barra a la izquierda que crece al enfocar',
+      css: `& .cm-caja { border-radius: 0; background: var(--color-superficie); box-shadow: inset 3px 0 0 var(--color-borde); }
+& .cm-caja:focus-within { box-shadow: inset 6px 0 0 var(--color-acento); }`,
+    },
+    sombra_flotante: {
+      nombre: 'Flota al enfocar', descripcion: 'Se eleva con sombra cuando lo usás',
+      css: `& .cm-caja { border: 1px solid var(--color-borde); border-radius: 12px; background: var(--color-fondo); }
+& .cm-caja:focus-within { transform: translateY(-3px); border-color: var(--color-acento); box-shadow: 0 12px 28px rgba(0,0,0,.16); }`,
+    },
   },
   Muestra: MuestraCampo,
 };

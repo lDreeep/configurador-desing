@@ -5,7 +5,7 @@
 
 import type { BotonDisenoId, EstiloId } from './tipos';
 
-export type EfectoToque = 'onda' | 'hundir' | 'gelatina' | 'rebote' | 'pulso' | 'aplastar' | 'brillo' | 'propio';
+export type EfectoToque = 'onda' | 'hundir' | 'gelatina' | 'rebote' | 'pulso' | 'aplastar' | 'brillo' | 'temblor' | 'latido' | 'estallido' | 'propio';
 export type CategoriaBoton = 'solidos' | 'contornos' | 'volumen' | 'texturas' | 'efectos' | 'retro';
 
 export const CATEGORIAS_BOTON: Record<CategoriaBoton, string> = {
@@ -25,6 +25,9 @@ export const EFECTOS_TOQUE: Record<EfectoToque, string> = {
   pulso: 'Anillo que se expande',
   aplastar: 'Se aplasta y vuelve',
   brillo: 'Destello de luz',
+  temblor: 'Tiembla',
+  latido: 'Late dos veces, como un corazón',
+  estallido: 'Suelta chispas alrededor',
   propio: 'Se presiona hacia adentro',
 };
 
@@ -177,6 +180,162 @@ export const BOTONES: Record<BotonDisenoId, BotonDiseno> = {
 &.toque { animation: bt-k-parpadeo 420ms steps(2) 1; }
 @keyframes bt-k-parpadeo { 50% { opacity: 0.2; } }`,
   },
+  gradiente_borde: {
+    nombre: 'Borde degradado', descripcion: 'Contorno de degradado; se rellena al pasar', categoria: 'contornos', efecto: 'pulso',
+    css: `& { color: var(--color-texto); border: 2px solid transparent; border-radius: 999px; background: linear-gradient(var(--color-fondo), var(--color-fondo)) padding-box, linear-gradient(120deg, var(--boton-color), color-mix(in oklch, var(--boton-color), #FF4FD8 55%)) border-box; }
+&:hover { color: var(--boton-sobre); background: linear-gradient(120deg, var(--boton-color), color-mix(in oklch, var(--boton-color), #FF4FD8 55%)) padding-box, linear-gradient(120deg, var(--boton-color), color-mix(in oklch, var(--boton-color), #FF4FD8 55%)) border-box; }`,
+  },
+  sombra_color: {
+    nombre: 'Sombra de color', descripcion: 'Sombra sólida del mismo color, corrida', categoria: 'volumen', efecto: 'propio',
+    css: `& { background: var(--color-fondo); color: var(--color-texto); border: 2px solid var(--boton-color); box-shadow: 5px 5px 0 var(--boton-color); }
+&:hover { transform: translate(-2px, -2px); box-shadow: 7px 7px 0 var(--boton-color); }
+&.toque { animation: bt-k-sombra-color 300ms var(--curva-entrada); }
+@keyframes bt-k-sombra-color { 40% { transform: translate(5px, 5px); box-shadow: 0 0 0 var(--boton-color); } }`,
+  },
+  sombra_larga: {
+    nombre: 'Sombra larga', descripcion: 'Sombra plana en diagonal, estilo flat', categoria: 'volumen', efecto: 'hundir',
+    css: `& { background: var(--boton-color); color: var(--boton-sobre); border: none; box-shadow: 1px 1px 0 color-mix(in srgb, var(--boton-color) 60%, #000), 2px 2px 0 color-mix(in srgb, var(--boton-color) 60%, #000), 3px 3px 0 color-mix(in srgb, var(--boton-color) 60%, #000), 4px 4px 0 color-mix(in srgb, var(--boton-color) 60%, #000), 5px 5px 0 color-mix(in srgb, var(--boton-color) 60%, #000), 6px 6px 0 color-mix(in srgb, var(--boton-color) 60%, #000); }
+&:hover { transform: translate(-2px, -2px); }`,
+  },
+  neon_encendido: {
+    nombre: 'Neón encendido', descripcion: 'Relleno con un halo fuerte', categoria: 'texturas', efecto: 'latido',
+    css: `& { background: var(--boton-color); color: var(--boton-sobre); border: none; box-shadow: 0 0 12px var(--boton-color), 0 0 32px color-mix(in srgb, var(--boton-color) 60%, transparent); }
+&:hover { box-shadow: 0 0 18px var(--boton-color), 0 0 48px color-mix(in srgb, var(--boton-color) 70%, transparent); }`,
+  },
+  texto_sube: {
+    nombre: 'Texto que sube', descripcion: 'Al pasar, el texto sale por arriba y entra otro', categoria: 'efectos', efecto: 'hundir',
+    css: `& { background: var(--boton-color); color: var(--boton-sobre); border: none; overflow: hidden; }
+& .bt-texto { display: inline-block; transition: transform 320ms var(--curva-entrada); }
+&::after { content: attr(data-texto); position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; transform: translateY(100%); transition: transform 320ms var(--curva-entrada); }
+&:hover .bt-texto { transform: translateY(-180%); }
+&:hover::after { transform: none; }`,
+  },
+  cortina: {
+    nombre: 'Cortina', descripcion: 'El color se abre desde el centro', categoria: 'efectos', efecto: 'aplastar',
+    css: `& { background: transparent; color: var(--color-texto); border: 2px solid var(--boton-color); overflow: hidden; z-index: 0; }
+&::before { content: ''; position: absolute; inset: 0; background: var(--boton-color); transform: scaleX(0); transition: transform 360ms var(--curva-entrada); z-index: -1; }
+&:hover { color: var(--boton-sobre); }
+&:hover::before { transform: scaleX(1); }`,
+  },
+  diagonal: {
+    nombre: 'Barrido diagonal', descripcion: 'El color entra en diagonal', categoria: 'efectos', efecto: 'onda',
+    css: `& { background: var(--color-fondo); color: var(--color-texto); border: 2px solid var(--boton-color); overflow: hidden; z-index: 0; }
+&::before { content: ''; position: absolute; top: 0; bottom: 0; left: -20%; width: 140%; background: var(--boton-color); transform: translateX(-100%) skewX(-24deg); transition: transform 420ms var(--curva-entrada); z-index: -1; }
+&:hover { color: var(--boton-sobre); }
+&:hover::before { transform: translateX(0) skewX(-24deg); }`,
+  },
+  circulo_flecha: {
+    nombre: 'Círculo con flecha', descripcion: 'Un círculo con flecha que gira al pasar', categoria: 'efectos', efecto: 'rebote',
+    css: `& { background: var(--boton-color); color: var(--boton-sobre); border: none; border-radius: 999px; padding-right: calc(var(--boton-alto) + 4px); }
+&::after { content: '\\2192'; position: absolute; right: 5px; top: 50%; width: calc(var(--boton-alto) - 10px); aspect-ratio: 1; display: grid; place-items: center; border-radius: 50%; background: var(--boton-sobre); color: var(--boton-color); transform: translateY(-50%); transition: transform 320ms var(--curva-entrada); }
+&:hover::after { transform: translateY(-50%) rotate(-45deg); }`,
+  },
+  esquinas: {
+    nombre: 'Esquinas', descripcion: 'Solo marcas en las esquinas; se cierran al pasar', categoria: 'contornos', efecto: 'pulso',
+    css: `& { background: transparent; color: var(--color-texto); border: none; border-radius: 0; --e: 12px; --g: 2px;
+  background-image: linear-gradient(var(--boton-color), var(--boton-color)), linear-gradient(var(--boton-color), var(--boton-color)), linear-gradient(var(--boton-color), var(--boton-color)), linear-gradient(var(--boton-color), var(--boton-color)), linear-gradient(var(--boton-color), var(--boton-color)), linear-gradient(var(--boton-color), var(--boton-color)), linear-gradient(var(--boton-color), var(--boton-color)), linear-gradient(var(--boton-color), var(--boton-color));
+  background-repeat: no-repeat;
+  background-size: var(--e) var(--g), var(--g) var(--e), var(--e) var(--g), var(--g) var(--e), var(--e) var(--g), var(--g) var(--e), var(--e) var(--g), var(--g) var(--e);
+  background-position: 0 0, 0 0, 100% 0, 100% 0, 0 100%, 0 100%, 100% 100%, 100% 100%;
+  transition: background-size 320ms var(--curva-entrada); }
+&:hover { --e: 50%; }`,
+  },
+  banderin: {
+    nombre: 'Banderín', descripcion: 'Con punta de flecha a la derecha', categoria: 'solidos', efecto: 'rebote',
+    css: `& { background: var(--boton-color); color: var(--boton-sobre); border: none; border-radius: 0; padding-right: calc(var(--boton-padding) + 16px); clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 50%, calc(100% - 16px) 100%, 0 100%); }
+&:hover { padding-right: calc(var(--boton-padding) + 24px); }`,
+  },
+  hexagonal: {
+    nombre: 'Hexagonal', descripcion: 'Puntas en los dos extremos', categoria: 'solidos', efecto: 'latido',
+    css: `& { background: var(--boton-color); color: var(--boton-sobre); border: none; border-radius: 0; padding: 0 calc(var(--boton-padding) + 10px); clip-path: polygon(14px 0, calc(100% - 14px) 0, 100% 50%, calc(100% - 14px) 100%, 14px 100%, 0 50%); }
+&:hover { filter: brightness(1.08); }`,
+  },
+  pixel: {
+    nombre: 'Pixel', descripcion: 'Esquinas escalonadas de videojuego', categoria: 'retro', efecto: 'temblor',
+    css: `& { background: var(--boton-color); color: var(--boton-sobre); border: none; border-radius: 0; font-family: ui-monospace, Menlo, monospace; text-transform: uppercase; clip-path: polygon(0 6px, 6px 6px, 6px 0, calc(100% - 6px) 0, calc(100% - 6px) 6px, 100% 6px, 100% calc(100% - 6px), calc(100% - 6px) calc(100% - 6px), calc(100% - 6px) 100%, 6px 100%, 6px calc(100% - 6px), 0 calc(100% - 6px)); box-shadow: inset -4px -4px 0 color-mix(in srgb, var(--boton-color) 60%, #000), inset 4px 4px 0 color-mix(in srgb, var(--boton-color) 60%, #fff); }
+&:hover { filter: brightness(1.1); }`,
+  },
+  extruido: {
+    nombre: 'Extruido', descripcion: 'Con volumen en capas, se hunde al tocar', categoria: 'volumen', efecto: 'propio',
+    css: `& { background: var(--boton-color); color: var(--boton-sobre); border: none; box-shadow: 0 1px 0 color-mix(in srgb, var(--boton-color) 75%, #000), 0 2px 0 color-mix(in srgb, var(--boton-color) 70%, #000), 0 3px 0 color-mix(in srgb, var(--boton-color) 65%, #000), 0 4px 0 color-mix(in srgb, var(--boton-color) 60%, #000), 0 8px 14px rgba(0,0,0,.25); margin-bottom: 4px; }
+&:hover { transform: translateY(-1px); }
+&.toque { animation: bt-k-extruido 260ms ease; }
+@keyframes bt-k-extruido { 40% { transform: translateY(4px); box-shadow: 0 0 0 color-mix(in srgb, var(--boton-color) 60%, #000), 0 2px 4px rgba(0,0,0,.2); } }`,
+  },
+  vidrio_ahumado: {
+    nombre: 'Vidrio ahumado', descripcion: 'Oscuro y translúcido con brillo arriba', categoria: 'texturas', efecto: 'brillo',
+    css: `& { background: rgba(10, 10, 14, 0.55); color: #FFFFFF; border: 1px solid rgba(255,255,255,.18); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); box-shadow: inset 0 1px 0 rgba(255,255,255,.25), 0 8px 20px rgba(0,0,0,.25); }
+&:hover { background: rgba(10, 10, 14, 0.7); }`,
+  },
+  aurora: {
+    nombre: 'Aurora', descripcion: 'Degradado que se mueve solo, sin parar', categoria: 'texturas', efecto: 'onda',
+    css: `& { color: var(--boton-sobre); border: none; overflow: hidden; background: linear-gradient(110deg, var(--boton-color), color-mix(in oklch, var(--boton-color), #3EE6FF 50%), color-mix(in oklch, var(--boton-color), #FF4FD8 50%), var(--boton-color)); background-size: 300% 100%; animation: bt-aurora 6s ease-in-out infinite; }
+@keyframes bt-aurora { 50% { background-position: 100% 0; } }`,
+  },
+  holografico: {
+    nombre: 'Holográfico', descripcion: 'Tornasolado que cambia al pasar', categoria: 'texturas', efecto: 'brillo',
+    css: `& { color: #15171C; border: 1px solid rgba(255,255,255,.6); background: linear-gradient(115deg, #FFD6F5, #C6F0FF 30%, #E9FFD1 55%, #FFE7C2 80%, #F3D1FF); background-size: 200% 200%; box-shadow: inset 0 1px 0 rgba(255,255,255,.8), 0 6px 18px rgba(0,0,0,.12); transition: background-position 700ms ease, transform var(--duracion-rapida) ease; }
+&:hover { background-position: 100% 100%; }`,
+  },
+  hormigas: {
+    nombre: 'Borde que camina', descripcion: 'Línea punteada en movimiento', categoria: 'contornos', efecto: 'pulso',
+    css: `& { color: var(--color-texto); border: none; background:
+  linear-gradient(90deg, var(--boton-color) 50%, transparent 0) repeat-x 0 0 / 12px 2px,
+  linear-gradient(90deg, var(--boton-color) 50%, transparent 0) repeat-x 0 100% / 12px 2px,
+  linear-gradient(0deg, var(--boton-color) 50%, transparent 0) repeat-y 0 0 / 2px 12px,
+  linear-gradient(0deg, var(--boton-color) 50%, transparent 0) repeat-y 100% 0 / 2px 12px; border-radius: 0; }
+&:hover { animation: bt-hormigas 600ms linear infinite; }
+@keyframes bt-hormigas { to { background-position: 12px 0, -12px 100%, 0 -12px, 100% 12px; } }`,
+  },
+  a_mano: {
+    nombre: 'Dibujado a mano', descripcion: 'Borde irregular, como con marcador', categoria: 'contornos', efecto: 'temblor',
+    css: `& { background: var(--color-fondo); color: var(--color-texto); border: 2px solid var(--color-texto); border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px; }
+&:hover { background: color-mix(in srgb, var(--boton-color) 20%, var(--color-fondo)); border-radius: 15px 225px 15px 255px / 255px 15px 225px 15px; }`,
+  },
+  tinta: {
+    nombre: 'Mancha de tinta', descripcion: 'El color se expande desde el centro', categoria: 'efectos', efecto: 'onda',
+    css: `& { background: var(--color-fondo); color: var(--color-texto); border: 2px solid var(--boton-color); overflow: hidden; z-index: 0; }
+&::before { content: ''; position: absolute; left: 50%; top: 50%; width: 0; height: 0; border-radius: 50%; background: var(--boton-color); transform: translate(-50%, -50%); transition: width 460ms var(--curva-entrada), height 460ms var(--curva-entrada); z-index: -1; }
+&:hover { color: var(--boton-sobre); }
+&:hover::before { width: 260%; height: 600%; }`,
+  },
+  respira: {
+    nombre: 'Respira', descripcion: 'Un brillo suave que late todo el tiempo', categoria: 'efectos', efecto: 'hundir',
+    css: `& { background: var(--boton-color); color: var(--boton-sobre); border: none; animation: bt-respira 2.6s ease-in-out infinite; }
+@keyframes bt-respira { 50% { box-shadow: 0 0 0 8px color-mix(in srgb, var(--boton-color) 22%, transparent); } }`,
+  },
+  link_flecha: {
+    nombre: 'Link con flecha', descripcion: 'Texto con línea y flecha que avanza', categoria: 'contornos', efecto: 'aplastar',
+    css: `& { background: transparent; color: var(--color-texto); border: none; border-radius: 0; padding: 0 2px; border-bottom: 2px solid var(--boton-color); min-height: calc(var(--boton-alto) - 8px); }
+&::after { content: '\\2192'; display: inline-block; transition: transform 260ms var(--curva-entrada); color: var(--boton-color); }
+&:hover::after { transform: translateX(6px); }`,
+  },
+  doble_capa: {
+    nombre: 'Doble capa', descripcion: 'Una capa de color atrás que se alinea al pasar', categoria: 'volumen', efecto: 'hundir',
+    css: `& { background: var(--boton-color); color: var(--boton-sobre); border: none; margin: 0 6px 6px 0; }
+&::before { content: ''; position: absolute; inset: 0; border: 2px solid var(--color-texto); border-radius: inherit; transform: translate(6px, 6px); transition: transform 260ms var(--curva-entrada); z-index: -1; }
+&:hover::before { transform: translate(0, 0); }`,
+  },
+  synthwave: {
+    nombre: 'Synthwave', descripcion: 'Ochentoso: degradado rosa y violeta con neón', categoria: 'retro', efecto: 'latido',
+    css: `& { color: #FFFFFF; border: 2px solid #FF4FD8; background: linear-gradient(180deg, #2B0B3F, #5B1A7A); text-shadow: 0 0 8px #FF4FD8; box-shadow: 0 0 12px rgba(255,79,216,.6), inset 0 0 10px rgba(62,230,255,.35); text-transform: uppercase; letter-spacing: 0.1em; font-size: calc(var(--boton-texto) * 0.9); }
+&:hover { box-shadow: 0 0 20px rgba(255,79,216,.85), inset 0 0 14px rgba(62,230,255,.5); }`,
+  },
+  acuoso: {
+    nombre: 'Brillo acuoso', descripcion: 'Gota brillante con reflejo arriba', categoria: 'texturas', efecto: 'gelatina',
+    css: `& { background: linear-gradient(180deg, color-mix(in srgb, var(--boton-color) 70%, #fff), var(--boton-color) 55%, color-mix(in srgb, var(--boton-color) 80%, #000)); color: var(--boton-sobre); border: 1px solid color-mix(in srgb, var(--boton-color) 70%, #000); border-radius: 999px; overflow: hidden; box-shadow: 0 6px 14px color-mix(in srgb, var(--boton-color) 40%, transparent); }
+&::before { content: ''; position: absolute; left: 10%; right: 10%; top: 2px; height: 45%; border-radius: 999px; background: linear-gradient(rgba(255,255,255,.75), rgba(255,255,255,.05)); pointer-events: none; }`,
+  },
+  estallido: {
+    nombre: 'Estallido', descripcion: 'Al tocarlo suelta chispas', categoria: 'efectos', efecto: 'estallido',
+    css: `& { background: var(--boton-color); color: var(--boton-sobre); border: none; }
+&:hover { transform: translateY(-1px); }`,
+  },
+  tembloroso: {
+    nombre: 'Nervioso', descripcion: 'Sólido que tiembla al tocarlo', categoria: 'solidos', efecto: 'temblor',
+    css: `& { background: var(--boton-color); color: var(--boton-sobre); border: none; border-radius: 6px; }
+&:hover { transform: rotate(-1.5deg); }`,
+  },
 };
 
 /** Diseño de botón que se propone para cada estilo visual (después se cambia en el panel). */
@@ -220,6 +379,16 @@ export const CSS_BASE_BOTON = `& {
 @keyframes bt-aplastar { 35% { transform: scale(1.06, .8); } 70% { transform: scale(.98, 1.04); } }
 &.bt-ef-brillo.toque { animation: bt-brillo 420ms ease; }
 @keyframes bt-brillo { 30% { filter: brightness(1.5) saturate(1.2); } }
+&.bt-ef-temblor.toque { animation: bt-temblor 360ms linear; }
+@keyframes bt-temblor { 15% { transform: translateX(-4px) rotate(-2deg); } 30% { transform: translateX(4px) rotate(2deg); } 45% { transform: translateX(-3px); } 60% { transform: translateX(3px); } 75% { transform: translateX(-1px); } }
+&.bt-ef-latido.toque { animation: bt-latido 560ms ease; }
+@keyframes bt-latido { 15% { transform: scale(1.12); } 30% { transform: scale(1); } 45% { transform: scale(1.08); } 60% { transform: scale(1); } }
+&.bt-ef-estallido.toque { animation: bt-estallido 520ms ease-out; }
+@keyframes bt-estallido {
+  0% { box-shadow: 0 0 0 0 var(--boton-color), 0 0 0 0 var(--boton-color), 0 0 0 0 var(--boton-color), 0 0 0 0 var(--boton-color), 0 0 0 0 var(--boton-color), 0 0 0 0 var(--boton-color); }
+  60% { box-shadow: 0 -26px 0 -3px var(--boton-color), 24px -14px 0 -3px var(--boton-color), 26px 12px 0 -3px var(--boton-color), 0 26px 0 -3px var(--boton-color), -26px 12px 0 -3px var(--boton-color), -24px -14px 0 -3px var(--boton-color); }
+  100% { box-shadow: 0 -34px 0 -6px transparent, 32px -18px 0 -6px transparent, 34px 16px 0 -6px transparent, 0 34px 0 -6px transparent, -34px 16px 0 -6px transparent, -32px -18px 0 -6px transparent; }
+}
 @media (prefers-reduced-motion: reduce) { &, &::before, &::after { animation: none !important; transition: none !important; } }`;
 
 /** CSS de un diseño de botón con `&` reemplazado por el selector dado. */

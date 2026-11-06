@@ -79,7 +79,13 @@ export type FuenteId =
   | 'bebas_neue'
   | 'anton'
   | 'vt323'
-  | 'poiret_one';
+  | 'poiret_one'
+  | 'lexend'
+  | 'rubik'
+  | 'cormorant'
+  | 'libre_baskerville'
+  | 'caveat'
+  | 'silkscreen';
 
 export type EstiloId =
   | 'suizo'
@@ -143,7 +149,33 @@ export type BotonDisenoId =
   | 'cromo'
   | 'sticker'
   | 'bisel'
-  | 'terminal';
+  | 'terminal'
+  | 'gradiente_borde'
+  | 'sombra_color'
+  | 'sombra_larga'
+  | 'neon_encendido'
+  | 'texto_sube'
+  | 'cortina'
+  | 'diagonal'
+  | 'circulo_flecha'
+  | 'esquinas'
+  | 'banderin'
+  | 'hexagonal'
+  | 'pixel'
+  | 'extruido'
+  | 'vidrio_ahumado'
+  | 'aurora'
+  | 'holografico'
+  | 'hormigas'
+  | 'a_mano'
+  | 'tinta'
+  | 'respira'
+  | 'link_flecha'
+  | 'doble_capa'
+  | 'synthwave'
+  | 'acuoso'
+  | 'estallido'
+  | 'tembloroso';
 
 export type CajaPresetId =
   | 'superficie'
@@ -168,7 +200,13 @@ export type CajaPresetId =
   | 'papel'
   | 'cuaderno'
   | 'acento'
-  | 'editorial';
+  | 'editorial'
+  | 'sombra_color'
+  | 'cristal_color'
+  | 'sello'
+  | 'invertida'
+  | 'gruesa'
+  | 'flotante_vidrio';
 
 export type BotonEstiloId = 'relleno' | 'contorno' | 'tonal' | 'elevado' | 'sombra_dura';
 export type BotonTamano = 'compacto' | 'normal' | 'grande';

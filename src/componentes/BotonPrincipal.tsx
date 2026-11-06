@@ -27,6 +27,7 @@ export function BotonPrincipal(props: {
       className={`${claseBotonPrincipal(props.config, props.diseno)} ${props.clase ?? ''}`}
       aria-pressed={props.presionado}
       aria-label={props.etiqueta}
+      data-texto={typeof props.children === 'string' ? props.children : undefined}
       onClick={(e) => {
         animarToque(e.currentTarget, e);
         props.onClick?.(e);

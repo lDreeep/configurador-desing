@@ -456,9 +456,9 @@ nota: "cards suaves, pero inputs rectos"
 
 ```yaml
 botones:
-  diseno: neon                    # ninguno | uno de los 24 del panel (ver src/botones-disenos.ts)
+  diseno: neon                    # ninguno | uno de los 50 del panel (ver src/botones-disenos.ts)
   clases: "bt bt-neon bt-ef-pulso"
-  al_tocar: pulso                 # onda | hundir | gelatina | rebote | pulso | aplastar | brillo | propio
+  al_tocar: pulso                 # onda | hundir | gelatina | rebote | pulso | aplastar | brillo | temblor | latido | estallido | propio
   estilo: relleno                 # estilo simple, se usa si diseno: ninguno (relleno | contorno | tonal | elevado | sombra_dura)
   color: acento                   # acento | texto | "#7C3AED"
   color_fondo: "#2F5BFF"          # valor ya resuelto (token --boton-color)
@@ -722,7 +722,7 @@ Si hay estilo, sigue un bloque `css` con **el CSS real** del estilo. Las clases 
 
 ### §20. Cajas y contenedores
 
-**Responde:** cómo son todas las cards, paneles y bloques. Se elige un diseño base (23 en `src/cajas.ts`) y se ajusta cada parámetro.
+**Responde:** cómo son todas las cards, paneles y bloques. Se elige un diseño base (29 en `src/cajas.ts`) y se ajusta cada parámetro.
 
 ```yaml
 diseno_base: vidrio               # superficie | contorno | elevada | flotante | vidrio | velo | neobrutal | neumorfica | hundida | punteada | rayada | doble | cabecera | barra | cortada | ticket | brillo | degradado | puntos | papel | cuaderno | acento | editorial
@@ -762,7 +762,7 @@ nav_movil:
   …
 ```
 
-Categorías (v0.6.0): `campo` (16 diseños), `interruptor` (8), `casilla` (8), `deslizador` (8), `nav_movil` (10), `nav_web` (9). Sigue un bloque `css` con la base de cada categoría y el diseño elegido. Las barras de navegación usan `--i` (pestaña activa) y `--n` (cantidad) para mover sus indicadores.
+Categorías: `campo` (30 diseños), `interruptor` (14), `casilla` (14), `deslizador` (14), `nav_movil` (18), `nav_web` (17). Sigue un bloque `css` con la base de cada categoría y el diseño elegido. Las barras de navegación usan `--i` (pestaña activa) y `--n` (cantidad) para mover sus indicadores.
 
 ---
 
@@ -1122,6 +1122,7 @@ Formato: fecha · decisión · por qué · alternativas descartadas.
 | D34 | 2026-11-06 | El modo rápido es el producto principal; el avanzado queda para ajustes finos al final | Es lo que la persona disfruta usar y lo que le deja un sistema claro (botones, paleta, cajas, componentes) | Llevar a todos por el avanzado |
 | D35 | 2026-11-06 | La galería se organiza por categorías con estructura HTML fija y diseños que solo cambian el CSS | Sumar diseños es sumar datos; la IA recibe estructura + CSS reproducibles | Un componente React distinto por diseño |
 | D36 | 2026-11-06 | Las referencias externas se convierten en entradas con la skill `agregar-diseno-desde-referencia` | Que cada entrada nueva salga con la misma calidad (solo tokens, accesible, sin marcas) | Copiar el código de cada sitio |
+| D37 | 2026-11-06 | Primera ampliación grande del catálogo hecha por Claude a partir de patrones conocidos (sin copiar sitios): 50 botones, 30 campos, 14 interruptores, 14 casillas, 14 deslizadores, 18 barras inferiores, 17 navegaciones web, 29 cajas, 33 fuentes | Llenar la base rápido con lo conocido; lo distintivo vendrá de referencias reales (D25, D36) | Esperar a tener referencias para todo |
 
 ---
 
@@ -1218,3 +1219,4 @@ Lo que todavía no tiene lugar en §5. Se mueve allá cuando se decide hacerlo.
 | 0.4.0 | 2026-11-06 | §10 suma `botones.diseno`, `clases`, `al_tocar`, `color`, `color_fondo` y `color_texto`, más el bloque `css` del botón principal. §16 suma `--boton-color` y `--boton-sobre`. Compatible. |
 | 0.5.0 | 2026-11-06 | Sección nueva §20 (cajas y contenedores, con su CSS) y regla 11 en las instrucciones. §16 suma los tokens `--caja-*`. Compatible. |
 | 0.6.0 | 2026-11-06 | Sección nueva §21 (componentes de interfaz con estructura y CSS) y regla 12. Compatible. |
+| 0.6.1 | 2026-11-06 | Sin cambios de formato: más valores en listas existentes (`al_tocar` suma temblor, latido y estallido; cajas suman `fondo: invertido` y `sombra: color`). |

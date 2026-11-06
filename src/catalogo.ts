@@ -190,6 +190,12 @@ export const FUENTES: Record<FuenteId, Fuente> = {
   anton: f('Anton', SANS, 'display', [400], 'Condensada y pesada, impacto'),
   vt323: f('VT323', MONO, 'mono', [400], 'Pixelada, de terminal vieja'),
   poiret_one: f('Poiret One', SANS, 'display', [400], 'Art déco, fina y geométrica'),
+  lexend: f('Lexend', SANS, 'sans', P4_8, 'Pensada para leer fácil'),
+  rubik: f('Rubik', SANS, 'redondeada', P4_8, 'Esquinas suaves, amigable'),
+  cormorant: f('Cormorant Garamond', SERIF, 'serif', P4_7, 'Garamond elegante y fina'),
+  libre_baskerville: f('Libre Baskerville', SERIF, 'serif', [400, 700], 'Clásica de libro'),
+  caveat: f('Caveat', '"Comic Sans MS", cursive', 'display', P4_7, 'Escrita a mano'),
+  silkscreen: f('Silkscreen', MONO, 'mono', [400, 700], 'Pixelada de videojuego'),
 };
 
 /** URL de Google Fonts que carga todo el catálogo (para mostrar cada fuente con su forma real). */
@@ -211,6 +217,10 @@ export const COMBINACIONES: { nombre: string; titulos: FuenteId; texto: FuenteId
   { nombre: 'Moderna', titulos: 'bricolage', texto: 'plus_jakarta' },
   { nombre: 'Developer', titulos: 'jetbrains_mono', texto: 'ibm_plex_sans' },
   { nombre: 'Robusta', titulos: 'archivo', texto: 'work_sans' },
+  { nombre: 'Clásica', titulos: 'cormorant', texto: 'libre_baskerville' },
+  { nombre: 'Amigable', titulos: 'rubik', texto: 'lexend' },
+  { nombre: 'A mano', titulos: 'caveat', texto: 'nunito' },
+  { nombre: 'Videojuego', titulos: 'silkscreen', texto: 'space_mono' },
 ];
 
 export const ESCALAS: Record<EscalaId, { nombre: string; descripcion: string; proporcion: number }> = {

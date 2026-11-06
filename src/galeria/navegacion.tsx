@@ -110,6 +110,50 @@ ${centro} .cm-lbl { margin-top: 2px; }`,
 & .cm-item[aria-current] { background: var(--color-acento); color: var(--color-sobre-acento); border-color: var(--color-texto); box-shadow: 3px 3px 0 var(--color-texto); }
 & .cm-item[aria-current] .cm-ico { color: var(--color-sobre-acento); }`,
     },
+    gota: {
+      nombre: 'Gota que se mueve', descripcion: 'Una gota de color viaja bajo la pestaña activa',
+      css: `& .cm-ind { display: block; position: absolute; bottom: 4px; left: 4px; width: calc((100% - 8px) / var(--n)); height: 6px; transform: translateX(calc(var(--i) * 100%)); transition: transform 520ms cubic-bezier(.5,1.6,.4,1); }
+& .cm-ind::before { content: ''; display: block; width: 6px; height: 6px; margin: 0 auto; border-radius: 50%; background: var(--color-acento); }
+& .cm-item[aria-current] .cm-ico { transform: translateY(-3px); }`,
+    },
+    muesca: {
+      nombre: 'Muesca', descripcion: 'La barra se curva bajo un círculo que se mueve',
+      css: `& { margin-top: 26px; background: transparent; border-top: none; }
+& .cm-ind { display: block; position: absolute; inset: 0; z-index: 0; background: var(--color-superficie); border-top: 1px solid var(--color-borde); -webkit-mask: radial-gradient(circle 32px at calc((100% - 8px) / var(--n) * (var(--i) + 0.5) + 4px) 0, transparent 98%, #000); mask: radial-gradient(circle 32px at calc((100% - 8px) / var(--n) * (var(--i) + 0.5) + 4px) 0, transparent 98%, #000); }
+& .cm-item[aria-current] .cm-ico { width: 48px; height: 48px; display: grid; place-items: center; border-radius: 50%; background: var(--color-acento); color: var(--color-sobre-acento); transform: translateY(-26px); }
+& .cm-item[aria-current] .cm-lbl { transform: translateY(-20px); }
+& .cm-ico, & .cm-lbl { transition: transform 420ms cubic-bezier(.3,1.5,.5,1); }`,
+    },
+    linea_abajo: {
+      nombre: 'Línea abajo', descripcion: 'Una línea debajo del icono activo que se desliza',
+      css: `& .cm-ind { display: block; position: absolute; bottom: 2px; left: calc(4px + (100% - 8px) / var(--n) * 0.3); width: calc((100% - 8px) / var(--n) * 0.4); height: 3px; border-radius: 3px; background: var(--color-texto); transform: translateX(calc(var(--i) * 250%)); transition: transform var(--duracion-lenta) var(--curva-entrada); }`,
+    },
+    fondo_desliza: {
+      nombre: 'Fondo que se desliza', descripcion: 'Un bloque de color se mueve detrás de la activa',
+      css: `& .cm-ind { display: block; position: absolute; top: 6px; bottom: 6px; left: 4px; width: calc((100% - 8px) / var(--n)); border-radius: 14px; background: color-mix(in srgb, var(--color-acento) 18%, transparent); transform: translateX(calc(var(--i) * 100%)); transition: transform var(--duracion-lenta) var(--curva-entrada); }`,
+    },
+    rellena: {
+      nombre: 'Se rellena', descripcion: 'El icono activo se pinta por dentro',
+      css: `& .cm-item[aria-current] svg { fill: currentColor; fill-opacity: 0.25; }
+& .cm-item[aria-current] .cm-ico { transform: scale(1.12); }`,
+    },
+    oscura: {
+      nombre: 'Oscura', descripcion: 'Barra oscura con la activa encendida',
+      css: `& { background: #111318; border-top-color: #111318; }
+& .cm-item { color: #8A8F99; }
+& .cm-item[aria-current] { color: #FFFFFF; }
+& .cm-item[aria-current] .cm-ico { color: #FFFFFF; filter: drop-shadow(0 0 6px var(--color-acento)); }`,
+    },
+    rebote: {
+      nombre: 'Rebota al tocar', descripcion: 'El icono salta cuando lo elegís',
+      css: `& .cm-item[aria-current] .cm-ico { animation: cm-nav-salto 520ms cubic-bezier(.3,1.6,.5,1); }
+@keyframes cm-nav-salto { 0% { transform: translateY(0); } 40% { transform: translateY(-9px) scale(1.1); } 100% { transform: translateY(0); } }`,
+    },
+    giro: {
+      nombre: 'Gira', descripcion: 'El icono da una vuelta al elegirlo',
+      css: `& .cm-item[aria-current] .cm-ico { animation: cm-nav-giro 560ms var(--curva-entrada); }
+@keyframes cm-nav-giro { from { transform: rotate(-360deg) scale(.6); } to { transform: rotate(0) scale(1); } }`,
+    },
   },
   Muestra: MuestraNavMovil,
 };
@@ -124,7 +168,7 @@ const ITEMS_WEB = [
 function MuestraNavWeb({ clase }: { clase: string; id: string }) {
   const [activo, setActivo] = useState(0);
   return (
-    <div className={`cm-marco-web ${clase.includes('lateral') ? 'es-lateral' : ''}`}>
+    <div className={`cm-marco-web ${/lateral/.test(clase) ? 'es-lateral' : ''}`}>
       <nav className={clase} style={{ '--i': activo, '--n': ITEMS_WEB.length } as CSSProperties} aria-label="Navegación de ejemplo">
         <span className="cm-marca">Marca</span>
         <div className="cm-items">
@@ -218,6 +262,55 @@ export const NAV_WEB: Categoria = {
 & .cm-lbl { opacity: 0; transition: opacity var(--duracion-media) ease; }
 &:hover .cm-lbl, &:focus-within .cm-lbl { opacity: 1; }
 & .cm-item[aria-current] { background: var(--color-acento); color: var(--color-sobre-acento); }`,
+    },
+    crece: {
+      nombre: 'Subrayado que crece', descripcion: 'Al pasar, una línea crece desde el centro; la activa queda',
+      css: `& .cm-item::after { content: ''; position: absolute; left: 12px; right: 12px; bottom: 4px; height: 2px; background: var(--color-acento); transform: scaleX(0); transition: transform var(--duracion-media) var(--curva-entrada); }
+& .cm-item:hover::after, & .cm-item[aria-current]::after { transform: scaleX(1); }`,
+    },
+    punto: {
+      nombre: 'Punto', descripcion: 'Un punto se desliza bajo la sección activa',
+      css: `& .cm-ind { display: block; position: absolute; bottom: -6px; left: 0; width: calc(100% / var(--n)); height: 6px; transform: translateX(calc(var(--i) * 100%)); transition: transform var(--duracion-lenta) var(--curva-entrada); }
+& .cm-ind::before { content: ''; display: block; width: 6px; height: 6px; margin: 0 auto; border-radius: 50%; background: var(--color-acento); }`,
+    },
+    contorno: {
+      nombre: 'Contorno', descripcion: 'La sección activa queda dentro de una línea',
+      css: `& .cm-ind { display: block; position: absolute; inset: 0 auto 0 0; width: calc(100% / var(--n)); border: 1.5px solid var(--color-texto); border-radius: 999px; transform: translateX(calc(var(--i) * 100%)); transition: transform var(--duracion-lenta) var(--curva-entrada); }`,
+    },
+    editorial: {
+      nombre: 'Editorial', descripcion: 'Mayúsculas espaciadas con barras',
+      css: `& .cm-item { text-transform: uppercase; letter-spacing: 0.14em; font-size: 12px; }
+& .cm-item + .cm-item::before { content: '/'; position: absolute; left: -3px; color: var(--color-borde); }
+& .cm-item[aria-current] { color: var(--color-acento); }
+& .cm-marca { font-style: italic; }`,
+    },
+    oscura: {
+      nombre: 'Oscura', descripcion: 'Barra oscura con texto claro',
+      css: `& { background: #111318; border-bottom-color: #111318; color: #FFFFFF; }
+& .cm-item { color: #9CA3AF; }
+& .cm-item[aria-current] { color: #FFFFFF; }
+& .cm-ind { display: block; position: absolute; bottom: -10px; left: 0; width: calc(100% / var(--n)); height: 2px; background: var(--color-acento); transform: translateX(calc(var(--i) * 100%)); transition: transform var(--duracion-lenta) var(--curva-entrada); }`,
+    },
+    carpeta: {
+      nombre: 'Pestañas de carpeta', descripcion: 'La activa se une con el contenido de abajo',
+      css: `& { padding-bottom: 0; align-items: flex-end; background: var(--color-superficie); }
+& .cm-items { gap: 4px; }
+& .cm-item { border-radius: 10px 10px 0 0; background: color-mix(in srgb, var(--color-texto) 6%, transparent); margin-bottom: -1px; border: 1px solid transparent; }
+& .cm-item[aria-current] { background: var(--color-fondo); border-color: var(--color-borde); border-bottom-color: var(--color-fondo); }`,
+    },
+    resaltador: {
+      nombre: 'Resaltador', descripcion: 'Un trazo de marcador detrás de la activa',
+      css: `& .cm-ind { display: block; position: absolute; top: 50%; left: 0; width: calc(100% / var(--n)); height: 16px; transform: translate(calc(var(--i) * 100%), -30%) skewX(-12deg) rotate(-2deg); background: color-mix(in srgb, var(--color-acento) 40%, transparent); border-radius: 3px; transition: transform var(--duracion-lenta) var(--curva-entrada); }`,
+    },
+    lateral_oscura: {
+      nombre: 'Lateral oscura', descripcion: 'Menú lateral oscuro con la activa encendida',
+      css: `& { flex-direction: column; align-items: stretch; justify-content: flex-start; width: 170px; padding: 14px 10px; border-bottom: none; background: #111318; color: #FFFFFF; }
+& .cm-marca { padding: 0 10px 8px; }
+& .cm-items { grid-template-columns: minmax(0, 1fr); grid-auto-rows: 42px; }
+& .cm-item { justify-content: flex-start; border-radius: 8px; color: #9CA3AF; }
+& .cm-ico { display: inline-flex; }
+& .cm-item[aria-current] { color: #FFFFFF; }
+& .cm-ind { display: block; position: absolute; left: 0; right: 0; top: 0; height: 42px; border-radius: 8px; background: rgba(255,255,255,.1); box-shadow: inset 3px 0 0 var(--color-acento); transform: translateY(calc(var(--i) * 42px)); transition: transform var(--duracion-lenta) var(--curva-entrada); }`,
     },
   },
   Muestra: MuestraNavWeb,

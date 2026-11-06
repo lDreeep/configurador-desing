@@ -6,10 +6,10 @@ import { mezclar } from './color';
 import type { Paleta } from './catalogo';
 import type { CajaPresetId, Config } from './tipos';
 
-export type CajaFondo = 'superficie' | 'fondo' | 'acento_suave' | 'acento' | 'degradado' | 'puntos' | 'grano' | 'lineas';
+export type CajaFondo = 'superficie' | 'fondo' | 'acento_suave' | 'acento' | 'invertido' | 'degradado' | 'puntos' | 'grano' | 'lineas';
 export type CajaBordeEstilo = 'solid' | 'dashed' | 'dotted' | 'double';
 export type CajaBordeColor = 'borde' | 'texto' | 'acento';
-export type CajaSombra = 'ninguna' | 'suave' | 'marcada' | 'dura' | 'brillo' | 'interna' | 'relieve';
+export type CajaSombra = 'ninguna' | 'suave' | 'marcada' | 'dura' | 'color' | 'brillo' | 'interna' | 'relieve';
 export type CajaRelleno = 'compacto' | 'normal' | 'amplio';
 export type CajaHover = 'nada' | 'elevar' | 'borde' | 'escala' | 'inclinar' | 'brillo';
 export type CajaForma = 'normal' | 'cabecera' | 'barra_lateral' | 'esquina_cortada' | 'ticket' | 'filete';
@@ -67,14 +67,20 @@ export const CAJAS: Record<CajaPresetId, CajaPreset> = {
   cuaderno: { nombre: 'Cuaderno', descripcion: 'Renglones de fondo', params: p({ fondo: 'lineas', bordeGrosor: 1, radio: '6' }) },
   acento: { nombre: 'Bloque de color', descripcion: 'Relleno del acento, texto claro', params: p({ fondo: 'acento', radio: '20', hover: 'escala' }) },
   editorial: { nombre: 'Sin caja', descripcion: 'Solo un filete arriba, como una revista', params: p({ forma: 'filete', fondo: 'fondo' }) },
+  sombra_color: { nombre: 'Sombra de color', descripcion: 'Sombra sólida del color de acento', params: p({ fondo: 'fondo', bordeGrosor: 2, bordeColor: 'texto', sombra: 'color', radio: '12', hover: 'elevar' }) },
+  cristal_color: { nombre: 'Cristal de color', descripcion: 'Vidrio teñido del acento', params: p({ fondo: 'acento_suave', transparencia: 40, desenfoque: 14, bordeGrosor: 1, bordeColor: 'acento', radio: '20' }) },
+  sello: { nombre: 'Sello', descripcion: 'Doble borde punteado de color', params: p({ fondo: 'acento_suave', bordeGrosor: 2, bordeEstilo: 'dashed', bordeColor: 'acento', sombra: 'interna', radio: '12' }) },
+  invertida: { nombre: 'Invertida', descripcion: 'Oscura sobre claro (o al revés)', params: p({ fondo: 'invertido', radio: '20', hover: 'escala' }) },
+  gruesa: { nombre: 'Borde grueso', descripcion: 'Contorno pesado y redondo', params: p({ fondo: 'fondo', bordeGrosor: 4, bordeColor: 'texto', radio: '28' }) },
+  flotante_vidrio: { nombre: 'Vidrio flotante', descripcion: 'Vidrio fuerte con sombra marcada', params: p({ transparencia: 65, desenfoque: 24, bordeGrosor: 1, sombra: 'marcada', radio: '28', hover: 'elevar' }) },
 };
 
 export const OPCIONES_CAJA = {
-  fondo: { superficie: 'Superficie', fondo: 'Igual al fondo', acento_suave: 'Acento suave', acento: 'Acento', degradado: 'Degradado', puntos: 'Puntos', grano: 'Grano', lineas: 'Renglones' } as Record<CajaFondo, string>,
+  fondo: { superficie: 'Superficie', fondo: 'Igual al fondo', acento_suave: 'Acento suave', acento: 'Acento', invertido: 'Invertido', degradado: 'Degradado', puntos: 'Puntos', grano: 'Grano', lineas: 'Renglones' } as Record<CajaFondo, string>,
   bordeEstilo: { solid: 'Continua', dashed: 'Guiones', dotted: 'Puntos', double: 'Doble' } as Record<CajaBordeEstilo, string>,
   bordeColor: { borde: 'Suave', texto: 'Fuerte', acento: 'Acento' } as Record<CajaBordeColor, string>,
   radio: { heredar: 'Como el resto', 0: 'Recta', 6: '6', 12: '12', 20: '20', 28: '28', 40: '40' } as Record<CajaRadio, string>,
-  sombra: { ninguna: 'Ninguna', suave: 'Suave', marcada: 'Marcada', dura: 'Dura', brillo: 'Brillo', interna: 'Hundida', relieve: 'Relieve' } as Record<CajaSombra, string>,
+  sombra: { ninguna: 'Ninguna', suave: 'Suave', marcada: 'Marcada', dura: 'Dura', color: 'De color', brillo: 'Brillo', interna: 'Hundida', relieve: 'Relieve' } as Record<CajaSombra, string>,
   relleno: { compacto: 'Compacto', normal: 'Normal', amplio: 'Amplio' } as Record<CajaRelleno, string>,
   hover: { nada: 'Nada', elevar: 'Se eleva', borde: 'Borde de color', escala: 'Crece', inclinar: 'Se inclina', brillo: 'Brilla' } as Record<CajaHover, string>,
   forma: { normal: 'Normal', cabecera: 'Cabecera', barra_lateral: 'Barra lateral', esquina_cortada: 'Esquina cortada', ticket: 'Ticket', filete: 'Solo filete' } as Record<CajaForma, string>,
@@ -91,13 +97,14 @@ export function tokensDeCaja(x: ParamsCaja, paleta: Paleta, radioMedio: number):
   const r = paleta.roles;
   const t = Math.max(0, Math.min(90, x.transparencia));
   const colorBase =
-    x.fondo === 'fondo' ? r.fondo : x.fondo === 'acento_suave' ? mezclar(r.fondo, r.acento, 0.14) : x.fondo === 'acento' ? r.acento : r.superficie;
+    x.fondo === 'fondo' ? r.fondo : x.fondo === 'acento_suave' ? mezclar(r.fondo, r.acento, 0.14) : x.fondo === 'acento' ? r.acento : x.fondo === 'invertido' ? r.texto : r.superficie;
   const capa = conAlfa(colorBase, t);
   const fondo = {
     superficie: capa,
     fondo: capa,
     acento_suave: capa,
     acento: capa,
+    invertido: capa,
     degradado: `linear-gradient(135deg, ${conAlfa(r.superficie, t)}, ${conAlfa(mezclar(r.superficie, r.acento, 0.18), t)})`,
     puntos: `radial-gradient(${conAlfa(mezclar(r.superficie, r.texto, 0.22), t)} 1px, transparent 1.5px) 0 0 / 12px 12px, ${capa}`,
     grano: `${RUIDO}, ${capa}`,
@@ -111,6 +118,7 @@ export function tokensDeCaja(x: ParamsCaja, paleta: Paleta, radioMedio: number):
     suave: `0 4px 18px rgba(${sombraRgb},.10)`,
     marcada: `0 22px 48px rgba(${sombraRgb},.22)`,
     dura: `6px 6px 0 ${r.texto}`,
+    color: `7px 7px 0 ${r.acento}`,
     brillo: `0 0 0 1px ${conAlfa(r.acento, 50)}, 0 0 28px ${conAlfa(r.acento, 60)}`,
     interna: `inset 4px 4px 10px rgba(${sombraRgb},.16), inset -4px -4px 10px rgba(255,255,255,${paleta.modo === 'oscuro' ? '.04' : '.7'})`,
     relieve: `8px 8px 18px rgba(${sombraRgb},.16), -8px -8px 18px rgba(255,255,255,${paleta.modo === 'oscuro' ? '.05' : '.8'})`,
@@ -118,6 +126,7 @@ export function tokensDeCaja(x: ParamsCaja, paleta: Paleta, radioMedio: number):
   const radio = x.radio === 'heredar' ? `${radioMedio}px` : `${x.radio}px`;
   const relleno = { compacto: '14px', normal: '22px', amplio: '34px' }[x.relleno];
   const sobreAcento = x.fondo === 'acento' && t < 40;
+  const invertida = x.fondo === 'invertido' && t < 40;
   return {
     '--caja-fondo': fondo,
     '--caja-borde': grosor > 0 ? `${grosor}px ${x.bordeEstilo} ${colorBorde}` : 'none',
@@ -125,8 +134,8 @@ export function tokensDeCaja(x: ParamsCaja, paleta: Paleta, radioMedio: number):
     '--caja-sombra': sombra,
     '--caja-padding': relleno,
     '--caja-desenfoque': x.desenfoque > 0 ? `blur(${x.desenfoque}px)` : 'none',
-    '--caja-texto': sobreAcento ? r.sobre_acento : r.texto,
-    '--caja-texto-suave': sobreAcento ? r.sobre_acento : r.texto_suave,
+    '--caja-texto': sobreAcento ? r.sobre_acento : invertida ? r.fondo : r.texto,
+    '--caja-texto-suave': sobreAcento ? r.sobre_acento : invertida ? mezclar(r.fondo, r.texto, 0.25) : r.texto_suave,
     '--caja-color-marca': r.acento,
   };
 }

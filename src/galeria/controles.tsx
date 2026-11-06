@@ -93,6 +93,43 @@ export const INTERRUPTORES: Categoria = {
 & input:checked + .cm-pista .cm-perilla { transform: translateX(30px); }
 & input:checked + .cm-pista .cm-perilla::after { content: 'ON'; }`,
     },
+    dia_noche: {
+      nombre: 'Día y noche', descripcion: 'La pista pasa de cielo a noche, la perilla de sol a luna',
+      css: `& .cm-pista { width: 60px; height: 32px; background: linear-gradient(180deg, #8ED1FC, #CDEBFF); }
+& .cm-perilla { top: 4px; left: 4px; width: 24px; height: 24px; background: #FFD23F; box-shadow: 0 0 10px rgba(255,210,63,.8); }
+& input:checked + .cm-pista { background: linear-gradient(180deg, #0B1026, #2B2F77); }
+& input:checked + .cm-pista .cm-perilla { transform: translateX(28px); background: #E8E8F0; box-shadow: inset -6px -3px 0 #B9B9CC; }`,
+    },
+    si_no: {
+      nombre: 'Sí / No', descripcion: 'Dice SÍ o NO dentro de la pista',
+      css: `& .cm-pista { width: 70px; height: 32px; }
+& .cm-pista::after { content: 'NO'; position: absolute; right: 10px; top: 50%; transform: translateY(-50%); font: 800 11px var(--fuente-texto); color: var(--color-texto); }
+& .cm-perilla { top: 4px; left: 4px; }
+& input:checked + .cm-pista::after { content: 'SÍ'; right: auto; left: 12px; color: var(--color-sobre-acento); }
+& input:checked + .cm-pista .cm-perilla { transform: translateX(38px); }`,
+    },
+    anillo: {
+      nombre: 'Anillo', descripcion: 'Pista de línea y perilla con contorno',
+      css: `& .cm-pista { background: transparent; box-shadow: inset 0 0 0 2px var(--color-texto-suave); }
+& .cm-perilla { background: transparent; box-shadow: inset 0 0 0 2px var(--color-texto-suave); }
+& input:checked + .cm-pista { background: transparent; box-shadow: inset 0 0 0 2px var(--color-acento); }
+& input:checked + .cm-pista .cm-perilla { background: var(--color-acento); box-shadow: none; }`,
+    },
+    vidrio: {
+      nombre: 'Vidrio', descripcion: 'Pista translúcida con perilla brillante',
+      css: `& .cm-pista { background: color-mix(in srgb, var(--color-texto) 14%, transparent); backdrop-filter: blur(8px); box-shadow: inset 0 1px 3px rgba(0,0,0,.2), inset 0 0 0 1px rgba(255,255,255,.25); }
+& .cm-perilla { background: radial-gradient(circle at 35% 30%, #FFFFFF, #E6E6F0); }
+& input:checked + .cm-pista { background: color-mix(in srgb, var(--color-acento) 70%, transparent); }`,
+    },
+    elastico: {
+      nombre: 'Elástico', descripcion: 'La perilla se pasa de largo y vuelve',
+      css: `& .cm-perilla { transition: transform 520ms cubic-bezier(.34,1.9,.4,1), background-color var(--duracion-media) ease; }`,
+    },
+    tres_d: {
+      nombre: 'En relieve', descripcion: 'Perilla esférica con brillo y sombra',
+      css: `& .cm-pista { box-shadow: inset 0 2px 4px rgba(0,0,0,.3); }
+& .cm-perilla { background: radial-gradient(circle at 35% 30%, #FFFFFF, #D9D9E3 60%, #A8A8B8); box-shadow: 0 3px 6px rgba(0,0,0,.35); }`,
+    },
   },
   Muestra: MuestraInterruptor,
 };
@@ -170,6 +207,49 @@ export const CASILLAS: Categoria = {
       css: `& .cm-marca { border-radius: 0; border: 2px solid; border-color: #404040 #FFFFFF #FFFFFF #404040; background: #FFFFFF; }
 & svg { stroke: #000000; stroke-width: 3.5; transition: none; }
 & input:checked + .cm-marca { background: #FFFFFF; border-color: #404040 #FFFFFF #FFFFFF #404040; }`,
+    },
+    cruz: {
+      nombre: 'Cruz', descripcion: 'Marca con una cruz en lugar de tilde',
+      css: `& svg { display: none; }
+& .cm-marca { position: relative; border-radius: 4px; }
+& .cm-marca::before, & .cm-marca::after { content: ''; position: absolute; left: 50%; top: 50%; width: 14px; height: 2.5px; border-radius: 2px; background: var(--color-sobre-acento); transform: translate(-50%, -50%) rotate(45deg) scaleX(0); transition: transform var(--duracion-media) var(--curva-entrada); }
+& .cm-marca::after { transform: translate(-50%, -50%) rotate(-45deg) scaleX(0); }
+& input:checked + .cm-marca::before { transform: translate(-50%, -50%) rotate(45deg) scaleX(1); }
+& input:checked + .cm-marca::after { transform: translate(-50%, -50%) rotate(-45deg) scaleX(1); }`,
+    },
+    punto: {
+      nombre: 'Punto', descripcion: 'Un punto que crece en el centro',
+      css: `& svg { display: none; }
+& .cm-marca { border-radius: 50%; }
+& .cm-marca::after { content: ''; width: 10px; height: 10px; border-radius: 50%; background: var(--color-sobre-acento); transform: scale(0); transition: transform var(--duracion-media) cubic-bezier(.3,1.6,.5,1); }
+& input:checked + .cm-marca::after { transform: scale(1); }`,
+    },
+    estrella: {
+      nombre: 'Favorito', descripcion: 'Una estrella que se enciende',
+      css: `& svg { display: none; }
+& .cm-marca { border: none; background: transparent; width: 26px; height: 26px; }
+& .cm-marca::after { content: '★'; font-size: 24px; line-height: 1; color: var(--color-borde); transition: color var(--duracion-media) ease, transform var(--duracion-media) cubic-bezier(.3,1.6,.5,1); }
+& input:checked + .cm-marca { background: transparent; }
+& input:checked + .cm-marca::after { color: var(--color-acento); transform: scale(1.2) rotate(72deg); }`,
+    },
+    chip: {
+      nombre: 'Chip', descripcion: 'Toda la opción es una pastilla que se pinta',
+      css: `& { padding: 0 14px 0 10px; min-height: 40px; border-radius: 999px; border: 1.5px solid var(--color-borde); transition: background-color var(--duracion-media) ease, border-color var(--duracion-media) ease, color var(--duracion-media) ease; }
+& .cm-marca { width: 18px; height: 18px; border-radius: 50%; }
+&:has(input:checked) { background: var(--color-acento); border-color: var(--color-acento); color: var(--color-sobre-acento); }
+&:has(input:checked) .cm-marca { background: var(--color-sobre-acento); border-color: var(--color-sobre-acento); }
+& input:checked + .cm-marca svg { stroke: var(--color-acento); }`,
+    },
+    sobresale: {
+      nombre: 'Tilde que sobresale', descripcion: 'La tilde es más grande que la caja',
+      css: `& .cm-marca { overflow: visible; }
+& svg { width: 26px; height: 26px; margin: -6px -8px 0 0; stroke: var(--color-acento); stroke-width: 3.5; }
+& input:checked + .cm-marca { background: var(--color-fondo); border-color: var(--color-texto); }`,
+    },
+    neon: {
+      nombre: 'Neón', descripcion: 'Se enciende con un halo',
+      css: `& .cm-marca { background: transparent; border-color: var(--color-acento); box-shadow: 0 0 6px color-mix(in srgb, var(--color-acento) 50%, transparent); }
+& input:checked + .cm-marca { box-shadow: 0 0 12px var(--color-acento), 0 0 24px color-mix(in srgb, var(--color-acento) 60%, transparent); }`,
     },
   },
   Muestra: MuestraCasilla,
@@ -252,6 +332,35 @@ ${perilla('width: 24px; height: 24px; margin-top: -7px; border: 1px solid rgba(2
       nombre: 'Degradado', descripcion: 'El relleno pasa de un color a otro',
       css: `${pista('height: 8px; background: linear-gradient(to right, var(--color-acento), color-mix(in oklch, var(--color-acento), #FF4FD8 55%) var(--valor), var(--color-borde) var(--valor));')}
 ${perilla('border-color: color-mix(in oklch, var(--color-acento), #FF4FD8 55%);')}`,
+    },
+    neon: {
+      nombre: 'Neón', descripcion: 'Línea brillante con perilla encendida',
+      css: `${pista('height: 4px; background: linear-gradient(to right, var(--color-acento) var(--valor), color-mix(in srgb, var(--color-texto) 18%, transparent) var(--valor)); box-shadow: 0 0 10px color-mix(in srgb, var(--color-acento) 70%, transparent);')}
+${perilla('width: 18px; height: 18px; margin-top: -7px; background: var(--color-acento); border: 2px solid var(--color-fondo); box-shadow: 0 0 12px var(--color-acento), 0 0 24px var(--color-acento);')}`,
+    },
+    termometro: {
+      nombre: 'Termómetro', descripcion: 'Pista gruesa que se llena, con punta redonda',
+      css: `${pista('height: 18px; border-radius: 999px; background: linear-gradient(to right, var(--color-acento) var(--valor), var(--color-superficie) var(--valor)); box-shadow: inset 0 0 0 2px var(--color-borde);')}
+${perilla('width: 30px; height: 30px; margin-top: -6px; background: var(--color-acento); border: 4px solid var(--color-fondo); box-shadow: 0 0 0 2px var(--color-acento);')}`,
+    },
+    regla: {
+      nombre: 'Regla', descripcion: 'Marcas finas como una regla',
+      css: `${pista('height: 14px; border-radius: 0; background: repeating-linear-gradient(to right, var(--color-texto-suave) 0 1px, transparent 1px 5%), linear-gradient(to right, color-mix(in srgb, var(--color-acento) 30%, transparent) var(--valor), transparent var(--valor)); border-bottom: 2px solid var(--color-texto);')}
+${perilla('width: 4px; height: 28px; margin-top: -7px; border-radius: 2px; background: var(--color-acento); border: none; box-shadow: none;')}`,
+    },
+    puntos: {
+      nombre: 'Puntos', descripcion: 'La pista es una fila de puntos',
+      css: `${pista('height: 8px; background: radial-gradient(circle, var(--color-acento) 3px, transparent 3.5px) 0 50% / 16px 8px repeat-x; -webkit-mask: linear-gradient(to right, #000 var(--valor), rgba(0,0,0,.25) var(--valor)); mask: linear-gradient(to right, #000 var(--valor), rgba(0,0,0,.25) var(--valor));')}
+${perilla('width: 20px; height: 20px; margin-top: -6px; background: var(--color-acento); border: 3px solid var(--color-fondo); box-shadow: 0 0 0 1.5px var(--color-acento);')}`,
+    },
+    pastilla: {
+      nombre: 'Perilla ancha', descripcion: 'La perilla es una pastilla horizontal',
+      css: `${perilla('width: 36px; height: 20px; margin-top: -7px; border-radius: 999px; background: var(--color-texto); border: none;')}`,
+    },
+    retro: {
+      nombre: 'Retro', descripcion: 'Biselado, con perilla rectangular',
+      css: `${pista('height: 6px; border-radius: 0; background: #FFFFFF; border: 2px solid; border-color: #404040 #FFFFFF #FFFFFF #404040;')}
+${perilla('width: 14px; height: 26px; margin-top: -12px; border-radius: 0; background: #D4D0C8; border: 2px solid; border-color: #FFFFFF #404040 #404040 #FFFFFF; box-shadow: 1px 1px 0 #000;')}`,
     },
   },
   Muestra: MuestraDeslizador,

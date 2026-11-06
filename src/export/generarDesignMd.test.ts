@@ -289,3 +289,20 @@ describe('galería de componentes', () => {
     }
   });
 });
+
+describe('límites del código de combinación', () => {
+  it('cada lista entra en un solo carácter del código (máximo 36)', async () => {
+    const { ESTILOS, LAYOUTS } = await import('../estilos-visuales');
+    for (const [nombre, n] of Object.entries({ estilos: Object.keys(ESTILOS).length, layouts: Object.keys(LAYOUTS).length, paletas: Object.keys(PALETAS).length, fuentes: Object.keys(FUENTES).length }))
+      expect(n, nombre).toBeLessThanOrEqual(36);
+  });
+
+  it('el texto de una caja invertida pasa contraste', async () => {
+    const { tokensDeCaja, CAJAS } = await import('../cajas');
+    for (const p of Object.values(PALETAS)) {
+      const t = tokensDeCaja(CAJAS.invertida.params, p, 14);
+      expect(contraste(t['--caja-texto'], p.roles.texto)).toBeGreaterThanOrEqual(4.5);
+      expect(contraste(t['--caja-texto-suave'], p.roles.texto)).toBeGreaterThanOrEqual(4.5);
+    }
+  });
+});
