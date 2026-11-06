@@ -80,7 +80,9 @@ export function PasoExportar({ config, setConfig }: PropsPaso) {
         <ol className="como-usar">
           <li>Abrí Claude, Claude Code, v0, Lovable o la IA que uses.</li>
           <li>Adjuntá o pegá el archivo.</li>
-          <li>Escribí qué querés: "Construí esta app siguiendo el DESIGN.md".</li>
+          <li>
+            Escribí qué querés: "Construí esta app siguiendo el DESIGN.md". Si no describiste un proyecto, el archivo sale como sistema de diseño: pedile que lo aplique a tu app existente, o contale qué construir.
+          </li>
         </ol>
       </div>
       <pre className="codigo" tabIndex={0} aria-label="Contenido del DESIGN.md">

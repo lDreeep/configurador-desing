@@ -1,6 +1,6 @@
 # DESIGN.md: especificación del formato
 
-> **Versión del formato:** 0.6.0 (borrador)
+> **Versión del formato:** 0.7.0 (borrador)
 > **Última actualización:** 2026-11-06
 > **Estado:** configurador en v0.2 (10 pasos + export): 8 direcciones, 13 paletas + personalizada, 23 fuentes, botones y movimiento detallados. Falta la primera ronda de pruebas con IA (§9).
 
@@ -134,7 +134,7 @@ Todo archivo exportado empieza con este bloque, que permite saber con qué versi
 
 ```yaml
 formato: design-md
-version_formato: 0.6.0
+version_formato: 0.7.0
 generado_por: configurador-diseno
 fecha: 2026-11-06
 idioma: es
@@ -180,6 +180,14 @@ Ver [§2.5](#25-encabezado-obligatorio). Va al principio, antes del título del 
 ---
 
 ### §1. Instrucciones para la IA
+
+**Dos modos** (campo `modo` en el encabezado y en §2), según si la persona describió su proyecto:
+
+| Modo | Cuándo | Qué le dice a la IA |
+|---|---|---|
+| `proyecto` | Hay descripción, objetivo o acciones clave | Construir esa app siguiendo el archivo (texto de abajo) |
+| `sistema_de_diseno` | No se describió nada del proyecto (lo normal en el modo rápido) | El archivo es un sistema de diseño: **A)** aplicarlo a una app o web existente conservando su contenido y funcionamiento, o **B)** construir lo que la persona explique en su mensaje. Si no está claro, preguntar primero. Las pantallas y funciones de §3 y §4 pasan a ser solo de referencia, y §18 no marca pendientes que bloqueen. |
+
 
 **Texto fijo**, igual en todos los exports de la misma versión. El configurador no lo modifica. Es lo que reemplaza a una skill: viaja adentro del archivo.
 
@@ -838,7 +846,7 @@ Así se vería un archivo real generado por el MVP. Las secciones `[v0.2]` apare
 ````markdown
 ```yaml
 formato: design-md
-version_formato: 0.6.0
+version_formato: 0.7.0
 generado_por: configurador-diseno
 fecha: 2026-11-06
 idioma: es
@@ -1138,6 +1146,7 @@ Formato: fecha · decisión · por qué · alternativas descartadas.
 | D40 | 2026-11-06 | Cada categoría nueva arranca con 6 a 14 diseños; se amplía después | Primero cubrir todos los elementos, después la profundidad de cada uno | Completar una categoría antes de empezar otra |
 | D41 | 2026-11-06 | Antes de descargar, un prototipo navegable usa todas las elecciones juntas y permite cambiarlas ahí mismo | Lo que se elige por separado tiene que probarse en conjunto; corregir en contexto es más fácil que volver paso por paso | Descargar directamente después del último panel |
 | D42 | 2026-11-06 | En celular, el prototipo es un smartphone con proporciones reales (390 × 844), barra de estado, isla y barra de inicio, y el contenido se adapta como app (barra superior fija, carruseles, botones a lo ancho, tabla como lista, una columna); abierto desde un teléfono ocupa la pantalla sin marco | Así se evalúa de verdad cómo se ve la app en un teléfono | Mostrar el diseño de escritorio achicado |
+| D43 | 2026-11-06 | Si la persona no describe un proyecto, el archivo se exporta como sistema de diseño (`modo: sistema_de_diseno`): sirve para mejorar una app existente o para construir lo que se explique junto con el archivo; la pantalla final ofrece un mensaje para copiar para cada caso | El modo rápido no pide detalles del proyecto; tratar las pantallas de ejemplo como obligatorias llevaba a la IA a construir una app genérica | Obligar a completar el proyecto antes de exportar |
 
 ---
 
@@ -1241,3 +1250,4 @@ Lo que todavía no tiene lugar en §5. Se mueve allá cuando se decide hacerlo.
 | 0.6.0 | 2026-11-06 | Sección nueva §21 (componentes de interfaz con estructura y CSS) y regla 12. Compatible. |
 | 0.6.1 | 2026-11-06 | Sin cambios de formato: más valores en listas existentes (`al_tocar` suma temblor, latido y estallido; cajas suman `fondo: invertido` y `sombra: color`). |
 | 0.6.2 | 2026-11-06 | Sin cambios de formato: §21 suma 14 categorías nuevas (las claves nuevas son opcionales). |
+| 0.7.0 | 2026-11-06 | Campo `modo` (`proyecto` \| `sistema_de_diseno`) en el encabezado y en §2, y variante de las instrucciones de §1 para el modo sistema de diseño. Compatible: un archivo sin `modo` equivale a `proyecto`. |

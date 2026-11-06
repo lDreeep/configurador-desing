@@ -53,12 +53,29 @@ describe('generarDesignMd', () => {
     expect(notas.notas).toEqual(['Que se sienta rápida', 'Más que linda']);
   });
 
-  it('marca sin_definir y pendientes que bloquean cuando falta información', () => {
-    const md = generarDesignMd(configInicial());
-    const proyecto = parse(bloquesYaml(md).find((b) => b.startsWith('nombre:'))!);
+  it('marca sin_definir y pendientes que bloquean cuando el proyecto está a medias', () => {
+    const c = configInicial();
+    c.proyecto.descripcion = 'Una app de turnos';
+    const md = generarDesignMd(c);
+    const proyecto = parse(bloquesYaml(md).find((b) => b.startsWith('modo:'))!);
+    expect(proyecto.modo).toBe('proyecto');
     expect(proyecto.objetivo_principal).toBe('sin_definir');
     const pendientes = parse(bloquesYaml(md).find((b) => b.startsWith('sin_definir:'))!);
     expect(pendientes.sin_definir).toContainEqual({ seccion: 4, campo: 'acciones_clave', bloquea: 'si' });
+    expect(md).toContain('Este archivo describe una web o app que tenés que construir');
+  });
+
+  it('sin proyecto descripto, se exporta como sistema de diseño para aplicar o para lo que la persona explique', () => {
+    const md = generarDesignMd(configInicial());
+    const [encabezado] = bloquesYaml(md);
+    expect(parse(encabezado).modo).toBe('sistema_de_diseno');
+    expect(md).toContain('# Sistema de diseño: DESIGN.md');
+    expect(md).toContain('A. **Mejorar algo que ya existe.**');
+    expect(md).toContain('B. **Construir algo nuevo.**');
+    expect(md).toContain('son solo de referencia');
+    const pendientes = parse(bloquesYaml(md).find((b) => b.startsWith('sin_definir:'))!);
+    expect(pendientes.sin_definir.some((x: { bloquea: string }) => x.bloquea === 'si')).toBe(false);
+    expect(pendientes.preguntas_sugeridas[0]).toContain('Aplico este diseño');
   });
 
   it('los tokens CSS coinciden con la paleta elegida', () => {

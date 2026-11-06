@@ -5,7 +5,7 @@ import { BOTONES } from '../botones-disenos';
 import { CAJAS } from '../cajas';
 import { BotonPrincipal } from '../componentes/BotonPrincipal';
 import { ESTILOS, LAYOUTS } from '../estilos-visuales';
-import { generarDesignMd } from '../export/generarDesignMd';
+import { esSistemaDeDiseno, generarDesignMd } from '../export/generarDesignMd';
 import { sistemaDeDiseno } from '../export/sistema';
 import { CATEGORIAS, type CategoriaId } from '../galeria';
 import type { Config } from '../tipos';
@@ -15,6 +15,21 @@ export function PanelListo(props: { config: Config; onAtras: () => void; onAvanz
   const s = sistemaDeDiseno(c);
   const md = useMemo(() => generarDesignMd(c), [c]);
   const [aviso, setAviso] = useState('');
+  const sistema = esSistemaDeDiseno(c);
+  const mensajes = sistema
+    ? [
+        { titulo: 'Para mejorar una app o web que ya tenés', texto: 'Aplicá este sistema de diseño (DESIGN.md adjunto) a mi app. Mantené el contenido, las pantallas y el funcionamiento; cambiá solo cómo se ve y cómo se comporta.' },
+        { titulo: 'Para construir algo nuevo', texto: 'Con este sistema de diseño (DESIGN.md adjunto), construí: [contá acá qué querés hacer, para quién y qué tiene que poder hacer la persona].' },
+      ]
+    : [{ titulo: 'Para construir tu proyecto', texto: 'Construí esta app siguiendo el DESIGN.md adjunto. Empezá por preguntarme lo que esté pendiente en la sección 18.' }];
+  const copiarMensaje = async (t: string) => {
+    try {
+      await navigator.clipboard.writeText(t);
+      setAviso('Mensaje copiado. Pegalo en tu IA junto con el archivo.');
+    } catch {
+      setAviso('No pude copiar automáticamente: seleccioná el texto y copialo a mano.');
+    }
+  };
   const estilo = c.visual.estilo !== 'clasico' ? `estilo-${c.visual.estilo}` : '';
 
   const filas: [string, string][] = [
@@ -54,7 +69,7 @@ export function PanelListo(props: { config: Config; onAtras: () => void; onAvanz
           <span className="pg-etiqueta">Último paso</span>
           <h1 className="pg-titulo">Tu diseño está listo</h1>
           <p className="pg-bajada">
-            Descargá el archivo y dáselo a la IA que uses (Claude, v0, Lovable…) con lo que querés construir. Lleva cada elección con su CSS real, así la IA copia en vez de adivinar.
+            Descargá el archivo y dáselo a la IA que uses (Claude, v0, Lovable…), junto con tu app o con lo que querés construir. Lleva cada elección con su CSS real, así la IA copia en vez de adivinar.
           </p>
         </header>
         <dl className="pl-resumen pg-card">
@@ -79,6 +94,25 @@ export function PanelListo(props: { config: Config; onAtras: () => void; onAvanz
         <p className="pl-aviso" role="status" aria-live="polite">
           {aviso}
         </p>
+        <section className="pl-uso" aria-label="Cómo usarlo">
+          <h2 className="pl-uso-titulo">{sistema ? 'Cómo usarlo: elegí uno de estos mensajes' : 'Cómo usarlo'}</h2>
+          {sistema && (
+            <p className="pl-uso-ayuda">
+              Como no contaste qué vas a hacer, el archivo sale como <strong>sistema de diseño</strong>: sirve para mejorar una app o web que ya tenés, o para construir algo nuevo que expliques en el mismo mensaje. Si no aclarás, la IA te va a preguntar.
+            </p>
+          )}
+          <div className="pl-mensajes">
+            {mensajes.map((m) => (
+              <div key={m.titulo} className="pl-mensaje pg-card">
+                <span className="pl-mensaje-titulo">{m.titulo}</span>
+                <p className="pl-mensaje-texto">{m.texto}</p>
+                <button type="button" className="pb-pie-atras" onClick={() => copiarMensaje(m.texto)}>
+                  Copiar mensaje
+                </button>
+              </div>
+            ))}
+          </div>
+        </section>
       </div>
       <footer className="pb-pie">
         <button type="button" className="pb-pie-atras" onClick={props.onAtras}>

@@ -12,7 +12,7 @@ import { CATEGORIAS, type CategoriaId } from '../galeria';
 import { cssBaseDe, cssDisenoDe } from '../galeria/base';
 import { paletaActiva, sistemaDeDiseno, tokensCss } from './sistema';
 
-export const VERSION_FORMATO = '0.6.0';
+export const VERSION_FORMATO = '0.7.0';
 
 const q = (s: string) => JSON.stringify(s);
 const valor = (s: string) => (s.trim() ? q(s.trim()) : 'sin_definir');
@@ -33,10 +33,13 @@ const PRIMARIO: Record<BotonEstiloId, string> = {
   sombra_dura: 'fondo --color-acento, texto --color-sobre-acento, borde 2px --color-texto, sombra sólida 4px 4px 0 --color-texto',
 };
 
-export const INSTRUCCIONES_IA = `Este archivo describe una web o app que tenés que construir. Fue generado
-por un configurador visual a partir de decisiones de una persona.
+/** ¿La persona no describió ningún proyecto? Entonces el archivo es un sistema de diseño para aplicar. */
+export const esSistemaDeDiseno = (c: Config) =>
+  !c.proyecto.descripcion.trim() && !c.proyecto.objetivo.trim() && c.funciones.acciones.length === 0;
 
-1. Leé el archivo completo antes de escribir código.
+export const PREGUNTA_USO = '¿Aplico este diseño a una app o web que ya tenés, o me contás qué querés construir?';
+
+const reglas = (sistema: boolean) => `1. Leé el archivo completo antes de escribir código.
 2. Los bloques YAML son la fuente de verdad. Usá esos valores exactos.
 3. Las notas (\`nota:\` / \`notas:\`) son palabras literales de la persona y
    tienen prioridad sobre el valor del mismo bloque.
@@ -46,8 +49,13 @@ por un configurador visual a partir de decisiones de una persona.
 5. Si un valor es \`sin_definir\`, usá el \`por_defecto\` de esa sección; si no
    hay, preguntá antes de inventar. Si es \`libre\`, decidí vos de forma
    coherente con la sección 5 y contá qué elegiste.
-6. No agregues pantallas ni funcionalidades que no estén en las secciones
-   3 y 4. Si creés que falta algo importante, proponelo antes de hacerlo.
+${
+  sistema
+    ? `6. Las pantallas y funciones de las secciones 3 y 4 son solo de referencia
+   (sirven para mostrar el estilo): no las construyas si la persona no las pide.`
+    : `6. No agregues pantallas ni funcionalidades que no estén en las secciones
+   3 y 4. Si creés que falta algo importante, proponelo antes de hacerlo.`
+}
 7. La sección 14 (accesibilidad) no se negocia, aunque otra sección
    parezca contradecirla.
 8. Revisá la sección 18 y empezá por preguntar lo que esté pendiente
@@ -61,6 +69,32 @@ por un configurador visual a partir de decisiones de una persona.
    (su CSS y sus tokens --caja-*), aunque el estilo de la 19 diga otra cosa.
 12. La sección 21 trae campos, controles y navegación: respetá su estructura
    HTML y su CSS (incluidas las animaciones al escribir y al cambiar).`;
+
+/** Instrucciones cuando la persona describió su proyecto: construirlo. */
+export const INSTRUCCIONES_IA = `Este archivo describe una web o app que tenés que construir. Fue generado
+por un configurador visual a partir de decisiones de una persona.
+
+${reglas(false)}`;
+
+/** Instrucciones cuando no hay proyecto: es un sistema de diseño para aplicar. */
+export const INSTRUCCIONES_SISTEMA = `Este archivo es un **sistema de diseño**: define cómo se ve y cómo se comporta
+una interfaz (colores, tipografía, botones, cajas, componentes y animaciones),
+pero no qué construir. La persona no describió un proyecto, así que hay dos usos:
+
+A. **Mejorar algo que ya existe.** Si junto con este archivo tenés una app o web
+   (su código, capturas o un link), aplicale este diseño. Conservá su contenido,
+   sus pantallas, su navegación y su funcionamiento: cambiá solo el aspecto y el
+   comportamiento visual para que respeten este archivo. No agregues ni quites
+   funcionalidades.
+B. **Construir algo nuevo.** Si la persona explica en su mensaje qué quiere
+   hacer, construilo con este diseño. Lo que diga la persona define qué se
+   construye; este archivo define cómo se ve.
+
+Si no queda claro cuál de los dos es, preguntá antes de empezar:
+«${PREGUNTA_USO}»
+
+${reglas(true)}`;
+
 
 export const REGLAS_ACCESIBILIDAD = [
   'Contraste de texto 4.5:1 (3:1 en texto de 24px o más)',
@@ -86,6 +120,8 @@ export function calcularPendientes(c: Config): { sinDefinir: Pendiente[]; pregun
     if (cond) sinDefinir.push({ seccion, campo, bloquea });
   };
   const p = c.proyecto;
+  const sistema = esSistemaDeDiseno(c);
+  if (!sistema) {
   falta(!p.nombre.trim(), 2, 'nombre', false);
   falta(!p.descripcion.trim(), 2, 'descripcion', true);
   falta(!p.objetivo.trim(), 2, 'objetivo_principal', true);
@@ -94,12 +130,18 @@ export function calcularPendientes(c: Config): { sinDefinir: Pendiente[]; pregun
   c.estructura.pantallas.forEach((s) => falta(!s.accionPrincipal.trim(), 3, `pantallas.${s.id}.accion_principal`, false));
   falta(c.funciones.acciones.length === 0, 4, 'acciones_clave', true);
   sinDefinir.push({ seccion: 4, campo: 'datos', bloquea: false });
+  }
   paresDeContraste(paletaActiva(c).roles)
     .filter((x) => !x.pasa)
     .forEach((x) => sinDefinir.push({ seccion: 6, campo: `contraste: ${x.nombre} (${x.valor.toFixed(1)}, mínimo ${x.minimo})`, bloquea: false }));
   sinDefinir.push({ seccion: 11, campo: 'logo', bloquea: false });
 
   const preguntas: string[] = [];
+  if (sistema) {
+    // Sin proyecto, lo único que hay que saber es para qué se usa el diseño.
+    preguntas.push(PREGUNTA_USO);
+    return { sinDefinir, preguntas };
+  }
   const integ = c.funciones.integraciones;
   if (integ.includes('pagos')) preguntas.push('¿Con qué proveedor de pagos y qué medios aceptan?');
   if (integ.includes('whatsapp'))
@@ -117,20 +159,24 @@ export function generarDesignMd(c: Config, fecha = new Date().toISOString().slic
   const e = c.estructura;
   const f = c.funciones;
   const { sinDefinir, preguntas } = calcularPendientes(c);
-  const titulo = p.nombre.trim() || 'Proyecto sin nombre';
+  const sistema = esSistemaDeDiseno(c);
+  const titulo = p.nombre.trim() || (sistema ? 'Sistema de diseño' : 'Proyecto sin nombre');
   const nav = e.pantallas.map((x) => x.nombre).slice(0, 6);
 
   const secciones: string[] = [];
   const add = (n: number, nombre: string, prosa: string, cuerpo?: string) =>
     secciones.push([`## ${n}. ${nombre}`, prosa, cuerpo ? yaml(cuerpo) : ''].filter(Boolean).join('\n\n'));
 
-  add(1, 'Instrucciones para la IA', INSTRUCCIONES_IA);
+  add(1, 'Instrucciones para la IA', sistema ? INSTRUCCIONES_SISTEMA : INSTRUCCIONES_IA);
 
   add(
     2,
     'Proyecto',
-    p.descripcion.trim() || 'La persona todavía no describió el proyecto (ver sección 18).',
+    sistema
+      ? 'Sin proyecto definido: el contenido lo aporta la persona en su mensaje, o la app o web existente a la que se aplica este diseño (ver sección 1).'
+      : p.descripcion.trim() || 'La persona todavía no describió el proyecto (ver sección 18).',
     `
+modo: ${sistema ? 'sistema_de_diseno' : 'proyecto'}
 nombre: ${valor(p.nombre)}
 tipo: ${p.tipo}
 descripcion: ${valor(p.descripcion)}
@@ -158,7 +204,7 @@ stack_preferido: libre${nota(c, 'proyecto')}`,
   add(
     3,
     'Estructura',
-    `${e.pantallas.length} ${e.pantallas.length === 1 ? 'pantalla' : 'pantallas'}. Navegación: ${PATRONES_NAV[e.patron].nombre.toLowerCase()} en escritorio y ${PATRONES_NAV[e.patronMovil].nombre.toLowerCase()} en celular.`,
+    `${sistema ? 'Solo de referencia (no son obligatorias). ' : ''}${e.pantallas.length} ${e.pantallas.length === 1 ? 'pantalla' : 'pantallas'}. Navegación: ${PATRONES_NAV[e.patron].nombre.toLowerCase()} en escritorio y ${PATRONES_NAV[e.patronMovil].nombre.toLowerCase()} en celular.`,
     `
 navegacion:
   patron: ${e.patron}
@@ -170,7 +216,9 @@ pantallas:${pantallasYaml ? '\n' + pantallasYaml : ' []'}${nota(c, 'estructura')
   add(
     4,
     'Funcionalidades',
-    'Intención funcional: la IA decide la implementación salvo que se indique otra cosa.',
+    sistema
+      ? 'Solo de referencia: sin proyecto definido, las funciones las define la persona o la app existente.'
+      : 'Intención funcional: la IA decide la implementación salvo que se indique otra cosa.',
     `
 acciones_clave:${lista(f.acciones)}
 datos: sin_definir
@@ -485,10 +533,13 @@ formato: design-md
 version_formato: ${VERSION_FORMATO}
 generado_por: configurador-diseno
 fecha: ${fecha}
-idioma: es`);
+idioma: es
+modo: ${sistema ? 'sistema_de_diseno' : 'proyecto'}`);
 
   const integracionesTxt = f.integraciones.map((i) => INTEGRACIONES[i] ?? i).join(', ');
-  const resumen = `> ${p.tipo.replace('_', ' ')} · ${s.dir.nombre.toLowerCase()}${integracionesTxt ? ` · integra ${integracionesTxt}` : ''}`;
+  const resumen = sistema
+    ? `> Sistema de diseño para aplicar a una app o web existente, o para construir lo que la persona describa · ${s.dir.nombre.toLowerCase()}`
+    : `> ${p.tipo.replace('_', ' ')} · ${s.dir.nombre.toLowerCase()}${integracionesTxt ? ` · integra ${integracionesTxt}` : ''}`;
 
   return [encabezado, `# ${titulo}: DESIGN.md`, resumen, ...secciones].join('\n\n') + '\n';
 }
