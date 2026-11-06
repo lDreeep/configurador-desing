@@ -76,6 +76,25 @@ export function PanelBotones(props: {
                   onClick={() => setB({ color: x.id })}
                 />
               ))}
+              <label className={`pb-color pb-color-libre ${!COLORES.some((x) => x.id === c.botones.color) ? 'elegido' : ''}`} title="Elegí cualquier color">
+                <input
+                  type="color"
+                  aria-label="Elegí cualquier color"
+                  value={/^#[0-9a-fA-F]{6}$/.test(c.botones.color) ? c.botones.color.toLowerCase() : '#2f5bff'}
+                  onChange={(e) => setB({ color: e.target.value.toUpperCase() })}
+                />
+              </label>
+              <input
+                className="pb-hex"
+                aria-label="Código de color (hex)"
+                placeholder="#FF5A1F"
+                defaultValue={/^#[0-9a-fA-F]{6}$/.test(c.botones.color) ? c.botones.color : ''}
+                onChange={(e) => {
+                  const v = e.target.value.trim();
+                  const h = v.startsWith('#') ? v : `#${v}`;
+                  if (/^#[0-9a-fA-F]{6}$/.test(h)) setB({ color: h.toUpperCase() });
+                }}
+              />
             </div>
           </div>
           <Segmentado<BotonTamano>

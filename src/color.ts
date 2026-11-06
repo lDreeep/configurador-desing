@@ -88,3 +88,39 @@ export function paresDeContraste(r: Roles): ParContraste[] {
     return { nombre, texto, fondo, minimo, valor, pasa: valor >= minimo };
   });
 }
+
+/** Extrae todos los códigos hex (#abc o #aabbcc) de un texto pegado. */
+export function hexesDeTexto(t: string): string[] {
+  return (t.match(/#?\b[0-9a-fA-F]{6}\b|#[0-9a-fA-F]{3}\b/g) ?? []).map((h) => {
+    let x = h.replace('#', '');
+    if (x.length === 3) x = x.split('').map((ch) => ch + ch).join('');
+    return '#' + x.toUpperCase();
+  });
+}
+
+const saturacion = (hex: string) => {
+  const n = hex.replace('#', '');
+  const v = [0, 2, 4].map((i) => parseInt(n.slice(i, i + 2), 16));
+  return Math.max(...v) - Math.min(...v);
+};
+
+/**
+ * Arma fondo, texto y acento a partir de 1 o más colores de la persona:
+ * el más claro es el fondo, el más oscuro el texto y el más vivo el acento.
+ */
+export function baseDesdeColores(colores: string[]): { fondo: string; texto: string; acento: string } {
+  const cs = [...new Set(colores.filter(esHex).map((c) => c.toUpperCase()))];
+  if (cs.length === 0) return { fondo: '#FFFFFF', texto: '#111111', acento: '#2F5BFF' };
+  if (cs.length === 1) return { fondo: '#FFFFFF', texto: '#111111', acento: cs[0] };
+  const porLuz = [...cs].sort((a, b) => luminancia(b) - luminancia(a));
+  const acento = [...cs].sort((a, b) => saturacion(b) - saturacion(a))[0];
+  if (cs.length === 2) {
+    const otro = cs.find((c) => c !== acento)!;
+    return luminancia(otro) > 0.5 ? { fondo: otro, texto: '#111111', acento } : { fondo: '#FFFFFF', texto: otro, acento };
+  }
+  const resto = porLuz.filter((c) => c !== acento);
+  const fondo = resto[0];
+  const texto = resto[resto.length - 1];
+  // Si fondo y texto no se leen bien juntos, el texto pasa a casi negro o casi blanco.
+  return { fondo, texto: contraste(texto, fondo) >= 4.5 ? texto : textoSobre(fondo), acento };
+}

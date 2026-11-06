@@ -325,3 +325,16 @@ describe('límites del código de combinación', () => {
     }
   });
 });
+
+describe('colores propios', () => {
+  it('lee códigos pegados y arma fondo, texto y acento legibles', async () => {
+    const { hexesDeTexto, baseDesdeColores } = await import('../color');
+    expect(hexesDeTexto('mis colores: #1a1a2e, e94560 y #fff')).toEqual(['#1A1A2E', '#E94560', '#FFFFFF']);
+    const b = baseDesdeColores(['#1A1A2E', '#E94560', '#F5F5F5']);
+    expect(b).toEqual({ fondo: '#F5F5F5', texto: '#1A1A2E', acento: '#E94560' });
+    for (const cs of [['#FFD23F'], ['#0B1026', '#39FF14'], ['#F2B705', '#D7261E', '#1F3F99', '#F2EBDD']]) {
+      const x = baseDesdeColores(cs);
+      expect(contraste(x.texto, x.fondo), cs.join()).toBeGreaterThanOrEqual(4.5);
+    }
+  });
+});

@@ -787,3 +787,16 @@ button:disabled { cursor: not-allowed; opacity: 0.4; }
 .pl-mensaje { display: flex; flex-direction: column; gap: 8px; align-items: flex-start; padding: 16px !important; background: var(--color-superficie); border-radius: var(--radio-medio); }
 .pl-mensaje-titulo { font-weight: 700; font-size: 14px; }
 .pl-mensaje-texto { margin: 0; font-size: 14px; color: var(--color-texto-suave); font-style: italic; }
+.pb-color-libre { position: relative; overflow: hidden; background: conic-gradient(#f00, #ff0, #0f0, #0ff, #00f, #f0f, #f00) !important; }
+.pb-color-libre input { position: absolute; inset: -8px; width: 60px; height: 60px; opacity: 0; cursor: pointer; }
+.pb-color-libre.elegido { box-shadow: 0 0 0 3px var(--color-texto); }
+.pb-color-libre:focus-within { outline: 3px solid var(--color-acento); outline-offset: 2px; }
+.pb-hex { width: 96px; min-height: 36px; padding: 0 10px; border-radius: 10px; border: 1px solid var(--color-borde); background: var(--color-fondo); color: var(--color-texto); font: 600 13px ui-monospace, Menlo, monospace; text-transform: uppercase; }
+.tus-colores { display: flex; flex-direction: column; gap: 8px; padding: 12px; margin-bottom: 6px; border: 1px solid #2a2d36; border-radius: 12px; }
+.tus-colores-fila { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.tus-colores-item { display: inline-flex; align-items: center; }
+.tus-colores-item input { width: 40px; height: 40px; padding: 2px; border: 1px solid #3a3e48; border-radius: 10px; background: #0f1014; cursor: pointer; }
+.tus-colores-item button { width: 22px; height: 22px; margin-left: -8px; margin-top: -26px; border-radius: 50%; border: none; background: #3a3e48; color: #fff; cursor: pointer; }
+.tus-colores-mas { min-height: 40px; padding: 0 12px; border-radius: 10px; border: 1px dashed #4b5060; background: transparent; color: #f3f4f6; font: inherit; font-weight: 700; cursor: pointer; }
+.tus-colores-mas:disabled { opacity: .4; cursor: not-allowed; }
+.tus-colores-texto { flex: 1; min-width: 160px; min-height: 40px; padding: 0 10px; border-radius: 10px; border: 1px solid #3a3e48; background: #0f1014; color: #f3f4f6; font: 13px ui-monospace, Menlo, monospace; }

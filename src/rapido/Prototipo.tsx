@@ -14,6 +14,7 @@ import { Grafico } from '../galeria/datos';
 import { Icono } from '../galeria/iconos';
 import type { BotonDisenoId, CajaPresetId, CambioId, Config, EstiloId, PaletaId } from '../tipos';
 import { aplicarCombinacion } from './combinar';
+import { baseDesdeColores, derivarRoles, hexesDeTexto } from '../color';
 import { COLORES } from './PanelBotones';
 import { Pagina } from './Pagina';
 
@@ -727,6 +728,7 @@ function Editor(props: { config: Config; setConfig: (fn: (c: Config) => Config) 
         ))}
       </select>
       {!e && <p className="proto-editor-ayuda">También podés tocar los lápices que aparecen sobre cada elemento del prototipo.</p>}
+      {e === 'paleta' && <TusColores config={c} setConfig={set} />}
       {e && (
         <ul className="proto-opciones">
           {opciones.map((o) => (
@@ -748,6 +750,59 @@ function Editor(props: { config: Config; setConfig: (fn: (c: Config) => Config) 
           ))}
         </ul>
       )}
+    </div>
+  );
+}
+
+/** Colores propios: rueda de color o códigos pegados (uno o varios). */
+function TusColores({ config, setConfig }: { config: Config; setConfig: (fn: (c: Config) => Config) => void }) {
+  const pp = config.visual.paletaPersonalizada;
+  const [lista, setLista] = useState<string[]>(config.visual.paleta === 'personalizada' ? [pp.fondo, pp.texto, pp.acento] : ['#2F5BFF']);
+  const [texto, setTexto] = useState('');
+  const aplicar = (cs: string[]) => {
+    setLista(cs);
+    const base = baseDesdeColores(cs);
+    setConfig((x) => ({ ...x, visual: { ...x.visual, paleta: 'personalizada', paletaPersonalizada: { ...base, manual: {} } } }));
+  };
+  const r = derivarRoles(...(Object.values(baseDesdeColores(lista)) as [string, string, string]));
+  return (
+    <div className="tus-colores">
+      <span className="proto-editor-etq">Tus colores</span>
+      <p className="proto-editor-ayuda">Elegí con la rueda o pegá tus códigos (uno o varios). El más claro va de fondo, el más oscuro de texto y el más vivo de acento.</p>
+      <div className="tus-colores-fila">
+        {lista.map((col, i) => (
+          <span key={i} className="tus-colores-item">
+            <input type="color" aria-label={`Color ${i + 1}`} value={col.toLowerCase()} onChange={(ev) => aplicar(lista.map((x, j) => (j === i ? ev.target.value.toUpperCase() : x)))} />
+            {lista.length > 1 && (
+              <button type="button" aria-label={`Quitar color ${i + 1}`} onClick={() => aplicar(lista.filter((_, j) => j !== i))}>
+                ×
+              </button>
+            )}
+          </span>
+        ))}
+        {lista.length < 5 && (
+          <button type="button" className="tus-colores-mas" onClick={() => aplicar([...lista, '#FF5A1F'])}>
+            + Color
+          </button>
+        )}
+      </div>
+      <div className="tus-colores-fila">
+        <input
+          className="tus-colores-texto"
+          aria-label="Pegá tus códigos de color"
+          placeholder="#1A1A2E, #E94560, #F5F5F5"
+          value={texto}
+          onChange={(ev) => setTexto(ev.target.value)}
+        />
+        <button type="button" className="tus-colores-mas" disabled={hexesDeTexto(texto).length === 0} onClick={() => aplicar(hexesDeTexto(texto).slice(0, 5))}>
+          Usar
+        </button>
+      </div>
+      <span className="muestras" aria-label="Resultado">
+        {[r.fondo, r.superficie, r.acento, r.texto].map((m, i) => (
+          <span key={i} className="muestra" style={{ background: m }} />
+        ))}
+      </span>
     </div>
   );
 }
