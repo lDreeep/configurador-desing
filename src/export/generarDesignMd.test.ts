@@ -232,3 +232,33 @@ describe('panel de botones', () => {
     for (const e of Object.keys(ESTILOS) as (keyof typeof ESTILOS)[]) expect(BOTONES[DISENO_POR_ESTILO[e]]).toBeDefined();
   });
 });
+
+describe('panel de cajas', () => {
+  it('cada diseño de caja genera un export válido con sus tokens y su CSS', async () => {
+    const { CAJAS } = await import('../cajas');
+    for (const id of Object.keys(CAJAS) as (keyof typeof CAJAS)[]) {
+      const c = configCompleta();
+      c.cajas = { preset: id, ajustes: {} };
+      const md = generarDesignMd(c);
+      for (const b of bloquesYaml(md)) expect(() => parse(b)).not.toThrow();
+      expect(md).toContain('## 20. Cajas y contenedores');
+      expect(md).toContain('--caja-fondo:');
+      const s20 = parse(bloquesYaml(md).find((b) => b.startsWith('diseno_base:'))!);
+      expect(s20.diseno_base).toBe(id);
+    }
+  });
+
+  it('los ajustes se suman al diseño base y quedan anotados', () => {
+    const c = configCompleta();
+    c.cajas = { preset: 'vidrio', ajustes: { transparencia: 80, bordeEstilo: 'dashed', forma: 'ticket' } };
+    const md = generarDesignMd(c);
+    const s20 = parse(bloquesYaml(md).find((b) => b.startsWith('diseno_base:'))!);
+    expect(s20).toMatchObject({ transparencia: '80%', forma: 'ticket', desenfoque: '16px' });
+    expect(s20.ajustado_a_mano).toEqual(['transparencia', 'bordeEstilo', 'forma']);
+    expect(md).toContain('color-mix(in srgb');
+  });
+
+  it('sin caja elegida no hay sección 20', () => {
+    expect(generarDesignMd(configCompleta())).not.toContain('## 20.');
+  });
+});

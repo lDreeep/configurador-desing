@@ -1,6 +1,6 @@
 # DESIGN.md: especificación del formato
 
-> **Versión del formato:** 0.4.0 (borrador)
+> **Versión del formato:** 0.5.0 (borrador)
 > **Última actualización:** 2026-11-06
 > **Estado:** configurador en v0.2 (10 pasos + export): 8 direcciones, 13 paletas + personalizada, 23 fuentes, botones y movimiento detallados. Falta la primera ronda de pruebas con IA (§9).
 
@@ -134,7 +134,7 @@ Todo archivo exportado empieza con este bloque, que permite saber con qué versi
 
 ```yaml
 formato: design-md
-version_formato: 0.4.0
+version_formato: 0.5.0
 generado_por: configurador-diseno
 fecha: 2026-11-06
 idioma: es
@@ -168,6 +168,7 @@ Orden fijo. Las marcadas **(obligatoria)** siempre aparecen, aunque sea con valo
 | 17 | Notas generales | Lo que la persona quiere decir fuera de los pasos | |
 | 18 | Pendientes | Lo que no se definió | obligatoria |
 | 19 | Estilo visual y layout | Estructura de la página y textura del estilo, con su CSS | obligatoria (desde 0.3.0) |
+| 20 | Cajas y contenedores | Cómo son todas las cards, paneles y bloques, con su CSS | solo si se eligió una caja |
 
 ---
 
@@ -181,7 +182,7 @@ Ver [§2.5](#25-encabezado-obligatorio). Va al principio, antes del título del 
 
 **Texto fijo**, igual en todos los exports de la misma versión. El configurador no lo modifica. Es lo que reemplaza a una skill: viaja adentro del archivo.
 
-Texto actual (v0.3.0; suma la regla 10):
+Texto actual (v0.5.0; la 0.3.0 sumó la regla 10 y la 0.5.0 la 11):
 
 ```markdown
 ## 1. Instrucciones para la IA
@@ -210,6 +211,8 @@ por un configurador visual a partir de decisiones de una persona.
 10. La sección 19 define el layout y, si hay, el estilo visual: aplicá su
    CSS tal cual (las clases .pg-* son nombres de referencia: usalas o
    mapealas a tus componentes) y respetá sus reglas.
+11. Si hay sección 20, todas las cards, paneles y bloques usan esa caja
+   (su CSS y sus tokens --caja-*), aunque el estilo de la 19 diga otra cosa.
 ```
 
 ---
@@ -714,6 +717,32 @@ Si hay estilo, sigue un bloque `css` con **el CSS real** del estilo. Las clases 
 
 ---
 
+### §20. Cajas y contenedores
+
+**Responde:** cómo son todas las cards, paneles y bloques. Se elige un diseño base (23 en `src/cajas.ts`) y se ajusta cada parámetro.
+
+```yaml
+diseno_base: vidrio               # superficie | contorno | elevada | flotante | vidrio | velo | neobrutal | neumorfica | hundida | punteada | rayada | doble | cabecera | barra | cortada | ticket | brillo | degradado | puntos | papel | cuaderno | acento | editorial
+clases: "caja caja-forma-normal caja-hover-nada"
+fondo: superficie                 # superficie | fondo | acento_suave | acento | degradado | puntos | grano | lineas
+transparencia: 55%                # 0 = opaca, 90 = casi transparente
+desenfoque: 16px                  # desenfoque de lo que está detrás (efecto vidrio)
+contorno: { grosor: 1px, linea: solid, color: borde }   # linea: solid | dashed | dotted | double; color: borde | texto | acento
+esquinas: 20px                    # o heredar (= --radio-medio)
+sombra: suave                     # ninguna | suave | marcada | dura | brillo | interna | relieve
+espacio_interno: normal           # compacto (14px) | normal (22px) | amplio (34px)
+forma: normal                     # normal | cabecera | barra_lateral | esquina_cortada | ticket | filete
+al_pasar_el_mouse: nada           # nada | elevar | borde | escala | inclinar | brillo
+ajustado_a_mano: [transparencia]  # parámetros cambiados sobre el diseño base
+```
+
+Sigue un bloque `css` con la regla `.caja` y sus modificadores (`.caja-forma-*`, `.caja-hover-*`). Los valores resueltos van como tokens `--caja-fondo`, `--caja-borde`, `--caja-radio`, `--caja-sombra`, `--caja-padding`, `--caja-desenfoque`, `--caja-texto`, `--caja-texto-suave`, `--caja-color-marca` en §16. La transparencia se resuelve con `color-mix(... transparent)`, así funciona sobre cualquier fondo.
+
+- Con fondo `acento` y poca transparencia, el texto de la caja pasa a `sobre_acento` para mantener el contraste.
+- La caja de §20 tiene prioridad sobre el aspecto de las cards que traiga el estilo de §19 (regla 11).
+
+---
+
 ## 4. Prioridades y resolución de conflictos
 
 Cuando dos cosas se contradicen, la IA sigue este orden (gana la de arriba):
@@ -776,7 +805,7 @@ Así se vería un archivo real generado por el MVP. Las secciones `[v0.2]` apare
 ````markdown
 ```yaml
 formato: design-md
-version_formato: 0.4.0
+version_formato: 0.5.0
 generado_por: configurador-diseno
 fecha: 2026-11-06
 idioma: es
@@ -1063,6 +1092,10 @@ Formato: fecha · decisión · por qué · alternativas descartadas.
 | D27 | 2026-11-06 | «Comenzar» guarda el diseño que estaba a la vista y propone un botón que combina con ese estilo | Lo que se eligió sin darse cuenta ya es una decisión válida | Volver a elegir el estilo después |
 | D28 | 2026-11-06 | Los diseños de botón son entradas de datos con su CSS (aspecto + hover + animación al tocar); se exportan tal cual | Mismo criterio que los estilos (D23): la IA copia | Combinar a mano forma × textura × animación |
 | D29 | 2026-11-06 | El color del botón es un token propio (`--boton-color` / `--boton-sobre`); el texto se elige solo para pasar contraste | Permite botones de otro color sin romper la paleta | Atar el botón siempre al acento |
+| D30 | 2026-11-06 | Una sola transición entre diseños (el nuevo entra deslizándose y enfocándose, el anterior se va difuminándose) | Varias transiciones distintas no combinaban entre sí; una sola se siente natural | Transición al azar entre cinco |
+| D31 | 2026-11-06 | «Comenzar» es fijo en el centro y no cambia de aspecto; la página de atrás es solo fondo hasta tocarlo | Tiene que estar siempre en el mismo lugar; un botón que cambia con cada diseño se pierde | Usar el botón de cada diseño |
+| D32 | 2026-11-06 | Al comenzar, la misma página se despliega en modo elección: se detiene, aparecen flechas y el botón central baja y pasa a «Elegir este diseño» | Continuidad: lo que estabas viendo es lo que empezás a elegir | Ir a otra pantalla para elegir |
+| D33 | 2026-11-06 | Cajas como paso propio con diseño base + ajustes por parámetro; la caja elegida gana sobre las cards del estilo | Las cajas son la mitad de cualquier interfaz; mismo criterio que direcciones y movimiento (D5, D17) | Dejarlas atadas al estilo |
 
 ---
 
@@ -1096,9 +1129,10 @@ Cada vez que pasamos un export por una IA, se anota acá. Es lo que valida (o co
 | 1 | Opciones avanzadas plegables y botones que se animan al tocarlos | `[v0.2]` hecho |
 | 2 | **Elegí tu página:** pantalla completa para deslizar entre 12 layouts × 12 estilos, con candados y código por combinación | `[v0.3]` hecho |
 | 3 | **Panel de botones:** 24 diseños tocables en 6 categorías, con su animación de click; color, tamaño, icono y mayúsculas | `[v0.4]` hecho |
-| 4 | **Panel de formularios:** campos de texto, animación al escribir y enfocar, switches, checkboxes, selects, sliders | `[v0.5]` próximo |
+| 3b | **Panel de cajas y contenedores:** 23 diseños base y 11 ajustes (fondo, transparencia, desenfoque, contorno, línea, color, esquinas, sombra, espacio, forma, hover) | `[v0.5]` hecho |
+| 4 | **Panel de formularios:** campos de texto, animación al escribir y enfocar, switches, checkboxes, selects, sliders | `[v0.6]` próximo |
 | 5 | Paleta y tipografía en modo rápido, aplicadas en vivo a la página elegida | `[v0.3]` |
-| 6 | **Inicio a pantalla completa:** la página entera es la publicidad del producto y cambia de diseño sola cada 3,6 s con transiciones variadas; «Comenzar» lleva al panel de botones | `[v0.4]` hecho (adelantado: reemplaza la pantalla para deslizar de la etapa 2) |
+| 6 | **Inicio a pantalla completa:** la página entera es la publicidad del producto y cambia de diseño sola cada 4 s (deslizar + difuminar); «Comenzar» fijo en el centro; al tocarlo, la misma página pasa a elegirse a mano con flechas y «Elegir este diseño» | `[v0.5]` hecho |
 
 Requisito transversal: el export suma **el CSS real** de cada componente elegido (formato 0.3), para que la IA copie en vez de interpretar.
 
@@ -1151,3 +1185,4 @@ Lo que todavía no tiene lugar en §5. Se mueve allá cuando se decide hacerlo.
 | 0.2.0 | 2026-11-06 | Cambios que no rompen nada: §6 suma `paleta: personalizada`, el bloque `personalizada` y el rol `acento_suave`; un contraste que no pasa se anota en §18 en vez de bloquear (D15). §7 suma `peso_titulos`, `espaciado_titulos` y `contraste_tamanos` (4 niveles). §9 suma `elevacion: dura` y `bordes.componente`. §10 suma `botones.estilo`, `tamano`, `alto`, `padding_horizontal`, `texto`, `mayusculas` e `icono`. §12 suma el nivel `rapido`, `al_presionar` y más valores en `hover_botones`, `aparicion_listas` y `cambio_de_pantalla`. §5 pasa de 4 a 8 direcciones. Tokens nuevos en §16: `--color-acento-suave`, `--titulos-peso`, `--subtitulos-peso`, `--titulos-espaciado`, `--borde-componente`, `--boton-*`. |
 | 0.3.0 | 2026-11-06 | Sección nueva §19 (estilo visual y layout, con el CSS real del estilo) y regla 10 en las instrucciones para la IA. 9 paletas y 4 fuentes nuevas para los estilos. Compatible: un archivo 0.2.0 sigue siendo válido (sin §19 equivale a `estilo: clasico`). |
 | 0.4.0 | 2026-11-06 | §10 suma `botones.diseno`, `clases`, `al_tocar`, `color`, `color_fondo` y `color_texto`, más el bloque `css` del botón principal. §16 suma `--boton-color` y `--boton-sobre`. Compatible. |
+| 0.5.0 | 2026-11-06 | Sección nueva §20 (cajas y contenedores, con su CSS) y regla 11 en las instrucciones. §16 suma los tokens `--caja-*`. Compatible. |

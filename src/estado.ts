@@ -68,6 +68,7 @@ export function configInicial(): Config {
       paletaPersonalizada: { fondo: r.fondo, texto: r.texto, acento: r.acento, manual: {} },
     },
     botones: { estilo: DIRECCIONES.calmo.boton, tamano: 'normal', mayusculas: false, icono: 'ninguno', diseno: 'ninguno', color: 'acento' },
+    cajas: { preset: 'ninguno', ajustes: {} },
     notas: {},
     notasGenerales: '',
   };
@@ -126,6 +127,7 @@ export function normalizar(guardado: Partial<Config>): Config {
     funciones: { ...base.funciones, ...guardado.funciones },
     visual,
     botones: { ...base.botones, ...guardado.botones },
+    cajas: { ...base.cajas, ...guardado.cajas },
     notas: { ...guardado.notas },
   };
 }

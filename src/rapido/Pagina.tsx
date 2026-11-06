@@ -5,6 +5,7 @@ import type { CSSProperties, ReactNode } from 'react';
 import { animarToque } from '../componentes/ui';
 import { BOTONES, CSS_BASE_BOTON } from '../botones-disenos';
 import { BotonPrincipal } from '../componentes/BotonPrincipal';
+import { clasesDeCaja, CSS_CAJA, paramsDe } from '../cajas';
 import { cssDeEstilo, ESTILOS } from '../estilos-visuales';
 import { sistemaDeDiseno } from '../export/sistema';
 import { IconoFlecha } from '../pasos/visual';
@@ -17,7 +18,9 @@ export function EstilosVisualesGlobales() {
     CSS_BASE_BOTON.replace(/&/g, '.bt'),
     ...(Object.keys(BOTONES) as BotonDisenoId[]).map((id) => BOTONES[id].css.replace(/&/g, `.bt.bt-${id}`)),
   ];
-  return <style>{[...estilos, ...botones].join('\n')}</style>;
+  // Las cajas van al final y con más especificidad: lo que se elige en su panel gana sobre el estilo.
+  const cajas = CSS_CAJA.replace(/&/g, '.caja.caja.caja.caja');
+  return <style>{[...estilos, ...botones, cajas].join('\n')}</style>;
 }
 
 export function contenido(c: Config) {
@@ -85,8 +88,8 @@ function Nav({ k, simple = false }: { k: Contenido; simple?: boolean }) {
   );
 }
 
-const Card = ({ i, item, children }: { i: number; item: { titulo: string; texto: string }; children?: ReactNode }) => (
-  <div className="pg-card" style={{ animationDelay: `${i * 70}ms` }}>
+const Card = ({ i, item, cc = '', children }: { i: number; item: { titulo: string; texto: string }; cc?: string; children?: ReactNode }) => (
+  <div className={`pg-card ${cc}`} style={{ animationDelay: `${i * 70}ms` }}>
     <span className="pg-etiqueta">{String(i + 1).padStart(2, '0')}</span>
     <span className="pg-card-titulo">{item.titulo}</span>
     {item.texto && <span className="pg-card-texto">{item.texto}</span>}
@@ -99,7 +102,9 @@ const Bajada = ({ k }: { k: Contenido }) => <p className="pg-bajada">{k.bajada}<
 const Media = ({ clase = '' }: { clase?: string }) => <div className={`pg-media ${clase}`} aria-hidden="true" />;
 
 function Layout({ c, k }: { c: Config; k: Contenido }) {
-  const cards = k.items.map((it, i) => <Card key={i} i={i} item={it} />);
+  const caja = paramsDe(c);
+  const cc = caja ? clasesDeCaja(caja) : '';
+  const cards = k.items.map((it, i) => <Card key={i} i={i} item={it} cc={cc} />);
   switch (c.visual.layout) {
     case 'hero_partido':
       return (
@@ -281,7 +286,7 @@ function Layout({ c, k }: { c: Config; k: Contenido }) {
             </div>
             <div className="pg-kpis">
               {k.items.slice(0, 3).map((it, i) => (
-                <div key={i} className="pg-card" style={{ animationDelay: `${i * 70}ms` }}>
+                <div key={i} className={`pg-card ${cc}`} style={{ animationDelay: `${i * 70}ms` }}>
                   <span className="pg-etiqueta">{it.titulo}</span>
                   <span className="pg-kpi">{[128, 24, 96][i]}</span>
                 </div>
@@ -302,7 +307,7 @@ function Layout({ c, k }: { c: Config; k: Contenido }) {
           </section>
           <section className="pg-horizontal" tabIndex={0} aria-label="Paneles de ejemplo">
             {k.items.map((it, i) => (
-              <Card key={i} i={i} item={it}>
+              <Card key={i} i={i} item={it} cc={cc}>
                 <Media />
               </Card>
             ))}

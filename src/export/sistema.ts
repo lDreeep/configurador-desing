@@ -15,6 +15,7 @@ import {
 } from '../catalogo';
 import { derivarRoles, ESTADOS_CLAROS, ESTADOS_OSCUROS, esHex, esOscuro, mezclar, paresDeContraste, textoSobre } from '../color';
 import { pesoDisponible } from '../estado';
+import { paramsDe, tokensDeCaja } from '../cajas';
 import type { Config } from '../tipos';
 
 export { contraste } from '../color';
@@ -132,10 +133,12 @@ export function sistemaDeDiseno(c: Config) {
     '--curva-entrada': mov.curvaEntrada,
     '--curva-salida': mov.curvaSalida,
   };
+  const caja = paramsDe(c);
+  if (caja) Object.assign(tokens, tokensDeCaja(caja, paleta, radio.medio));
 
   return {
     dir, paleta, radio, mov, titulos, texto, pesoTitulos, pesoSubtitulos, espaciadoTitulos, proporcion,
-    boton, colorBoton, escala, espacios, factor, elevacion, bordeBloque, tokens,
+    boton, colorBoton, caja, escala, espacios, factor, elevacion, bordeBloque, tokens,
     contrastes: paresDeContraste(r),
   };
 }

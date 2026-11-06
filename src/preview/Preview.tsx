@@ -3,6 +3,7 @@ import { sistemaDeDiseno } from '../export/sistema';
 import type { Config } from '../tipos';
 import { animarToque } from '../componentes/ui';
 import { BotonPrincipal } from '../componentes/BotonPrincipal';
+import { clasesDeCaja, paramsDe } from '../cajas';
 
 const humanizar = (s: string) => {
   const t = s.replace(/_/g, ' ');
@@ -95,6 +96,8 @@ export function Preview({ config }: { config: Config }) {
   })();
 
   const estilo = { ...s.tokens } as CSSProperties;
+  const caja = paramsDe(config);
+  const cajaClases = caja ? clasesDeCaja(caja) : '';
   const layout = patron === 'menu_lateral' ? 'pv-fila' : patron === 'pestanas_abajo' ? 'pv-col-inversa' : 'pv-col';
 
   return (
@@ -127,7 +130,7 @@ export function Preview({ config }: { config: Config }) {
                 </div>
                 <div className="pv-bloques">
                   {pantalla.secciones.slice(0, 5).map((sec, i) => (
-                    <div key={sec + i} className="pv-bloque pg-card" style={{ animationDelay: `${i * 60}ms` }}>
+                    <div key={sec + i} className={`pv-bloque pg-card ${cajaClases}`} style={{ animationDelay: `${i * 60}ms` }}>
                       <span className="pv-etiqueta pg-etiqueta">Bloque {i + 1}</span>
                       <span className="pv-bloque-titulo pg-card-titulo">{humanizar(sec)}</span>
                     </div>

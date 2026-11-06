@@ -6,10 +6,11 @@ import type { BotonEstiloId } from '../tipos';
 import type { Config } from '../tipos';
 import { paresDeContraste } from '../color';
 import { BOTONES, clasesDeBoton, cssDeBoton, EFECTOS_TOQUE } from '../botones-disenos';
+import { CAJAS, clasesDeCaja, CSS_CAJA, paramsDe } from '../cajas';
 import { cssDeEstilo, ESTILOS, LAYOUTS } from '../estilos-visuales';
 import { paletaActiva, sistemaDeDiseno, tokensCss } from './sistema';
 
-export const VERSION_FORMATO = '0.4.0';
+export const VERSION_FORMATO = '0.5.0';
 
 const q = (s: string) => JSON.stringify(s);
 const valor = (s: string) => (s.trim() ? q(s.trim()) : 'sin_definir');
@@ -53,7 +54,9 @@ por un configurador visual a partir de decisiones de una persona.
    tu cuenta.
 10. La sección 19 define el layout y, si hay, el estilo visual: aplicá su
    CSS tal cual (las clases .pg-* son nombres de referencia: usalas o
-   mapealas a tus componentes) y respetá sus reglas.`;
+   mapealas a tus componentes) y respetá sus reglas.
+11. Si hay sección 20, todas las cards, paneles y bloques usan esa caja
+   (su CSS y sus tokens --caja-*), aunque el estilo de la 19 diga otra cosa.`;
 
 export const REGLAS_ACCESIBILIDAD = [
   'Contraste de texto 4.5:1 (3:1 en texto de 24px o más)',
@@ -424,6 +427,32 @@ estilo_reglas:${lista(estV.reglas)}`
       .filter(Boolean)
       .join('\n\n'),
   );
+
+  const cj = paramsDe(c);
+  if (cj && c.cajas.preset !== 'ninguno') {
+    const pre = CAJAS[c.cajas.preset];
+    const ajustadas = Object.keys(c.cajas.ajustes);
+    secciones.push(
+      [
+        '## 20. Cajas y contenedores',
+        `Todas las cards, paneles y bloques usan la caja «${pre.nombre}» (${pre.descripcion.toLowerCase()})${ajustadas.length ? `, con ajustes en: ${ajustadas.join(', ')}` : ''}.`,
+        yaml(`
+diseno_base: ${c.cajas.preset}
+clases: ${q(clasesDeCaja(cj))}
+fondo: ${cj.fondo}
+transparencia: ${cj.transparencia}%
+desenfoque: ${cj.desenfoque}px
+contorno: { grosor: ${cj.bordeGrosor}px, linea: ${cj.bordeEstilo}, color: ${cj.bordeColor} }
+esquinas: ${cj.radio === 'heredar' ? 'heredar' : cj.radio + 'px'}
+sombra: ${cj.sombra}
+espacio_interno: ${cj.relleno}
+forma: ${cj.forma}
+al_pasar_el_mouse: ${cj.hover}
+ajustado_a_mano: ${ids(ajustadas)}`),
+        '```css\n/* Requiere los tokens --caja-* de la sección 16. */\n' + CSS_CAJA.replace(/&/g, '.caja') + '\n```',
+      ].join('\n\n'),
+    );
+  }
 
   const encabezado = yaml(`
 formato: design-md

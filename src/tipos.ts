@@ -145,6 +145,31 @@ export type BotonDisenoId =
   | 'bisel'
   | 'terminal';
 
+export type CajaPresetId =
+  | 'superficie'
+  | 'contorno'
+  | 'elevada'
+  | 'flotante'
+  | 'vidrio'
+  | 'velo'
+  | 'neobrutal'
+  | 'neumorfica'
+  | 'hundida'
+  | 'punteada'
+  | 'rayada'
+  | 'doble'
+  | 'cabecera'
+  | 'barra'
+  | 'cortada'
+  | 'ticket'
+  | 'brillo'
+  | 'degradado'
+  | 'puntos'
+  | 'papel'
+  | 'cuaderno'
+  | 'acento'
+  | 'editorial';
+
 export type BotonEstiloId = 'relleno' | 'contorno' | 'tonal' | 'elevado' | 'sombra_dura';
 export type BotonTamano = 'compacto' | 'normal' | 'grande';
 export type BotonIcono = 'ninguno' | 'izquierda' | 'derecha';
@@ -245,6 +270,11 @@ export interface Config {
     diseno: BotonDisenoId | 'ninguno';
     /** 'acento' (de la paleta), 'texto' (monocromo) o un color hex propio. */
     color: string;
+  };
+  /** Cajas y contenedores (panel del modo rápido). 'ninguno' = las cards por defecto del formato. */
+  cajas: {
+    preset: CajaPresetId | 'ninguno';
+    ajustes: Partial<import('./cajas').ParamsCaja>;
   };
   notas: Partial<Record<PasoId, string>>;
   notasGenerales: string;

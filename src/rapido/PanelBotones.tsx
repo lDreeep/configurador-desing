@@ -19,7 +19,7 @@ const COLORES: { id: string; nombre: string }[] = [
   { id: '#0891B2', nombre: 'Turquesa' },
 ];
 
-function Segmentado<T extends string>(props: { etiqueta: string; opciones: [T, string][]; valor: T; onElegir: (v: T) => void }) {
+export function Segmentado<T extends string>(props: { etiqueta: string; opciones: [T, string][]; valor: T; onElegir: (v: T) => void }) {
   return (
     <div className="pb-grupo">
       <span className="pb-etiqueta">{props.etiqueta}</span>
