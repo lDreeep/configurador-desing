@@ -6,9 +6,33 @@
 // En el CSS de un diseño, `&` es .cm-<categoria>.cm-<categoria>-<diseño>.
 // Usar solo tokens: --color-*, --radio-*, --fuente-*, --duracion-*, --curva-*, --boton-*.
 
-import type { ComponentType } from 'react';
+import { createContext, type ComponentType } from 'react';
+import type { Config } from '../tipos';
 
-export type CategoriaId = 'campo' | 'interruptor' | 'casilla' | 'deslizador' | 'nav_movil' | 'nav_web';
+export type CategoriaId =
+  | 'boton_sec'
+  | 'boton_icono'
+  | 'campo'
+  | 'selector'
+  | 'interruptor'
+  | 'casilla'
+  | 'deslizador'
+  | 'nav_movil'
+  | 'nav_web'
+  | 'etiqueta'
+  | 'aviso'
+  | 'cargando'
+  | 'progreso'
+  | 'acordeon'
+  | 'avatar'
+  | 'tooltip'
+  | 'modal'
+  | 'metrica'
+  | 'grafico'
+  | 'tabla';
+
+/** La config actual, para muestras que combinan con otras elecciones (por ejemplo, el botón principal). */
+export const GaleriaContexto = createContext<Config | null>(null);
 
 export interface DisenoComp {
   nombre: string;

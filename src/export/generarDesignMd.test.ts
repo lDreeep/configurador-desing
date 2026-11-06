@@ -281,10 +281,10 @@ describe('galería de componentes', () => {
     }
   });
 
-  it('cada categoría tiene al menos 8 diseños y un CSS base', async () => {
+  it('cada categoría tiene al menos 6 diseños y un CSS base', async () => {
     const { CATEGORIAS } = await import('../galeria');
     for (const def of Object.values(CATEGORIAS)) {
-      expect(Object.keys(def.disenos).length).toBeGreaterThanOrEqual(8);
+      expect(Object.keys(def.disenos).length).toBeGreaterThanOrEqual(6);
       expect(def.base).toContain('&');
     }
   });

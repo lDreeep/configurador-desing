@@ -14,7 +14,7 @@ import { PanelListo } from './rapido/PanelListo';
 import { PanelTipo } from './rapido/PanelTipo';
 
 type Modo = 'rapido' | 'avanzado';
-type PasoRapido = 'inicio' | 'tipo' | 'botones' | 'cajas' | 'formularios' | 'navegacion' | 'listo';
+type PasoRapido = 'inicio' | 'tipo' | 'botones' | 'botones_mas' | 'cajas' | 'formularios' | 'navegacion' | 'elementos' | 'datos' | 'listo';
 const CLAVE_MODO = 'configurador-diseno:modo';
 
 function leerModo(): Modo {
@@ -61,6 +61,8 @@ export function App() {
 
   if (modo === 'rapido') {
     const comun = { config, setConfig };
+    // En dashboards y apps web, los datos van antes que los formularios.
+    const esDatos = config.proyecto.tipo === 'dashboard' || config.proyecto.tipo === 'app_web';
     const navPrimero = config.proyecto.tipo === 'app_movil' ? (['nav_movil', 'nav_web'] as const) : (['nav_web', 'nav_movil'] as const);
     return (
       <>
@@ -80,17 +82,29 @@ export function App() {
           />
         )}
         {pasoRapido === 'tipo' && <PanelTipo {...comun} onAtras={() => irRapido('inicio')} onSeguir={() => irRapido('botones')} />}
-        {pasoRapido === 'botones' && <PanelBotones {...comun} onAtras={() => irRapido('tipo')} onSeguir={() => irRapido('cajas')} />}
-        {pasoRapido === 'cajas' && <PanelCajas {...comun} onAtras={() => irRapido('botones')} onSeguir={() => irRapido('formularios')} />}
+        {pasoRapido === 'botones' && <PanelBotones {...comun} onAtras={() => irRapido('tipo')} onSeguir={() => irRapido('botones_mas')} />}
+        {pasoRapido === 'botones_mas' && (
+          <PanelGaleria
+            {...comun}
+            paso="Paso 3 · segunda parte"
+            titulo="Combiná tus botones"
+            bajada="Casi nunca hay un solo botón: al lado del principal suele ir uno secundario, y en toda app hay botones de icono. Cada secundario aparece junto a tu principal para que veas cuál combina."
+            categorias={['boton_sec', 'boton_icono']}
+            atras="Volver al botón principal"
+            onAtras={() => irRapido('botones')}
+            onSeguir={() => irRapido('cajas')}
+          />
+        )}
+        {pasoRapido === 'cajas' && <PanelCajas {...comun} onAtras={() => irRapido('botones_mas')} onSeguir={() => irRapido(esDatos ? 'datos' : 'formularios')} />}
         {pasoRapido === 'formularios' && (
           <PanelGaleria
             {...comun}
             paso="Paso 5"
             titulo="Elegí tus formularios"
-            bajada="Campos de texto, interruptores, casillas y deslizadores. Escribí, tocá y arrastrá cada uno: todos usan tus colores y tu letra."
-            categorias={['campo', 'interruptor', 'casilla', 'deslizador']}
-            atras="Volver a las cajas"
-            onAtras={() => irRapido('cajas')}
+            bajada="Campos de texto, selectores tipo slide, interruptores, casillas y deslizadores. Escribí, tocá y arrastrá cada uno: todos usan tus colores y tu letra."
+            categorias={['campo', 'selector', 'interruptor', 'casilla', 'deslizador']}
+            atras={esDatos ? 'Volver a los datos' : 'Volver a las cajas'}
+            onAtras={() => irRapido(esDatos ? 'datos' : 'cajas')}
             onSeguir={() => irRapido('navegacion')}
           />
         )}
@@ -107,11 +121,35 @@ export function App() {
             categorias={[...navPrimero]}
             atras="Volver a los formularios"
             onAtras={() => irRapido('formularios')}
-            onSeguir={() => irRapido('listo')}
+            onSeguir={() => irRapido('elementos')}
+          />
+        )}
+        {pasoRapido === 'elementos' && (
+          <PanelGaleria
+            {...comun}
+            paso="Paso 7"
+            titulo="Elegí los detalles"
+            bajada="Las piezas chicas que aparecen en toda app: etiquetas, avisos, cargas, progreso, preguntas frecuentes, avatares, ayudas y ventanas."
+            categorias={['etiqueta', 'aviso', 'cargando', 'progreso', 'acordeon', 'avatar', 'tooltip', 'modal']}
+            atras="Volver a la navegación"
+            onAtras={() => irRapido('navegacion')}
+            onSeguir={() => irRapido(esDatos ? 'listo' : 'datos')}
+          />
+        )}
+        {pasoRapido === 'datos' && (
+          <PanelGaleria
+            {...comun}
+            paso={esDatos ? 'Paso 5' : 'Paso 8'}
+            titulo="Elegí cómo mostrar datos"
+            bajada="Tarjetas de métricas, gráficos y tablas para dashboards y estadísticas. Pasá el mouse por los gráficos para ver cada dato."
+            categorias={['metrica', 'grafico', 'tabla']}
+            atras={esDatos ? 'Volver a las cajas' : 'Volver a los detalles'}
+            onAtras={() => irRapido(esDatos ? 'cajas' : 'elementos')}
+            onSeguir={() => irRapido(esDatos ? 'formularios' : 'listo')}
           />
         )}
         {pasoRapido === 'listo' && (
-          <PanelListo config={config} onAtras={() => irRapido('navegacion')} onAvanzado={() => alAvanzado('exportar')} onInicio={() => irRapido('inicio')} />
+          <PanelListo config={config} onAtras={() => irRapido(esDatos ? 'elementos' : 'datos')} onAvanzado={() => alAvanzado('exportar')} onInicio={() => irRapido('inicio')} />
         )}
       </>
     );

@@ -762,7 +762,17 @@ nav_movil:
   …
 ```
 
-Categorías: `campo` (30 diseños), `interruptor` (14), `casilla` (14), `deslizador` (14), `nav_movil` (18), `nav_web` (17). Sigue un bloque `css` con la base de cada categoría y el diseño elegido. Las barras de navegación usan `--i` (pestaña activa) y `--n` (cantidad) para mover sus indicadores.
+Categorías (20):
+
+| Grupo | Categorías (diseños) |
+|---|---|
+| Botones | `boton_sec` (14, se muestra junto al principal), `boton_icono` (10) |
+| Formularios | `campo` (30), `selector` (12, tipo slide, chico y grande), `interruptor` (14), `casilla` (14), `deslizador` (14) |
+| Navegación | `nav_movil` (18), `nav_web` (17) |
+| Detalles | `etiqueta` (10), `aviso` (8), `cargando` (10), `progreso` (8), `acordeon` (6), `avatar` (6), `tooltip` (6), `modal` (6) |
+| Datos | `metrica` (10), `grafico` (10), `tabla` (6) |
+
+Los gráficos siguen la guía de visualización del proyecto: una serie por color (los de partes de un total usan pasos de luminosidad de un mismo tono, con leyenda y valores), marcas finas, extremos de 4px redondeados apoyados en la base, líneas de 2px, grilla tenue, textos con los colores de texto y un tooltip (`<title>`) en cada marca. Los estados de las tablas llevan punto + texto, nunca solo color. Sigue un bloque `css` con la base de cada categoría y el diseño elegido. Las barras de navegación usan `--i` (pestaña activa) y `--n` (cantidad) para mover sus indicadores.
 
 ---
 
@@ -1123,6 +1133,9 @@ Formato: fecha · decisión · por qué · alternativas descartadas.
 | D35 | 2026-11-06 | La galería se organiza por categorías con estructura HTML fija y diseños que solo cambian el CSS | Sumar diseños es sumar datos; la IA recibe estructura + CSS reproducibles | Un componente React distinto por diseño |
 | D36 | 2026-11-06 | Las referencias externas se convierten en entradas con la skill `agregar-diseno-desde-referencia` | Que cada entrada nueva salga con la misma calidad (solo tokens, accesible, sin marcas) | Copiar el código de cada sitio |
 | D37 | 2026-11-06 | Primera ampliación grande del catálogo hecha por Claude a partir de patrones conocidos (sin copiar sitios): 50 botones, 30 campos, 14 interruptores, 14 casillas, 14 deslizadores, 18 barras inferiores, 17 navegaciones web, 29 cajas, 33 fuentes | Llenar la base rápido con lo conocido; lo distintivo vendrá de referencias reales (D25, D36) | Esperar a tener referencias para todo |
+| D38 | 2026-11-06 | El botón secundario se elige viéndolo junto al principal | Los botones van de a pares; elegirlos sueltos no muestra si combinan | Elegir el secundario por separado |
+| D39 | 2026-11-06 | En dashboards y apps web, el panel de datos aparece antes que los formularios | Es lo central de esos proyectos | Mismo orden para todos |
+| D40 | 2026-11-06 | Cada categoría nueva arranca con 6 a 14 diseños; se amplía después | Primero cubrir todos los elementos, después la profundidad de cada uno | Completar una categoría antes de empezar otra |
 
 ---
 
@@ -1161,7 +1174,11 @@ Cada vez que pasamos un export por una IA, se anota acá. Es lo que valida (o co
 | 4 | **Panel de formularios:** 16 campos (con animación al enfocar y al escribir), 8 interruptores, 8 casillas, 8 deslizadores | `[v0.6]` hecho |
 | 4b | **Panel de navegación:** 10 barras inferiores para celular y 9 navegaciones web (superiores, flotantes y laterales), con su animación al cambiar | `[v0.6]` hecho |
 | 4c | **Listo:** resumen y descarga del DESIGN.md desde el modo rápido | `[v0.6]` hecho |
-| 4d | **Datos y métricas:** tarjetas de indicadores, gráficos (barras, línea, área, dona), tablas | `[v0.7]` próximo |
+| 3c | **Combinación de botones:** botón secundario junto al principal y botones de icono | `[v0.6]` hecho |
+| 4f | **Selectores tipo slide** (chicos y grandes) | `[v0.6]` hecho |
+| 4g | **Detalles:** etiquetas, avisos, carga, progreso, acordeones, avatares, tooltips, ventanas | `[v0.6]` hecho |
+| 4d | **Datos y métricas:** tarjetas de métricas, 10 tipos de gráfico, tablas; en dashboards y apps web va antes que los formularios | `[v0.6]` hecho |
+| 4h | Más elementos: menús desplegables, buscadores, calendarios, paginación, migas de pan, pasos (stepper), estados vacíos, carruseles, footers | `[futuro]` |
 | 4e | **¿Para qué es?** (rubro) + biblioteca de secciones: el borrador se reacomoda según el uso | `[v0.7]` |
 | 5 | Paleta y tipografía en modo rápido, aplicadas en vivo a la página elegida | `[v0.3]` |
 | 6 | **Inicio a pantalla completa:** la página entera es la publicidad del producto y cambia de diseño sola cada 4 s (deslizar + difuminar); «Comenzar» fijo en el centro; al tocarlo, la misma página pasa a elegirse a mano con flechas y «Elegir este diseño» | `[v0.5]` hecho |
@@ -1220,3 +1237,4 @@ Lo que todavía no tiene lugar en §5. Se mueve allá cuando se decide hacerlo.
 | 0.5.0 | 2026-11-06 | Sección nueva §20 (cajas y contenedores, con su CSS) y regla 11 en las instrucciones. §16 suma los tokens `--caja-*`. Compatible. |
 | 0.6.0 | 2026-11-06 | Sección nueva §21 (componentes de interfaz con estructura y CSS) y regla 12. Compatible. |
 | 0.6.1 | 2026-11-06 | Sin cambios de formato: más valores en listas existentes (`al_tocar` suma temblor, latido y estallido; cajas suman `fondo: invertido` y `sombra: color`). |
+| 0.6.2 | 2026-11-06 | Sin cambios de formato: §21 suma 14 categorías nuevas (las claves nuevas son opcionales). |

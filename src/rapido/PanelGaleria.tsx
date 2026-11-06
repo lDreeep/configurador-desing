@@ -4,7 +4,7 @@ import { useState, type CSSProperties } from 'react';
 import { BotonPrincipal } from '../componentes/BotonPrincipal';
 import { sistemaDeDiseno } from '../export/sistema';
 import { CATEGORIAS, type CategoriaId, DISENO_INICIAL } from '../galeria';
-import { claseDe } from '../galeria/base';
+import { claseDe, GaleriaContexto } from '../galeria/base';
 import type { Config } from '../tipos';
 
 export function PanelGaleria(props: {
@@ -28,6 +28,7 @@ export function PanelGaleria(props: {
   const listos = props.categorias.filter((id) => elegido(id)).length;
 
   return (
+    <GaleriaContexto.Provider value={c}>
     <div className={`panel-botones panel-galeria pg ${estilo}`} style={s.tokens as CSSProperties}>
       <div className="pb-contenido">
         <header className="pb-cabecera">
@@ -95,5 +96,6 @@ export function PanelGaleria(props: {
         </BotonPrincipal>
       </footer>
     </div>
+    </GaleriaContexto.Provider>
   );
 }

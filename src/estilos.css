@@ -560,3 +560,15 @@ button:disabled { cursor: not-allowed; opacity: 0.4; }
   .pt-opcion { min-height: 150px; padding: 16px !important; }
   .pt-nombre { font-size: 18px; }
 }
+
+/* Piezas de las muestras de la galería */
+.cm-par { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 10px; }
+.cm-fila-iconos, .cm-fila-etiquetas { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 10px; }
+.cm-centro { align-items: center; }
+.cm-ancho { width: 100%; align-items: stretch; }
+.cm-repetir { align-self: center; min-height: 36px; padding: 0 12px; border-radius: 8px; border: 1px dashed var(--color-borde); background: transparent; color: var(--color-texto-suave); font: inherit; font-size: 12.5px; font-weight: 600; cursor: pointer; }
+.cm-repetir:hover { color: var(--color-texto); border-color: var(--color-texto-suave); }
+.cm-repetir:focus-visible { outline: 2px solid var(--color-acento); outline-offset: 2px; }
+.cm-oculto { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.pg-pestanas { overflow-x: auto; flex-wrap: nowrap; }
+.pg-pestanas button { flex-shrink: 0; }
