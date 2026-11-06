@@ -336,6 +336,164 @@ export const BOTONES: Record<BotonDisenoId, BotonDiseno> = {
     css: `& { background: var(--boton-color); color: var(--boton-sobre); border: none; border-radius: 6px; }
 &:hover { transform: rotate(-1.5deg); }`,
   },
+  contorno_doble_color: {
+    nombre: 'Doble contorno', descripcion: 'Dos líneas de color separadas', categoria: 'contornos', efecto: 'pulso',
+    css: `& { background: var(--color-fondo); color: var(--color-texto); border: 2px solid var(--boton-color); box-shadow: 0 0 0 3px var(--color-fondo), 0 0 0 5px color-mix(in srgb, var(--boton-color) 45%, transparent); }
+&:hover { box-shadow: 0 0 0 3px var(--color-fondo), 0 0 0 5px var(--boton-color); }`,
+  },
+  relleno_lateral: {
+    nombre: 'Se llena de costado', descripcion: 'El color entra desde la izquierda', categoria: 'efectos', efecto: 'aplastar',
+    css: `& { color: var(--color-texto); border: 2px solid var(--boton-color); background: linear-gradient(var(--boton-color), var(--boton-color)) no-repeat left / 0% 100%; transition: background-size 380ms var(--curva-entrada), color 220ms ease; }
+&:hover { background-size: 100% 100%; color: var(--boton-sobre); }`,
+  },
+  centro_expande: {
+    nombre: 'Desde el centro', descripcion: 'El color crece desde el medio hacia los bordes', categoria: 'efectos', efecto: 'onda',
+    css: `& { color: var(--color-texto); border: 2px solid var(--boton-color); background: linear-gradient(var(--boton-color), var(--boton-color)) no-repeat center / 0% 100%; transition: background-size 360ms var(--curva-entrada), color 220ms ease; }
+&:hover { background-size: 100% 100%; color: var(--boton-sobre); }`,
+  },
+  subrayado_relleno: {
+    nombre: 'Línea que sube', descripcion: 'La línea de abajo crece hasta llenar el botón', categoria: 'efectos', efecto: 'aplastar',
+    css: `& { color: var(--color-texto); border: none; border-radius: 0; background: linear-gradient(var(--boton-color), var(--boton-color)) no-repeat bottom / 100% 3px; transition: background-size 320ms var(--curva-entrada), color 220ms ease; }
+&:hover { background-size: 100% 100%; color: var(--boton-sobre); }`,
+  },
+  sombra_suave_color: {
+    nombre: 'Sombra de color difusa', descripcion: 'Relleno con un brillo de su color abajo', categoria: 'solidos', efecto: 'hundir',
+    css: `& { background: var(--boton-color); color: var(--boton-sobre); border: none; box-shadow: 0 10px 24px -6px color-mix(in srgb, var(--boton-color) 70%, transparent); }
+&:hover { transform: translateY(-2px); box-shadow: 0 16px 30px -8px color-mix(in srgb, var(--boton-color) 80%, transparent); }`,
+  },
+  plano_cuadrado: {
+    nombre: 'Plano recto', descripcion: 'Sólido, sin esquinas redondeadas', categoria: 'solidos', efecto: 'hundir',
+    css: `& { background: var(--boton-color); color: var(--boton-sobre); border: none; border-radius: 0; text-transform: uppercase; letter-spacing: 0.08em; font-size: calc(var(--boton-texto) * 0.9); }
+&:hover { filter: brightness(0.9); }`,
+  },
+  gota: {
+    nombre: 'Gota', descripcion: 'Una esquina recta y tres redondeadas', categoria: 'solidos', efecto: 'gelatina',
+    css: `& { background: var(--boton-color); color: var(--boton-sobre); border: none; border-radius: 999px 999px 999px 4px; }
+&:hover { border-radius: 4px 999px 999px 999px; }`,
+  },
+  pestana: {
+    nombre: 'Pestaña', descripcion: 'Redondeado solo arriba, como una solapa', categoria: 'solidos', efecto: 'rebote',
+    css: `& { background: var(--boton-color); color: var(--boton-sobre); border: none; border-radius: 16px 16px 0 0; border-bottom: 4px solid color-mix(in srgb, var(--boton-color) 60%, #000); }
+&:hover { transform: translateY(-2px); }`,
+  },
+  contorno_grueso: {
+    nombre: 'Contorno grueso', descripcion: 'Borde pesado del color', categoria: 'contornos', efecto: 'temblor',
+    css: `& { background: transparent; color: var(--color-texto); border: 4px solid var(--boton-color); }
+&:hover { background: color-mix(in srgb, var(--boton-color) 15%, transparent); }`,
+  },
+  contorno_redondo_icono: {
+    nombre: 'Contorno con flecha', descripcion: 'Píldora con borde y flecha que avanza', categoria: 'contornos', efecto: 'rebote',
+    css: `& { background: transparent; color: var(--color-texto); border: 1.5px solid var(--color-texto); border-radius: 999px; gap: 12px; }
+&::after { content: '→'; transition: transform 260ms var(--curva-entrada); }
+&:hover { background: var(--color-texto); color: var(--color-fondo); }
+&:hover::after { transform: translateX(4px); }`,
+  },
+  tres_d_lateral: {
+    nombre: '3D de costado', descripcion: 'Volumen hacia la derecha y abajo', categoria: 'volumen', efecto: 'propio',
+    css: `& { background: var(--boton-color); color: var(--boton-sobre); border: none; border-radius: 8px; box-shadow: 4px 4px 0 color-mix(in srgb, var(--boton-color) 55%, #000); margin: 0 4px 4px 0; }
+&:hover { transform: translate(-1px, -1px); box-shadow: 5px 5px 0 color-mix(in srgb, var(--boton-color) 55%, #000); }
+&.toque { animation: bt-k-3dl 260ms ease; }
+@keyframes bt-k-3dl { 40% { transform: translate(4px, 4px); box-shadow: 0 0 0 color-mix(in srgb, var(--boton-color) 55%, #000); } }`,
+  },
+  teclado: {
+    nombre: 'Tecla', descripcion: 'Como una tecla de teclado mecánico', categoria: 'volumen', efecto: 'propio',
+    css: `& { background: linear-gradient(180deg, var(--color-superficie-alta), var(--color-superficie)); color: var(--color-texto); border: 1px solid var(--color-borde); border-radius: 10px; box-shadow: 0 4px 0 var(--color-borde), 0 6px 10px rgba(0,0,0,.15); font-family: ui-monospace, Menlo, monospace; }
+&.toque { animation: bt-k-tecla 200ms ease; }
+@keyframes bt-k-tecla { 40% { transform: translateY(4px); box-shadow: 0 0 0 var(--color-borde), 0 1px 2px rgba(0,0,0,.15); } }`,
+  },
+  almohada: {
+    nombre: 'Almohada', descripcion: 'Muy redondo e inflado, con sombra suave', categoria: 'volumen', efecto: 'gelatina',
+    css: `& { background: var(--boton-color); color: var(--boton-sobre); border: none; border-radius: 22px; padding: 0 calc(var(--boton-padding) * 1.4); box-shadow: inset 0 -6px 0 rgba(0,0,0,.18), inset 0 4px 0 rgba(255,255,255,.25), 0 8px 16px rgba(0,0,0,.18); }`,
+  },
+  esmerilado: {
+    nombre: 'Vidrio esmerilado', descripcion: 'Blanco translúcido con mucho desenfoque', categoria: 'texturas', efecto: 'brillo',
+    css: `& { background: rgba(255,255,255,.35); color: var(--color-texto); border: 1px solid rgba(255,255,255,.6); backdrop-filter: blur(20px) saturate(1.6); -webkit-backdrop-filter: blur(20px) saturate(1.6); box-shadow: 0 8px 24px rgba(0,0,0,.12); }`,
+  },
+  metal_oscuro: {
+    nombre: 'Metal oscuro', descripcion: 'Grafito con brillo metálico', categoria: 'texturas', efecto: 'brillo',
+    css: `& { background: linear-gradient(180deg, #4A4D55, #23252B 50%, #15171C); color: #F3F4F6; border: 1px solid #000; box-shadow: inset 0 1px 0 rgba(255,255,255,.25), 0 4px 10px rgba(0,0,0,.35); }
+&:hover { background: linear-gradient(180deg, #555963, #2A2C33 50%, #1A1C21); }`,
+  },
+  oro: {
+    nombre: 'Dorado', descripcion: 'Degradado dorado, de lujo', categoria: 'texturas', efecto: 'brillo',
+    css: `& { background: linear-gradient(135deg, #8A6A1F, #E8C766 40%, #B8922F 60%, #F3DE95); color: #2A1E05; border: 1px solid #7A5C14; text-shadow: 0 1px 0 rgba(255,255,255,.4); }
+&:hover { filter: brightness(1.08); }`,
+  },
+  tiza: {
+    nombre: 'Pizarra y tiza', descripcion: 'Fondo de pizarrón con borde de tiza', categoria: 'texturas', efecto: 'temblor',
+    css: `& { background: #2F3A33; color: #F2F2EC; border: 2px dashed rgba(242,242,236,.7); font-family: var(--fuente-titulos); }
+&:hover { border-style: solid; }`,
+  },
+  papel_recortado: {
+    nombre: 'Papel', descripcion: 'Como un recorte de papel con sombra', categoria: 'texturas', efecto: 'rebote',
+    css: `& { background: #FFFDF7; color: #2A2A2A; border: none; border-radius: 2px; box-shadow: 0 1px 1px rgba(0,0,0,.15), 0 6px 10px -4px rgba(0,0,0,.3); transform: rotate(-1deg); }
+&:hover { transform: rotate(0deg) translateY(-2px); }`,
+  },
+  cinta: {
+    nombre: 'Cinta adhesiva', descripcion: 'Con dos tiras de cinta en las puntas', categoria: 'texturas', efecto: 'rebote',
+    css: `& { background: var(--color-superficie-alta); color: var(--color-texto); border: none; border-radius: 0; box-shadow: 0 4px 10px rgba(0,0,0,.15); }
+&::before, &::after { content: ''; position: absolute; top: -8px; width: 34px; height: 14px; background: color-mix(in srgb, var(--boton-color) 45%, rgba(255,255,255,.5)); }
+&::before { left: -10px; transform: rotate(-30deg); }
+&::after { right: -10px; transform: rotate(30deg); }`,
+  },
+  luz_neon_tubo: {
+    nombre: 'Tubo de neón', descripcion: 'Solo el texto brilla, sin caja', categoria: 'texturas', efecto: 'latido',
+    css: `& { background: transparent; color: var(--boton-color); border: none; font-weight: 800; letter-spacing: 0.06em; text-shadow: 0 0 6px var(--boton-color), 0 0 16px var(--boton-color); }
+&:hover { text-shadow: 0 0 8px var(--boton-color), 0 0 24px var(--boton-color), 0 0 40px var(--boton-color); }`,
+  },
+  brillo_borde: {
+    nombre: 'Borde con brillo', descripcion: 'Un destello recorre el borde al pasar', categoria: 'efectos', efecto: 'pulso',
+    css: `& { background: var(--color-fondo); color: var(--color-texto); border: 2px solid transparent; background: linear-gradient(var(--color-fondo), var(--color-fondo)) padding-box, linear-gradient(90deg, var(--color-borde), var(--boton-color), var(--color-borde)) border-box; background-size: 100% 100%, 200% 100%; transition: background-position 700ms ease; }
+&:hover { background-position: 0 0, 100% 0; }`,
+  },
+  magnetico: {
+    nombre: 'Se agranda el texto', descripcion: 'El texto se separa y crece al pasar', categoria: 'efectos', efecto: 'hundir',
+    css: `& { background: var(--boton-color); color: var(--boton-sobre); border: none; transition: letter-spacing 300ms var(--curva-entrada), transform var(--duracion-rapida) ease; }
+&:hover { letter-spacing: 0.12em; }`,
+  },
+  deslizar_icono: {
+    nombre: 'Icono que entra', descripcion: 'Al pasar, entra una flecha y el texto se corre', categoria: 'efectos', efecto: 'hundir',
+    css: `& { background: var(--boton-color); color: var(--boton-sobre); border: none; overflow: hidden; }
+&::before { content: '→'; position: absolute; left: 14px; transform: translateX(-40px); transition: transform 300ms var(--curva-entrada); }
+& .bt-texto { transition: transform 300ms var(--curva-entrada); }
+&:hover::before { transform: none; }
+&:hover .bt-texto { transform: translateX(12px); }`,
+  },
+  gira_borde: {
+    nombre: 'Gira al pasar', descripcion: 'Se inclina un poco hacia vos', categoria: 'efectos', efecto: 'rebote',
+    css: `& { background: var(--boton-color); color: var(--boton-sobre); border: none; transition: transform 360ms cubic-bezier(.3,1.6,.5,1); }
+&:hover { transform: perspective(400px) rotateX(12deg) scale(1.03); }`,
+  },
+  onda_continua: {
+    nombre: 'Ondas', descripcion: 'Ondas que salen todo el tiempo', categoria: 'efectos', efecto: 'pulso',
+    css: `& { background: var(--boton-color); color: var(--boton-sobre); border: none; animation: bt-ondas 2s ease-out infinite; }
+@keyframes bt-ondas { from { box-shadow: 0 0 0 0 color-mix(in srgb, var(--boton-color) 50%, transparent); } to { box-shadow: 0 0 0 14px transparent; } }`,
+  },
+  mac_clasico: {
+    nombre: 'Escritorio clásico', descripcion: 'Redondeado, con borde negro grueso, años 80', categoria: 'retro', efecto: 'propio',
+    css: `& { background: #FFFFFF; color: #000; border: 2px solid #000; border-radius: 10px; box-shadow: inset 0 0 0 2px #FFFFFF, inset 0 0 0 3px #000; font-family: ui-monospace, Menlo, monospace; }
+&.toque { animation: bt-k-mac 200ms steps(1); }
+@keyframes bt-k-mac { 0%, 70% { background: #000; color: #FFF; } }`,
+  },
+  arcade: {
+    nombre: 'Arcade', descripcion: 'Botón redondo de máquina de juegos', categoria: 'retro', efecto: 'propio',
+    css: `& { background: radial-gradient(circle at 40% 30%, color-mix(in srgb, var(--boton-color) 60%, #fff), var(--boton-color) 60%); color: var(--boton-sobre); border: 3px solid color-mix(in srgb, var(--boton-color) 50%, #000); border-radius: 999px; box-shadow: 0 6px 0 color-mix(in srgb, var(--boton-color) 40%, #000); text-transform: uppercase; font-weight: 800; margin-bottom: 6px; }
+&.toque { animation: bt-k-arcade 220ms ease; }
+@keyframes bt-k-arcade { 40% { transform: translateY(5px); box-shadow: 0 1px 0 color-mix(in srgb, var(--boton-color) 40%, #000); } }`,
+  },
+  gameboy: {
+    nombre: 'Consola portátil', descripcion: 'Verde de pantalla vieja, píxeles', categoria: 'retro', efecto: 'temblor',
+    css: `& { background: #9BBC0F; color: #0F380F; border: 3px solid #0F380F; border-radius: 4px; font-family: ui-monospace, Menlo, monospace; text-transform: uppercase; box-shadow: 3px 3px 0 #306230; }`,
+  },
+  web_2000: {
+    nombre: 'Web 2000', descripcion: 'Brillo de botón de internet de los 2000', categoria: 'retro', efecto: 'brillo',
+    css: `& { background: linear-gradient(180deg, color-mix(in srgb, var(--boton-color) 50%, #fff) 0%, var(--boton-color) 50%, color-mix(in srgb, var(--boton-color) 80%, #000) 100%); color: var(--boton-sobre); border: 1px solid color-mix(in srgb, var(--boton-color) 60%, #000); border-radius: 6px; text-shadow: 0 -1px 0 rgba(0,0,0,.3); }`,
+  },
+  minimal_texto: {
+    nombre: 'Solo texto en negrita', descripcion: 'Sin caja; se subraya al pasar', categoria: 'contornos', efecto: 'aplastar',
+    css: `& { background: transparent; color: var(--boton-color); border: none; padding: 0 6px; font-weight: 800; }
+&:hover { text-decoration: underline; text-underline-offset: 5px; text-decoration-thickness: 2px; }`,
+  },
 };
 
 /** Diseño de botón que se propone para cada estilo visual (después se cambia en el panel). */
