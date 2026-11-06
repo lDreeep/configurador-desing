@@ -12,7 +12,7 @@ import { CATEGORIAS, type CategoriaId } from '../galeria';
 import { cssBaseDe, cssDisenoDe } from '../galeria/base';
 import { paletaActiva, sistemaDeDiseno, tokensCss } from './sistema';
 
-export const VERSION_FORMATO = '0.7.0';
+export const VERSION_FORMATO = '0.7.1';
 
 const q = (s: string) => JSON.stringify(s);
 const valor = (s: string) => (s.trim() ? q(s.trim()) : 'sin_definir');
@@ -39,7 +39,17 @@ export const esSistemaDeDiseno = (c: Config) =>
 
 export const PREGUNTA_USO = '¿Aplico este diseño a una app o web que ya tenés, o me contás qué querés construir?';
 
-const reglas = (sistema: boolean) => `1. Leé el archivo completo antes de escribir código.
+export const PASO_MAQUETA = `**Antes de aplicar todo, mostrá una maqueta.** Armá primero una maqueta de
+cómo va a quedar (una página HTML estática o una captura, con las pantallas
+principales y los componentes de este archivo ya aplicados: colores, tipografía,
+botones, cajas, campos, navegación y estados como avisos o ventanas). Mostrásela
+a la persona y esperá su visto bueno o sus cambios. Recién después aplicá el
+diseño completo. Si es una app que ya existe, la maqueta muestra esas mismas
+pantallas con el diseño nuevo, para comparar el antes y el después.`;
+
+const reglas = (sistema: boolean) => `${PASO_MAQUETA}
+
+1. Leé el archivo completo antes de escribir código.
 2. Los bloques YAML son la fuente de verdad. Usá esos valores exactos.
 3. Las notas (\`nota:\` / \`notas:\`) son palabras literales de la persona y
    tienen prioridad sobre el valor del mismo bloque.

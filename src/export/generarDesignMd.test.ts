@@ -63,6 +63,7 @@ describe('generarDesignMd', () => {
     const pendientes = parse(bloquesYaml(md).find((b) => b.startsWith('sin_definir:'))!);
     expect(pendientes.sin_definir).toContainEqual({ seccion: 4, campo: 'acciones_clave', bloquea: 'si' });
     expect(md).toContain('Este archivo describe una web o app que tenés que construir');
+    expect(md).toContain('Antes de aplicar todo, mostrá una maqueta.');
   });
 
   it('sin proyecto descripto, se exporta como sistema de diseño para aplicar o para lo que la persona explique', () => {
@@ -73,6 +74,7 @@ describe('generarDesignMd', () => {
     expect(md).toContain('A. **Mejorar algo que ya existe.**');
     expect(md).toContain('B. **Construir algo nuevo.**');
     expect(md).toContain('son solo de referencia');
+    expect(md).toContain('Antes de aplicar todo, mostrá una maqueta.');
     const pendientes = parse(bloquesYaml(md).find((b) => b.startsWith('sin_definir:'))!);
     expect(pendientes.sin_definir.some((x: { bloquea: string }) => x.bloquea === 'si')).toBe(false);
     expect(pendientes.preguntas_sugeridas[0]).toContain('Aplico este diseño');

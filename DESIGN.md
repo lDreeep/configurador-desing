@@ -1,6 +1,6 @@
 # DESIGN.md: especificación del formato
 
-> **Versión del formato:** 0.7.0 (borrador)
+> **Versión del formato:** 0.7.1 (borrador)
 > **Última actualización:** 2026-11-06
 > **Estado:** configurador en v0.2 (10 pasos + export): 8 direcciones, 13 paletas + personalizada, 23 fuentes, botones y movimiento detallados. Falta la primera ronda de pruebas con IA (§9).
 
@@ -134,7 +134,7 @@ Todo archivo exportado empieza con este bloque, que permite saber con qué versi
 
 ```yaml
 formato: design-md
-version_formato: 0.7.0
+version_formato: 0.7.1
 generado_por: configurador-diseno
 fecha: 2026-11-06
 idioma: es
@@ -846,7 +846,7 @@ Así se vería un archivo real generado por el MVP. Las secciones `[v0.2]` apare
 ````markdown
 ```yaml
 formato: design-md
-version_formato: 0.7.0
+version_formato: 0.7.1
 generado_por: configurador-diseno
 fecha: 2026-11-06
 idioma: es
@@ -1251,3 +1251,4 @@ Lo que todavía no tiene lugar en §5. Se mueve allá cuando se decide hacerlo.
 | 0.6.1 | 2026-11-06 | Sin cambios de formato: más valores en listas existentes (`al_tocar` suma temblor, latido y estallido; cajas suman `fondo: invertido` y `sombra: color`). |
 | 0.6.2 | 2026-11-06 | Sin cambios de formato: §21 suma 14 categorías nuevas (las claves nuevas son opcionales). |
 | 0.7.0 | 2026-11-06 | Campo `modo` (`proyecto` \| `sistema_de_diseno`) en el encabezado y en §2, y variante de las instrucciones de §1 para el modo sistema de diseño. Compatible: un archivo sin `modo` equivale a `proyecto`. |
+| 0.7.1 | 2026-11-06 | Las instrucciones de §1 (en los dos modos) empiezan pidiendo a la IA una maqueta de cómo va a quedar, para que la persona la apruebe antes de aplicar todo. |
