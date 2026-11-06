@@ -22,7 +22,7 @@ import {
   type CategoriaFuente,
 } from '../catalogo';
 import { derivarRoles } from '../color';
-import { CampoColor, Filtros, ListaEditable, Opciones, Seccion } from '../componentes/ui';
+import { CampoColor, Filtros, ListaEditable, Opciones, Seccion, useAvanzado } from '../componentes/ui';
 import { aplicarDireccion, aplicarMovimiento, pesoDisponible } from '../estado';
 import { sistemaDeDiseno } from '../export/sistema';
 import type {
@@ -168,6 +168,7 @@ export function PasoColor({ config: c, setConfig }: PropsPaso) {
     },
   ];
 
+  const { abierto, boton } = useAvanzado('color');
   return (
     <Seccion titulo="Paleta" ayuda="Elegí una paleta armada o combiná tus propios colores. Se definen por rol: fondo, superficie, texto y acento.">
       <Filtros<'claro' | 'oscuro'> etiqueta="Filtrar paletas" opciones={{ claro: 'Claras', oscuro: 'Oscuras' }} valor={modo} onElegir={setModo} />
@@ -182,11 +183,13 @@ export function PasoColor({ config: c, setConfig }: PropsPaso) {
             <CampoColor etiqueta="Texto" valor={pp.texto} onCambiar={(v) => setPersonal({ texto: v })} />
             <CampoColor etiqueta="Acento" valor={pp.acento} onCambiar={(v) => setPersonal({ acento: v })} />
           </div>
-          <label className="interruptor">
-            <input type="checkbox" checked={aMano} onChange={(e) => setAMano(e.target.checked)} />
-            Ajustar cada color a mano
-          </label>
-          {aMano && (
+          {abierto && (
+            <label className="interruptor">
+              <input type="checkbox" checked={aMano} onChange={(e) => setAMano(e.target.checked)} />
+              Ajustar cada color a mano
+            </label>
+          )}
+          {abierto && aMano && (
             <>
               <div className="colores">
                 {ROLES.filter((r) => !['fondo', 'texto', 'acento'].includes(r.id)).map((r) => (
@@ -211,6 +214,14 @@ export function PasoColor({ config: c, setConfig }: PropsPaso) {
         </div>
       )}
 
+      {!abierto && s.contrastes.some((p) => !p.pasa) && (
+        <p className="ayuda mal-texto">
+          {s.contrastes.filter((p) => !p.pasa).length} combinaciones no pasan contraste. Abrí las opciones avanzadas para verlas.
+        </p>
+      )}
+      {boton(2)}
+      {abierto && (
+        <>
       <div className="grupo">
         <div className="grupo-titulo">Contraste (accesibilidad AA)</div>
         <ul className="contrastes">
@@ -229,6 +240,8 @@ export function PasoColor({ config: c, setConfig }: PropsPaso) {
           <p className="ayuda mal-texto">Hay combinaciones difíciles de leer. Podés exportar igual: quedan marcadas en el archivo para que la IA las corrija.</p>
         )}
       </div>
+        </>
+      )}
     </Seccion>
   );
 }
@@ -264,6 +277,7 @@ export function PasoTipografia({ config: c, setConfig }: PropsPaso) {
   const s = sistemaDeDiseno(c);
   const combo = COMBINACIONES.findIndex((x) => x.titulos === v.fuenteTitulos && x.texto === v.fuenteTexto);
   const pesos = FUENTES[v.fuenteTitulos].pesos;
+  const { abierto, boton } = useAvanzado('tipografia');
   return (
     <Seccion titulo="Tipografía" ayuda="Arrancá por una combinación o elegí títulos y texto por separado. Cualquier par se puede combinar.">
       <Opciones<string>
@@ -278,6 +292,19 @@ export function PasoTipografia({ config: c, setConfig }: PropsPaso) {
         valor={combo >= 0 ? String(combo) : ''}
         onElegir={(i) => setVisual(setConfig, { fuenteTitulos: COMBINACIONES[+i].titulos, fuenteTexto: COMBINACIONES[+i].texto })}
       />
+      <Opciones<EscalaId>
+        etiqueta="Contraste de tamaños"
+        opciones={(Object.keys(ESCALAS) as EscalaId[]).map((id) => ({
+          id,
+          nombre: ESCALAS[id].nombre,
+          descripcion: `${ESCALAS[id].descripcion} · título ${Math.round(16 * Math.pow(ESCALAS[id].proporcion, 4))} px`,
+        }))}
+        valor={v.escala}
+        onElegir={(e) => setVisual(setConfig, { escala: e })}
+      />
+      {boton(4)}
+      {abierto && (
+        <>
       <ListaFuentes etiqueta="Títulos" valor={v.fuenteTitulos} peso={v.pesoTitulos} onElegir={(id) => setVisual(setConfig, { fuenteTitulos: id })} />
       <Opciones<string>
         etiqueta="Peso de los títulos"
@@ -293,17 +320,9 @@ export function PasoTipografia({ config: c, setConfig }: PropsPaso) {
         valor={v.espaciadoTitulos}
         onElegir={(e) => setVisual(setConfig, { espaciadoTitulos: e })}
       />
-      <Opciones<EscalaId>
-        etiqueta="Contraste de tamaños"
-        opciones={(Object.keys(ESCALAS) as EscalaId[]).map((id) => ({
-          id,
-          nombre: ESCALAS[id].nombre,
-          descripcion: `${ESCALAS[id].descripcion} · título ${Math.round(16 * Math.pow(ESCALAS[id].proporcion, 4))} px`,
-        }))}
-        valor={v.escala}
-        onElegir={(e) => setVisual(setConfig, { escala: e })}
-      />
       <ListaFuentes etiqueta="Texto" valor={v.fuenteTexto} peso={400} onElegir={(id) => setVisual(setConfig, { fuenteTexto: id })} />
+        </>
+      )}
     </Seccion>
   );
 }
@@ -311,6 +330,7 @@ export function PasoTipografia({ config: c, setConfig }: PropsPaso) {
 // ---------- Forma ----------
 
 export function PasoForma({ config: c, setConfig }: PropsPaso) {
+  const { abierto, boton } = useAvanzado('forma');
   return (
     <Seccion titulo="Forma" ayuda="Esquinas, sombras y bordes definen gran parte del carácter.">
       <Opciones<RadioId>
@@ -326,6 +346,9 @@ export function PasoForma({ config: c, setConfig }: PropsPaso) {
         valor={c.visual.radio}
         onElegir={(v) => setVisual(setConfig, { radio: v })}
       />
+      {boton(2)}
+      {abierto && (
+        <>
       <Opciones<ElevacionId>
         etiqueta="Sombras"
         opciones={(Object.keys(ELEVACIONES) as ElevacionId[]).map((id) => ({
@@ -353,6 +376,8 @@ export function PasoForma({ config: c, setConfig }: PropsPaso) {
         valor={c.visual.bordes}
         onElegir={(v) => setVisual(setConfig, { bordes: v })}
       />
+        </>
+      )}
     </Seccion>
   );
 }
@@ -362,8 +387,9 @@ export function PasoForma({ config: c, setConfig }: PropsPaso) {
 export function PasoBotones({ config: c, setConfig }: PropsPaso) {
   const setB = (cambio: Partial<Config['botones']>) => setConfig((x) => ({ ...x, botones: { ...x.botones, ...cambio } }));
   const conB = (cambio: Partial<Config['botones']>) => (x: Config) => ({ ...x, botones: { ...x.botones, ...cambio } });
+  const { abierto, boton } = useAvanzado('botones');
   return (
-    <Seccion titulo="Botones" ayuda="Es lo que más se toca. Usan tu color, tipografía y esquinas; acá elegís cómo se presentan.">
+    <Seccion titulo="Botones" ayuda="Es lo que más se toca. Tocá cada opción para ver cómo responde al click.">
       <Opciones<BotonEstiloId>
         etiqueta="Estilo del botón principal"
         columnas={1}
@@ -381,6 +407,9 @@ export function PasoBotones({ config: c, setConfig }: PropsPaso) {
           }))
         }
       />
+      {boton(3)}
+      {abierto && (
+        <>
       <Opciones<BotonTamano>
         etiqueta="Tamaño"
         columnas={1}
@@ -413,6 +442,8 @@ export function PasoBotones({ config: c, setConfig }: PropsPaso) {
         valor={c.botones.icono}
         onElegir={(icono) => setB({ icono })}
       />
+        </>
+      )}
     </Seccion>
   );
 }
@@ -421,6 +452,7 @@ export function PasoBotones({ config: c, setConfig }: PropsPaso) {
 
 export function PasoMovimiento({ config: c, setConfig }: PropsPaso) {
   const conV = (cambio: Partial<Config['visual']>) => (x: Config) => ({ ...x, visual: { ...x.visual, ...cambio } });
+  const { abierto, boton } = useAvanzado('movimiento');
   return (
     <Seccion
       titulo="Movimiento"
@@ -441,6 +473,9 @@ export function PasoMovimiento({ config: c, setConfig }: PropsPaso) {
         valor={c.visual.hover}
         onElegir={(hover) => setVisual(setConfig, { hover })}
       />
+      {boton(3)}
+      {abierto && (
+        <>
       <Opciones<PresionarId>
         etiqueta="Al presionar"
         opciones={(Object.keys(PRESIONAR) as PresionarId[]).map((id) => ({
@@ -462,6 +497,8 @@ export function PasoMovimiento({ config: c, setConfig }: PropsPaso) {
         valor={c.visual.cambio}
         onElegir={(cambio) => setVisual(setConfig, { cambio })}
       />
+        </>
+      )}
     </Seccion>
   );
 }

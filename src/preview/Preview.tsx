@@ -2,6 +2,7 @@ import { useMemo, useState, type CSSProperties } from 'react';
 import { sistemaDeDiseno } from '../export/sistema';
 import type { Config } from '../tipos';
 import { IconoFlecha } from '../pasos/visual';
+import { animarToque } from '../componentes/ui';
 
 const humanizar = (s: string) => {
   const t = s.replace(/_/g, ' ');
@@ -134,13 +135,13 @@ export function Preview({ config }: { config: Config }) {
                 </div>
                 <div className="pv-botones">
                   {pantalla.accionPrincipal && (
-                    <button type="button" className={`pv-boton pv-primario est-${config.botones.estilo}`}>
+                    <button type="button" className={`pv-boton pv-primario est-${config.botones.estilo}`} onClick={(e) => animarToque(e.currentTarget)}>
                       {config.botones.icono === 'izquierda' && <IconoFlecha />}
                       {pantalla.accionPrincipal}
                       {config.botones.icono === 'derecha' && <IconoFlecha />}
                     </button>
                   )}
-                  <button type="button" className={`pv-boton pv-secundario est-${config.botones.estilo}`}>
+                  <button type="button" className={`pv-boton pv-secundario est-${config.botones.estilo}`} onClick={(e) => animarToque(e.currentTarget)}>
                     Ver más
                   </button>
                 </div>

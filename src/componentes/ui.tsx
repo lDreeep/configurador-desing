@@ -29,7 +29,10 @@ export function Opciones<T extends string>(props: {
             type="button"
             className="opcion"
             aria-pressed={o.id === props.valor}
-            onClick={() => props.onElegir(o.id)}
+            onClick={(e) => {
+              animarToque(e.currentTarget);
+              props.onElegir(o.id);
+            }}
           >
             <span className="opcion-texto">
               <span className="opcion-nombre" style={o.fuente ? { fontFamily: o.fuente, fontWeight: o.peso } : undefined}>
@@ -263,4 +266,49 @@ export function CampoColor(props: { etiqueta: string; valor: string; onCambiar: 
       {props.ayuda && <span className="ayuda">{props.ayuda}</span>}
     </div>
   );
+}
+
+/** Reinicia la animación de "toque" en los botones de muestra que haya dentro de `el`. */
+export function animarToque(el: HTMLElement) {
+  const botones = el.matches('.pv-boton') ? [el] : Array.from(el.querySelectorAll<HTMLElement>('.pv-boton'));
+  for (const b of botones) {
+    b.classList.remove('toque');
+    void b.offsetWidth; // fuerza el reinicio de la animación
+    b.classList.add('toque');
+  }
+}
+
+/**
+ * Opciones avanzadas plegables. Devuelve si están abiertas y el botón para abrirlas.
+ * Recuerda la elección por paso en este navegador.
+ */
+export function useAvanzado(clave: string) {
+  const k = `configurador-diseno:avanzado:${clave}`;
+  const [abierto, setAbierto] = useState(() => {
+    try {
+      return localStorage.getItem(k) === '1';
+    } catch {
+      return false;
+    }
+  });
+  const cambiar = () => {
+    const nuevo = !abierto;
+    setAbierto(nuevo);
+    try {
+      localStorage.setItem(k, nuevo ? '1' : '0');
+    } catch {
+      // sin almacenamiento: solo dura la sesión
+    }
+  };
+  // Se devuelve como función (no componente) para que el botón no se vuelva a montar y conserve el foco.
+  const boton = (cantidad: number) => (
+    <button type="button" className="avanzado-boton" aria-expanded={abierto} onClick={cambiar}>
+      <span>{abierto ? 'Ocultar opciones avanzadas' : 'Ver opciones avanzadas'}</span>
+      <span className="avanzado-cantidad">{cantidad}</span>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true" className="avanzado-flecha">
+        <path d="M6 9l6 6 6-6" />
+      </svg>
+    </button>
+  );
+  return { abierto, boton };
 }

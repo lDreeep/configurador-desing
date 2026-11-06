@@ -1021,6 +1021,9 @@ Formato: fecha · decisión · por qué · alternativas descartadas.
 | D16 | 2026-11-06 | Botones como paso propio, antes de Movimiento | Es lo que más se toca y lo que más carácter da; mezclado con Forma quedaba escondido | Meterlos en Forma o Componentes |
 | D17 | 2026-11-06 | Los niveles de movimiento precargan cada efecto, que después se ajusta por separado | Mismo criterio que las direcciones (D5): coherente por defecto, fino si se quiere | Solo niveles, o solo efectos sueltos |
 | D18 | 2026-11-06 | Las fuentes se cargan todas desde Google Fonts al abrir el configurador | Cada opción se ve con su forma real; una sola petición | Cargar cada fuente al elegirla (la lista se vería con la fuente equivocada) |
+| D19 | 2026-11-06 | Cada paso muestra lo esencial y guarda el resto en «Ver opciones avanzadas» (se recuerda por paso) | Había demasiada información a la vista; lo avanzado sigue a un clic | Un interruptor global de modo avanzado |
+| D20 | 2026-11-06 | Los botones de muestra se animan al tocarlos (en las opciones y en la vista previa) | Una animación de click solo se puede elegir viéndola | Describirla con texto |
+| D21 | 2026-11-06 | Se suma un **modo rápido** visual (galerías para deslizar y tocar) que edita la misma configuración que el modo actual, que pasa a ser el **modo avanzado** | Elegir viendo es más intuitivo; un solo modelo de datos evita dos productos | Reemplazar el modo actual |
 
 ---
 
@@ -1046,6 +1049,21 @@ Cada vez que pasamos un export por una IA, se anota acá. Es lo que valida (o co
 ---
 
 ## 10. Backlog e ideas
+
+### Plan del modo rápido (decidido, ver D21)
+
+| Etapa | Qué | Estado |
+|---|---|---|
+| 1 | Opciones avanzadas plegables y botones que se animan al tocarlos | `[v0.2]` hecho |
+| 2 | **Elegí tu página:** pantalla completa para deslizar entre layouts × estilos | `[v0.3]` próximo |
+| 3 | **Galería de botones:** 16+ en pantalla, formas, texturas y animaciones de click tocables | `[v0.3]` |
+| 4 | **Galería de formularios:** campos de texto, animación al escribir y enfocar, switches, checkboxes, selects, sliders | `[v0.3]` |
+| 5 | Paleta y tipografía en modo rápido, aplicadas en vivo a la página elegida | `[v0.3]` |
+| 6 | **Landing** que muestra los diseños rotando, con el botón central «Comenzar» | `[v0.3]` |
+
+Requisito transversal: el export suma **el CSS real** de cada componente elegido (formato 0.3), para que la IA copie en vez de interpretar.
+
+### Ideas sueltas
 
 Lo que todavía no tiene lugar en §5. Se mueve allá cuando se decide hacerlo.
 

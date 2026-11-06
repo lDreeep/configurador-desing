@@ -142,6 +142,15 @@ button:disabled { cursor: not-allowed; opacity: 0.4; }
 .mini-card.con-sombra { background: var(--color-superficie-alta); box-shadow: var(--sombra-2); margin: 0 6px 6px 0; }
 .mini-card.con-borde { border: var(--borde-componente); }
 
+.avanzado-boton {
+  display: flex; align-items: center; gap: 10px; width: 100%; min-height: 48px; padding: 0 16px;
+  border: 1px dashed var(--ui-borde-fuerte); border-radius: 12px; background: #fafbfc; font-weight: 600; color: var(--ui-texto);
+}
+.avanzado-boton:hover { background: #f2f4f8; border-color: #9aa9e8; }
+.avanzado-cantidad { min-width: 24px; height: 24px; padding: 0 6px; border-radius: 999px; background: #e4e6eb; font-size: 12px; display: inline-flex; align-items: center; justify-content: center; }
+.avanzado-flecha { margin-left: auto; transition: transform 160ms ease; }
+.avanzado-boton[aria-expanded='true'] .avanzado-flecha { transform: rotate(180deg); }
+
 .nota { padding-top: 18px; border-top: 1px dashed var(--ui-borde-fuerte); }
 
 .boton { min-height: 44px; padding: 0 18px; border-radius: 10px; font-weight: 600; border: 1px solid transparent; }
@@ -251,6 +260,16 @@ button:disabled { cursor: not-allowed; opacity: 0.4; }
 .pv-hover-desplazar .pv-boton.est-sombra_dura:hover, .opcion:hover .pv-hover-desplazar .pv-boton.est-sombra_dura { box-shadow: 6px 6px 0 var(--color-texto); }
 .pv-presionar-hundir .pv-boton:active, .opcion:active .pv-presionar-hundir .pv-boton { transform: scale(0.96); }
 .pv-presionar-hundir .pv-boton.est-sombra_dura:active { transform: translate(3px, 3px); box-shadow: 1px 1px 0 var(--color-texto); }
+
+/* Animación al tocar (clic real en la vista previa y en las opciones) */
+@keyframes pv-toque-hundir { 0% { transform: scale(1); } 35% { transform: scale(0.9); } 70% { transform: scale(1.03); } 100% { transform: scale(1); } }
+@keyframes pv-toque-dura {
+  0% { transform: none; box-shadow: 4px 4px 0 var(--color-texto); }
+  35% { transform: translate(4px, 4px); box-shadow: 0 0 0 var(--color-texto); }
+  100% { transform: none; box-shadow: 4px 4px 0 var(--color-texto); }
+}
+.pv-presionar-hundir .pv-boton.toque { animation: pv-toque-hundir calc(var(--duracion-media) + 240ms) var(--curva-entrada); }
+.pv-presionar-hundir .pv-boton.est-sombra_dura.toque { animation-name: pv-toque-dura; }
 
 /* Animaciones de aparición y cambio de pantalla */
 @keyframes pv-fundido { from { opacity: 0; } to { opacity: 1; } }

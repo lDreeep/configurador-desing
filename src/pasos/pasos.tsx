@@ -18,7 +18,7 @@ import {
 import { aplicarTipo, nuevoId, pantallasDePlantilla } from '../estado';
 import { paletaActiva } from '../export/sistema';
 import type { Config, Pantalla, PasoId, PatronNav, SiNo, TipoProyecto } from '../tipos';
-import { Campo, Casillas, ListaEditable, Opciones, Seccion } from '../componentes/ui';
+import { Campo, Casillas, ListaEditable, Opciones, Seccion, useAvanzado } from '../componentes/ui';
 import { PasoBotones, PasoColor, PasoDireccion, PasoForma, PasoMovimiento, PasoTipografia } from './visual';
 import { PasoExportar } from './PasoExportar';
 
@@ -43,6 +43,7 @@ const opcionesDe = <T extends string, V extends { nombre: string; descripcion?: 
 function PasoProyecto({ config: c, setConfig }: PropsPaso) {
   const set = (campo: keyof Config['proyecto']) => (v: string) =>
     setConfig((x) => ({ ...x, proyecto: { ...x.proyecto, [campo]: v } }));
+  const { abierto, boton } = useAvanzado('proyecto');
   return (
     <Seccion titulo="¿Qué es tu proyecto?" ayuda="Con esto la IA sabe qué construir, no solo cómo pintarlo.">
       <Opciones<TipoProyecto>
@@ -66,6 +67,9 @@ function PasoProyecto({ config: c, setConfig }: PropsPaso) {
         placeholder="Ej.: Que reservar un turno lleve segundos"
         ayuda="Ordena todas las decisiones de jerarquía: lo que sirve a este objetivo va primero."
       />
+      {boton(4)}
+      {abierto && (
+        <>
       <Campo etiqueta="¿Quién lo usa?" valor={c.proyecto.publicoQuienes} onCambiar={set('publicoQuienes')} placeholder="Ej.: El dueño y dos empleados" />
       <Campo
         etiqueta="¿Dónde y cómo lo usa?"
@@ -90,6 +94,8 @@ function PasoProyecto({ config: c, setConfig }: PropsPaso) {
         valores={c.proyecto.plataformas}
         onCambiar={(v) => setConfig((x) => ({ ...x, proyecto: { ...x.proyecto, plataformas: v } }))}
       />
+        </>
+      )}
     </Seccion>
   );
 }
@@ -107,6 +113,7 @@ function PasoEstructura({ config: c, setConfig }: PropsPaso) {
       return copia;
     });
   const navOpts = opcionesDe(PATRONES_NAV);
+  const { abierto, boton } = useAvanzado('estructura');
   return (
     <Seccion titulo="Pantallas y navegación" ayuda="Arrancan sugeridas según el tipo de proyecto. Cambiá, sumá o sacá lo que quieras.">
       <Opciones<PatronNav>
@@ -114,12 +121,6 @@ function PasoEstructura({ config: c, setConfig }: PropsPaso) {
         opciones={navOpts}
         valor={c.estructura.patron}
         onElegir={(v) => setConfig((x) => ({ ...x, estructura: { ...x.estructura, patron: v } }))}
-      />
-      <Opciones<PatronNav>
-        etiqueta="Navegación en celular"
-        opciones={navOpts}
-        valor={c.estructura.patronMovil}
-        onElegir={(v) => setConfig((x) => ({ ...x, estructura: { ...x.estructura, patronMovil: v } }))}
       />
       <div className="grupo">
         <div className="grupo-titulo">Pantallas</div>
@@ -152,6 +153,8 @@ function PasoEstructura({ config: c, setConfig }: PropsPaso) {
                 </div>
               </div>
               <Campo etiqueta="Nombre" valor={p.nombre} onCambiar={(v) => editar(p.id, { nombre: v })} />
+              {abierto && (
+                <>
               <Campo etiqueta="Para qué sirve" valor={p.proposito} onCambiar={(v) => editar(p.id, { proposito: v })} />
               <Campo
                 etiqueta="Acción principal (el botón más importante)"
@@ -170,6 +173,8 @@ function PasoEstructura({ config: c, setConfig }: PropsPaso) {
                   })
                 }
               />
+                </>
+              )}
             </div>
           ))}
         </div>
@@ -194,6 +199,15 @@ function PasoEstructura({ config: c, setConfig }: PropsPaso) {
           </button>
         </div>
       </div>
+      {boton(4)}
+      {abierto && (
+        <Opciones<PatronNav>
+        etiqueta="Navegación en celular"
+        opciones={navOpts}
+        valor={c.estructura.patronMovil}
+        onElegir={(v) => setConfig((x) => ({ ...x, estructura: { ...x.estructura, patronMovil: v } }))}
+      />
+      )}
     </Seccion>
   );
 }
