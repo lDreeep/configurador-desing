@@ -119,6 +119,32 @@ export type HoverId = 'nada' | 'oscurecer' | 'brillo' | 'elevar' | 'escalar' | '
 export type PresionarId = 'nada' | 'hundir';
 export type AparicionId = 'nada' | 'fundido' | 'subir' | 'escalonada' | 'zoom';
 export type CambioId = 'nada' | 'fundido' | 'deslizar' | 'subir' | 'zoom';
+export type BotonDisenoId =
+  | 'solido'
+  | 'pildora'
+  | 'tonal'
+  | 'degradado'
+  | 'brillo_barrido'
+  | 'flecha'
+  | 'grano'
+  | 'contorno'
+  | 'relleno_abajo'
+  | 'subrayado'
+  | 'doble'
+  | 'desplazado'
+  | 'borde_animado'
+  | 'circulo'
+  | 'sombra_dura'
+  | 'empujable'
+  | 'neumorfico'
+  | 'clay'
+  | 'vidrio'
+  | 'neon'
+  | 'cromo'
+  | 'sticker'
+  | 'bisel'
+  | 'terminal';
+
 export type BotonEstiloId = 'relleno' | 'contorno' | 'tonal' | 'elevado' | 'sombra_dura';
 export type BotonTamano = 'compacto' | 'normal' | 'grande';
 export type BotonIcono = 'ninguno' | 'izquierda' | 'derecha';
@@ -215,6 +241,10 @@ export interface Config {
     tamano: BotonTamano;
     mayusculas: boolean;
     icono: BotonIcono;
+    /** Diseño elegido en el panel de botones; 'ninguno' usa el estilo simple de arriba. */
+    diseno: BotonDisenoId | 'ninguno';
+    /** 'acento' (de la paleta), 'texto' (monocromo) o un color hex propio. */
+    color: string;
   };
   notas: Partial<Record<PasoId, string>>;
   notasGenerales: string;

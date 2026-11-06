@@ -5,10 +5,11 @@ import { ESTILOS_BOTON, INTEGRACIONES, PATRONES_NAV, TAMANOS_BOTON } from '../ca
 import type { BotonEstiloId } from '../tipos';
 import type { Config } from '../tipos';
 import { paresDeContraste } from '../color';
+import { BOTONES, clasesDeBoton, cssDeBoton, EFECTOS_TOQUE } from '../botones-disenos';
 import { cssDeEstilo, ESTILOS, LAYOUTS } from '../estilos-visuales';
 import { paletaActiva, sistemaDeDiseno, tokensCss } from './sistema';
 
-export const VERSION_FORMATO = '0.3.0';
+export const VERSION_FORMATO = '0.4.0';
 
 const q = (s: string) => JSON.stringify(s);
 const valor = (s: string) => (s.trim() ? q(s.trim()) : 'sin_definir');
@@ -282,13 +283,23 @@ elevacion:
   );
 
   const b = c.botones;
+  const disenoB = b.diseno !== 'ninguno' ? BOTONES[b.diseno] : null;
   add(
     10,
     'Componentes',
-    `Botones ${ESTILOS_BOTON[b.estilo].nombre.toLowerCase()}, tamaño ${TAMANOS_BOTON[b.tamano].nombre.toLowerCase()}. El resto de los componentes usa los valores por defecto del formato.`,
+    (disenoB
+      ? `Botón principal «${disenoB.nombre}» (${disenoB.descripcion.toLowerCase()}); al tocarlo: ${EFECTOS_TOQUE[disenoB.efecto].toLowerCase()}. Su CSS está abajo: usalo tal cual.`
+      : `Botones ${ESTILOS_BOTON[b.estilo].nombre.toLowerCase()}.`) +
+      ` Tamaño ${TAMANOS_BOTON[b.tamano].nombre.toLowerCase()}. El resto de los componentes usa los valores por defecto del formato.`,
     `
 botones:
+  diseno: ${b.diseno}${disenoB ? `
+  clases: ${q(clasesDeBoton(b.diseno as keyof typeof BOTONES))}
+  al_tocar: ${disenoB.efecto}` : ''}
   estilo: ${b.estilo}
+  color: ${b.color === 'acento' || b.color === 'texto' ? b.color : q(b.color)}
+  color_fondo: ${q(s.colorBoton.fondo)}
+  color_texto: ${q(s.colorBoton.sobre)}
   variantes: [primario, secundario, fantasma, peligro]
   primario: ${q(PRIMARIO[b.estilo])}
   secundario: "fondo transparente, borde --color-borde, texto --color-texto"
@@ -307,6 +318,12 @@ estados_especiales:
   cargando: esqueleto
   error: "mensaje claro + cómo resolverlo + reintentar"${nota(c, 'botones')}`,
   );
+
+  if (disenoB)
+    secciones[secciones.length - 1] +=
+      '\n\n```css\n/* Botón principal. Requiere los tokens de la sección 16 (--boton-color, --boton-sobre, --boton-*). */\n' +
+      cssDeBoton(b.diseno as keyof typeof BOTONES, '.boton-principal') +
+      '\n```';
 
   add(
     12,

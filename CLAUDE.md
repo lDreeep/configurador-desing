@@ -30,7 +30,9 @@ Antes de dar una tarea por terminada: `npm run typecheck && npm test`.
 | `src/pasos/pasos.tsx` | Registro `PASOS`: cada paso del configurador (componente, resumen, placeholder de la nota). |
 | `src/preview/Preview.tsx` | Vista previa en vivo del modo avanzado. Usa solo variables CSS de `sistema.ts`. |
 | `src/estilos-visuales.ts` | Estilos visuales (con su CSS y reglas) y layouts. El CSS se exporta tal cual en §19. |
-| `src/rapido/` | Modo rápido: `combinar.ts` (combinaciones, candados, códigos), `Pagina.tsx` (los 12 layouts), `ElegirPagina.tsx` (pantalla para deslizar), `pagina.css`. |
+| `src/botones-disenos.ts` | Los 24 diseños del panel de botones (aspecto, hover y animación al tocar, en CSS). Se exporta tal cual en §10. |
+| `src/componentes/BotonPrincipal.tsx` | El botón principal con el diseño elegido; lo usan todas las vistas. |
+| `src/rapido/` | Modo rápido: `Inicio.tsx` (página entera que cambia de diseño sola), `PanelBotones.tsx`, `combinar.ts` (combinaciones, candados, códigos), `Pagina.tsx` (los 12 layouts), `pagina.css`. |
 | `src/estilos.css` | Estilos de la interfaz (`--ui-*`) y de la vista previa (`.pv-*`, solo tokens exportados). |
 
 ## Reglas

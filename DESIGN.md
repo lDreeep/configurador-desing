@@ -1,6 +1,6 @@
 # DESIGN.md: especificación del formato
 
-> **Versión del formato:** 0.3.0 (borrador)
+> **Versión del formato:** 0.4.0 (borrador)
 > **Última actualización:** 2026-11-06
 > **Estado:** configurador en v0.2 (10 pasos + export): 8 direcciones, 13 paletas + personalizada, 23 fuentes, botones y movimiento detallados. Falta la primera ronda de pruebas con IA (§9).
 
@@ -134,7 +134,7 @@ Todo archivo exportado empieza con este bloque, que permite saber con qué versi
 
 ```yaml
 formato: design-md
-version_formato: 0.3.0
+version_formato: 0.4.0
 generado_por: configurador-diseno
 fecha: 2026-11-06
 idioma: es
@@ -450,7 +450,13 @@ nota: "cards suaves, pero inputs rectos"
 
 ```yaml
 botones:
-  estilo: relleno                 # relleno | contorno | tonal | elevado | sombra_dura
+  diseno: neon                    # ninguno | uno de los 24 del panel (ver src/botones-disenos.ts)
+  clases: "bt bt-neon bt-ef-pulso"
+  al_tocar: pulso                 # onda | hundir | gelatina | rebote | pulso | aplastar | brillo | propio
+  estilo: relleno                 # estilo simple, se usa si diseno: ninguno (relleno | contorno | tonal | elevado | sombra_dura)
+  color: acento                   # acento | texto | "#7C3AED"
+  color_fondo: "#2F5BFF"          # valor ya resuelto (token --boton-color)
+  color_texto: "#FFFFFF"          # elegido para pasar contraste (token --boton-sobre)
   variantes: [primario, secundario, fantasma, peligro]
   primario: "fondo --color-acento, texto --color-sobre-acento"   # se describe según el estilo
   secundario: "fondo transparente, borde --color-borde, texto --color-texto"
@@ -484,6 +490,7 @@ estados_especiales:
 nota: ""
 ```
 
+- Si hay `diseno`, la sección sigue con un bloque `css` con **el CSS real del botón principal** (selector `.boton-principal`): la base común, la animación al tocar y el aspecto del diseño. Solo usa tokens de §16.
 - **Estados vacío, cargando y error son obligatorios** en cualquier pantalla que muestre datos. Es lo que más olvidan las IA.
 
 ---
@@ -769,7 +776,7 @@ Así se vería un archivo real generado por el MVP. Las secciones `[v0.2]` apare
 ````markdown
 ```yaml
 formato: design-md
-version_formato: 0.3.0
+version_formato: 0.4.0
 generado_por: configurador-diseno
 fecha: 2026-11-06
 idioma: es
@@ -1052,6 +1059,10 @@ Formato: fecha · decisión · por qué · alternativas descartadas.
 | D23 | 2026-11-06 | El CSS de cada estilo se escribe una sola vez y se usa en la vista previa y en el export (§19) | La IA copia en vez de interpretar; lo que se ve es lo que se exporta | Describir las texturas con palabras |
 | D24 | 2026-11-06 | Entrar al modo rápido no pisa una config armada a mano: la combinación se aplica recién al deslizar o al elegir «Me gusta esta» | Cambiar de modo no debe borrar trabajo | Aplicar siempre la combinación visible |
 | D25 | 2026-11-06 | El catálogo crece con referencias externas traducidas a entradas de datos (estilos, layouts, componentes), no con diseños hechos a mano | Combinar dimensiones multiplica las opciones; cada entrada nueva multiplica todo lo demás | Dibujar páginas una por una |
+| D26 | 2026-11-06 | El inicio es la página entera (sin marco) con contenido propio del producto, y cambia de diseño solo; se puede pausar | El producto se demuestra a sí mismo; pausar es obligatorio por accesibilidad (contenido que cambia solo) | Pantalla con marco para deslizar a mano (etapa 2 original) |
+| D27 | 2026-11-06 | «Comenzar» guarda el diseño que estaba a la vista y propone un botón que combina con ese estilo | Lo que se eligió sin darse cuenta ya es una decisión válida | Volver a elegir el estilo después |
+| D28 | 2026-11-06 | Los diseños de botón son entradas de datos con su CSS (aspecto + hover + animación al tocar); se exportan tal cual | Mismo criterio que los estilos (D23): la IA copia | Combinar a mano forma × textura × animación |
+| D29 | 2026-11-06 | El color del botón es un token propio (`--boton-color` / `--boton-sobre`); el texto se elige solo para pasar contraste | Permite botones de otro color sin romper la paleta | Atar el botón siempre al acento |
 
 ---
 
@@ -1084,10 +1095,10 @@ Cada vez que pasamos un export por una IA, se anota acá. Es lo que valida (o co
 |---|---|---|
 | 1 | Opciones avanzadas plegables y botones que se animan al tocarlos | `[v0.2]` hecho |
 | 2 | **Elegí tu página:** pantalla completa para deslizar entre 12 layouts × 12 estilos, con candados y código por combinación | `[v0.3]` hecho |
-| 3 | **Galería de botones:** 16+ en pantalla, formas, texturas y animaciones de click tocables | `[v0.3]` próximo |
-| 4 | **Galería de formularios:** campos de texto, animación al escribir y enfocar, switches, checkboxes, selects, sliders | `[v0.3]` |
+| 3 | **Panel de botones:** 24 diseños tocables en 6 categorías, con su animación de click; color, tamaño, icono y mayúsculas | `[v0.4]` hecho |
+| 4 | **Panel de formularios:** campos de texto, animación al escribir y enfocar, switches, checkboxes, selects, sliders | `[v0.5]` próximo |
 | 5 | Paleta y tipografía en modo rápido, aplicadas en vivo a la página elegida | `[v0.3]` |
-| 6 | **Landing** que muestra los diseños rotando, con el botón central «Comenzar» | `[v0.3]` |
+| 6 | **Inicio a pantalla completa:** la página entera es la publicidad del producto y cambia de diseño sola cada 3,6 s con transiciones variadas; «Comenzar» lleva al panel de botones | `[v0.4]` hecho (adelantado: reemplaza la pantalla para deslizar de la etapa 2) |
 
 Requisito transversal: el export suma **el CSS real** de cada componente elegido (formato 0.3), para que la IA copie en vez de interpretar.
 
@@ -1139,3 +1150,4 @@ Lo que todavía no tiene lugar en §5. Se mueve allá cuando se decide hacerlo.
 | 0.1.0 | 2026-11-06 | Sin cambios de formato. Primer configurador implementado (D10 a D13); el export cumple §3 según D12. |
 | 0.2.0 | 2026-11-06 | Cambios que no rompen nada: §6 suma `paleta: personalizada`, el bloque `personalizada` y el rol `acento_suave`; un contraste que no pasa se anota en §18 en vez de bloquear (D15). §7 suma `peso_titulos`, `espaciado_titulos` y `contraste_tamanos` (4 niveles). §9 suma `elevacion: dura` y `bordes.componente`. §10 suma `botones.estilo`, `tamano`, `alto`, `padding_horizontal`, `texto`, `mayusculas` e `icono`. §12 suma el nivel `rapido`, `al_presionar` y más valores en `hover_botones`, `aparicion_listas` y `cambio_de_pantalla`. §5 pasa de 4 a 8 direcciones. Tokens nuevos en §16: `--color-acento-suave`, `--titulos-peso`, `--subtitulos-peso`, `--titulos-espaciado`, `--borde-componente`, `--boton-*`. |
 | 0.3.0 | 2026-11-06 | Sección nueva §19 (estilo visual y layout, con el CSS real del estilo) y regla 10 en las instrucciones para la IA. 9 paletas y 4 fuentes nuevas para los estilos. Compatible: un archivo 0.2.0 sigue siendo válido (sin §19 equivale a `estilo: clasico`). |
+| 0.4.0 | 2026-11-06 | §10 suma `botones.diseno`, `clases`, `al_tocar`, `color`, `color_fondo` y `color_texto`, más el bloque `css` del botón principal. §16 suma `--boton-color` y `--boton-sobre`. Compatible. |

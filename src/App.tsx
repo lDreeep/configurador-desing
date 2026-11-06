@@ -3,8 +3,11 @@ import { NotaPaso } from './componentes/ui';
 import { useConfig } from './estado';
 import { PASOS } from './pasos/pasos';
 import { Preview } from './preview/Preview';
-import { ElegirPagina } from './rapido/ElegirPagina';
+import { DISENO_POR_ESTILO } from './botones-disenos';
+import { aplicarCombinacion } from './rapido/combinar';
+import { Inicio } from './rapido/Inicio';
 import { EstilosVisualesGlobales } from './rapido/Pagina';
+import { PanelBotones } from './rapido/PanelBotones';
 
 type Modo = 'rapido' | 'avanzado';
 const CLAVE_MODO = 'configurador-diseno:modo';
@@ -21,6 +24,7 @@ export function App() {
   const { config, setConfig, reiniciar } = useConfig();
   const [modo, setModoEstado] = useState<Modo>(leerModo);
   const [indice, setIndice] = useState(0);
+  const [pasoRapido, setPasoRapido] = useState<'inicio' | 'botones'>('inicio');
   const panel = useRef<HTMLElement>(null);
   const paso = PASOS[indice];
   const Componente = paso.componente;
@@ -45,16 +49,32 @@ export function App() {
     return (
       <>
         <EstilosVisualesGlobales />
-        <ElegirPagina
-          config={config}
-          setConfig={setConfig}
-          onAvanzado={() => setModo('avanzado')}
-          onSeguir={() => {
-            // Hasta que estén las galerías del modo rápido, se sigue en el modo avanzado por los botones.
-            setIndice(PASOS.findIndex((p) => p.id === 'botones'));
-            setModo('avanzado');
-          }}
-        />
+        {pasoRapido === 'inicio' ? (
+          <Inicio
+            config={config}
+            onAvanzado={() => setModo('avanzado')}
+            onComenzar={(k) => {
+              // El diseño que estaba a la vista pasa a ser el de la página, con un botón que combina.
+              setConfig((c) => {
+                const conEstilo = aplicarCombinacion(c, k);
+                return { ...conEstilo, botones: { ...conEstilo.botones, diseno: DISENO_POR_ESTILO[k.estilo] } };
+              });
+              setPasoRapido('botones');
+              window.scrollTo({ top: 0 });
+            }}
+          />
+        ) : (
+          <PanelBotones
+            config={config}
+            setConfig={setConfig}
+            onAtras={() => setPasoRapido('inicio')}
+            onSeguir={() => {
+              // Hasta que estén los próximos paneles, se sigue en el modo avanzado desde el movimiento.
+              setIndice(PASOS.findIndex((p) => p.id === 'movimiento'));
+              setModo('avanzado');
+            }}
+          />
+        )}
       </>
     );
   }
@@ -80,7 +100,14 @@ export function App() {
           >
             <div style={{ width: `${progreso}%` }} />
           </div>
-          <button type="button" className="boton secundario" onClick={() => setModo('rapido')}>
+          <button
+            type="button"
+            className="boton secundario"
+            onClick={() => {
+              setPasoRapido('inicio');
+              setModo('rapido');
+            }}
+          >
             Modo rápido
           </button>
           <button

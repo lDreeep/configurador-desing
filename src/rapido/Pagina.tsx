@@ -3,18 +3,24 @@
 
 import type { CSSProperties, ReactNode } from 'react';
 import { animarToque } from '../componentes/ui';
+import { BOTONES, CSS_BASE_BOTON } from '../botones-disenos';
+import { BotonPrincipal } from '../componentes/BotonPrincipal';
 import { cssDeEstilo, ESTILOS } from '../estilos-visuales';
 import { sistemaDeDiseno } from '../export/sistema';
 import { IconoFlecha } from '../pasos/visual';
-import type { Config, EstiloId } from '../tipos';
+import type { BotonDisenoId, Config, EstiloId } from '../tipos';
 
 /** Hoja con el CSS de todos los estilos, cada uno limitado a su clase. Se monta una sola vez. */
 export function EstilosVisualesGlobales() {
-  const css = (Object.keys(ESTILOS) as EstiloId[]).map((id) => cssDeEstilo(id, `.pg.estilo-${id}`)).join('\n');
-  return <style>{css}</style>;
+  const estilos = (Object.keys(ESTILOS) as EstiloId[]).map((id) => cssDeEstilo(id, `.pg.estilo-${id}`));
+  const botones = [
+    CSS_BASE_BOTON.replace(/&/g, '.bt'),
+    ...(Object.keys(BOTONES) as BotonDisenoId[]).map((id) => BOTONES[id].css.replace(/&/g, `.bt.bt-${id}`)),
+  ];
+  return <style>{[...estilos, ...botones].join('\n')}</style>;
 }
 
-function contenido(c: Config) {
+export function contenido(c: Config) {
   const p = c.proyecto;
   const pantallas = c.estructura.pantallas;
   const marca = p.nombre.trim() || 'Tu marca';
@@ -40,23 +46,25 @@ function contenido(c: Config) {
     items,
     nav: pantallas.slice(0, 4).map((x) => x.nombre),
     cta: pantallas[0]?.accionPrincipal.trim() || 'Empezar',
+    ctaSecundario: 'Ver más',
+    onPrincipal: undefined as undefined | (() => void),
+    onSecundario: undefined as undefined | (() => void),
   };
 }
 
-type Contenido = ReturnType<typeof contenido>;
+export type Contenido = ReturnType<typeof contenido>;
 
 function Botones({ c, k }: { c: Config; k: Contenido }) {
-  const est = c.botones.estilo;
-  const icono = c.botones.icono;
   return (
     <div className="pg-acciones">
-      <button type="button" className={`pv-boton pv-primario est-${est} pg-boton`} onClick={(e) => animarToque(e.currentTarget)}>
-        {icono === 'izquierda' && <IconoFlecha />}
+      <BotonPrincipal config={c} clase="pg-boton" onClick={k.onPrincipal}>
         {k.cta}
-        {icono === 'derecha' && <IconoFlecha />}
-      </button>
-      <button type="button" className={`pv-boton pv-secundario est-${est} pg-boton-sec`} onClick={(e) => animarToque(e.currentTarget)}>
-        Ver más
+      </BotonPrincipal>
+      <button type="button" className={`pv-boton pv-secundario est-${c.botones.estilo} pg-boton-sec`} onClick={(e) => {
+          animarToque(e.currentTarget, e);
+          k.onSecundario?.();
+        }}>
+        {k.ctaSecundario}
       </button>
     </div>
   );
@@ -304,16 +312,17 @@ function Layout({ c, k }: { c: Config; k: Contenido }) {
   }
 }
 
-export function Pagina({ config }: { config: Config }) {
+export function Pagina({ config, contenido: propio }: { config: Config; contenido?: Contenido }) {
   const s = sistemaDeDiseno(config);
   const v = config.visual;
-  const k = contenido(config);
+  const k = propio ?? contenido(config);
+  const conDiseno = config.botones.diseno !== 'ninguno';
   const clases = [
     'pg pgp',
     `pg-l-${v.layout}`,
     v.estilo !== 'clasico' ? `estilo-${v.estilo}` : '',
-    `pv-hover-${v.hover}`,
-    `pv-presionar-${v.presionar}`,
+    conDiseno ? '' : `pv-hover-${v.hover}`,
+    conDiseno ? '' : `pv-presionar-${v.presionar}`,
     `pv-aparicion-${v.aparicion}`,
   ].join(' ');
   return (

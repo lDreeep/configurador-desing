@@ -13,7 +13,7 @@ import {
   TAMANOS_BOTON,
   type Paleta,
 } from '../catalogo';
-import { derivarRoles, ESTADOS_CLAROS, ESTADOS_OSCUROS, esOscuro, mezclar, paresDeContraste } from '../color';
+import { derivarRoles, ESTADOS_CLAROS, ESTADOS_OSCUROS, esHex, esOscuro, mezclar, paresDeContraste, textoSobre } from '../color';
 import { pesoDisponible } from '../estado';
 import type { Config } from '../tipos';
 
@@ -81,6 +81,13 @@ export function sistemaDeDiseno(c: Config) {
   }[v.elevacion];
   const bordeBloque = { ninguno: 'none', sutil: `1px solid ${r.borde}`, marcado: `2px solid ${r.texto}` }[v.bordes];
 
+  const colorBoton =
+    c.botones.color === 'texto'
+      ? { fondo: r.texto, sobre: r.fondo }
+      : esHex(c.botones.color)
+        ? { fondo: c.botones.color, sobre: textoSobre(c.botones.color) }
+        : { fondo: r.acento, sobre: r.sobre_acento };
+
   const tokens: Record<string, string> = {
     '--color-fondo': r.fondo,
     '--color-superficie': r.superficie,
@@ -112,6 +119,8 @@ export function sistemaDeDiseno(c: Config) {
     '--sombra-1': elevacion.nivel_1,
     '--sombra-2': elevacion.nivel_2,
     '--sombra-3': elevacion.nivel_3,
+    '--boton-color': colorBoton.fondo,
+    '--boton-sobre': colorBoton.sobre,
     '--boton-alto': `${boton.alto}px`,
     '--boton-padding': `${boton.padding}px`,
     '--boton-texto': `${boton.texto}px`,
@@ -126,7 +135,7 @@ export function sistemaDeDiseno(c: Config) {
 
   return {
     dir, paleta, radio, mov, titulos, texto, pesoTitulos, pesoSubtitulos, espaciadoTitulos, proporcion,
-    boton, escala, espacios, factor, elevacion, bordeBloque, tokens,
+    boton, colorBoton, escala, espacios, factor, elevacion, bordeBloque, tokens,
     contrastes: paresDeContraste(r),
   };
 }

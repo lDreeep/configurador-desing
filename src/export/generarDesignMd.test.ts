@@ -133,7 +133,7 @@ describe('tipografía, botones y movimiento', () => {
 
   it('exporta botones y cada efecto de movimiento', () => {
     let c = aplicarMovimiento(configCompleta(), 'expresivo');
-    c = { ...c, botones: { estilo: 'tonal', tamano: 'grande', mayusculas: true, icono: 'derecha' }, visual: { ...c.visual, hover: 'brillo' } };
+    c = { ...c, botones: { estilo: 'tonal', tamano: 'grande', mayusculas: true, icono: 'derecha', diseno: 'ninguno', color: 'acento' }, visual: { ...c.visual, hover: 'brillo' } };
     const md = generarDesignMd(c);
     const comp = parse(bloquesYaml(md).find((b) => b.startsWith('botones:'))!);
     expect(comp.botones).toMatchObject({ estilo: 'tonal', tamano: 'grande', alto: '56px', mayusculas: 'si', icono: 'derecha' });
@@ -198,5 +198,37 @@ describe('modo rápido: estilos, layouts y códigos', () => {
       expect(ESTILOS[n.estilo].paletas).toContain(n.paleta);
       k = n;
     }
+  });
+});
+
+describe('panel de botones', () => {
+  it('cada diseño de botón genera un export válido con su CSS', async () => {
+    const { BOTONES } = await import('../botones-disenos');
+    for (const id of Object.keys(BOTONES) as (keyof typeof BOTONES)[]) {
+      const c = configCompleta();
+      c.botones = { ...c.botones, diseno: id, color: '#7C3AED' };
+      const md = generarDesignMd(c);
+      for (const b of bloquesYaml(md)) expect(() => parse(b)).not.toThrow();
+      const comp = parse(bloquesYaml(md).find((b) => b.startsWith('botones:'))!);
+      expect(comp.botones).toMatchObject({ diseno: id, color: '#7C3AED', color_fondo: '#7C3AED' });
+      expect(md).toContain(`.boton-principal`);
+      expect(md).toContain('--boton-color: #7C3AED;');
+    }
+  });
+
+  it('el texto sobre un color propio de botón siempre pasa contraste', async () => {
+    const { sistemaDeDiseno } = await import('./sistema');
+    for (const color of ['#2F5BFF', '#7C3AED', '#DB2777', '#EA580C', '#16A34A', '#0891B2', '#FFE600', '#808080']) {
+      const c = configCompleta();
+      c.botones = { ...c.botones, color };
+      const s = sistemaDeDiseno(c);
+      expect(contraste(s.colorBoton.sobre, s.colorBoton.fondo), color).toBeGreaterThanOrEqual(4.5);
+    }
+  });
+
+  it('cada estilo propone un diseño de botón que existe', async () => {
+    const { BOTONES, DISENO_POR_ESTILO } = await import('../botones-disenos');
+    const { ESTILOS } = await import('../estilos-visuales');
+    for (const e of Object.keys(ESTILOS) as (keyof typeof ESTILOS)[]) expect(BOTONES[DISENO_POR_ESTILO[e]]).toBeDefined();
   });
 });

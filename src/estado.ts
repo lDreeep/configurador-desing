@@ -67,7 +67,7 @@ export function configInicial(): Config {
       antiReferencias: [],
       paletaPersonalizada: { fondo: r.fondo, texto: r.texto, acento: r.acento, manual: {} },
     },
-    botones: { estilo: DIRECCIONES.calmo.boton, tamano: 'normal', mayusculas: false, icono: 'ninguno' },
+    botones: { estilo: DIRECCIONES.calmo.boton, tamano: 'normal', mayusculas: false, icono: 'ninguno', diseno: 'ninguno', color: 'acento' },
     notas: {},
     notasGenerales: '',
   };

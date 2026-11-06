@@ -268,10 +268,21 @@ export function CampoColor(props: { etiqueta: string; valor: string; onCambiar: 
   );
 }
 
-/** Reinicia la animación de "toque" en los botones de muestra que haya dentro de `el`. */
-export function animarToque(el: HTMLElement) {
-  const botones = el.matches('.pv-boton') ? [el] : Array.from(el.querySelectorAll<HTMLElement>('.pv-boton'));
+/**
+ * Reinicia la animación de "toque" en los botones que haya dentro de `el` (o en `el` mismo).
+ * Con `evento`, la onda sale desde el punto tocado.
+ */
+export function animarToque(el: HTMLElement, evento?: { clientX: number; clientY: number; detail?: number }) {
+  const botones = el.matches('.pv-boton, .bt') ? [el] : Array.from(el.querySelectorAll<HTMLElement>('.pv-boton, .bt'));
   for (const b of botones) {
+    if (evento && evento.detail !== 0) {
+      const r = b.getBoundingClientRect();
+      b.style.setProperty('--x', `${evento.clientX - r.left}px`);
+      b.style.setProperty('--y', `${evento.clientY - r.top}px`);
+    } else {
+      b.style.removeProperty('--x');
+      b.style.removeProperty('--y');
+    }
     b.classList.remove('toque');
     void b.offsetWidth; // fuerza el reinicio de la animación
     b.classList.add('toque');

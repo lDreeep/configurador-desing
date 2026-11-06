@@ -1,8 +1,8 @@
 import { useMemo, useState, type CSSProperties } from 'react';
 import { sistemaDeDiseno } from '../export/sistema';
 import type { Config } from '../tipos';
-import { IconoFlecha } from '../pasos/visual';
 import { animarToque } from '../componentes/ui';
+import { BotonPrincipal } from '../componentes/BotonPrincipal';
 
 const humanizar = (s: string) => {
   const t = s.replace(/_/g, ' ');
@@ -114,7 +114,7 @@ export function Preview({ config }: { config: Config }) {
       </div>
       <div className={`pv-marco pv-${dispositivo}`}>
         <div
-          className={`pv pg ${config.visual.estilo !== 'clasico' ? `estilo-${config.visual.estilo}` : ''} ${layout} pv-hover-${config.visual.hover} pv-presionar-${config.visual.presionar} pv-cambio-${config.visual.cambio} pv-aparicion-${config.visual.aparicion}`}
+          className={`pv pg ${config.visual.estilo !== 'clasico' ? `estilo-${config.visual.estilo}` : ''} ${layout} ${config.botones.diseno === 'ninguno' ? `pv-hover-${config.visual.hover} pv-presionar-${config.visual.presionar}` : ''} pv-cambio-${config.visual.cambio} pv-aparicion-${config.visual.aparicion}`}
           style={estilo}
         >
           {nav}
@@ -135,13 +135,11 @@ export function Preview({ config }: { config: Config }) {
                 </div>
                 <div className="pv-botones">
                   {pantalla.accionPrincipal && (
-                    <button type="button" className={`pv-boton pv-primario est-${config.botones.estilo} pg-boton`} onClick={(e) => animarToque(e.currentTarget)}>
-                      {config.botones.icono === 'izquierda' && <IconoFlecha />}
+                    <BotonPrincipal config={config} clase="pg-boton">
                       {pantalla.accionPrincipal}
-                      {config.botones.icono === 'derecha' && <IconoFlecha />}
-                    </button>
+                    </BotonPrincipal>
                   )}
-                  <button type="button" className={`pv-boton pv-secundario est-${config.botones.estilo} pg-boton-sec`} onClick={(e) => animarToque(e.currentTarget)}>
+                  <button type="button" className={`pv-boton pv-secundario est-${config.botones.estilo} pg-boton-sec`} onClick={(e) => animarToque(e.currentTarget, e)}>
                     Ver más
                   </button>
                 </div>
