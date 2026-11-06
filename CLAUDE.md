@@ -32,8 +32,9 @@ Antes de dar una tarea por terminada: `npm run typecheck && npm test`.
 | `src/estilos-visuales.ts` | Estilos visuales (con su CSS y reglas) y layouts. El CSS se exporta tal cual en §19. |
 | `src/botones-disenos.ts` | Los 24 diseños del panel de botones (aspecto, hover y animación al tocar, en CSS). Se exporta tal cual en §10. |
 | `src/cajas.ts` | Los 23 diseños de caja, sus parámetros, los tokens `--caja-*` y la regla `.caja`. Se exporta en §20. |
+| `src/galeria/` | Galería de componentes por categoría (campos, interruptores, casillas, deslizadores, barras inferiores, navegación web): estructura fija + diseños en CSS. Se exporta en §21. |
 | `src/componentes/BotonPrincipal.tsx` | El botón principal con el diseño elegido; lo usan todas las vistas. |
-| `src/rapido/` | Modo rápido: `Inicio.tsx` (página entera que cambia de diseño sola; Comenzar fijo en el centro; después se elige a mano), `PanelBotones.tsx`, `PanelCajas.tsx`, `combinar.ts` (combinaciones, candados, códigos), `Pagina.tsx` (los 12 layouts), `pagina.css`. |
+| `src/rapido/` | Modo rápido: `Inicio.tsx` (página entera que cambia de diseño sola; Comenzar fijo en el centro; después se elige a mano), `PanelTipo.tsx`, `PanelBotones.tsx`, `PanelCajas.tsx`, `PanelGaleria.tsx` (panel genérico de la galería), `PanelListo.tsx`, `combinar.ts` (combinaciones, candados, códigos), `Pagina.tsx` (los 12 layouts), `pagina.css`. |
 | `src/estilos.css` | Estilos de la interfaz (`--ui-*`) y de la vista previa (`.pv-*`, solo tokens exportados). |
 
 ## Reglas
@@ -54,6 +55,10 @@ Antes de dar una tarea por terminada: `npm run typecheck && npm test`.
 4. Si afecta lo visual: token en `sistema.ts` y uso en `Preview.tsx` / `.pv-*`.
 5. Sección en `generarDesignMd.ts` y test en `generarDesignMd.test.ts`.
 6. `DESIGN.md`: §3 (formato), §5 (estado → `[MVP]` hecho), §8 (decisión), §12 (versión).
+
+## Sumar diseños a la base
+
+Usá la skill `agregar-diseno-desde-referencia` (`.claude/skills/`): convierte capturas o links en entradas del catálogo.
 
 ## Al terminar una tarea
 

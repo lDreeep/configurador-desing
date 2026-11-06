@@ -53,7 +53,7 @@ export function PanelBotones(props: {
     <div className={`panel-botones pg ${estilo}`} style={s.tokens as CSSProperties}>
       <div className="pb-contenido">
         <header className="pb-cabecera">
-          <span className="pg-etiqueta">Paso 2</span>
+          <span className="pg-etiqueta">Paso 3</span>
           <h1 className="pg-titulo">Elegí tus botones</h1>
           <p className="pg-bajada">
             Tocá cualquiera para ver cómo responde. Todos usan los colores y la letra de la página que elegiste; abajo de cada uno dice qué hace al tocarlo.

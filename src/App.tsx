@@ -9,8 +9,12 @@ import { Inicio } from './rapido/Inicio';
 import { EstilosVisualesGlobales } from './rapido/Pagina';
 import { PanelBotones } from './rapido/PanelBotones';
 import { PanelCajas } from './rapido/PanelCajas';
+import { PanelGaleria } from './rapido/PanelGaleria';
+import { PanelListo } from './rapido/PanelListo';
+import { PanelTipo } from './rapido/PanelTipo';
 
 type Modo = 'rapido' | 'avanzado';
+type PasoRapido = 'inicio' | 'tipo' | 'botones' | 'cajas' | 'formularios' | 'navegacion' | 'listo';
 const CLAVE_MODO = 'configurador-diseno:modo';
 
 function leerModo(): Modo {
@@ -25,7 +29,7 @@ export function App() {
   const { config, setConfig, reiniciar } = useConfig();
   const [modo, setModoEstado] = useState<Modo>(leerModo);
   const [indice, setIndice] = useState(0);
-  const [pasoRapido, setPasoRapido] = useState<'inicio' | 'botones' | 'cajas'>('inicio');
+  const [pasoRapido, setPasoRapido] = useState<PasoRapido>('inicio');
   const panel = useRef<HTMLElement>(null);
   const paso = PASOS[indice];
   const Componente = paso.componente;
@@ -46,45 +50,68 @@ export function App() {
   const ir = (i: number) => setIndice(Math.max(0, Math.min(PASOS.length - 1, i)));
   const progreso = Math.round(((indice + 1) / PASOS.length) * 100);
 
+  const irRapido = (p: PasoRapido) => {
+    setPasoRapido(p);
+    window.scrollTo({ top: 0 });
+  };
+  const alAvanzado = (paso: string) => {
+    setIndice(Math.max(0, PASOS.findIndex((p) => p.id === paso)));
+    setModo('avanzado');
+  };
+
   if (modo === 'rapido') {
+    const comun = { config, setConfig };
+    const navPrimero = config.proyecto.tipo === 'app_movil' ? (['nav_movil', 'nav_web'] as const) : (['nav_web', 'nav_movil'] as const);
     return (
       <>
         <EstilosVisualesGlobales />
-        {pasoRapido === 'inicio' ? (
+        {pasoRapido === 'inicio' && (
           <Inicio
             config={config}
             onAvanzado={() => setModo('avanzado')}
             onElegir={(k) => {
-              // El diseño que estaba a la vista pasa a ser el de la página, con un botón que combina.
+              // El diseño elegido pasa a ser el de la página, con un botón que combina.
               setConfig((c) => {
                 const conEstilo = aplicarCombinacion(c, k);
                 return { ...conEstilo, botones: { ...conEstilo.botones, diseno: DISENO_POR_ESTILO[k.estilo] } };
               });
-              setPasoRapido('botones');
-              window.scrollTo({ top: 0 });
+              irRapido('tipo');
             }}
           />
-        ) : pasoRapido === 'botones' ? (
-          <PanelBotones
-            config={config}
-            setConfig={setConfig}
-            onAtras={() => setPasoRapido('inicio')}
-            onSeguir={() => {
-              setPasoRapido('cajas');
-              window.scrollTo({ top: 0 });
-            }}
+        )}
+        {pasoRapido === 'tipo' && <PanelTipo {...comun} onAtras={() => irRapido('inicio')} onSeguir={() => irRapido('botones')} />}
+        {pasoRapido === 'botones' && <PanelBotones {...comun} onAtras={() => irRapido('tipo')} onSeguir={() => irRapido('cajas')} />}
+        {pasoRapido === 'cajas' && <PanelCajas {...comun} onAtras={() => irRapido('botones')} onSeguir={() => irRapido('formularios')} />}
+        {pasoRapido === 'formularios' && (
+          <PanelGaleria
+            {...comun}
+            paso="Paso 5"
+            titulo="Elegí tus formularios"
+            bajada="Campos de texto, interruptores, casillas y deslizadores. Escribí, tocá y arrastrá cada uno: todos usan tus colores y tu letra."
+            categorias={['campo', 'interruptor', 'casilla', 'deslizador']}
+            atras="Volver a las cajas"
+            onAtras={() => irRapido('cajas')}
+            onSeguir={() => irRapido('navegacion')}
           />
-        ) : (
-          <PanelCajas
-            config={config}
-            setConfig={setConfig}
-            onAtras={() => setPasoRapido('botones')}
-            onSeguir={() => {
-              // Hasta que estén los próximos paneles, se sigue en el modo avanzado desde el movimiento.
-              setIndice(PASOS.findIndex((p) => p.id === 'movimiento'));
-              setModo('avanzado');
-            }}
+        )}
+        {pasoRapido === 'navegacion' && (
+          <PanelGaleria
+            {...comun}
+            paso="Paso 6"
+            titulo="Elegí tu navegación"
+            bajada={
+              config.proyecto.tipo === 'app_movil'
+                ? 'Como es una app para celular, arrancamos por las barras inferiores. Tocá las pestañas para ver cómo marcan la activa.'
+                : 'Barras superiores, flotantes y menús laterales, y también las barras inferiores para cuando se vea en el celular.'
+            }
+            categorias={[...navPrimero]}
+            atras="Volver a los formularios"
+            onAtras={() => irRapido('formularios')}
+            onSeguir={() => irRapido('listo')}
           />
+        )}
+        {pasoRapido === 'listo' && (
+          <PanelListo config={config} onAtras={() => irRapido('navegacion')} onAvanzado={() => alAvanzado('exportar')} onInicio={() => irRapido('inicio')} />
         )}
       </>
     );

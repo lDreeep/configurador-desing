@@ -276,6 +276,8 @@ export interface Config {
     preset: CajaPresetId | 'ninguno';
     ajustes: Partial<import('./cajas').ParamsCaja>;
   };
+  /** Diseño elegido por categoría de la galería (campo, interruptor, barra inferior…). */
+  componentes: Partial<Record<import('./galeria/base').CategoriaId, string>>;
   notas: Partial<Record<PasoId, string>>;
   notasGenerales: string;
 }

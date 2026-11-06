@@ -1,6 +1,6 @@
 # DESIGN.md: especificación del formato
 
-> **Versión del formato:** 0.5.0 (borrador)
+> **Versión del formato:** 0.6.0 (borrador)
 > **Última actualización:** 2026-11-06
 > **Estado:** configurador en v0.2 (10 pasos + export): 8 direcciones, 13 paletas + personalizada, 23 fuentes, botones y movimiento detallados. Falta la primera ronda de pruebas con IA (§9).
 
@@ -134,7 +134,7 @@ Todo archivo exportado empieza con este bloque, que permite saber con qué versi
 
 ```yaml
 formato: design-md
-version_formato: 0.5.0
+version_formato: 0.6.0
 generado_por: configurador-diseno
 fecha: 2026-11-06
 idioma: es
@@ -169,6 +169,7 @@ Orden fijo. Las marcadas **(obligatoria)** siempre aparecen, aunque sea con valo
 | 18 | Pendientes | Lo que no se definió | obligatoria |
 | 19 | Estilo visual y layout | Estructura de la página y textura del estilo, con su CSS | obligatoria (desde 0.3.0) |
 | 20 | Cajas y contenedores | Cómo son todas las cards, paneles y bloques, con su CSS | solo si se eligió una caja |
+| 21 | Componentes de interfaz | Campos, controles y navegación, con estructura HTML y CSS | solo si se eligió alguno |
 
 ---
 
@@ -182,7 +183,7 @@ Ver [§2.5](#25-encabezado-obligatorio). Va al principio, antes del título del 
 
 **Texto fijo**, igual en todos los exports de la misma versión. El configurador no lo modifica. Es lo que reemplaza a una skill: viaja adentro del archivo.
 
-Texto actual (v0.5.0; la 0.3.0 sumó la regla 10 y la 0.5.0 la 11):
+Texto actual (v0.6.0; la 0.3.0 sumó la regla 10, la 0.5.0 la 11 y la 0.6.0 la 12):
 
 ```markdown
 ## 1. Instrucciones para la IA
@@ -213,6 +214,8 @@ por un configurador visual a partir de decisiones de una persona.
    mapealas a tus componentes) y respetá sus reglas.
 11. Si hay sección 20, todas las cards, paneles y bloques usan esa caja
    (su CSS y sus tokens --caja-*), aunque el estilo de la 19 diga otra cosa.
+12. La sección 21 trae campos, controles y navegación: respetá su estructura
+   HTML y su CSS (incluidas las animaciones al escribir y al cambiar).
 ```
 
 ---
@@ -743,6 +746,26 @@ Sigue un bloque `css` con la regla `.caja` y sus modificadores (`.caja-forma-*`,
 
 ---
 
+### §21. Componentes de interfaz
+
+**Responde:** cómo son los campos, controles y la navegación. Sale de la galería (`src/galeria/`): cada categoría tiene una **estructura HTML fija** y diseños que solo cambian el CSS.
+
+```yaml
+campo:
+  diseno: flotante
+  nombre: "Etiqueta flotante"
+  descripcion: "La etiqueta está adentro y sube al escribir"
+  clases: "cm-campo cm-campo-flotante"
+  estructura: "<div class=\"cm-campo cm-campo-flotante\">…</div> — al escribir, se reinicia la clase .escribiendo en .cm-caja."
+nav_movil:
+  diseno: burbuja
+  …
+```
+
+Categorías (v0.6.0): `campo` (16 diseños), `interruptor` (8), `casilla` (8), `deslizador` (8), `nav_movil` (10), `nav_web` (9). Sigue un bloque `css` con la base de cada categoría y el diseño elegido. Las barras de navegación usan `--i` (pestaña activa) y `--n` (cantidad) para mover sus indicadores.
+
+---
+
 ## 4. Prioridades y resolución de conflictos
 
 Cuando dos cosas se contradicen, la IA sigue este orden (gana la de arriba):
@@ -805,7 +828,7 @@ Así se vería un archivo real generado por el MVP. Las secciones `[v0.2]` apare
 ````markdown
 ```yaml
 formato: design-md
-version_formato: 0.5.0
+version_formato: 0.6.0
 generado_por: configurador-diseno
 fecha: 2026-11-06
 idioma: es
@@ -1096,6 +1119,9 @@ Formato: fecha · decisión · por qué · alternativas descartadas.
 | D31 | 2026-11-06 | «Comenzar» es fijo en el centro y no cambia de aspecto; la página de atrás es solo fondo hasta tocarlo | Tiene que estar siempre en el mismo lugar; un botón que cambia con cada diseño se pierde | Usar el botón de cada diseño |
 | D32 | 2026-11-06 | Al comenzar, la misma página se despliega en modo elección: se detiene, aparecen flechas y el botón central baja y pasa a «Elegir este diseño» | Continuidad: lo que estabas viendo es lo que empezás a elegir | Ir a otra pantalla para elegir |
 | D33 | 2026-11-06 | Cajas como paso propio con diseño base + ajustes por parámetro; la caja elegida gana sobre las cards del estilo | Las cajas son la mitad de cualquier interfaz; mismo criterio que direcciones y movimiento (D5, D17) | Dejarlas atadas al estilo |
+| D34 | 2026-11-06 | El modo rápido es el producto principal; el avanzado queda para ajustes finos al final | Es lo que la persona disfruta usar y lo que le deja un sistema claro (botones, paleta, cajas, componentes) | Llevar a todos por el avanzado |
+| D35 | 2026-11-06 | La galería se organiza por categorías con estructura HTML fija y diseños que solo cambian el CSS | Sumar diseños es sumar datos; la IA recibe estructura + CSS reproducibles | Un componente React distinto por diseño |
+| D36 | 2026-11-06 | Las referencias externas se convierten en entradas con la skill `agregar-diseno-desde-referencia` | Que cada entrada nueva salga con la misma calidad (solo tokens, accesible, sin marcas) | Copiar el código de cada sitio |
 
 ---
 
@@ -1130,7 +1156,12 @@ Cada vez que pasamos un export por una IA, se anota acá. Es lo que valida (o co
 | 2 | **Elegí tu página:** pantalla completa para deslizar entre 12 layouts × 12 estilos, con candados y código por combinación | `[v0.3]` hecho |
 | 3 | **Panel de botones:** 24 diseños tocables en 6 categorías, con su animación de click; color, tamaño, icono y mayúsculas | `[v0.4]` hecho |
 | 3b | **Panel de cajas y contenedores:** 23 diseños base y 11 ajustes (fondo, transparencia, desenfoque, contorno, línea, color, esquinas, sombra, espacio, forma, hover) | `[v0.5]` hecho |
-| 4 | **Panel de formularios:** campos de texto, animación al escribir y enfocar, switches, checkboxes, selects, sliders | `[v0.6]` próximo |
+| 2b | **¿Qué vas a hacer?** (página, tienda, app web, app para celular, dashboard): define el tipo y el orden de los paneles | `[v0.6]` hecho |
+| 4 | **Panel de formularios:** 16 campos (con animación al enfocar y al escribir), 8 interruptores, 8 casillas, 8 deslizadores | `[v0.6]` hecho |
+| 4b | **Panel de navegación:** 10 barras inferiores para celular y 9 navegaciones web (superiores, flotantes y laterales), con su animación al cambiar | `[v0.6]` hecho |
+| 4c | **Listo:** resumen y descarga del DESIGN.md desde el modo rápido | `[v0.6]` hecho |
+| 4d | **Datos y métricas:** tarjetas de indicadores, gráficos (barras, línea, área, dona), tablas | `[v0.7]` próximo |
+| 4e | **¿Para qué es?** (rubro) + biblioteca de secciones: el borrador se reacomoda según el uso | `[v0.7]` |
 | 5 | Paleta y tipografía en modo rápido, aplicadas en vivo a la página elegida | `[v0.3]` |
 | 6 | **Inicio a pantalla completa:** la página entera es la publicidad del producto y cambia de diseño sola cada 4 s (deslizar + difuminar); «Comenzar» fijo en el centro; al tocarlo, la misma página pasa a elegirse a mano con flechas y «Elegir este diseño» | `[v0.5]` hecho |
 
@@ -1186,3 +1217,4 @@ Lo que todavía no tiene lugar en §5. Se mueve allá cuando se decide hacerlo.
 | 0.3.0 | 2026-11-06 | Sección nueva §19 (estilo visual y layout, con el CSS real del estilo) y regla 10 en las instrucciones para la IA. 9 paletas y 4 fuentes nuevas para los estilos. Compatible: un archivo 0.2.0 sigue siendo válido (sin §19 equivale a `estilo: clasico`). |
 | 0.4.0 | 2026-11-06 | §10 suma `botones.diseno`, `clases`, `al_tocar`, `color`, `color_fondo` y `color_texto`, más el bloque `css` del botón principal. §16 suma `--boton-color` y `--boton-sobre`. Compatible. |
 | 0.5.0 | 2026-11-06 | Sección nueva §20 (cajas y contenedores, con su CSS) y regla 11 en las instrucciones. §16 suma los tokens `--caja-*`. Compatible. |
+| 0.6.0 | 2026-11-06 | Sección nueva §21 (componentes de interfaz con estructura y CSS) y regla 12. Compatible. |

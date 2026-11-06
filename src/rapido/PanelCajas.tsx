@@ -57,7 +57,7 @@ export function PanelCajas(props: {
     <div className={`panel-botones panel-cajas pg ${estilo}`} style={s.tokens as CSSProperties}>
       <div className="pb-contenido">
         <header className="pb-cabecera">
-          <span className="pg-etiqueta">Paso 3</span>
+          <span className="pg-etiqueta">Paso 4</span>
           <h1 className="pg-titulo">Elegí tus cajas</h1>
           <p className="pg-bajada">
             Las cajas son las cards, paneles y bloques donde va el contenido. Elegí un diseño y ajustalo a gusto: fondo, transparencia, contorno, sombra, forma y qué

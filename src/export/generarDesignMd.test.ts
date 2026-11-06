@@ -262,3 +262,30 @@ describe('panel de cajas', () => {
     expect(generarDesignMd(configCompleta())).not.toContain('## 20.');
   });
 });
+
+describe('galería de componentes', () => {
+  it('cada diseño de cada categoría genera un export válido con su CSS', async () => {
+    const { CATEGORIAS } = await import('../galeria');
+    for (const [cat, def] of Object.entries(CATEGORIAS)) {
+      for (const d of Object.keys(def.disenos)) {
+        const c = configCompleta();
+        c.componentes = { [cat]: d };
+        const md = generarDesignMd(c);
+        for (const b of bloquesYaml(md)) expect(() => parse(b)).not.toThrow();
+        const s21 = parse(bloquesYaml(md).find((b) => b.startsWith(`${cat}:`))!);
+        expect(s21[cat].diseno, `${cat}/${d}`).toBe(d);
+        if (def.disenos[d].css) expect(md).toContain(`.cm-${cat}.cm-${cat}-${d}`);
+        else expect(md).toContain(`.cm-${cat} {`);
+        expect(md).not.toMatch(/(^|[^&])&(?![a-z#])/m);
+      }
+    }
+  });
+
+  it('cada categoría tiene al menos 8 diseños y un CSS base', async () => {
+    const { CATEGORIAS } = await import('../galeria');
+    for (const def of Object.values(CATEGORIAS)) {
+      expect(Object.keys(def.disenos).length).toBeGreaterThanOrEqual(8);
+      expect(def.base).toContain('&');
+    }
+  });
+});

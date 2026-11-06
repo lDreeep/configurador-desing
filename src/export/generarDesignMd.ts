@@ -8,9 +8,11 @@ import { paresDeContraste } from '../color';
 import { BOTONES, clasesDeBoton, cssDeBoton, EFECTOS_TOQUE } from '../botones-disenos';
 import { CAJAS, clasesDeCaja, CSS_CAJA, paramsDe } from '../cajas';
 import { cssDeEstilo, ESTILOS, LAYOUTS } from '../estilos-visuales';
+import { CATEGORIAS, type CategoriaId } from '../galeria';
+import { cssBaseDe, cssDisenoDe } from '../galeria/base';
 import { paletaActiva, sistemaDeDiseno, tokensCss } from './sistema';
 
-export const VERSION_FORMATO = '0.5.0';
+export const VERSION_FORMATO = '0.6.0';
 
 const q = (s: string) => JSON.stringify(s);
 const valor = (s: string) => (s.trim() ? q(s.trim()) : 'sin_definir');
@@ -56,7 +58,9 @@ por un configurador visual a partir de decisiones de una persona.
    CSS tal cual (las clases .pg-* son nombres de referencia: usalas o
    mapealas a tus componentes) y respetá sus reglas.
 11. Si hay sección 20, todas las cards, paneles y bloques usan esa caja
-   (su CSS y sus tokens --caja-*), aunque el estilo de la 19 diga otra cosa.`;
+   (su CSS y sus tokens --caja-*), aunque el estilo de la 19 diga otra cosa.
+12. La sección 21 trae campos, controles y navegación: respetá su estructura
+   HTML y su CSS (incluidas las animaciones al escribir y al cambiar).`;
 
 export const REGLAS_ACCESIBILIDAD = [
   'Contraste de texto 4.5:1 (3:1 en texto de 24px o más)',
@@ -452,6 +456,28 @@ ajustado_a_mano: ${ids(ajustadas)}`),
         '```css\n/* Requiere los tokens --caja-* de la sección 16. */\n' + CSS_CAJA.replace(/&/g, '.caja') + '\n```',
       ].join('\n\n'),
     );
+  }
+
+  const elegidos = (Object.keys(CATEGORIAS) as CategoriaId[]).filter((id) => c.componentes[id] && CATEGORIAS[id].disenos[c.componentes[id]!]);
+  if (elegidos.length) {
+    const partes = ['## 21. Componentes de interfaz', 'Campos, controles y navegación elegidos en el configurador. Cada uno trae su estructura HTML de referencia y su CSS real.'];
+    partes.push(
+      yaml(
+        elegidos
+          .map((id) => {
+            const d = c.componentes[id]!;
+            const cat = CATEGORIAS[id];
+            return `${id}:\n  diseno: ${d}\n  nombre: ${q(cat.disenos[d].nombre)}\n  descripcion: ${q(cat.disenos[d].descripcion)}\n  clases: ${q(`cm-${id} cm-${id}-${d}`)}\n  estructura: ${q(cat.estructura.replace(/DISEÑO/g, d))}`;
+          })
+          .join('\n'),
+      ),
+    );
+    partes.push(
+      '```css\n/* Componentes. Requieren los tokens de la sección 16. */\n' +
+        elegidos.map((id) => `/* ${CATEGORIAS[id].nombre} */\n${cssBaseDe(CATEGORIAS[id])}\n${cssDisenoDe(CATEGORIAS[id], c.componentes[id]!)}`).join('\n\n') +
+        '\n```',
+    );
+    secciones.push(partes.join('\n\n'));
   }
 
   const encabezado = yaml(`

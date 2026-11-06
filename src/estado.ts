@@ -69,6 +69,7 @@ export function configInicial(): Config {
     },
     botones: { estilo: DIRECCIONES.calmo.boton, tamano: 'normal', mayusculas: false, icono: 'ninguno', diseno: 'ninguno', color: 'acento' },
     cajas: { preset: 'ninguno', ajustes: {} },
+    componentes: {},
     notas: {},
     notasGenerales: '',
   };
@@ -128,6 +129,7 @@ export function normalizar(guardado: Partial<Config>): Config {
     visual,
     botones: { ...base.botones, ...guardado.botones },
     cajas: { ...base.cajas, ...guardado.cajas },
+    componentes: { ...guardado.componentes },
     notas: { ...guardado.notas },
   };
 }
