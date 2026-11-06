@@ -28,12 +28,14 @@ Antes de dar una tarea por terminada: `npm run typecheck && npm test`.
 | `src/export/sistema.ts` | Deriva tokens y valores de diseño desde `Config`. **Lo usan la vista previa y el export**: lo que se ve es lo que se exporta. |
 | `src/export/generarDesignMd.ts` | Arma el `DESIGN.md` exportado. `VERSION_FORMATO` tiene que coincidir con `DESIGN.md`. |
 | `src/pasos/pasos.tsx` | Registro `PASOS`: cada paso del configurador (componente, resumen, placeholder de la nota). |
-| `src/preview/Preview.tsx` | Vista previa en vivo. Usa solo variables CSS de `sistema.ts`. |
+| `src/preview/Preview.tsx` | Vista previa en vivo del modo avanzado. Usa solo variables CSS de `sistema.ts`. |
+| `src/estilos-visuales.ts` | Estilos visuales (con su CSS y reglas) y layouts. El CSS se exporta tal cual en §19. |
+| `src/rapido/` | Modo rápido: `combinar.ts` (combinaciones, candados, códigos), `Pagina.tsx` (los 12 layouts), `ElegirPagina.tsx` (pantalla para deslizar), `pagina.css`. |
 | `src/estilos.css` | Estilos de la interfaz (`--ui-*`) y de la vista previa (`.pv-*`, solo tokens exportados). |
 
 ## Reglas
 
-- **Opciones nuevas van en `catalogo.ts`.** No escribas opciones a mano dentro de un componente.
+- **Opciones nuevas van en `catalogo.ts`** (o en `estilos-visuales.ts` si son estilos o layouts). No escribas opciones a mano dentro de un componente.
 - **La vista previa no usa colores ni medidas propios**: solo los tokens `--color-*`, `--texto-*`, `--espacio-*`, `--radio-*`, `--sombra-*`, `--duracion-*`, `--curva-*`.
 - **Todo cambio en la salida del export** actualiza `DESIGN.md` (§3, y §5 si cambia un paso), sube la versión según §7 y se anota en §12. También `VERSION_FORMATO`.
 - **Paletas nuevas pasan contraste AA**: lo verifica `generarDesignMd.test.ts`.

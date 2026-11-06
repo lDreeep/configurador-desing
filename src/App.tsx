@@ -3,13 +3,36 @@ import { NotaPaso } from './componentes/ui';
 import { useConfig } from './estado';
 import { PASOS } from './pasos/pasos';
 import { Preview } from './preview/Preview';
+import { ElegirPagina } from './rapido/ElegirPagina';
+import { EstilosVisualesGlobales } from './rapido/Pagina';
+
+type Modo = 'rapido' | 'avanzado';
+const CLAVE_MODO = 'configurador-diseno:modo';
+
+function leerModo(): Modo {
+  try {
+    return localStorage.getItem(CLAVE_MODO) === 'avanzado' ? 'avanzado' : 'rapido';
+  } catch {
+    return 'rapido';
+  }
+}
 
 export function App() {
   const { config, setConfig, reiniciar } = useConfig();
+  const [modo, setModoEstado] = useState<Modo>(leerModo);
   const [indice, setIndice] = useState(0);
   const panel = useRef<HTMLElement>(null);
   const paso = PASOS[indice];
   const Componente = paso.componente;
+
+  const setModo = (m: Modo) => {
+    setModoEstado(m);
+    try {
+      localStorage.setItem(CLAVE_MODO, m);
+    } catch {
+      // sin almacenamiento: el modo dura la sesión
+    }
+  };
 
   useEffect(() => {
     panel.current?.scrollTo({ top: 0 });
@@ -18,13 +41,32 @@ export function App() {
   const ir = (i: number) => setIndice(Math.max(0, Math.min(PASOS.length - 1, i)));
   const progreso = Math.round(((indice + 1) / PASOS.length) * 100);
 
+  if (modo === 'rapido') {
+    return (
+      <>
+        <EstilosVisualesGlobales />
+        <ElegirPagina
+          config={config}
+          setConfig={setConfig}
+          onAvanzado={() => setModo('avanzado')}
+          onSeguir={() => {
+            // Hasta que estén las galerías del modo rápido, se sigue en el modo avanzado por los botones.
+            setIndice(PASOS.findIndex((p) => p.id === 'botones'));
+            setModo('avanzado');
+          }}
+        />
+      </>
+    );
+  }
+
   return (
     <div className="app">
+      <EstilosVisualesGlobales />
       <header className="cabecera">
         <div>
           <h1>Armá el diseño de tu app</h1>
           <p>
-            Paso {indice + 1} de {PASOS.length} · se guarda solo en este navegador
+            Modo avanzado · paso {indice + 1} de {PASOS.length} · se guarda solo en este navegador
           </p>
         </div>
         <div className="cabecera-derecha">
@@ -38,6 +80,9 @@ export function App() {
           >
             <div style={{ width: `${progreso}%` }} />
           </div>
+          <button type="button" className="boton secundario" onClick={() => setModo('rapido')}>
+            Modo rápido
+          </button>
           <button
             type="button"
             className="boton fantasma"

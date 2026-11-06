@@ -41,7 +41,16 @@ export type PaletaId =
   | 'oceano'
   | 'arena'
   | 'grafito'
-  | 'menta';
+  | 'menta'
+  | 'suizo_rojo'
+  | 'bauhaus'
+  | 'memphis'
+  | 'vidrio'
+  | 'arcilla'
+  | 'retro_gris'
+  | 'fosforo_verde'
+  | 'fosforo_ambar'
+  | 'cromo';
 
 export type FuenteId =
   | 'inter'
@@ -66,7 +75,39 @@ export type FuenteId =
   | 'jetbrains_mono'
   | 'space_mono'
   | 'nunito'
-  | 'quicksand';
+  | 'quicksand'
+  | 'bebas_neue'
+  | 'anton'
+  | 'vt323'
+  | 'poiret_one';
+
+export type EstiloId =
+  | 'suizo'
+  | 'bauhaus'
+  | 'memphis'
+  | 'neobrutalismo'
+  | 'vidrio'
+  | 'clay'
+  | 'retro_os'
+  | 'terminal'
+  | 'editorial'
+  | 'art_deco'
+  | 'y2k'
+  | 'organico';
+
+export type LayoutId =
+  | 'hero_partido'
+  | 'bento'
+  | 'revista'
+  | 'tipografico'
+  | 'cinta'
+  | 'apiladas'
+  | 'indice'
+  | 'panel_fijo'
+  | 'mosaico'
+  | 'minimo'
+  | 'app_lateral'
+  | 'horizontal';
 
 export type EscalaId = 'sutil' | 'medio' | 'dramatico' | 'extremo';
 export type EspaciadoTitulos = 'apretado' | 'normal' | 'amplio';
@@ -149,6 +190,9 @@ export interface Config {
   };
   visual: {
     direccion: DireccionId;
+    /** Estilo visual (movimiento estético). 'clasico' = sin estilo especial. */
+    estilo: EstiloId | 'clasico';
+    layout: LayoutId;
     antiReferencias: string[];
     paleta: PaletaId | 'personalizada';
     paletaPersonalizada: PaletaPersonalizada;

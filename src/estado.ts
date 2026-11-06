@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { DIRECCIONES, FUENTES, MOVIMIENTOS, NAV_SUGERIDA, PALETAS, PLANTILLAS_PANTALLAS } from './catalogo';
+import { ESTILOS, LAYOUTS } from './estilos-visuales';
 import type { Config, DireccionId, FuenteId, MovimientoId, Pantalla, TipoProyecto } from './tipos';
 
 const CLAVE = 'configurador-diseno:v1';
@@ -26,6 +27,7 @@ function visualDeDireccion(id: DireccionId) {
   const m = MOVIMIENTOS[d.movimiento];
   return {
     direccion: id,
+    estilo: 'clasico' as const,
     paleta: d.paleta,
     fuenteTitulos: d.fuenteTitulos,
     fuenteTexto: d.fuenteTexto,
@@ -61,6 +63,7 @@ export function configInicial(): Config {
     funciones: { acciones: [], integraciones: [], fueraDeAlcance: [], requiereCuenta: 'si' },
     visual: {
       ...visualDeDireccion('calmo'),
+      layout: 'hero_partido',
       antiReferencias: [],
       paletaPersonalizada: { fondo: r.fondo, texto: r.texto, acento: r.acento, manual: {} },
     },
@@ -112,6 +115,8 @@ export function normalizar(guardado: Partial<Config>): Config {
   if (visual.paleta !== 'personalizada' && !(visual.paleta in PALETAS)) visual.paleta = base.visual.paleta;
   if (!(visual.fuenteTitulos in FUENTES)) visual.fuenteTitulos = base.visual.fuenteTitulos;
   if (!(visual.fuenteTexto in FUENTES)) visual.fuenteTexto = base.visual.fuenteTexto;
+  if (visual.estilo !== 'clasico' && !(visual.estilo in ESTILOS)) visual.estilo = 'clasico';
+  if (!(visual.layout in LAYOUTS)) visual.layout = base.visual.layout;
   visual.paletaPersonalizada = { ...base.visual.paletaPersonalizada, ...visual.paletaPersonalizada };
   return {
     ...base,

@@ -34,8 +34,8 @@ export interface Paleta {
   estados: { exito: string; aviso: string; error: string; info: string };
 }
 
-const claro = (nombre: string, roles: Roles): Paleta => ({ nombre, modo: 'claro', roles, estados: ESTADOS_CLAROS });
-const oscuro = (nombre: string, roles: Roles): Paleta => ({ nombre, modo: 'oscuro', roles, estados: ESTADOS_OSCUROS });
+const claro = (nombre: string, roles: Roles, estados = ESTADOS_CLAROS): Paleta => ({ nombre, modo: 'claro', roles, estados });
+const oscuro = (nombre: string, roles: Roles, estados = ESTADOS_OSCUROS): Paleta => ({ nombre, modo: 'oscuro', roles, estados });
 
 export const PALETAS: Record<PaletaId, Paleta> = {
   azul_electrico: claro('Azul eléctrico', {
@@ -89,6 +89,42 @@ export const PALETAS: Record<PaletaId, Paleta> = {
   oceano: oscuro('Océano', {
     fondo: '#0B1220', superficie: '#131C2E', superficie_alta: '#1A2540', borde: '#2A3756',
     texto: '#E8EEF9', texto_suave: '#9AA8C2', acento: '#38BDF8', sobre_acento: '#06202E',
+  }),
+  suizo_rojo: claro('Suizo rojo', {
+    fondo: '#F4F4F0', superficie: '#E6E6E0', superficie_alta: '#FFFFFF', borde: '#B9B9B0',
+    texto: '#111111', texto_suave: '#46463F', acento: '#D70A16', sobre_acento: '#FFFFFF',
+  }),
+  bauhaus: claro('Bauhaus', {
+    fondo: '#F2EBDD', superficie: '#E6DCC6', superficie_alta: '#FBF7EF', borde: '#1A1A1A',
+    texto: '#1A1A1A', texto_suave: '#4A4337', acento: '#1F3F99', sobre_acento: '#FFFFFF',
+  }, { exito: '#1B6B42', aviso: '#8A4504', error: '#B3201A', info: '#1F3F99' }),
+  memphis: claro('Memphis', {
+    fondo: '#FFF6EA', superficie: '#FFE3EE', superficie_alta: '#FFFFFF', borde: '#1B1B3A',
+    texto: '#1B1B3A', texto_suave: '#4E4A6B', acento: '#D11E63', sobre_acento: '#FFFFFF',
+  }),
+  vidrio: oscuro('Vidrio nocturno', {
+    fondo: '#0D0B1E', superficie: '#1A1733', superficie_alta: '#241F45', borde: '#3A3466',
+    texto: '#F4F2FF', texto_suave: '#B0A9D6', acento: '#9D8CFF', sobre_acento: '#0D0B1E',
+  }),
+  arcilla: claro('Arcilla', {
+    fondo: '#EEF1FA', superficie: '#F8F9FE', superficie_alta: '#FFFFFF', borde: '#D3D8EA',
+    texto: '#2B2D42', texto_suave: '#585C77', acento: '#5B5BD6', sobre_acento: '#FFFFFF',
+  }),
+  retro_gris: claro('Retro gris', {
+    fondo: '#D4D0C8', superficie: '#E4E1DB', superficie_alta: '#FFFFFF', borde: '#808080',
+    texto: '#000000', texto_suave: '#333333', acento: '#000080', sobre_acento: '#FFFFFF',
+  }, { exito: '#0B5A33', aviso: '#6B3A00', error: '#8E1B1B', info: '#000080' }),
+  fosforo_verde: oscuro('Fósforo verde', {
+    fondo: '#050805', superficie: '#0C140C', superficie_alta: '#122012', borde: '#235223',
+    texto: '#B8F5B8', texto_suave: '#74C274', acento: '#39FF14', sobre_acento: '#050805',
+  }),
+  fosforo_ambar: oscuro('Fósforo ámbar', {
+    fondo: '#0A0700', superficie: '#161000', superficie_alta: '#211800', borde: '#4D3A0A',
+    texto: '#FFD58A', texto_suave: '#C99A3E', acento: '#FFB000', sobre_acento: '#0A0700',
+  }),
+  cromo: claro('Cromo Y2K', {
+    fondo: '#EDEBFA', superficie: '#DDD9F6', superficie_alta: '#FFFFFF', borde: '#A9A2DA',
+    texto: '#1A1440', texto_suave: '#463F6E', acento: '#4B12C8', sobre_acento: '#FFFFFF',
   }),
 };
 
@@ -150,6 +186,10 @@ export const FUENTES: Record<FuenteId, Fuente> = {
   space_mono: f('Space Mono', MONO, 'mono', [400, 700], 'Mono retro, con carácter'),
   nunito: f('Nunito', SANS, 'redondeada', P4_8, 'Redondeada y simpática'),
   quicksand: f('Quicksand', SANS, 'redondeada', P4_7, 'Redondeada y liviana'),
+  bebas_neue: f('Bebas Neue', SANS, 'display', [400], 'Condensada en mayúsculas, de afiche'),
+  anton: f('Anton', SANS, 'display', [400], 'Condensada y pesada, impacto'),
+  vt323: f('VT323', MONO, 'mono', [400], 'Pixelada, de terminal vieja'),
+  poiret_one: f('Poiret One', SANS, 'display', [400], 'Art déco, fina y geométrica'),
 };
 
 /** URL de Google Fonts que carga todo el catálogo (para mostrar cada fuente con su forma real). */

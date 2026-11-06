@@ -1,6 +1,6 @@
 # DESIGN.md: especificación del formato
 
-> **Versión del formato:** 0.2.0 (borrador)
+> **Versión del formato:** 0.3.0 (borrador)
 > **Última actualización:** 2026-11-06
 > **Estado:** configurador en v0.2 (10 pasos + export): 8 direcciones, 13 paletas + personalizada, 23 fuentes, botones y movimiento detallados. Falta la primera ronda de pruebas con IA (§9).
 
@@ -134,7 +134,7 @@ Todo archivo exportado empieza con este bloque, que permite saber con qué versi
 
 ```yaml
 formato: design-md
-version_formato: 0.2.0
+version_formato: 0.3.0
 generado_por: configurador-diseno
 fecha: 2026-11-06
 idioma: es
@@ -167,6 +167,7 @@ Orden fijo. Las marcadas **(obligatoria)** siempre aparecen, aunque sea con valo
 | 16 | Tokens | Todo lo anterior como variables CSS | obligatoria |
 | 17 | Notas generales | Lo que la persona quiere decir fuera de los pasos | |
 | 18 | Pendientes | Lo que no se definió | obligatoria |
+| 19 | Estilo visual y layout | Estructura de la página y textura del estilo, con su CSS | obligatoria (desde 0.3.0) |
 
 ---
 
@@ -180,7 +181,7 @@ Ver [§2.5](#25-encabezado-obligatorio). Va al principio, antes del título del 
 
 **Texto fijo**, igual en todos los exports de la misma versión. El configurador no lo modifica. Es lo que reemplaza a una skill: viaja adentro del archivo.
 
-Texto actual (v0.1.0, sin cambios en 0.2.0):
+Texto actual (v0.3.0; suma la regla 10):
 
 ```markdown
 ## 1. Instrucciones para la IA
@@ -206,6 +207,9 @@ por un configurador visual a partir de decisiones de una persona.
    y bloquee el trabajo.
 9. Al terminar, listá cualquier decisión que hayas tenido que tomar por
    tu cuenta.
+10. La sección 19 define el layout y, si hay, el estilo visual: aplicá su
+   CSS tal cual (las clases .pg-* son nombres de referencia: usalas o
+   mapealas a tus componentes) y respetá sus reglas.
 ```
 
 ---
@@ -683,6 +687,26 @@ preguntas_sugeridas:
 
 ---
 
+### §19. Estilo visual y layout
+
+**Responde:** cómo se arma la página y qué textura tiene. Es lo que más aleja el resultado del diseño "promedio".
+
+```yaml
+layout: bento                     # hero_partido | bento | revista | tipografico | cinta | apiladas | indice | panel_fijo | mosaico | minimo | app_lateral | horizontal
+layout_estructura: "Grilla de 4 columnas: el bloque principal ocupa 3×2…"   # descripción para reproducirlo
+estilo: bauhaus                   # clasico | suizo | bauhaus | memphis | neobrutalismo | vidrio | clay | retro_os | terminal | editorial | art_deco | y2k | organico
+estilo_palabras_clave: [geométrico, constructivo, primario]
+estilo_reglas:
+  - "Formas geométricas puras como decoración"
+```
+
+Si hay estilo, sigue un bloque `css` con **el CSS real** del estilo. Las clases `.pg-*` son nombres de referencia (`.pg` es la raíz de la página; `.pg-card`, `.pg-titulo`, `.pg-boton`, `.pg-deco` con hijos `.a .b .c`…): la IA las usa tal cual o las mapea a sus componentes. Ese CSS solo usa los tokens de §16 y colores decorativos propios (`--deco-1/2/3`, nunca para texto).
+
+- Fuente de verdad: `src/estilos-visuales.ts`. Cada estilo trae sus **reglas de compatibilidad**: paletas, pares de fuentes, forma, sombras, bordes, botón y movimiento que lo sostienen.
+- En el modo rápido, cada combinación (estilo × layout × paleta × tipografía) tiene un **código de 5 caracteres** (por ejemplo `11E71`) que se puede compartir como link (`#c=11E71`).
+
+---
+
 ## 4. Prioridades y resolución de conflictos
 
 Cuando dos cosas se contradicen, la IA sigue este orden (gana la de arriba):
@@ -745,7 +769,7 @@ Así se vería un archivo real generado por el MVP. Las secciones `[v0.2]` apare
 ````markdown
 ```yaml
 formato: design-md
-version_formato: 0.2.0
+version_formato: 0.3.0
 generado_por: configurador-diseno
 fecha: 2026-11-06
 idioma: es
@@ -1024,6 +1048,10 @@ Formato: fecha · decisión · por qué · alternativas descartadas.
 | D19 | 2026-11-06 | Cada paso muestra lo esencial y guarda el resto en «Ver opciones avanzadas» (se recuerda por paso) | Había demasiada información a la vista; lo avanzado sigue a un clic | Un interruptor global de modo avanzado |
 | D20 | 2026-11-06 | Los botones de muestra se animan al tocarlos (en las opciones y en la vista previa) | Una animación de click solo se puede elegir viéndola | Describirla con texto |
 | D21 | 2026-11-06 | Se suma un **modo rápido** visual (galerías para deslizar y tocar) que edita la misma configuración que el modo actual, que pasa a ser el **modo avanzado** | Elegir viendo es más intuitivo; un solo modelo de datos evita dos productos | Reemplazar el modo actual |
+| D22 | 2026-11-06 | Se suma la dimensión **estilo visual** (movimiento estético) con reglas de compatibilidad, además de layouts independientes | Es lo que cambia "otra paleta" por "otro mundo visual"; las reglas evitan combinaciones feas | Azar total entre todas las opciones |
+| D23 | 2026-11-06 | El CSS de cada estilo se escribe una sola vez y se usa en la vista previa y en el export (§19) | La IA copia en vez de interpretar; lo que se ve es lo que se exporta | Describir las texturas con palabras |
+| D24 | 2026-11-06 | Entrar al modo rápido no pisa una config armada a mano: la combinación se aplica recién al deslizar o al elegir «Me gusta esta» | Cambiar de modo no debe borrar trabajo | Aplicar siempre la combinación visible |
+| D25 | 2026-11-06 | El catálogo crece con referencias externas traducidas a entradas de datos (estilos, layouts, componentes), no con diseños hechos a mano | Combinar dimensiones multiplica las opciones; cada entrada nueva multiplica todo lo demás | Dibujar páginas una por una |
 
 ---
 
@@ -1055,13 +1083,23 @@ Cada vez que pasamos un export por una IA, se anota acá. Es lo que valida (o co
 | Etapa | Qué | Estado |
 |---|---|---|
 | 1 | Opciones avanzadas plegables y botones que se animan al tocarlos | `[v0.2]` hecho |
-| 2 | **Elegí tu página:** pantalla completa para deslizar entre layouts × estilos | `[v0.3]` próximo |
-| 3 | **Galería de botones:** 16+ en pantalla, formas, texturas y animaciones de click tocables | `[v0.3]` |
+| 2 | **Elegí tu página:** pantalla completa para deslizar entre 12 layouts × 12 estilos, con candados y código por combinación | `[v0.3]` hecho |
+| 3 | **Galería de botones:** 16+ en pantalla, formas, texturas y animaciones de click tocables | `[v0.3]` próximo |
 | 4 | **Galería de formularios:** campos de texto, animación al escribir y enfocar, switches, checkboxes, selects, sliders | `[v0.3]` |
 | 5 | Paleta y tipografía en modo rápido, aplicadas en vivo a la página elegida | `[v0.3]` |
 | 6 | **Landing** que muestra los diseños rotando, con el botón central «Comenzar» | `[v0.3]` |
 
 Requisito transversal: el export suma **el CSS real** de cada componente elegido (formato 0.3), para que la IA copie en vez de interpretar.
+
+### Fuentes para ampliar el catálogo (ver D25)
+
+- **Páginas:** Godly, Awwwards, SiteInspire, Land-book, Lapa Ninja, One Page Love, Minimal Gallery, brutalistwebsites.com.
+- **Apps y flujos:** Mobbin (pago), Refero.
+- **Componentes con código abierto:** Uiverse.io (MIT), CodePen (pens públicos MIT), Codrops, Animista, 98.css / XP.css / NES.css.
+- **Tipografía:** Google Fonts, Fontshare, Velvetyne, Uncut.wtf; Fonts In Use para combinaciones.
+- **Color:** Coolors, Happy Hues.
+- Regla: inspirarse en el patrón y rehacerlo; nunca copiar el diseño de una marca. Revisar la licencia de cada recurso y atribuir el código MIT.
+- Próximos estilos candidatos: risografía, japonés minimal, cyberpunk, skeumorfismo, collage, acid/rave, pixel art, escandinavo.
 
 ### Ideas sueltas
 
@@ -1100,3 +1138,4 @@ Lo que todavía no tiene lugar en §5. Se mueve allá cuando se decide hacerlo.
 | 0.1.0 | 2026-11-06 | Primera versión del formato: 19 secciones, reglas generales, prioridades, plan del configurador, ejemplo completo y registros. |
 | 0.1.0 | 2026-11-06 | Sin cambios de formato. Primer configurador implementado (D10 a D13); el export cumple §3 según D12. |
 | 0.2.0 | 2026-11-06 | Cambios que no rompen nada: §6 suma `paleta: personalizada`, el bloque `personalizada` y el rol `acento_suave`; un contraste que no pasa se anota en §18 en vez de bloquear (D15). §7 suma `peso_titulos`, `espaciado_titulos` y `contraste_tamanos` (4 niveles). §9 suma `elevacion: dura` y `bordes.componente`. §10 suma `botones.estilo`, `tamano`, `alto`, `padding_horizontal`, `texto`, `mayusculas` e `icono`. §12 suma el nivel `rapido`, `al_presionar` y más valores en `hover_botones`, `aparicion_listas` y `cambio_de_pantalla`. §5 pasa de 4 a 8 direcciones. Tokens nuevos en §16: `--color-acento-suave`, `--titulos-peso`, `--subtitulos-peso`, `--titulos-espaciado`, `--borde-componente`, `--boton-*`. |
+| 0.3.0 | 2026-11-06 | Sección nueva §19 (estilo visual y layout, con el CSS real del estilo) y regla 10 en las instrucciones para la IA. 9 paletas y 4 fuentes nuevas para los estilos. Compatible: un archivo 0.2.0 sigue siendo válido (sin §19 equivale a `estilo: clasico`). |

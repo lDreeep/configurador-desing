@@ -5,9 +5,10 @@ import { ESTILOS_BOTON, INTEGRACIONES, PATRONES_NAV, TAMANOS_BOTON } from '../ca
 import type { BotonEstiloId } from '../tipos';
 import type { Config } from '../tipos';
 import { paresDeContraste } from '../color';
+import { cssDeEstilo, ESTILOS, LAYOUTS } from '../estilos-visuales';
 import { paletaActiva, sistemaDeDiseno, tokensCss } from './sistema';
 
-export const VERSION_FORMATO = '0.2.0';
+export const VERSION_FORMATO = '0.3.0';
 
 const q = (s: string) => JSON.stringify(s);
 const valor = (s: string) => (s.trim() ? q(s.trim()) : 'sin_definir');
@@ -48,7 +49,10 @@ por un configurador visual a partir de decisiones de una persona.
 8. Revisá la sección 18 y empezá por preguntar lo que esté pendiente
    y bloquee el trabajo.
 9. Al terminar, listá cualquier decisión que hayas tenido que tomar por
-   tu cuenta.`;
+   tu cuenta.
+10. La sección 19 define el layout y, si hay, el estilo visual: aplicá su
+   CSS tal cual (las clases .pg-* son nombres de referencia: usalas o
+   mapealas a tus componentes) y respetá sus reglas.`;
 
 export const REGLAS_ACCESIBILIDAD = [
   'Contraste de texto 4.5:1 (3:1 en texto de 24px o más)',
@@ -373,6 +377,35 @@ comportamientos:
     `
 sin_definir:${pend ? '\n' + pend : ' []'}
 preguntas_sugeridas:${lista(preguntas)}`,
+  );
+
+  const v = c.visual;
+  const lay = LAYOUTS[v.layout];
+  const estV = v.estilo !== 'clasico' ? ESTILOS[v.estilo] : null;
+  secciones.push(
+    [
+      '## 19. Estilo visual y layout',
+      estV
+        ? `Estilo ${estV.nombre.toLowerCase()} (${estV.descripcion.toLowerCase()}) sobre el layout «${lay.nombre}». El CSS de abajo le da la textura: usalo tal cual.`
+        : `Layout «${lay.nombre}», sin estilo visual especial (solo la dirección de la sección 5).`,
+      yaml(`
+layout: ${v.layout}
+layout_estructura: ${q(lay.estructura)}
+estilo: ${v.estilo}${
+        estV
+          ? `
+estilo_palabras_clave: [${estV.palabrasClave.join(', ')}]
+estilo_reglas:${lista(estV.reglas)}`
+          : ''
+      }`),
+      estV
+        ? '```css\n/* Clases de referencia: .pg (raíz de la página), .pg-nav, .pg-marca, .pg-hero, .pg-titulo, .pg-bajada,\n   .pg-etiqueta, .pg-card, .pg-card-titulo, .pg-media, .pg-boton, .pg-boton-sec, .pg-deco (.a .b .c) */\n' +
+          cssDeEstilo(v.estilo as keyof typeof ESTILOS, '.pg') +
+          '\n```'
+        : '',
+    ]
+      .filter(Boolean)
+      .join('\n\n'),
   );
 
   const encabezado = yaml(`

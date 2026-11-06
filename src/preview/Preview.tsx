@@ -49,28 +49,28 @@ export function Preview({ config }: { config: Config }) {
     switch (patron) {
       case 'barra_superior':
         return (
-          <nav className="pv-nav pv-nav-superior" aria-label="Navegación de la vista previa">
-            <span className="pv-marca">{marca}</span>
+          <nav className="pv-nav pg-nav pv-nav-superior" aria-label="Navegación de la vista previa">
+            <span className="pv-marca pg-marca">{marca}</span>
             <div className="pv-nav-items">{navItems}</div>
           </nav>
         );
       case 'menu_lateral':
         return (
-          <nav className="pv-nav pv-nav-lateral" aria-label="Navegación de la vista previa">
-            <span className="pv-marca">{marca}</span>
+          <nav className="pv-nav pg-nav pv-nav-lateral" aria-label="Navegación de la vista previa">
+            <span className="pv-marca pg-marca">{marca}</span>
             {navItems}
           </nav>
         );
       case 'pestanas_abajo':
         return (
-          <nav className="pv-nav pv-nav-pestanas" aria-label="Navegación de la vista previa">
+          <nav className="pv-nav pg-nav pv-nav-pestanas" aria-label="Navegación de la vista previa">
             {navItems}
           </nav>
         );
       case 'hamburguesa':
         return (
-          <nav className="pv-nav pv-nav-superior" aria-label="Navegación de la vista previa">
-            <span className="pv-marca">{marca}</span>
+          <nav className="pv-nav pg-nav pv-nav-superior" aria-label="Navegación de la vista previa">
+            <span className="pv-marca pg-marca">{marca}</span>
             <button
               type="button"
               className="pv-hamburguesa"
@@ -87,8 +87,8 @@ export function Preview({ config }: { config: Config }) {
         );
       case 'sin_navegacion':
         return (
-          <header className="pv-nav pv-nav-superior">
-            <span className="pv-marca">{marca}</span>
+          <header className="pv-nav pg-nav pv-nav-superior">
+            <span className="pv-marca pg-marca">{marca}</span>
           </header>
         );
     }
@@ -114,7 +114,7 @@ export function Preview({ config }: { config: Config }) {
       </div>
       <div className={`pv-marco pv-${dispositivo}`}>
         <div
-          className={`pv ${layout} pv-hover-${config.visual.hover} pv-presionar-${config.visual.presionar} pv-cambio-${config.visual.cambio} pv-aparicion-${config.visual.aparicion}`}
+          className={`pv pg ${config.visual.estilo !== 'clasico' ? `estilo-${config.visual.estilo}` : ''} ${layout} pv-hover-${config.visual.hover} pv-presionar-${config.visual.presionar} pv-cambio-${config.visual.cambio} pv-aparicion-${config.visual.aparicion}`}
           style={estilo}
         >
           {nav}
@@ -122,26 +122,26 @@ export function Preview({ config }: { config: Config }) {
             {pantalla ? (
               <>
                 <div className="pv-encabezado">
-                  <h3 className="pv-h1">{pantalla.nombre}</h3>
+                  <h3 className="pv-h1 pg-titulo">{pantalla.nombre}</h3>
                   {pantalla.proposito && <p className="pv-suave">{pantalla.proposito}</p>}
                 </div>
                 <div className="pv-bloques">
                   {pantalla.secciones.slice(0, 5).map((sec, i) => (
-                    <div key={sec + i} className="pv-bloque" style={{ animationDelay: `${i * 60}ms` }}>
-                      <span className="pv-etiqueta">Bloque {i + 1}</span>
-                      <span className="pv-bloque-titulo">{humanizar(sec)}</span>
+                    <div key={sec + i} className="pv-bloque pg-card" style={{ animationDelay: `${i * 60}ms` }}>
+                      <span className="pv-etiqueta pg-etiqueta">Bloque {i + 1}</span>
+                      <span className="pv-bloque-titulo pg-card-titulo">{humanizar(sec)}</span>
                     </div>
                   ))}
                 </div>
                 <div className="pv-botones">
                   {pantalla.accionPrincipal && (
-                    <button type="button" className={`pv-boton pv-primario est-${config.botones.estilo}`} onClick={(e) => animarToque(e.currentTarget)}>
+                    <button type="button" className={`pv-boton pv-primario est-${config.botones.estilo} pg-boton`} onClick={(e) => animarToque(e.currentTarget)}>
                       {config.botones.icono === 'izquierda' && <IconoFlecha />}
                       {pantalla.accionPrincipal}
                       {config.botones.icono === 'derecha' && <IconoFlecha />}
                     </button>
                   )}
-                  <button type="button" className={`pv-boton pv-secundario est-${config.botones.estilo}`} onClick={(e) => animarToque(e.currentTarget)}>
+                  <button type="button" className={`pv-boton pv-secundario est-${config.botones.estilo} pg-boton-sec`} onClick={(e) => animarToque(e.currentTarget)}>
                     Ver más
                   </button>
                 </div>

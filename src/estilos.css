@@ -309,3 +309,60 @@ button:disabled { cursor: not-allowed; opacity: 0.4; }
   .lateral-preview { padding: 16px; }
   .pv-escritorio { height: 520px; }
 }
+
+/* ---------- Modo rápido ---------- */
+.rapido { height: 100%; display: flex; flex-direction: column; background: #0f1014; color: #f3f4f6; }
+.rapido .boton.fantasma { color: #c9cdd6; }
+.rapido .boton.fantasma:hover { background: #1f2128; color: #fff; }
+.rapido .boton.secundario { background: transparent; color: #f3f4f6; border-color: #3a3e48; }
+.rapido .boton.secundario:hover { background: #1f2128; }
+.rapido-barra { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 24px; padding: 14px 24px; }
+.rapido-titulo { display: flex; align-items: baseline; gap: 12px; }
+.rapido-titulo h1 { margin: 0; font-family: 'Space Grotesk', Inter, sans-serif; font-size: 22px; }
+.rapido-paso { font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #9fb3ff; }
+.rapido-ayuda { margin: 0; flex: 1; min-width: 240px; color: #a8adb8; font-size: 13px; }
+
+.rapido-escenario-marco { flex: 1; min-height: 0; display: flex; align-items: stretch; gap: 12px; padding: 0 16px; position: relative; }
+.rapido-escenario { display: flex; flex-direction: column; flex: 1; min-width: 0; overflow-y: auto; overflow-x: hidden; border-radius: 18px; background: #1a1c22; touch-action: pan-y; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45); }
+.rapido-pagina { flex: 1 0 auto; display: flex; flex-direction: column; }
+.rapido-pagina > .pg { flex: 1 0 auto; }
+.entra-der { animation: rapido-der 420ms cubic-bezier(.2, .8, .2, 1) both; }
+.entra-izq { animation: rapido-izq 420ms cubic-bezier(.2, .8, .2, 1) both; }
+@keyframes rapido-der { from { opacity: 0; transform: translateX(60px) scale(.98); } to { opacity: 1; transform: none; } }
+@keyframes rapido-izq { from { opacity: 0; transform: translateX(-60px) scale(.98); } to { opacity: 1; transform: none; } }
+.rapido-flecha { align-self: center; flex-shrink: 0; width: 52px; height: 52px; border-radius: 999px; border: 1px solid #3a3e48; background: #1a1c22; color: #f3f4f6; display: inline-flex; align-items: center; justify-content: center; }
+.rapido-flecha:hover:not(:disabled) { background: #2a2d36; }
+
+.rapido-pie { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 24px; padding: 14px 24px 18px; }
+.rapido-candados { display: flex; flex-wrap: wrap; gap: 8px; }
+.candado { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 14px; border-radius: 999px; border: 1px solid #3a3e48; background: transparent; color: #c9cdd6; font-size: 13px; max-width: 280px; }
+.candado:hover { border-color: #6b7280; }
+.candado[aria-pressed='true'] { background: #f3f4f6; color: #111318; border-color: #f3f4f6; }
+.candado-nombre { font-weight: 700; }
+.candado-valor { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; opacity: 0.85; }
+.rapido-acciones { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.codigo-chip { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 14px; border-radius: 10px; border: 1px dashed #3a3e48; background: transparent; color: #a8adb8; font-size: 13px; }
+.codigo-chip strong { font-family: ui-monospace, Menlo, monospace; font-size: 15px; color: #f3f4f6; letter-spacing: 0.08em; }
+.codigo-chip:hover { border-color: #6b7280; }
+.codigo-estado { color: #9fb3ff; }
+
+@media (max-width: 720px) {
+  .rapido-barra { padding: 10px 16px; flex-wrap: nowrap; justify-content: space-between; }
+  .rapido-titulo h1 { font-size: 19px; white-space: nowrap; }
+  .rapido-paso { display: none; }
+  .rapido-barra .boton { white-space: nowrap; }
+  .rapido-ayuda { display: none; }
+  .rapido-escenario-marco { padding: 0 8px; gap: 0; }
+  .rapido-flecha { position: absolute; bottom: 12px; z-index: 5; width: 46px; height: 46px; background: rgba(26, 28, 34, 0.9); }
+  .rapido-flecha.izquierda { left: 16px; }
+  .rapido-flecha.derecha { right: 16px; }
+  .rapido-pie { padding: 12px 16px 16px; }
+  .rapido-candados { flex-wrap: nowrap; overflow-x: auto; width: 100%; padding-bottom: 2px; }
+  .candado { flex-shrink: 0; }
+  .candado-valor { display: none; }
+  .rapido-acciones { width: 100%; }
+  .rapido-acciones { flex-wrap: nowrap; }
+  .rapido-acciones .boton { flex: 1; white-space: nowrap; padding: 0 12px; font-size: 14px; }
+  .codigo-chip > span:first-child { display: none; }
+  .codigo-estado { display: none; }
+}

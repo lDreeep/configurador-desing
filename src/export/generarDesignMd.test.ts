@@ -150,3 +150,53 @@ describe('tipografía, botones y movimiento', () => {
     expect(() => generarDesignMd(c)).not.toThrow();
   });
 });
+
+describe('modo rápido: estilos, layouts y códigos', () => {
+  it('cada estilo usa paletas y fuentes que existen', async () => {
+    const { ESTILOS } = await import('../estilos-visuales');
+    for (const [id, e] of Object.entries(ESTILOS)) {
+      for (const p of e.paletas) expect(PALETAS[p], `${id} paleta ${p}`).toBeDefined();
+      for (const [t, x] of e.fuentes) expect(FUENTES[t] && FUENTES[x], `${id} fuentes ${t}/${x}`).toBeTruthy();
+      expect(e.css).toContain('&');
+    }
+  });
+
+  it('cada estilo × layout genera un export válido con su CSS en la sección 19', async () => {
+    const { ESTILOS, LAYOUTS } = await import('../estilos-visuales');
+    const { aplicarCombinacion } = await import('../rapido/combinar');
+    for (const estilo of Object.keys(ESTILOS) as (keyof typeof ESTILOS)[]) {
+      for (const layout of Object.keys(LAYOUTS) as (keyof typeof LAYOUTS)[]) {
+        const e = ESTILOS[estilo];
+        const c = aplicarCombinacion(configCompleta(), { estilo, layout, paleta: e.paletas[0], titulos: e.fuentes[0][0], texto: e.fuentes[0][1] });
+        const md = generarDesignMd(c);
+        for (const b of bloquesYaml(md)) expect(() => parse(b)).not.toThrow();
+        const s19 = parse(bloquesYaml(md).find((b) => b.startsWith('layout:'))!);
+        expect(s19).toMatchObject({ layout, estilo });
+        expect(md).toContain('## 19. Estilo visual y layout');
+        expect(md).not.toContain('&');
+      }
+    }
+  });
+
+  it('el código de una combinación vuelve a la misma combinación', async () => {
+    const { codigo, decodificar, combinacionAlAzar } = await import('../rapido/combinar');
+    for (let i = 0; i < 200; i++) {
+      const k = combinacionAlAzar(null, new Set());
+      expect(decodificar(codigo(k))).toEqual(k);
+    }
+    expect(decodificar('ZZZZZ')).toBeNull();
+  });
+
+  it('los candados mantienen lo fijado y el resto respeta las reglas del estilo', async () => {
+    const { combinacionAlAzar } = await import('../rapido/combinar');
+    const { ESTILOS } = await import('../estilos-visuales');
+    let k = combinacionAlAzar(null, new Set());
+    for (let i = 0; i < 100; i++) {
+      const n = combinacionAlAzar(k, new Set(['estilo', 'tipografia'] as const));
+      expect(n.estilo).toBe(k.estilo);
+      expect([n.titulos, n.texto]).toEqual([k.titulos, k.texto]);
+      expect(ESTILOS[n.estilo].paletas).toContain(n.paleta);
+      k = n;
+    }
+  });
+});

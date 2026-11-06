@@ -24,6 +24,8 @@ import {
 import { derivarRoles } from '../color';
 import { CampoColor, Filtros, ListaEditable, Opciones, Seccion, useAvanzado } from '../componentes/ui';
 import { aplicarDireccion, aplicarMovimiento, pesoDisponible } from '../estado';
+import { ESTILOS, LAYOUTS } from '../estilos-visuales';
+import { aplicarCombinacion } from '../rapido/combinar';
 import { sistemaDeDiseno } from '../export/sistema';
 import type {
   AparicionId,
@@ -37,6 +39,8 @@ import type {
   ElevacionId,
   EscalaId,
   EspaciadoTitulos,
+  EstiloId,
+  LayoutId,
   FuenteId,
   HoverId,
   MovimientoId,
@@ -88,10 +92,11 @@ function MiniBoton({ config, cambio, texto = 'Reservar' }: { config: Config; cam
 // ---------- Dirección ----------
 
 export function PasoDireccion({ config: c, setConfig }: PropsPaso) {
+  const { abierto, boton } = useAvanzado('direccion');
   return (
     <Seccion
       titulo="¿Qué sensación querés transmitir?"
-      ayuda="La dirección propone color, tipografía, forma, botones y movimiento que combinan. Después ajustás cada uno."
+      ayuda="La dirección propone color, tipografía, forma, botones y movimiento que combinan. El estilo visual suma texturas y decoración. Después ajustás cada cosa."
     >
       <Opciones<DireccionId>
         etiqueta="Dirección"
@@ -110,12 +115,42 @@ export function PasoDireccion({ config: c, setConfig }: PropsPaso) {
         valor={c.visual.direccion}
         onElegir={(id) => setConfig((x) => aplicarDireccion(x, id))}
       />
+      <Opciones<EstiloId | 'clasico'>
+        etiqueta="Estilo visual (opcional)"
+        opciones={[
+          { id: 'clasico' as const, nombre: 'Clásico', descripcion: 'Sin estilo especial: solo la dirección' },
+          ...(Object.keys(ESTILOS) as EstiloId[]).map((id) => {
+            const e = ESTILOS[id];
+            const r = PALETAS[e.paletas[0]].roles;
+            return { id, nombre: e.nombre, descripcion: e.descripcion, fuente: FUENTES[e.fuentes[0][0]].pila, muestras: [r.fondo, r.superficie, r.acento, r.texto] };
+          }),
+        ]}
+        valor={c.visual.estilo}
+        onElegir={(id) =>
+          setConfig((x) => {
+            if (id === 'clasico') return { ...x, visual: { ...x.visual, estilo: 'clasico' } };
+            const e = ESTILOS[id];
+            return aplicarCombinacion(x, { estilo: id, layout: x.visual.layout, paleta: e.paletas[0], titulos: e.fuentes[0][0], texto: e.fuentes[0][1] });
+          })
+        }
+      />
+      {boton(2)}
+      {abierto && (
+        <>
+      <Opciones<LayoutId>
+        etiqueta="Layout de la página"
+        opciones={lista(LAYOUTS)}
+        valor={c.visual.layout}
+        onElegir={(layout) => setVisual(setConfig, { layout })}
+      />
       <ListaEditable
         etiqueta="¿Qué NO querés que parezca?"
         items={c.visual.antiReferencias}
         onCambiar={(v) => setVisual(setConfig, { antiReferencias: v })}
         placeholder="Ej.: un banco"
       />
+        </>
+      )}
     </Seccion>
   );
 }
