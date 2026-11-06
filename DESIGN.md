@@ -1136,6 +1136,7 @@ Formato: fecha · decisión · por qué · alternativas descartadas.
 | D38 | 2026-11-06 | El botón secundario se elige viéndolo junto al principal | Los botones van de a pares; elegirlos sueltos no muestra si combinan | Elegir el secundario por separado |
 | D39 | 2026-11-06 | En dashboards y apps web, el panel de datos aparece antes que los formularios | Es lo central de esos proyectos | Mismo orden para todos |
 | D40 | 2026-11-06 | Cada categoría nueva arranca con 6 a 14 diseños; se amplía después | Primero cubrir todos los elementos, después la profundidad de cada uno | Completar una categoría antes de empezar otra |
+| D41 | 2026-11-06 | Antes de descargar, un prototipo navegable usa todas las elecciones juntas y permite cambiarlas ahí mismo | Lo que se elige por separado tiene que probarse en conjunto; corregir en contexto es más fácil que volver paso por paso | Descargar directamente después del último panel |
 
 ---
 
@@ -1178,6 +1179,7 @@ Cada vez que pasamos un export por una IA, se anota acá. Es lo que valida (o co
 | 4f | **Selectores tipo slide** (chicos y grandes) | `[v0.6]` hecho |
 | 4g | **Detalles:** etiquetas, avisos, carga, progreso, acordeones, avatares, tooltips, ventanas | `[v0.6]` hecho |
 | 4d | **Datos y métricas:** tarjetas de métricas, 10 tipos de gráfico, tablas; en dashboards y apps web va antes que los formularios | `[v0.6]` hecho |
+| 5b | **Prototipo final:** una app que funciona con todo lo elegido (portada, panel, explorar, crear, ayuda), en computadora y celular, con modo edición para cambiar cada elemento antes de descargar | `[v0.6]` hecho |
 | 4h | Más elementos: menús desplegables, buscadores, calendarios, paginación, migas de pan, pasos (stepper), estados vacíos, carruseles, footers | `[futuro]` |
 | 4e | **¿Para qué es?** (rubro) + biblioteca de secciones: el borrador se reacomoda según el uso | `[v0.7]` |
 | 5 | Paleta y tipografía en modo rápido, aplicadas en vivo a la página elegida | `[v0.3]` |

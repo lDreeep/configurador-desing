@@ -8,7 +8,7 @@ import { BotonPrincipal } from '../componentes/BotonPrincipal';
 import { sistemaDeDiseno } from '../export/sistema';
 import type { BotonDisenoId, BotonIcono, BotonTamano, Config } from '../tipos';
 
-const COLORES: { id: string; nombre: string }[] = [
+export const COLORES: { id: string; nombre: string }[] = [
   { id: 'acento', nombre: 'Acento de la paleta' },
   { id: 'texto', nombre: 'Monocromo' },
   { id: '#2F5BFF', nombre: 'Azul' },

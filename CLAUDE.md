@@ -34,7 +34,7 @@ Antes de dar una tarea por terminada: `npm run typecheck && npm test`.
 | `src/cajas.ts` | Los 23 diseños de caja, sus parámetros, los tokens `--caja-*` y la regla `.caja`. Se exporta en §20. |
 | `src/galeria/` | Galería de componentes por categoría (campos, interruptores, casillas, deslizadores, barras inferiores, navegación web): estructura fija + diseños en CSS. Se exporta en §21. |
 | `src/componentes/BotonPrincipal.tsx` | El botón principal con el diseño elegido; lo usan todas las vistas. |
-| `src/rapido/` | Modo rápido: `Inicio.tsx` (página entera que cambia de diseño sola; Comenzar fijo en el centro; después se elige a mano), `PanelTipo.tsx`, `PanelBotones.tsx`, `PanelCajas.tsx`, `PanelGaleria.tsx` (panel genérico de la galería), `PanelListo.tsx`, `combinar.ts` (combinaciones, candados, códigos), `Pagina.tsx` (los 12 layouts), `pagina.css`. |
+| `src/rapido/` | Modo rápido: `Inicio.tsx` (página entera que cambia de diseño sola; Comenzar fijo en el centro; después se elige a mano), `PanelTipo.tsx`, `PanelBotones.tsx`, `PanelCajas.tsx`, `PanelGaleria.tsx` (panel genérico de la galería), `Prototipo.tsx` (app de prueba con todo lo elegido y modo edición), `PanelListo.tsx`, `combinar.ts` (combinaciones, candados, códigos), `Pagina.tsx` (los 12 layouts), `pagina.css`. |
 | `src/estilos.css` | Estilos de la interfaz (`--ui-*`) y de la vista previa (`.pv-*`, solo tokens exportados). |
 
 ## Reglas

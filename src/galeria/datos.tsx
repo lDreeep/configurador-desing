@@ -358,18 +358,21 @@ export const GRAFICOS_CAT: Categoria = {
 & .cm-g-celda { fill: color-mix(in srgb, var(--color-acento) calc(12% + var(--v) * 88%), var(--color-fondo)); }
 ${sinMovimiento}`,
   disenos: Object.fromEntries(Object.entries(GRAFICOS).map(([id, g]) => [id, { nombre: g.nombre, descripcion: g.descripcion, css: '' }])),
-  Muestra: ({ clase, id }) => {
-    const g = GRAFICOS[id];
+  Muestra: ({ clase, id }) => <Grafico clase={clase} id={id} />,
+};
+
+/** Un gráfico del catálogo con título propio (lo usa también el prototipo). */
+export function Grafico({ clase, id, titulo }: { clase: string; id: string; titulo?: string }) {
+    const g = GRAFICOS[id] ?? GRAFICOS.barras;
     return (
       <figure className={clase}>
-        <figcaption>{g.nombre}</figcaption>
+        <figcaption>{titulo ?? g.nombre}</figcaption>
         <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label={g.resumen}>
           {g.dibujo()}
         </svg>
       </figure>
     );
-  },
-};
+}
 
 // ---------- Tablas ----------
 

@@ -12,9 +12,10 @@ import { PanelCajas } from './rapido/PanelCajas';
 import { PanelGaleria } from './rapido/PanelGaleria';
 import { PanelListo } from './rapido/PanelListo';
 import { PanelTipo } from './rapido/PanelTipo';
+import { Prototipo } from './rapido/Prototipo';
 
 type Modo = 'rapido' | 'avanzado';
-type PasoRapido = 'inicio' | 'tipo' | 'botones' | 'botones_mas' | 'cajas' | 'formularios' | 'navegacion' | 'elementos' | 'datos' | 'listo';
+type PasoRapido = 'inicio' | 'tipo' | 'botones' | 'botones_mas' | 'cajas' | 'formularios' | 'navegacion' | 'elementos' | 'datos' | 'prototipo' | 'listo';
 const CLAVE_MODO = 'configurador-diseno:modo';
 
 function leerModo(): Modo {
@@ -133,7 +134,7 @@ export function App() {
             categorias={['etiqueta', 'aviso', 'cargando', 'progreso', 'acordeon', 'avatar', 'tooltip', 'modal']}
             atras="Volver a la navegación"
             onAtras={() => irRapido('navegacion')}
-            onSeguir={() => irRapido(esDatos ? 'listo' : 'datos')}
+            onSeguir={() => irRapido(esDatos ? 'prototipo' : 'datos')}
           />
         )}
         {pasoRapido === 'datos' && (
@@ -145,11 +146,14 @@ export function App() {
             categorias={['metrica', 'grafico', 'tabla']}
             atras={esDatos ? 'Volver a las cajas' : 'Volver a los detalles'}
             onAtras={() => irRapido(esDatos ? 'cajas' : 'elementos')}
-            onSeguir={() => irRapido(esDatos ? 'formularios' : 'listo')}
+            onSeguir={() => irRapido(esDatos ? 'formularios' : 'prototipo')}
           />
         )}
+        {pasoRapido === 'prototipo' && (
+          <Prototipo {...comun} onAtras={() => irRapido(esDatos ? 'elementos' : 'datos')} onListo={() => irRapido('listo')} />
+        )}
         {pasoRapido === 'listo' && (
-          <PanelListo config={config} onAtras={() => irRapido(esDatos ? 'elementos' : 'datos')} onAvanzado={() => alAvanzado('exportar')} onInicio={() => irRapido('inicio')} />
+          <PanelListo config={config} onAtras={() => irRapido('prototipo')} onAvanzado={() => alAvanzado('exportar')} onInicio={() => irRapido('inicio')} />
         )}
       </>
     );
