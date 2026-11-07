@@ -226,7 +226,7 @@ export const BOTONES: Record<BotonDisenoId, BotonDiseno> = {
   },
   circulo_flecha: {
     nombre: 'Círculo con flecha', descripcion: 'Un círculo con flecha que gira al pasar', categoria: 'efectos', efecto: 'rebote',
-    css: `& { background: var(--boton-color); color: var(--boton-sobre); border: none; border-radius: 999px; padding-right: calc(var(--boton-alto) + 4px); }
+    css: `& { background: var(--boton-color); color: var(--boton-sobre); border: none; border-radius: 999px; padding-right: calc(var(--boton-alto) + 10px); }
 &::after { content: '\\2192'; position: absolute; right: 5px; top: 50%; width: calc(var(--boton-alto) - 10px); aspect-ratio: 1; display: grid; place-items: center; border-radius: 50%; background: var(--boton-sobre); color: var(--boton-color); transform: translateY(-50%); transition: transform 320ms var(--curva-entrada); }
 &:hover::after { transform: translateY(-50%) rotate(-45deg); }`,
   },
@@ -510,6 +510,9 @@ export const DISENO_POR_ESTILO: Record<EstiloId, BotonDisenoId> = {
   art_deco: 'doble',
   y2k: 'cromo',
   organico: 'pildora',
+  minimal_tecnico: 'solido',
+  oscuro_precision: 'brillo_borde',
+  producto_amable: 'pildora',
 };
 
 /** CSS base de todos los botones del panel y de las animaciones al tocar. */

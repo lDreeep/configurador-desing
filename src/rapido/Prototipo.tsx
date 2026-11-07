@@ -4,15 +4,16 @@
 import { createContext, useContext, useEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode } from 'react';
 import { BOTONES } from '../botones-disenos';
 import { CAJAS, clasesDeCaja, paramsDe } from '../cajas';
-import { CAMBIOS, COMBINACIONES, FUENTES, PALETAS } from '../catalogo';
+import { APARICIONES, CAMBIOS, COMBINACIONES, MOVIMIENTOS, FUENTES, PALETAS } from '../catalogo';
 import { BotonPrincipal } from '../componentes/BotonPrincipal';
 import { ESTILOS } from '../estilos-visuales';
-import { sistemaDeDiseno } from '../export/sistema';
+import { conPaletaAlterna, paletaActiva, sistemaDeDiseno } from '../export/sistema';
 import { CATEGORIAS, type CategoriaId, DISENO_INICIAL } from '../galeria';
 import { claseDe, GaleriaContexto, reanimar } from '../galeria/base';
 import { Grafico } from '../galeria/datos';
 import { Icono } from '../galeria/iconos';
-import type { BotonDisenoId, CajaPresetId, CambioId, Config, EstiloId, PaletaId } from '../tipos';
+import { aplicarMovimiento } from '../estado';
+import type { AparicionId, BotonDisenoId, CajaPresetId, CambioId, MovimientoId, Config, EstiloId, PaletaId } from '../tipos';
 import { aplicarCombinacion } from './combinar';
 import { baseDesdeColores, derivarRoles, hexesDeTexto } from '../color';
 import { COLORES } from './PanelBotones';
@@ -41,7 +42,7 @@ const PANTALLAS: { id: Pantalla; nombre: string; icono: string }[] = [
 ];
 
 /** Qué se puede cambiar desde el modo edición. */
-type Editable = CategoriaId | 'boton' | 'caja' | 'paleta' | 'tipografia' | 'estilo' | 'cambio' | 'color_boton';
+type Editable = CategoriaId | 'boton' | 'caja' | 'paleta' | 'tipografia' | 'estilo' | 'cambio' | 'color_boton' | 'movimiento' | 'aparicion';
 const NOMBRES_EXTRA: Record<Exclude<Editable, CategoriaId>, string> = {
   boton: 'Botón principal',
   caja: 'Cajas',
@@ -49,6 +50,8 @@ const NOMBRES_EXTRA: Record<Exclude<Editable, CategoriaId>, string> = {
   tipografia: 'Tipografía',
   estilo: 'Estilo visual',
   cambio: 'Cambio de pantalla',
+  movimiento: 'Ritmo general',
+  aparicion: 'Cómo aparece el contenido',
   color_boton: 'Color de los botones',
 };
 const nombreDe = (e: Editable) => (e in NOMBRES_EXTRA ? NOMBRES_EXTRA[e as keyof typeof NOMBRES_EXTRA] : CATEGORIAS[e as CategoriaId].nombre);
@@ -137,8 +140,13 @@ function Metrica({ etq, valor, cambio, meta }: { etq: string; valor: string; cam
 }
 
 export function Prototipo(props: { config: Config; setConfig: (fn: (c: Config) => Config) => void; onAtras: () => void; onListo: () => void }) {
-  const c = props.config;
+  const real = props.config;
+  // Ver el modo opuesto (claro ↔ oscuro) sin tocar la paleta elegida.
+  const [verAlterno, setVerAlterno] = useState(false);
+  const c = useMemo(() => (verAlterno ? conPaletaAlterna(real) : real), [real, verAlterno]);
   const s = useMemo(() => sistemaDeDiseno(c), [c]);
+  const modoBase = paletaActiva(real).modo;
+  const modoOtro = modoBase === 'claro' ? 'oscuro' : 'claro';
 
   const [dispositivo, setDispositivo] = useState<'computadora' | 'celular'>(c.proyecto.tipo === 'app_movil' || enTelefono() ? 'celular' : 'computadora');
   const [pantalla, setPantalla] = useState<Pantalla>('portada');
@@ -522,7 +530,7 @@ export function Prototipo(props: { config: Config; setConfig: (fn: (c: Config) =
     <>
     <div className="proto-escena">
       {dispositivo === 'celular' && appBar}
-      <div key={`${pantalla}-${c.visual.cambio}`} className={`proto-contenido proto-cambio-${c.visual.cambio}`}>
+      <div key={`${pantalla}-${c.visual.cambio}-${c.visual.aparicion}-${c.visual.movimiento}`} className={`proto-contenido proto-cambio-${c.visual.cambio} proto-aparicion-${c.visual.aparicion}`}>
         {contenido[pantalla]}
       </div>
     </div>
@@ -582,6 +590,23 @@ export function Prototipo(props: { config: Config; setConfig: (fn: (c: Config) =
               </button>
             ))}
           </div>
+          <div className="proto-modos">
+            <div className="segmentado proto-seg" role="group" aria-label="Modo de color">
+              {([modoBase, modoOtro] as const).map((m, i) => (
+                <button key={m} type="button" aria-pressed={verAlterno === (i === 1)} onClick={() => setVerAlterno(i === 1)}>
+                  {m === 'claro' ? '☀ Claro' : '☾ Oscuro'}
+                </button>
+              ))}
+            </div>
+            <label className="proto-ambos">
+              <input
+                type="checkbox"
+                checked={real.visual.ambosModos}
+                onChange={(e) => props.setConfig((x) => ({ ...x, visual: { ...x.visual, ambosModos: e.target.checked } }))}
+              />
+              Incluir el modo {modoOtro} en el archivo
+            </label>
+          </div>
           <button type="button" className={`proto-editar ${editando ? 'activo' : ''}`} aria-pressed={editando} onClick={() => { setEditando(!editando); if (editando) setAbierto(null); }}>
             {editando ? 'Listo' : '✎ Editar'}
           </button>
@@ -625,7 +650,7 @@ export function Prototipo(props: { config: Config; setConfig: (fn: (c: Config) =
 
           {editando && (
             <aside className="proto-editor" aria-label="Cambiar elementos">
-              <Editor config={c} setConfig={props.setConfig} abierto={abierto} setAbierto={setAbierto} />
+              <Editor config={real} setConfig={props.setConfig} abierto={abierto} setAbierto={setAbierto} />
             </aside>
           )}
         </div>
@@ -648,7 +673,8 @@ export function Prototipo(props: { config: Config; setConfig: (fn: (c: Config) =
 // ---------- Editor lateral ----------
 
 const GRUPOS: { nombre: string; items: Editable[] }[] = [
-  { nombre: 'General', items: ['estilo', 'paleta', 'tipografia', 'cambio'] },
+  { nombre: 'General', items: ['estilo', 'paleta', 'tipografia'] },
+  { nombre: 'Movimiento', items: ['movimiento', 'aparicion', 'cambio'] },
   { nombre: 'Botones', items: ['boton', 'color_boton', 'boton_sec', 'boton_icono'] },
   { nombre: 'Contenedores', items: ['caja', 'metrica', 'grafico', 'tabla'] },
   { nombre: 'Formularios', items: ['campo', 'selector', 'interruptor', 'casilla', 'deslizador'] },
@@ -698,6 +724,14 @@ function Editor(props: { config: Config; setConfig: (fn: (c: Config) => Config) 
     opciones = (Object.keys(CAMBIOS) as CambioId[]).map((id) => ({ id, nombre: CAMBIOS[id].nombre, descripcion: CAMBIOS[id].descripcion }));
     actual = c.visual.cambio;
     elegir = (id) => set((x) => ({ ...x, visual: { ...x.visual, cambio: id as CambioId } }));
+  } else if (e === 'movimiento') {
+    opciones = (Object.keys(MOVIMIENTOS) as MovimientoId[]).map((id) => ({ id, nombre: MOVIMIENTOS[id].nombre, descripcion: MOVIMIENTOS[id].descripcion }));
+    actual = c.visual.movimiento;
+    elegir = (id) => set((x) => aplicarMovimiento(x, id as MovimientoId));
+  } else if (e === 'aparicion') {
+    opciones = (Object.keys(APARICIONES) as AparicionId[]).map((id) => ({ id, nombre: APARICIONES[id].nombre, descripcion: APARICIONES[id].descripcion }));
+    actual = c.visual.aparicion;
+    elegir = (id) => set((x) => ({ ...x, visual: { ...x.visual, aparicion: id as AparicionId } }));
   } else if (e === 'color_boton') {
     const r = sistemaDeDiseno(c).paleta.roles;
     opciones = COLORES.map((x) => ({ id: x.id, nombre: x.nombre, muestras: [x.id === 'acento' ? r.acento : x.id === 'texto' ? r.texto : x.id] }));

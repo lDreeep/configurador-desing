@@ -12,7 +12,7 @@ import { CATEGORIAS, type CategoriaId } from '../galeria';
 import { cssBaseDe, cssDisenoDe } from '../galeria/base';
 import { paletaActiva, sistemaDeDiseno, tokensCss } from './sistema';
 
-export const VERSION_FORMATO = '0.7.1';
+export const VERSION_FORMATO = '0.8.0';
 
 const q = (s: string) => JSON.stringify(s);
 const valor = (s: string) => (s.trim() ? q(s.trim()) : 'sin_definir');
@@ -258,7 +258,7 @@ anti_referencias:${lista(c.visual.antiReferencias)}${nota(c, 'direccion')}`,
   add(
     6,
     'Color',
-    `${esPersonalizada ? 'Paleta personalizada' : `Paleta ${s.paleta.nombre.toLowerCase()}`}, modo ${s.paleta.modo}. ` +
+    `${esPersonalizada ? 'Paleta personalizada' : `Paleta ${s.paleta.nombre.toLowerCase()}`}, modo ${s.paleta.modo}${s.alterna ? ` y también modo ${s.alterna.paleta.modo} (los tokens del modo ${s.alterna.paleta.modo} están en la sección 16)` : ''}. ` +
       (fallas.length
         ? `Atención: ${fallas.length} ${fallas.length === 1 ? 'par no pasa' : 'pares no pasan'} contraste AA (ver sección 18); la sección 14 tiene prioridad.`
         : 'Todos los pares de texto y fondo pasan contraste AA.'),
@@ -287,7 +287,17 @@ estados:
   aviso: ${q(est.aviso)}
   error: ${q(est.error)}
   info: ${q(est.info)}
-uso_del_acento: ${s.dir.usoDelAcento}${nota(c, 'color')}`,
+uso_del_acento: ${s.dir.usoDelAcento}${
+      s.alterna
+        ? `
+modo_alterno:
+  modo: ${s.alterna.paleta.modo}
+  cuando: sigue la preferencia del sistema (prefers-color-scheme) y se puede forzar con data-tema="${s.alterna.paleta.modo}" en <html>; incluí un interruptor para cambiarlo
+  roles:
+${Object.entries(s.alterna.paleta.roles).map(([k, v]) => `    ${k}: ${q(v)}`).join('\n')}
+  contraste_aa: ${s.alterna.contrastes.every((x) => x.pasa) ? 'pasa' : 'revisar'}`
+        : ''
+    }${nota(c, 'color')}`,
   );
 
   const esc = Object.entries(s.escala)

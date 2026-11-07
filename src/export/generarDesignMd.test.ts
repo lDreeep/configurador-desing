@@ -338,3 +338,54 @@ describe('colores propios', () => {
     }
   });
 });
+
+describe('modo claro y oscuro', () => {
+  it('la versión opuesta de cada paleta pasa contraste en todos los pares', async () => {
+    const { rolesInvertidos, esOscuro } = await import('../color');
+    for (const [id, p] of Object.entries(PALETAS)) {
+      const r = rolesInvertidos(p.roles);
+      expect(esOscuro(r.fondo), `${id} cambia de modo`).toBe(p.modo === 'claro');
+      for (const par of paresDeContraste(r)) expect(par.pasa, `${id} invertida: ${par.nombre} (${par.valor.toFixed(2)})`).toBe(true);
+    }
+  });
+
+  it('con ambos modos, el export suma los roles del modo opuesto y sus tokens', () => {
+    const c = configCompleta();
+    const md = generarDesignMd({ ...c, visual: { ...c.visual, ambosModos: true } });
+    for (const b of bloquesYaml(md)) expect(() => parse(b)).not.toThrow();
+    expect(md).toContain('modo_alterno:');
+    expect(md).toMatch(/@media \(prefers-color-scheme: (dark|light)\)/);
+    expect(md).toMatch(/:root\[data-tema="(oscuro|claro)"\]/);
+    expect(generarDesignMd(c)).not.toContain('modo_alterno:');
+  });
+});
+
+describe('otros formatos', () => {
+  it('tokens.json es JSON válido y cada token tiene $type y $value', async () => {
+    const { tokensJson } = await import('./extras');
+    const c = configCompleta();
+    const doc = JSON.parse(tokensJson({ ...c, visual: { ...c.visual, ambosModos: true } }));
+    let hojas = 0;
+    const recorrer = (g: Record<string, unknown>, ruta: string) => {
+      for (const [k, v] of Object.entries(g)) {
+        const x = v as Record<string, unknown>;
+        if ('$value' in x) {
+          hojas++;
+          expect(typeof x.$type, `${ruta}.${k}`).toBe('string');
+        } else recorrer(x, `${ruta}.${k}`);
+      }
+    };
+    recorrer(doc, '');
+    expect(hojas).toBeGreaterThan(30);
+    expect(Object.keys(doc.color).some((k) => k.startsWith('modo_'))).toBe(true);
+  });
+
+  it('el prompt corto lleva los colores y las reglas de accesibilidad', async () => {
+    const { promptCorto } = await import('./extras');
+    const c = configCompleta();
+    const t = promptCorto(c);
+    expect(t).toContain(PALETAS[c.visual.paleta as keyof typeof PALETAS].roles.acento);
+    expect(t).toContain('44px');
+    expect(t.split('\n').length).toBeLessThan(16);
+  });
+});

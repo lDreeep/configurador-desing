@@ -331,6 +331,77 @@ export const ESTILOS: Record<EstiloId, EstiloVisual> = {
 & .pg-deco .b { position: absolute; width: 140px; height: 160px; border-radius: 45% 55% 40% 60% / 55% 45% 60% 40%; background: var(--deco-1); bottom: 8%; left: -30px; opacity: .45; }
 `,
   },
+  minimal_tecnico: {
+    nombre: 'Minimal tecnológico',
+    descripcion: 'Líneas finas, mucho aire y detalles de código',
+    palabrasClave: ['preciso', 'limpio', 'producto digital'],
+    reglas: [
+      'Bordes de 1px en lugar de sombras; las sombras, si hay, casi invisibles',
+      'Mucho espacio en blanco y una sola columna de lectura en el hero',
+      'Etiquetas y números en monoespaciada, chicas y en mayúsculas',
+      'Un solo acento, usado en el botón principal y en detalles mínimos',
+    ],
+    paletas: ['azul_electrico', 'grafito', 'alto_contraste'],
+    fuentes: [['inter', 'inter'], ['manrope', 'inter'], ['ibm_plex_sans', 'ibm_plex_sans']],
+    pesoTitulos: 600, radio: 'apenas_suave', elevacion: 'plana', bordes: 'sutil', boton: 'relleno', movimiento: 'rapido',
+    direccionBase: 'tecnico',
+    css: `
+& .pg-titulo { letter-spacing: -0.035em; }
+& .pg-etiqueta { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; }
+& .pg-etiqueta::before { content: '// '; color: var(--color-acento); }
+& .pg-card { background: var(--color-fondo); border: 1px solid var(--color-borde); box-shadow: none; }
+& .pg-card:hover { border-color: var(--color-texto-suave); }
+& .pg-media { background-color: var(--color-superficie); border: 1px solid var(--color-borde); background-image: radial-gradient(var(--color-borde) 1px, transparent 1px); background-size: 16px 16px; }
+& .pg-deco { background-image: linear-gradient(var(--color-borde) 1px, transparent 1px); background-size: 100% 96px; opacity: .35; mask-image: linear-gradient(transparent, #000 30%, transparent); -webkit-mask-image: linear-gradient(transparent, #000 30%, transparent); }
+`,
+  },
+  oscuro_precision: {
+    nombre: 'Oscuro de precisión',
+    descripcion: 'Fondo casi negro, bordes que brillan y degradés sutiles',
+    palabrasClave: ['nocturno', 'premium', 'herramienta'],
+    reglas: [
+      'Fondo casi negro; las superficies se separan con bordes de 1px más claros, no con sombras',
+      'Un resplandor suave del acento detrás del hero, nunca detrás del texto largo',
+      'Títulos sólidos, apretados y en peso medio; el brillo queda para bordes y botones',
+      'Animaciones cortas y precisas; nada rebota',
+    ],
+    paletas: ['oceano', 'tinta_y_lima', 'vidrio'],
+    fuentes: [['inter', 'inter'], ['sora', 'inter'], ['space_grotesk', 'ibm_plex_sans']],
+    pesoTitulos: 600, radio: 'suave', elevacion: 'plana', bordes: 'sutil', boton: 'relleno', movimiento: 'rapido',
+    direccionBase: 'tecnico',
+    css: `
+& .pg-titulo { letter-spacing: -0.03em; }
+& .pg-card { background: linear-gradient(180deg, var(--color-superficie-alta), var(--color-superficie)); border: 1px solid var(--color-borde); box-shadow: inset 0 1px 0 rgba(255,255,255,.06); }
+& .pg-card:hover { border-color: color-mix(in srgb, var(--color-acento) 50%, var(--color-borde)); }
+& .pg-boton { box-shadow: 0 0 0 1px color-mix(in srgb, var(--color-acento) 60%, transparent), 0 8px 24px -8px var(--color-acento); }
+& .pg-media { background: radial-gradient(circle at 50% 0%, color-mix(in srgb, var(--color-acento) 45%, transparent), transparent 70%), var(--color-superficie); border: 1px solid var(--color-borde); }
+& .pg-deco { background: radial-gradient(ellipse 60% 40% at 50% 0%, color-mix(in srgb, var(--color-acento) 22%, transparent), transparent 70%); }
+`,
+  },
+  producto_amable: {
+    nombre: 'Producto amable',
+    descripcion: 'Redondeado, colores suaves y formas simples',
+    palabrasClave: ['cercano', 'simple', 'para todos'],
+    reglas: [
+      'Esquinas bien redondeadas en todo, botones en píldora',
+      'Fondos de color muy suaves para separar secciones y cards',
+      'Formas simples de colores como ilustración, nunca fotos de stock',
+      'Textos cortos y cálidos; títulos grandes pero no apretados',
+    ],
+    paletas: ['lavanda', 'menta', 'coral_calido'],
+    fuentes: [['plus_jakarta', 'plus_jakarta'], ['nunito', 'nunito'], ['outfit', 'dm_sans']],
+    pesoTitulos: 700, radio: 'pildora', elevacion: 'suave', bordes: 'ninguno', boton: 'relleno', movimiento: 'sutil',
+    direccionBase: 'jugueton',
+    css: `
+& { --deco-1: color-mix(in srgb, var(--color-acento) 30%, #FFFFFF); --deco-2: #FFD9A8; --deco-3: #BFE8D4; }
+& .pg-card { border-radius: 24px; box-shadow: 0 1px 2px rgba(0,0,0,.04); }
+& .pg-card:nth-child(3n+1) { background: color-mix(in srgb, var(--deco-1) 35%, var(--color-fondo)); }
+& .pg-card:nth-child(3n+2) { background: color-mix(in srgb, var(--deco-2) 35%, var(--color-fondo)); }
+& .pg-card:nth-child(3n) { background: color-mix(in srgb, var(--deco-3) 40%, var(--color-fondo)); }
+& .pg-media { border-radius: 32px; background: radial-gradient(circle at 30% 35%, var(--deco-2) 0 18%, transparent 19%), radial-gradient(circle at 70% 60%, var(--deco-3) 0 24%, transparent 25%), var(--deco-1); }
+& .pg-etiqueta { border-radius: 999px; padding: 4px 12px; background: color-mix(in srgb, var(--color-acento) 14%, transparent); color: var(--color-texto); }
+`,
+  },
 };
 
 export interface Layout {

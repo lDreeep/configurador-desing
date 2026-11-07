@@ -89,6 +89,18 @@ export function paresDeContraste(r: Roles): ParContraste[] {
   });
 }
 
+/**
+ * La versión opuesta (clara ↔ oscura) de una paleta. Conserva su carácter: el fondo nuevo sale
+ * del texto original y el texto nuevo del fondo original; el acento se corrige para seguir viéndose.
+ */
+export function rolesInvertidos(r: Roles): Roles {
+  const aOscuro = !esOscuro(r.fondo);
+  const fondo = aOscuro ? mezclar(r.texto, '#000000', 0.45) : mezclar(r.texto, '#FFFFFF', 0.88);
+  const texto = asegurarContraste(aOscuro ? mezclar(r.fondo, '#FFFFFF', 0.3) : mezclar(r.fondo, '#000000', 0.2), fondo, aOscuro ? '#FFFFFF' : '#000000', 7);
+  const acento = asegurarContraste(r.acento, fondo, aOscuro ? '#FFFFFF' : '#000000', 3.2);
+  return derivarRoles(fondo, texto, acento);
+}
+
 /** Extrae todos los códigos hex (#abc o #aabbcc) de un texto pegado. */
 export function hexesDeTexto(t: string): string[] {
   return (t.match(/#?\b[0-9a-fA-F]{6}\b|#[0-9a-fA-F]{3}\b/g) ?? []).map((h) => {

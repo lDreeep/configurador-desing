@@ -1,6 +1,6 @@
 # DESIGN.md: especificación del formato
 
-> **Versión del formato:** 0.7.1 (borrador)
+> **Versión del formato:** 0.8.0 (borrador)
 > **Última actualización:** 2026-11-06
 > **Estado:** configurador en v0.2 (10 pasos + export): 8 direcciones, 13 paletas + personalizada, 23 fuentes, botones y movimiento detallados. Falta la primera ronda de pruebas con IA (§9).
 
@@ -134,7 +134,7 @@ Todo archivo exportado empieza con este bloque, que permite saber con qué versi
 
 ```yaml
 formato: design-md
-version_formato: 0.7.1
+version_formato: 0.8.0
 generado_por: configurador-diseno
 fecha: 2026-11-06
 idioma: es
@@ -372,10 +372,12 @@ estados:
   aviso:   "#B45309"
   error:   "#C2272D"
   info:    "#2F5BFF"
-oscuro:                           # solo si modo: ambos | oscuro
-  fondo: "#0E0F12"
-  # …mismos roles
 uso_del_acento: moderado          # minimo | moderado | generoso
+modo_alterno:                     # solo si la persona pidió los dos modos
+  modo: oscuro                    # el opuesto al de la paleta
+  cuando: sigue prefers-color-scheme y se fuerza con data-tema="oscuro" en <html>; con interruptor
+  roles: { fondo: "#14161C", … }  # los 8 roles, derivados de la paleta (ver reglas)
+  contraste_aa: pasa              # pasa | revisar          # minimo | moderado | generoso
 nota: "el azul un poco menos frío"
 ```
 
@@ -383,6 +385,7 @@ nota: "el azul un poco menos frío"
 - Todos los pares texto/fondo cumplen **contraste 4.5:1** (3:1 para texto de 24px o más, y para el acento usado como link o contorno sobre el fondo). Las paletas del catálogo lo cumplen siempre (lo verifican los tests).
 - **Paleta personalizada:** la persona elige fondo, texto y acento; superficie, superficie alta, borde, texto suave y texto sobre acento se calculan para que combinen y pasen contraste. Puede ajustar cualquiera a mano. Si un par no pasa, el configurador lo muestra en vivo, **deja exportar igual** y lo anota en §18 con su valor; la IA lo corrige respetando §14.
 - Los colores de estado nunca se distinguen solo por el tono: llevan icono o texto.
+- **Modo alterno (claro ↔ oscuro):** se deriva de la paleta elegida, no se elige aparte: el fondo nuevo sale del texto original, el texto nuevo del fondo original y el acento se corrige hasta tener 3:1 sobre el fondo nuevo. Así conserva el carácter de la paleta. Los tests verifican que la versión opuesta de cada paleta del catálogo pase todos los pares. En §16 sus tokens van en `@media (prefers-color-scheme: …)` y en `:root[data-tema="…"]`.
 - `uso_del_acento` le dice a la IA cuánto color poner: `minimo` es solo el botón primario y el foco; `generoso` incluye fondos de sección y encabezados.
 
 ---
@@ -846,7 +849,7 @@ Así se vería un archivo real generado por el MVP. Las secciones `[v0.2]` apare
 ````markdown
 ```yaml
 formato: design-md
-version_formato: 0.7.1
+version_formato: 0.8.0
 generado_por: configurador-diseno
 fecha: 2026-11-06
 idioma: es
@@ -1146,6 +1149,11 @@ Formato: fecha · decisión · por qué · alternativas descartadas.
 | D40 | 2026-11-06 | Cada categoría nueva arranca con 6 a 14 diseños; se amplía después | Primero cubrir todos los elementos, después la profundidad de cada uno | Completar una categoría antes de empezar otra |
 | D41 | 2026-11-06 | Antes de descargar, un prototipo navegable usa todas las elecciones juntas y permite cambiarlas ahí mismo | Lo que se elige por separado tiene que probarse en conjunto; corregir en contexto es más fácil que volver paso por paso | Descargar directamente después del último panel |
 | D42 | 2026-11-06 | En celular, el prototipo es un smartphone con proporciones reales (390 × 844), barra de estado, isla y barra de inicio, y el contenido se adapta como app (barra superior fija, carruseles, botones a lo ancho, tabla como lista, una columna); abierto desde un teléfono ocupa la pantalla sin marco | Así se evalúa de verdad cómo se ve la app en un teléfono | Mostrar el diseño de escritorio achicado |
+| D44 | 2026-11-07 | En el inicio, en modo elección, se puede cambiar solo el layout o solo el estilo, y ver todos los layouts como esquemas para saltar directo | Antes había que pasar combinaciones al azar hasta encontrar la estructura buscada | Un paso extra «Elegí el layout» (más pasos en el modo rápido) |
+| D45 | 2026-11-07 | Paso «Movimiento» en el modo rápido (antes del prototipo), con demos que se repiten solas; también en el editor del prototipo | El movimiento solo existía en el modo avanzado y no se veía | Animaciones de fondo en bucle infinito: distraen y van contra prefers-reduced-motion |
+| D46 | 2026-11-07 | Modo claro/oscuro: el opuesto se deriva de la paleta y se ve en el prototipo; incluirlo en el archivo es opcional (`visual.ambosModos`) | Casi toda app pide los dos modos y armarlo a mano rompe el contraste | Elegir una segunda paleta del catálogo (no garantiza que combinen) |
+| D47 | 2026-11-07 | Salidas extra en el paso final: tokens.json (formato W3C Design Tokens), tokens.css y un prompt corto | Figma (Tokens Studio) y Style Dictionary leen el JSON; el prompt corto sirve cuando no se puede adjuntar | Exportar código React/Tailwind: depende del proyecto de cada persona y duplica lo que la IA ya hace con el DESIGN.md |
+| D48 | 2026-11-07 | Estilos «Minimal tecnológico», «Oscuro de precisión» y «Producto amable» en vez de presets con nombres de marcas | Cubren lo que se busca al decir «como tal producto» sin copiar marcas (regla legal de §1) | Presets con nombre de empresas reales |
 | D43 | 2026-11-06 | Si la persona no describe un proyecto, el archivo se exporta como sistema de diseño (`modo: sistema_de_diseno`): sirve para mejorar una app existente o para construir lo que se explique junto con el archivo; la pantalla final ofrece un mensaje para copiar para cada caso | El modo rápido no pide detalles del proyecto; tratar las pantallas de ejemplo como obligatorias llevaba a la IA a construir una app genérica | Obligar a completar el proyecto antes de exportar |
 
 ---
@@ -1251,4 +1259,5 @@ Lo que todavía no tiene lugar en §5. Se mueve allá cuando se decide hacerlo.
 | 0.6.1 | 2026-11-06 | Sin cambios de formato: más valores en listas existentes (`al_tocar` suma temblor, latido y estallido; cajas suman `fondo: invertido` y `sombra: color`). |
 | 0.6.2 | 2026-11-06 | Sin cambios de formato: §21 suma 14 categorías nuevas (las claves nuevas son opcionales). |
 | 0.7.0 | 2026-11-06 | Campo `modo` (`proyecto` \| `sistema_de_diseno`) en el encabezado y en §2, y variante de las instrucciones de §1 para el modo sistema de diseño. Compatible: un archivo sin `modo` equivale a `proyecto`. |
+| 0.8.0 | 2026-11-07 | §6 suma `modo_alterno` (roles del modo opuesto) y §16 sus tokens con `prefers-color-scheme` y `data-tema`, cuando la persona pide los dos modos. §19 tiene 3 estilos nuevos. |
 | 0.7.1 | 2026-11-06 | Las instrucciones de §1 (en los dos modos) empiezan pidiendo a la IA una maqueta de cómo va a quedar, para que la persona la apruebe antes de aplicar todo. |

@@ -25,16 +25,17 @@ Antes de dar una tarea por terminada: `npm run typecheck && npm test`.
 | `src/catalogo.ts` | Todas las opciones (direcciones, paletas, fuentes, radios, movimientos, tipos, plantillas de pantallas). Es **datos**, no UI. |
 | `src/tipos.ts` | Modelo `Config`: lo que la persona eligió. |
 | `src/estado.ts` | Estado inicial, guardado en `localStorage`, `aplicarDireccion`, `aplicarTipo`. |
-| `src/export/sistema.ts` | Deriva tokens y valores de diseño desde `Config`. **Lo usan la vista previa y el export**: lo que se ve es lo que se exporta. |
+| `src/export/sistema.ts` | Deriva tokens y valores de diseño desde `Config`. **Lo usan la vista previa y el export**: lo que se ve es lo que se exporta. También la paleta opuesta (`paletaAlterna`, claro ↔ oscuro). |
+| `src/export/extras.ts` | Salidas extra del paso final: `tokensJson` (W3C Design Tokens), `tokensCss` y `promptCorto`. |
 | `src/export/generarDesignMd.ts` | Arma el `DESIGN.md` exportado. `VERSION_FORMATO` tiene que coincidir con `DESIGN.md`. |
 | `src/pasos/pasos.tsx` | Registro `PASOS`: cada paso del configurador (componente, resumen, placeholder de la nota). |
 | `src/preview/Preview.tsx` | Vista previa en vivo del modo avanzado. Usa solo variables CSS de `sistema.ts`. |
 | `src/estilos-visuales.ts` | Estilos visuales (con su CSS y reglas) y layouts. El CSS se exporta tal cual en §19. |
-| `src/botones-disenos.ts` | Los 24 diseños del panel de botones (aspecto, hover y animación al tocar, en CSS). Se exporta tal cual en §10. |
-| `src/cajas.ts` | Los 23 diseños de caja, sus parámetros, los tokens `--caja-*` y la regla `.caja`. Se exporta en §20. |
+| `src/botones-disenos.ts` | Los 80 diseños del panel de botones (aspecto, hover y animación al tocar, en CSS). Se exporta tal cual en §10. |
+| `src/cajas.ts` | Los 29 diseños de caja, sus parámetros, los tokens `--caja-*` y la regla `.caja`. Se exporta en §20. |
 | `src/galeria/` | Galería de componentes por categoría (campos, interruptores, casillas, deslizadores, barras inferiores, navegación web): estructura fija + diseños en CSS. Se exporta en §21. |
 | `src/componentes/BotonPrincipal.tsx` | El botón principal con el diseño elegido; lo usan todas las vistas. |
-| `src/rapido/` | Modo rápido: `Inicio.tsx` (página entera que cambia de diseño sola; Comenzar fijo en el centro; después se elige a mano), `PanelTipo.tsx`, `PanelBotones.tsx`, `PanelCajas.tsx`, `PanelGaleria.tsx` (panel genérico de la galería), `Prototipo.tsx` (app de prueba con todo lo elegido y modo edición), `PanelListo.tsx`, `combinar.ts` (combinaciones, candados, códigos), `Pagina.tsx` (los 12 layouts), `pagina.css`. |
+| `src/rapido/` | Modo rápido: `Inicio.tsx` (página entera que cambia de diseño sola; Comenzar fijo en el centro; después se elige a mano, cambiando solo layout o solo estilo), `esquemas.tsx` (esquemas de cada layout), `PanelTipo.tsx`, `PanelBotones.tsx`, `PanelCajas.tsx`, `PanelGaleria.tsx` (panel genérico de la galería), `PanelMovimiento.tsx` (ritmo, aparición y cambio de pantalla con demos), `Prototipo.tsx` (app de prueba con todo lo elegido, modo edición y vista claro/oscuro), `PanelListo.tsx`, `combinar.ts` (combinaciones, candados, códigos), `Pagina.tsx` (los 12 layouts), `pagina.css`. |
 | `src/estilos.css` | Estilos de la interfaz (`--ui-*`) y de la vista previa (`.pv-*`, solo tokens exportados). |
 
 ## Reglas

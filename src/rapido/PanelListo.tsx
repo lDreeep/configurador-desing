@@ -6,6 +6,7 @@ import { CAJAS } from '../cajas';
 import { BotonPrincipal } from '../componentes/BotonPrincipal';
 import { ESTILOS, LAYOUTS } from '../estilos-visuales';
 import { esSistemaDeDiseno, generarDesignMd } from '../export/generarDesignMd';
+import { promptCorto, tokensCss, tokensJson } from '../export/extras';
 import { sistemaDeDiseno } from '../export/sistema';
 import { CATEGORIAS, type CategoriaId } from '../galeria';
 import type { Config } from '../tipos';
@@ -44,15 +45,19 @@ export function PanelListo(props: { config: Config; onAtras: () => void; onAvanz
       .map((id) => [CATEGORIAS[id].nombre, CATEGORIAS[id].disenos[c.componentes[id]!]?.nombre ?? '—'] as [string, string]),
   ];
 
-  const descargar = () => {
-    const url = URL.createObjectURL(new Blob([md], { type: 'text/markdown;charset=utf-8' }));
+  const bajar = (contenido: string, nombre: string, tipo: string) => {
+    const url = URL.createObjectURL(new Blob([contenido], { type: `${tipo};charset=utf-8` }));
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'DESIGN.md';
+    a.download = nombre;
     a.click();
     URL.revokeObjectURL(url);
+  };
+  const descargar = () => {
+    bajar(md, 'DESIGN.md', 'text/markdown');
     setAviso('Descargado. Pasáselo a tu IA junto con lo que querés que construya.');
   };
+  const corto = useMemo(() => promptCorto(c), [c]);
   const copiar = async () => {
     try {
       await navigator.clipboard.writeText(md);
@@ -111,6 +116,39 @@ export function PanelListo(props: { config: Config; onAtras: () => void; onAvanz
                 </button>
               </div>
             ))}
+          </div>
+        </section>
+
+        <section className="pl-uso" aria-labelledby="pl-extras">
+          <h2 id="pl-extras" className="pl-uso-titulo">Otros formatos</h2>
+          <div className="pl-mensajes">
+            <div className="pl-mensaje pg-card">
+              <span className="pl-mensaje-titulo">Prompt corto</span>
+              <p className="pl-mensaje-texto">
+                Para pegar directo en un chat, sin adjuntar nada. Lleva colores, letra, formas y movimiento, pero no el CSS de cada pieza: con el DESIGN.md el resultado se parece mucho más a lo que elegiste.
+              </p>
+              <details className="pl-detalle">
+                <summary>Ver el texto</summary>
+                <pre className="pl-pre">{corto}</pre>
+              </details>
+              <button type="button" className="pb-pie-atras" onClick={() => copiarMensaje(corto)}>
+                Copiar prompt corto
+              </button>
+            </div>
+            <div className="pl-mensaje pg-card">
+              <span className="pl-mensaje-titulo">Tokens para Figma y código</span>
+              <p className="pl-mensaje-texto">
+                <strong>tokens.json</strong> en el formato estándar de design tokens (lo importan Tokens Studio para Figma y Style Dictionary). <strong>tokens.css</strong> con las variables listas para pegar en tu proyecto.
+              </p>
+              <div className="pl-botones-extra">
+                <button type="button" className="pb-pie-atras" onClick={() => { bajar(tokensJson(c, s), 'tokens.json', 'application/json'); setAviso('Descargado tokens.json.'); }}>
+                  Descargar tokens.json
+                </button>
+                <button type="button" className="pb-pie-atras" onClick={() => { bajar(tokensCss(s) + '\n', 'tokens.css', 'text/css'); setAviso('Descargado tokens.css.'); }}>
+                  Descargar tokens.css
+                </button>
+              </div>
+            </div>
           </div>
         </section>
       </div>

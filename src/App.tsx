@@ -12,10 +12,11 @@ import { PanelCajas } from './rapido/PanelCajas';
 import { PanelGaleria } from './rapido/PanelGaleria';
 import { PanelListo } from './rapido/PanelListo';
 import { PanelTipo } from './rapido/PanelTipo';
+import { PanelMovimiento } from './rapido/PanelMovimiento';
 import { Prototipo } from './rapido/Prototipo';
 
 type Modo = 'rapido' | 'avanzado';
-type PasoRapido = 'inicio' | 'tipo' | 'botones' | 'botones_mas' | 'cajas' | 'formularios' | 'navegacion' | 'elementos' | 'datos' | 'prototipo' | 'listo';
+type PasoRapido = 'inicio' | 'tipo' | 'botones' | 'botones_mas' | 'cajas' | 'formularios' | 'navegacion' | 'elementos' | 'datos' | 'movimiento' | 'prototipo' | 'listo';
 const CLAVE_MODO = 'configurador-diseno:modo';
 
 function leerModo(): Modo {
@@ -134,7 +135,7 @@ export function App() {
             categorias={['etiqueta', 'aviso', 'cargando', 'progreso', 'acordeon', 'avatar', 'tooltip', 'modal']}
             atras="Volver a la navegación"
             onAtras={() => irRapido('navegacion')}
-            onSeguir={() => irRapido(esDatos ? 'prototipo' : 'datos')}
+            onSeguir={() => irRapido(esDatos ? 'movimiento' : 'datos')}
           />
         )}
         {pasoRapido === 'datos' && (
@@ -146,11 +147,14 @@ export function App() {
             categorias={['metrica', 'grafico', 'tabla']}
             atras={esDatos ? 'Volver a las cajas' : 'Volver a los detalles'}
             onAtras={() => irRapido(esDatos ? 'cajas' : 'elementos')}
-            onSeguir={() => irRapido(esDatos ? 'formularios' : 'prototipo')}
+            onSeguir={() => irRapido(esDatos ? 'formularios' : 'movimiento')}
           />
         )}
+        {pasoRapido === 'movimiento' && (
+          <PanelMovimiento {...comun} paso="Paso 9" onAtras={() => irRapido(esDatos ? 'elementos' : 'datos')} onSeguir={() => irRapido('prototipo')} />
+        )}
         {pasoRapido === 'prototipo' && (
-          <Prototipo {...comun} onAtras={() => irRapido(esDatos ? 'elementos' : 'datos')} onListo={() => irRapido('listo')} />
+          <Prototipo {...comun} onAtras={() => irRapido('movimiento')} onListo={() => irRapido('listo')} />
         )}
         {pasoRapido === 'listo' && (
           <PanelListo config={config} onAtras={() => irRapido('prototipo')} onAvanzado={() => alAvanzado('exportar')} onInicio={() => irRapido('inicio')} />

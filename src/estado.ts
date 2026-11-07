@@ -63,6 +63,7 @@ export function configInicial(): Config {
     funciones: { acciones: [], integraciones: [], fueraDeAlcance: [], requiereCuenta: 'si' },
     visual: {
       ...visualDeDireccion('calmo'),
+      ambosModos: false,
       layout: 'hero_partido',
       antiReferencias: [],
       paletaPersonalizada: { fondo: r.fondo, texto: r.texto, acento: r.acento, manual: {} },

@@ -7,6 +7,8 @@ import { ESTILOS, LAYOUTS } from '../estilos-visuales';
 import type { Config } from '../tipos';
 import { aplicarCombinacion, codigo, type Combinacion, combinacionAlAzar, decodificar } from './combinar';
 import { type Contenido, contenido as contenidoDe, Pagina } from './Pagina';
+import { Esquema } from './esquemas';
+import type { EstiloId, LayoutId } from '../tipos';
 
 const INTERVALO = 4000;
 
@@ -70,6 +72,31 @@ export function Inicio(props: { config: Config; onElegir: (k: Combinacion) => vo
     setPos(pos + 1);
     mostrar(k, 'adelante');
   }, [pos, historial, mostrar]);
+
+  /** Muestra una combinación nueva a partir de la actual (descarta lo que había "adelante" en el historial). */
+  const irA = useCallback(
+    (k: Combinacion, sentido: Capa['sentido'] = 'adelante') => {
+      setHistorial((h) => [...h.slice(0, pos + 1), k]);
+      setPos(pos + 1);
+      mostrar(k, sentido);
+    },
+    [pos, mostrar],
+  );
+  const LISTA_LAYOUTS = Object.keys(LAYOUTS) as LayoutId[];
+  const LISTA_ESTILOS = Object.keys(ESTILOS) as EstiloId[];
+  /** Cambia solo el layout: el estilo, los colores y la letra quedan igual. */
+  const cambiarLayout = (paso: number) => {
+    const i = LISTA_LAYOUTS.indexOf(actual.layout);
+    irA({ ...actual, layout: LISTA_LAYOUTS[(i + paso + LISTA_LAYOUTS.length) % LISTA_LAYOUTS.length] }, paso < 0 ? 'atras' : 'adelante');
+  };
+  /** Cambia solo el estilo: el layout queda igual; colores y letra pasan a los del estilo nuevo. */
+  const cambiarEstilo = (paso: number) => {
+    const i = LISTA_ESTILOS.indexOf(actual.estilo);
+    const estilo = LISTA_ESTILOS[(i + paso + LISTA_ESTILOS.length) % LISTA_ESTILOS.length];
+    const e = ESTILOS[estilo];
+    irA({ ...actual, estilo, paleta: e.paletas[0], titulos: e.fuentes[0][0], texto: e.fuentes[0][1] }, paso < 0 ? 'atras' : 'adelante');
+  };
+  const [verLayouts, setVerLayouts] = useState(false);
 
   const anterior = useCallback(() => {
     if (pos === 0) return;
@@ -179,9 +206,35 @@ export function Inicio(props: { config: Config; onElegir: (k: Combinacion) => vo
             </>
           ) : (
             <>
-              <span className="inicio-centro-etiqueta" aria-live="polite">
-                {ESTILOS[actual.estilo].nombre} · {LAYOUTS[actual.layout].nombre}
-              </span>
+              <div className="inicio-ajustes">
+                <div className="inicio-ajuste" role="group" aria-label="Cambiar solo el layout">
+                  <span className="inicio-ajuste-etq">Layout</span>
+                  <button type="button" aria-label="Layout anterior" onClick={() => cambiarLayout(-1)}>
+                    ‹
+                  </button>
+                  <span className="inicio-ajuste-valor" aria-live="polite">
+                    {LAYOUTS[actual.layout].nombre}
+                  </span>
+                  <button type="button" aria-label="Layout siguiente" onClick={() => cambiarLayout(1)}>
+                    ›
+                  </button>
+                </div>
+                <div className="inicio-ajuste" role="group" aria-label="Cambiar solo el estilo">
+                  <span className="inicio-ajuste-etq">Estilo</span>
+                  <button type="button" aria-label="Estilo anterior" onClick={() => cambiarEstilo(-1)}>
+                    ‹
+                  </button>
+                  <span className="inicio-ajuste-valor" aria-live="polite">
+                    {ESTILOS[actual.estilo].nombre}
+                  </span>
+                  <button type="button" aria-label="Estilo siguiente" onClick={() => cambiarEstilo(1)}>
+                    ›
+                  </button>
+                </div>
+                <button type="button" className="inicio-ver-layouts" aria-expanded={verLayouts} onClick={() => setVerLayouts((v) => !v)}>
+                  Ver todos los layouts
+                </button>
+              </div>
               <button type="button" className="inicio-boton" onClick={() => props.onElegir(actual)}>
                 Elegir este diseño
               </button>
@@ -189,6 +242,36 @@ export function Inicio(props: { config: Config; onElegir: (k: Combinacion) => vo
           )}
         </div>
       </div>
+
+      {modo === 'eleccion' && verLayouts && (
+        <div className="inicio-layouts" role="dialog" aria-label="Elegí un layout">
+          <div className="inicio-layouts-cabeza">
+            <strong>Elegí la estructura</strong>
+            <span>Se mantiene el estilo, los colores y la letra.</span>
+            <button type="button" className="inicio-layouts-cerrar" aria-label="Cerrar" onClick={() => setVerLayouts(false)}>
+              ×
+            </button>
+          </div>
+          <div className="inicio-layouts-grilla">
+            {(Object.keys(LAYOUTS) as LayoutId[]).map((id) => (
+              <button
+                key={id}
+                type="button"
+                className="inicio-layout"
+                aria-pressed={actual.layout === id}
+                onClick={() => {
+                  if (id !== actual.layout) irA({ ...actual, layout: id });
+                  setVerLayouts(false);
+                }}
+              >
+                <Esquema id={id} />
+                <span className="inicio-layout-nombre">{LAYOUTS[id].nombre}</span>
+                <span className="inicio-layout-desc">{LAYOUTS[id].descripcion}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
 
       <div className="inicio-control" role="group" aria-label="Controles">
         {modo === 'muestra' ? (

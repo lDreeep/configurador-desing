@@ -13,7 +13,7 @@ import {
   TAMANOS_BOTON,
   type Paleta,
 } from '../catalogo';
-import { derivarRoles, ESTADOS_CLAROS, ESTADOS_OSCUROS, esHex, esOscuro, mezclar, paresDeContraste, textoSobre } from '../color';
+import { derivarRoles, ESTADOS_CLAROS, ESTADOS_OSCUROS, esHex, esOscuro, mezclar, paresDeContraste, rolesInvertidos, textoSobre } from '../color';
 import { pesoDisponible } from '../estado';
 import { paramsDe, tokensDeCaja } from '../cajas';
 import type { Config } from '../tipos';
@@ -33,6 +33,19 @@ export function paletaActiva(c: Config): Paleta {
   const roles = derivarRoles(pp.fondo, pp.texto, pp.acento, pp.manual);
   const oscuro = esOscuro(roles.fondo);
   return { nombre: 'Personalizada', modo: oscuro ? 'oscuro' : 'claro', roles, estados: oscuro ? ESTADOS_OSCUROS : ESTADOS_CLAROS };
+}
+
+/** La paleta opuesta a la activa (si es clara, la oscura; si es oscura, la clara). */
+export function paletaAlterna(c: Config): Paleta {
+  const p = paletaActiva(c);
+  const oscura = p.modo === 'claro';
+  return { nombre: `${p.nombre} (${oscura ? 'oscuro' : 'claro'})`, modo: oscura ? 'oscuro' : 'claro', roles: rolesInvertidos(p.roles), estados: oscura ? ESTADOS_OSCUROS : ESTADOS_CLAROS };
+}
+
+/** La misma config, pero mostrando la paleta opuesta (para verla en el prototipo). */
+export function conPaletaAlterna(c: Config): Config {
+  const r = paletaAlterna(c).roles;
+  return { ...c, visual: { ...c.visual, ambosModos: false, paleta: 'personalizada', paletaPersonalizada: { fondo: r.fondo, texto: r.texto, acento: r.acento, manual: r } } };
 }
 
 const rgbDe = (hex: string) => [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16)).join(',');
@@ -140,10 +153,40 @@ export function sistemaDeDiseno(c: Config) {
     dir, paleta, radio, mov, titulos, texto, pesoTitulos, pesoSubtitulos, espaciadoTitulos, proporcion,
     boton, colorBoton, caja, escala, espacios, factor, elevacion, bordeBloque, tokens,
     contrastes: paresDeContraste(r),
+    alterna: (v.ambosModos ? alternaDe(c, tokens) : null) as Alterna | null,
   };
 }
 
+/** Tokens que cambian en el modo opuesto (solo colores y lo que depende de ellos). */
+export interface Alterna { paleta: Paleta; tokens: Record<string, string>; contrastes: ReturnType<typeof paresDeContraste> }
+
+function alternaDe(c: Config, tokens: Record<string, string>): Alterna {
+  const paleta = paletaAlterna(c);
+  const otros: Record<string, string> = sistemaDeDiseno(conPaletaAlterna(c)).tokens;
+  const cambian = Object.fromEntries(Object.entries(otros).filter(([k, v]) => tokens[k] !== v));
+  return { paleta, tokens: cambian, contrastes: paresDeContraste(paleta.roles) };
+}
+
 export type Sistema = ReturnType<typeof sistemaDeDiseno>;
+
+function bloqueAlterno(s: Sistema): string[] {
+  const a = s.alterna!;
+  const modo = a.paleta.modo;
+  const otro = modo === 'oscuro' ? 'claro' : 'oscuro';
+  const lineas = Object.entries(a.tokens).map(([k, v]) => `    ${k}: ${v};`);
+  return [
+    `/* Modo ${modo}: sigue al sistema y se puede forzar con data-tema="${modo}" en <html>. */`,
+    `@media (prefers-color-scheme: ${modo === 'oscuro' ? 'dark' : 'light'}) {`,
+    `  :root:not([data-tema="${otro}"]) {`,
+    ...lineas,
+    '  }',
+    '}',
+    `:root[data-tema="${modo}"] {`,
+    ...lineas.map((l) => l.slice(2)),
+    '}',
+    '',
+  ];
+}
 
 export function tokensCss(s: Sistema): string {
   const lineas = Object.entries(s.tokens).map(([k, v]) => `  ${k}: ${v};`);
@@ -152,6 +195,7 @@ export function tokensCss(s: Sistema): string {
     ...lineas,
     '}',
     '',
+    ...(s.alterna ? bloqueAlterno(s) : []),
     '@media (prefers-reduced-motion: reduce) {',
     '  :root { --duracion-rapida: 0ms; --duracion-media: 0ms; --duracion-lenta: 0ms; }',
     '}',

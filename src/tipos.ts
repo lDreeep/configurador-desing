@@ -99,7 +99,10 @@ export type EstiloId =
   | 'editorial'
   | 'art_deco'
   | 'y2k'
-  | 'organico';
+  | 'organico'
+  | 'minimal_tecnico'
+  | 'oscuro_precision'
+  | 'producto_amable';
 
 export type LayoutId =
   | 'hero_partido'
@@ -328,6 +331,8 @@ export interface Config {
     presionar: PresionarId;
     aparicion: AparicionId;
     cambio: CambioId;
+    /** true: el archivo incluye también la versión opuesta de la paleta (claro ↔ oscuro). */
+    ambosModos: boolean;
   };
   botones: {
     estilo: BotonEstiloId;
