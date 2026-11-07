@@ -19,10 +19,18 @@ export function PanelGaleria(props: {
   atras: string;
   onAtras: () => void;
   onSeguir: () => void;
+  /** Entrar por la última pestaña (cuando se vuelve desde el paso siguiente). */
+  alFinal?: boolean;
 }) {
   const c = props.config;
   const s = sistemaDeDiseno(c);
-  const [pestana, setPestana] = useState<CategoriaId>(props.categorias[0]);
+  const [pestana, setPestana] = useState<CategoriaId>(props.alFinal ? props.categorias[props.categorias.length - 1] : props.categorias[0]);
+  const indice = props.categorias.indexOf(pestana);
+  const ultima = indice === props.categorias.length - 1;
+  const cambiarPestana = (id: CategoriaId) => {
+    setPestana(id);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
   const cat = CATEGORIAS[pestana];
   const elegido = (id: CategoriaId) => c.componentes[id];
   const estilo = c.visual.estilo !== 'clasico' ? `estilo-${c.visual.estilo}` : '';
@@ -54,7 +62,10 @@ export function PanelGaleria(props: {
     <div className={`panel-botones panel-galeria pg ${estilo}`} style={s.tokens as CSSProperties}>
       <div className="pb-contenido">
         <header className="pb-cabecera">
-          <span className="pg-etiqueta">{props.paso}</span>
+          <span className="pg-etiqueta">
+            {props.paso}
+            {props.categorias.length > 1 && ` · ${indice + 1} de ${props.categorias.length}: ${cat.nombre}`}
+          </span>
           <h1 className="pg-titulo">{props.titulo}</h1>
           <p className="pg-bajada">{props.bajada}</p>
         </header>
@@ -62,7 +73,7 @@ export function PanelGaleria(props: {
         {props.categorias.length > 1 && (
           <div className="pg-pestanas" role="tablist" aria-label="Tipos de componente">
             {props.categorias.map((id) => (
-              <button key={id} type="button" role="tab" aria-selected={pestana === id} onClick={() => setPestana(id)}>
+              <button key={id} type="button" role="tab" aria-selected={pestana === id} onClick={() => cambiarPestana(id)}>
                 {CATEGORIAS[id].nombre}
                 {elegido(id) && <span className="pg-pestana-ok" aria-label="(elegido)">✓</span>}
               </button>
@@ -81,17 +92,26 @@ export function PanelGaleria(props: {
       </div>
 
       <footer className="pb-pie">
-        <button type="button" className="pb-pie-atras" onClick={props.onAtras}>
-          {props.atras}
+        <button type="button" className="pb-pie-atras" onClick={() => (indice > 0 ? cambiarPestana(props.categorias[indice - 1]) : props.onAtras())}>
+          {indice > 0 ? `Volver a ${CATEGORIAS[props.categorias[indice - 1]].nombre.toLowerCase()}` : props.atras}
         </button>
         <span className="pb-pie-estado" aria-live="polite">
-          {listos} de {props.categorias.length} elegidos
-          {listos < props.categorias.length && ' · lo que no elijas queda con el primero recomendado'}
+          {elegido(pestana) ? `Elegido: ${cat.disenos[elegido(pestana)!]?.nombre}` : 'Si no elegís, queda el primero recomendado'}
+          {props.categorias.length > 1 && ` · ${listos} de ${props.categorias.length} listos`}
         </span>
         <BotonPrincipal
           config={c}
           onClick={() =>
             window.setTimeout(() => {
+              if (!ultima) {
+                // Lo que no se eligió en esta pestaña queda con el primer recomendado; se pasa a la siguiente.
+                props.setConfig((x) => ({
+                  ...x,
+                  componentes: { ...x.componentes, [pestana]: x.componentes[pestana] ?? RECOMENDADOS[x.proyecto.tipo].componentes[pestana]?.[0] ?? DISENO_INICIAL[pestana] },
+                }));
+                cambiarPestana(props.categorias[indice + 1]);
+                return;
+              }
               // Lo que no se eligió queda con el primer diseño, así el archivo siempre lo define.
               props.setConfig((x) => ({
                 ...x,
@@ -101,7 +121,7 @@ export function PanelGaleria(props: {
             }, 220)
           }
         >
-          Seguir
+          {ultima ? 'Seguir' : `Siguiente: ${CATEGORIAS[props.categorias[indice + 1]].nombre.toLowerCase()}`}
         </BotonPrincipal>
       </footer>
     </div>
