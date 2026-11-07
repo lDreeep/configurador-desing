@@ -1,5 +1,6 @@
+import { decisionesIniciales, normalizarDecisiones } from './decisiones';
 import { useEffect, useState } from 'react';
-import { DIRECCIONES, FUENTES, MOVIMIENTOS, NAV_SUGERIDA, PALETAS, PLANTILLAS_PANTALLAS } from './catalogo';
+import { APARICIONES, BORDES, CAMBIOS, DIRECCIONES, ELEVACIONES, ESCALAS, ESPACIADOS_TITULOS, FUENTES, HOVERS, MOVIMIENTOS, NAV_SUGERIDA, PALETAS, PLANTILLAS_PANTALLAS, PRESIONAR, RADIOS } from './catalogo';
 import { ESTILOS, LAYOUTS } from './estilos-visuales';
 import type { Config, DireccionId, FuenteId, MovimientoId, Pantalla, TipoProyecto } from './tipos';
 
@@ -49,6 +50,7 @@ export function configInicial(): Config {
   const [patron, patronMovil] = NAV_SUGERIDA.app_web;
   const r = PALETAS.azul_electrico.roles;
   return {
+    decisiones: decisionesIniciales(),
     proyecto: {
       nombre: '',
       tipo: 'app_web',
@@ -113,6 +115,19 @@ export function aplicarTipo(c: Config, tipo: TipoProyecto): Config {
 export function normalizar(guardado: Partial<Config>): Config {
   const base = configInicial();
   const visual = { ...base.visual, ...guardado.visual };
+  function restaurar<K extends keyof Config['visual']>(campo: K, registro: object) {
+    if (!Object.prototype.hasOwnProperty.call(registro, String(visual[campo]))) visual[campo] = base.visual[campo];
+  }
+  restaurar('movimiento', MOVIMIENTOS);
+  restaurar('radio', RADIOS);
+  restaurar('escala', ESCALAS);
+  restaurar('elevacion', ELEVACIONES);
+  restaurar('bordes', BORDES);
+  restaurar('hover', HOVERS);
+  restaurar('presionar', PRESIONAR);
+  restaurar('aparicion', APARICIONES);
+  restaurar('cambio', CAMBIOS);
+  restaurar('espaciadoTitulos', ESPACIADOS_TITULOS);
   // Ids que ya no existen en el catálogo vuelven al valor por defecto.
   if (!(visual.direccion in DIRECCIONES)) visual.direccion = base.visual.direccion;
   if (visual.paleta !== 'personalizada' && !(visual.paleta in PALETAS)) visual.paleta = base.visual.paleta;
@@ -124,6 +139,7 @@ export function normalizar(guardado: Partial<Config>): Config {
   return {
     ...base,
     ...guardado,
+    decisiones: normalizarDecisiones(guardado.decisiones),
     proyecto: { ...base.proyecto, ...guardado.proyecto },
     estructura: { ...base.estructura, ...guardado.estructura },
     funciones: { ...base.funciones, ...guardado.funciones },

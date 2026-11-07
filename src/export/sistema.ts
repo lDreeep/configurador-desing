@@ -1,3 +1,5 @@
+import { alternativaUI, normalizarDecisiones } from '../decisiones';
+import { tokensDecisiones } from './decisiones';
 // Deriva todos los valores de diseño a partir de la configuración.
 // La vista previa y el export usan esta MISMA función: lo que se ve es lo que se exporta.
 
@@ -52,6 +54,8 @@ const rgbDe = (hex: string) => [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2)
 
 export function sistemaDeDiseno(c: Config) {
   const v = c.visual;
+  const decisiones = normalizarDecisiones(c.decisiones);
+  const cuerpo = Number.parseInt(alternativaUI(decisiones, 'cuerpo').valor ?? '16', 10);
   const dir = DIRECCIONES[v.direccion];
   const paleta = paletaActiva(c);
   const r = paleta.roles;
@@ -65,19 +69,20 @@ export function sistemaDeDiseno(c: Config) {
   const proporcion = ESCALAS[v.escala].proporcion;
   const boton = TAMANOS_BOTON[c.botones.tamano];
 
-  const t = (pasos: number) => Math.round(16 * Math.pow(proporcion, pasos));
+  const t = (pasos: number) => Math.round(cuerpo * Math.pow(proporcion, pasos));
   const escala: Record<string, NivelTipo> = {
     display: { tamano: t(5), interlineado: 1.05, peso: pesoTitulos },
     h1: { tamano: t(4), interlineado: 1.1, peso: pesoTitulos },
     h2: { tamano: t(3), interlineado: 1.2, peso: pesoSubtitulos },
     h3: { tamano: t(2), interlineado: 1.3, peso: pesoSubtitulos },
-    cuerpo: { tamano: 16, interlineado: 1.5, peso: 400 },
+    cuerpo: { tamano: cuerpo, interlineado: Number(alternativaUI(decisiones, 'interlineado').valor ?? '1.5'), peso: 400 },
     pequeno: { tamano: 14, interlineado: 1.45, peso: 400 },
     etiqueta: { tamano: 12, interlineado: 1.3, peso: 600 },
   };
 
   const espacios = [4, 8, 12, 16, 24, 32, 48, 64, 96];
-  const factor = FACTOR_DENSIDAD[dir.densidad];
+  const densidad = decisiones.densidad === 'heredar' ? dir.densidad : decisiones.densidad as keyof typeof FACTOR_DENSIDAD;
+  const factor = FACTOR_DENSIDAD[densidad];
   const sombra = esOscuro(r.fondo) ? '0,0,0' : rgbDe(r.texto);
   const elevacion = {
     plana: { nivel_1: 'none', nivel_2: 'none', nivel_3: `0 12px 32px rgba(${sombra},.24)` },
@@ -103,6 +108,7 @@ export function sistemaDeDiseno(c: Config) {
         : { fondo: r.acento, sobre: r.sobre_acento };
 
   const tokens: Record<string, string> = {
+    ...tokensDecisiones(c),
     '--color-fondo': r.fondo,
     '--color-superficie': r.superficie,
     '--color-superficie-alta': r.superficie_alta,
@@ -126,7 +132,7 @@ export function sistemaDeDiseno(c: Config) {
     ...Object.fromEntries(Object.entries(escala).map(([k, n]) => [`--texto-${k}`, `${n.tamano}px`])),
     ...Object.fromEntries(espacios.map((e, i) => [`--espacio-${i + 1}`, `${e}px`])),
     '--padding-componente': `${Math.round(16 * factor)}px`,
-    '--ancho-max': '1200px',
+    '--ancho-max': tokensDecisiones(c)['--contenido-ancho'],
     '--radio-pequeno': `${radio.pequeno}px`,
     '--radio-medio': `${radio.medio}px`,
     '--radio-grande': `${radio.grande}px`,
@@ -152,7 +158,7 @@ export function sistemaDeDiseno(c: Config) {
   if (caja) Object.assign(tokens, tokensDeCaja(caja, paleta, radio.medio));
 
   return {
-    dir, paleta, radio, mov, titulos, texto, pesoTitulos, pesoSubtitulos, espaciadoTitulos, proporcion,
+    dir, densidad, paleta, radio, mov, titulos, texto, pesoTitulos, pesoSubtitulos, espaciadoTitulos, proporcion,
     boton, colorBoton, caja, escala, espacios, factor, elevacion, bordeBloque, tokens,
     contrastes: paresDeContraste(r),
     alterna: (v.ambosModos ? alternaDe(c, tokens) : null) as Alterna | null,

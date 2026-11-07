@@ -1,3 +1,4 @@
+import { DECISIONES_UI, IDS_DECISIONES, alternativaUI, normalizarDecisiones } from '../decisiones';
 // Salidas extra del export: tokens en JSON (formato W3C Design Tokens, lo leen Figma con Tokens Studio,
 // Style Dictionary y otros), tokens.css suelto y un prompt corto para pegar directo en una IA.
 // El DESIGN.md sigue siendo la salida completa: estas son versiones parciales del mismo sistema.
@@ -47,6 +48,7 @@ export function tokensJson(c: Config, s: Sistema = sistemaDeDiseno(c)): string {
       media: { $type: 'duration', $value: `${s.mov.media}ms` },
       lenta: { $type: 'duration', $value: `${s.mov.lenta}ms` },
     },
+    interfaz: Object.fromEntries(Object.entries(s.tokens).filter(([k]) => ['--contenido-ancho', '--grilla-separacion', '--seccion-separacion', '--margen-movil', '--texto-linea', '--fila-alto', '--foco-grosor'].includes(k)).map(([k, v]) => [k.slice(2), { $type: v.endsWith('px') ? 'dimension' : 'string', $value: v }])),
     curva: {
       entrada: { $type: 'cubicBezier', $value: curva(s.mov.curvaEntrada) },
       salida: { $type: 'cubicBezier', $value: curva(s.mov.curvaSalida) },
@@ -60,6 +62,7 @@ export { tokensCss };
 /** Versión corta para pegar en un chat. Pierde el CSS de cada pieza: el DESIGN.md es mejor. */
 export function promptCorto(c: Config, s: Sistema = sistemaDeDiseno(c)): string {
   const r = s.paleta.roles;
+  const d = normalizarDecisiones(c.decisiones);
   const v = c.visual;
   const piezas = (Object.keys(CATEGORIAS) as CategoriaId[])
     .filter((id) => c.componentes[id])
@@ -75,6 +78,7 @@ export function promptCorto(c: Config, s: Sistema = sistemaDeDiseno(c)): string 
     `- Cajas: ${c.cajas.preset !== 'ninguno' ? `${CAJAS[c.cajas.preset].nombre} (${CAJAS[c.cajas.preset].descripcion})` : 'superficie con borde sutil'}.`,
     ...(piezas.length ? [`- Componentes: ${piezas.join('; ')}.`] : []),
     `- Movimiento: ${MOVIMIENTOS[v.movimiento].nombre.toLowerCase()} (${s.mov.media}ms); el contenido aparece con ${APARICIONES[v.aparicion].nombre.toLowerCase()}; entre pantallas, ${CAMBIOS[v.cambio].nombre.toLowerCase()}.`,
+    `- Decisiones UI: ${IDS_DECISIONES.filter(id => d[id] !== 'heredar').map(id => `${DECISIONES_UI[id].nombre}: ${alternativaUI(d, id).nombre}`).join('; ')}.`,
     '- Reglas: contraste AA (4,5:1 en texto), áreas táctiles de 44px, foco visible, respetá prefers-reduced-motion y no uses solo el color para dar información.',
     'Antes de construir, mostrame una maqueta de la pantalla principal para aprobarla.',
   ];

@@ -15,7 +15,7 @@ npm install
 npm run dev
 ```
 
-Abrí la dirección que muestra la terminal, completá los 9 pasos y en **Exportar** descargá o
+Abrí la dirección que muestra la terminal, recorré los 13 pasos del modo rápido (o los 11 del avanzado) y en **Exportar** descargá o
 copiá tu `DESIGN.md`. Después, en tu IA: *"Construí esta app siguiendo el DESIGN.md"*.
 
 ## Publicarlo
@@ -27,3 +27,15 @@ GitHub Pages sin configuración extra.
 
 - [`DESIGN.md`](./DESIGN.md): especificación del formato exportado y documento vivo del proyecto.
 - [`CLAUDE.md`](./CLAUDE.md): cómo está organizado el código y reglas para trabajar con IA.
+
+## Sistema UI
+
+El paso **Sistema UI**, después de Cajas, permite ajustar 23 decisiones en seis
+grupos: composición, lectura, formularios, datos, respuesta e imágenes. Buscá una
+decisión, elegí una alternativa y probala en la muestra de escritorio o celular.
+El formulario, la selección de filas y la confirmación son demostraciones locales.
+Las preferencias se guardan en este navegador y se incluyen en `DESIGN.md` (§22,
+formato 0.9.0), con sus tokens y CSS. Las decisiones de comportamiento se describen
+para que la IA las implemente en el proyecto final.
+
+Para verificar el proyecto: `npm run typecheck`, `npm test` y `npm run build`.
