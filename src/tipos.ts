@@ -121,7 +121,10 @@ export type LayoutId =
   | 'mosaico'
   | 'minimo'
   | 'app_lateral'
-  | 'horizontal';
+  | 'horizontal'
+  | 'galeria'
+  | 'precios'
+  | 'portada_video';
 
 export type EscalaId = 'sutil' | 'medio' | 'dramatico' | 'extremo';
 export type EspaciadoTitulos = 'apretado' | 'normal' | 'amplio';

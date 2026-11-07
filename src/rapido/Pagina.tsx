@@ -237,6 +237,90 @@ function Layout({ c, k }: { c: Config; k: Contenido }) {
           </div>
         </div>
       );
+    case 'galeria': {
+      const precios = ['$ 12.900', '$ 34.500', '$ 9.800', '$ 21.300', '$ 15.600', '$ 8.400', '$ 27.900', '$ 11.200'];
+      const productos = [...k.items, ...k.items, ...k.items].slice(0, 8);
+      return (
+        <>
+          <Nav k={k} />
+          <section className="pg-hero pg-galeria-cabeza">
+            <div>
+              <span className="pg-etiqueta">Novedades</span>
+              <Titulo k={k} />
+            </div>
+            <Botones c={c} k={k} />
+          </section>
+          <section className="pg-galeria">
+            {productos.map((it, i) => (
+              <div key={i} className={`pg-card pg-producto ${cc}`} style={{ animationDelay: `${i * 50}ms` }}>
+                <Media clase="pg-producto-foto" />
+                <span className="pg-card-titulo">{it.titulo}</span>
+                <span className="pg-precio">{precios[i]}</span>
+              </div>
+            ))}
+          </section>
+        </>
+      );
+    }
+    case 'precios': {
+      const planes = [
+        { nombre: 'Básico', precio: '$ 0', nota: 'Para probar', items: ['Lo esencial', '1 persona', 'Ayuda por email'] },
+        { nombre: 'Pro', precio: '$ 9.900', nota: 'por mes', items: ['Todo lo del básico', 'Hasta 5 personas', 'Ayuda prioritaria'] },
+        { nombre: 'Equipo', precio: '$ 24.900', nota: 'por mes', items: ['Todo lo del Pro', 'Personas sin límite', 'Asesoría dedicada'] },
+      ];
+      return (
+        <>
+          <Nav k={k} />
+          <section className="pg-hero pg-centro">
+            <Titulo k={k} />
+            <Bajada k={k} />
+          </section>
+          <section className="pg-precios">
+            {planes.map((pl, i) => (
+              <div key={pl.nombre} className={`pg-card pg-plan ${i === 1 ? 'pg-destacado' : ''} ${cc}`} style={{ animationDelay: `${i * 70}ms` }}>
+                {i === 1 && <span className="pg-etiqueta pg-plan-etq">Más elegido</span>}
+                <span className="pg-card-titulo">{pl.nombre}</span>
+                <span className="pg-plan-precio">
+                  {pl.precio} <small>{pl.nota}</small>
+                </span>
+                <ul className="pg-plan-lista">
+                  {pl.items.map((x) => (
+                    <li key={x}>{x}</li>
+                  ))}
+                </ul>
+                {i === 1 ? (
+                  <BotonPrincipal config={c} clase="pg-boton" onClick={k.onPrincipal}>
+                    {k.cta}
+                  </BotonPrincipal>
+                ) : (
+                  <button type="button" className={`pv-boton pv-secundario est-${c.botones.estilo} pg-boton-sec`} onClick={k.onSecundario}>
+                    Elegir {pl.nombre}
+                  </button>
+                )}
+              </div>
+            ))}
+          </section>
+        </>
+      );
+    }
+    case 'portada_video':
+      return (
+        <>
+          <Nav k={k} />
+          <section className="pg-video">
+            <Media clase="pg-video-fondo" />
+            <div className="pg-video-texto">
+              <Titulo k={k} />
+              <Bajada k={k} />
+              <Botones c={c} k={k} />
+            </div>
+            <span className="pg-video-play" aria-hidden="true">
+              ▶
+            </span>
+          </section>
+          <section className="pg-fila">{cards}</section>
+        </>
+      );
     case 'mosaico':
       return (
         <>

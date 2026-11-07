@@ -53,7 +53,7 @@ export const RECOMENDADOS: Record<TipoProyecto, Recomendados> = {
   landing: {
     para: 'página web',
     porque: 'Una página que presenta algo vive del primer impacto: título grande, un botón que se note y secciones claras.',
-    layouts: ['hero_partido', 'cinta', 'bento', 'tipografico'],
+    layouts: ['hero_partido', 'portada_video', 'precios', 'cinta', 'bento', 'tipografico'],
     estilos: ['producto_amable', 'neobrutalismo', 'suizo', 'vidrio', 'minimal_tecnico'],
     botones: ['flecha', 'pildora', 'degradado', 'brillo_barrido', 'sombra_dura', 'circulo_flecha'],
     cajas: ['elevada', 'contorno', 'acento', 'degradado', 'sombra_color'],
@@ -68,7 +68,7 @@ export const RECOMENDADOS: Record<TipoProyecto, Recomendados> = {
   sitio: {
     para: 'sitio institucional',
     porque: 'Un sitio con varias secciones necesita orden: navegación clara, textos que se lean bien y botones sobrios.',
-    layouts: ['hero_partido', 'revista', 'indice', 'apiladas'],
+    layouts: ['hero_partido', 'revista', 'indice', 'precios', 'apiladas'],
     estilos: ['editorial', 'suizo', 'organico', 'minimal_tecnico'],
     botones: ['solido', 'contorno', 'flecha', 'subrayado', 'link_flecha', 'tonal'],
     cajas: ['contorno', 'superficie', 'editorial', 'cabecera', 'barra'],
@@ -81,7 +81,7 @@ export const RECOMENDADOS: Record<TipoProyecto, Recomendados> = {
   tienda: {
     para: 'tienda',
     porque: 'En una tienda manda el producto: botones de compra que inviten a tocar, cards de producto limpias y avisos de «agregado».',
-    layouts: ['mosaico', 'hero_partido', 'bento', 'horizontal'],
+    layouts: ['galeria', 'mosaico', 'hero_partido', 'portada_video', 'bento'],
     estilos: ['producto_amable', 'editorial', 'lujo', 'dopamina', 'clay', 'neobrutalismo'],
     botones: ['pildora', 'solido', 'relleno_abajo', 'sombra_suave_color', 'almohada', 'deslizar_icono'],
     cajas: ['elevada', 'superficie', 'flotante', 'ticket', 'sombra_color'],
@@ -169,7 +169,7 @@ export const RECOMENDADOS: Record<TipoProyecto, Recomendados> = {
   portfolio: {
     para: 'portfolio',
     porque: 'En un portfolio lo importante es el trabajo: tipografía con carácter, mucho aire, imágenes grandes y botones discretos.',
-    layouts: ['tipografico', 'revista', 'mosaico', 'minimo', 'horizontal'],
+    layouts: ['tipografico', 'galeria', 'revista', 'mosaico', 'portada_video', 'minimo'],
     estilos: ['suizo', 'editorial', 'japones', 'art_deco', 'bauhaus', 'cyber'],
     botones: ['subrayado', 'link_flecha', 'texto_sube', 'minimal_texto', 'circulo_flecha', 'contorno'],
     cajas: ['editorial', 'contorno', 'papel', 'invertida', 'gruesa'],

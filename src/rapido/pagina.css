@@ -119,6 +119,34 @@
 .pgp .pg-horizontal .pg-card { flex: 0 0 min(340px, 80%); scroll-snap-align: start; }
 .pgp .pg-horizontal .pg-media { min-height: 180px; margin-top: 8px; }
 
+/* Galería de productos */
+.pgp .pg-galeria-cabeza { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px 32px; }
+.pgp .pg-galeria-cabeza .pg-titulo { font-size: clamp(32px, 5cqw, 64px); }
+.pgp .pg-galeria { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+.pgp .pg-producto { gap: 6px; }
+.pgp .pg-producto-foto { aspect-ratio: 1; min-height: 0 !important; margin-bottom: 6px; }
+.pgp .pg-precio { font-weight: 800; font-size: 16px; }
+
+/* Planes y precios */
+.pgp .pg-precios { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; align-items: center; }
+.pgp .pg-plan { gap: 12px; padding: 26px; }
+.pgp .pg-destacado { padding: 36px 26px; outline: 2px solid var(--color-acento); outline-offset: -2px; }
+.pgp .pg-plan-etq { align-self: flex-start; }
+.pgp .pg-plan-precio { font-family: var(--fuente-titulos); font-weight: var(--titulos-peso); font-size: clamp(28px, 3.4cqw, 42px); }
+.pgp .pg-plan-precio small { font-family: var(--fuente-texto); font-size: 14px; font-weight: 500; color: var(--color-texto-suave); }
+.pgp .pg-plan-lista { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 8px; font-size: 14px; }
+.pgp .pg-plan-lista li::before { content: '✓'; margin-right: 8px; color: var(--color-acento-texto); font-weight: 700; }
+.pgp .pg-plan .pv-boton { align-self: stretch; justify-content: center; }
+
+/* Portada con video */
+.pgp .pg-video { position: relative; min-height: clamp(380px, 62cqw, 620px); border-radius: var(--radio-grande); overflow: hidden; display: flex; align-items: flex-end; }
+.pgp .pg-video-fondo { position: absolute; inset: 0; min-height: 0 !important; border-radius: 0 !important; background-size: 200% 200% !important; animation: pg-video-mueve 14s ease-in-out infinite alternate; }
+.pgp .pg-video::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,.72), rgba(0,0,0,.15) 60%, transparent); pointer-events: none; }
+.pgp .pg-video-texto { position: relative; z-index: 1; display: flex; flex-direction: column; gap: 16px; align-items: flex-start; max-width: 720px; padding: clamp(20px, 4cqw, 48px); color: #FFFFFF; }
+.pgp .pg-video-texto .pg-titulo, .pgp .pg-video-texto .pg-bajada { color: #FFFFFF; -webkit-text-fill-color: #FFFFFF; background: none; text-shadow: 0 2px 16px rgba(0,0,0,.35); }
+.pgp .pg-video-play { position: absolute; z-index: 1; top: 50%; left: 50%; transform: translate(-50%, -50%); display: grid; place-items: center; width: 72px; height: 72px; border-radius: 50%; background: rgba(255,255,255,.9); color: #111; font-size: 22px; padding-left: 4px; box-shadow: 0 10px 30px rgba(0,0,0,.3); }
+@keyframes pg-video-mueve { from { background-position: 0% 50%; } to { background-position: 100% 50%; } }
+
 /* Aparición de cards según el movimiento elegido */
 .pgp.pv-aparicion-fundido .pg-card { animation: pv-fundido var(--duracion-media) var(--curva-entrada) both; }
 .pgp.pv-aparicion-subir .pg-card, .pgp.pv-aparicion-escalonada .pg-card { animation: pv-subir var(--duracion-media) var(--curva-entrada) both; }
@@ -140,6 +168,9 @@
   .pgp .pg-app-menu { flex-direction: row; flex-wrap: wrap; border-right: none; border-bottom: 1px solid var(--color-borde); }
   .pgp .pg-app-menu .pg-marca { width: 100%; padding-bottom: 6px; }
   .pgp .pg-pila { min-height: 420px; }
+  .pgp .pg-galeria { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .pgp .pg-precios { grid-template-columns: minmax(0, 1fr); }
+  .pgp .pg-video-play { top: 16px; left: auto; right: 16px; transform: none; width: 52px; height: 52px; font-size: 16px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

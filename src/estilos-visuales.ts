@@ -543,6 +543,9 @@ export const LAYOUTS: Record<LayoutId, Layout> = {
   minimo: { nombre: 'Mínimo centrado', descripcion: 'Casi nada en pantalla, mucho aire', estructura: 'Todo centrado en una sola pantalla: etiqueta con la marca, título mediano, bajada y botones, con muchísimo espacio alrededor.' },
   app_lateral: { nombre: 'App con menú lateral', descripcion: 'Menú a la izquierda e indicadores', estructura: 'Menú lateral de 220px con la sección activa resaltada; contenido con cabecera (título y botones), fila de 3 indicadores grandes y un bloque de gráfico. En celular, el menú pasa arriba.' },
   horizontal: { nombre: 'Paneles horizontales', descripcion: 'Bloques que se recorren de costado', estructura: 'Hero arriba; debajo, una fila de paneles con scroll horizontal y snap, cada uno con etiqueta, título, texto y un visual.' },
+  galeria: { nombre: 'Galería de productos', descripcion: 'Grilla de productos con foto, nombre y precio', estructura: 'Barra superior; cabecera corta con título a la izquierda y botones a la derecha; debajo, grilla de 4 columnas de productos (foto cuadrada, nombre, detalle y precio en negrita). En celular, 2 columnas.' },
+  precios: { nombre: 'Planes y precios', descripcion: 'Tres planes lado a lado, el del medio destacado', estructura: 'Hero centrado con título y bajada; debajo, 3 cards de planes en fila (nombre, precio grande, 3 beneficios con tilde y botón); la del medio más alta, con borde de acento y la etiqueta «Más elegido». En celular, una debajo de la otra.' },
+  portada_video: { nombre: 'Portada con video', descripcion: 'Un video o foto a pantalla completa con el título encima', estructura: 'Visual a todo el ancho y casi toda la altura (video en loop sin sonido o foto), con un degradado oscuro abajo; encima, título, bajada y botones en blanco abajo a la izquierda y un botón redondo de «play»; debajo, fila de cards.' },
 };
 
 /** CSS de un estilo con `&` reemplazado por el selector de raíz dado. */
