@@ -126,6 +126,46 @@ export const PALETAS: Record<PaletaId, Paleta> = {
     fondo: '#EDEBFA', superficie: '#DDD9F6', superficie_alta: '#FFFFFF', borde: '#A9A2DA',
     texto: '#1A1440', texto_suave: '#463F6E', acento: '#4B12C8', sobre_acento: '#FFFFFF',
   }),
+  durazno: claro('Durazno', {
+    fondo: '#FFF7F2', superficie: '#FDE9DE', superficie_alta: '#FFFFFF', borde: '#F0C9B5',
+    texto: '#2A1710', texto_suave: '#6E4E42', acento: '#C2410C', sobre_acento: '#FFFFFF',
+  }),
+  cielo: claro('Cielo', {
+    fondo: '#F5FAFF', superficie: '#E3F0FC', superficie_alta: '#FFFFFF', borde: '#BBD3EC',
+    texto: '#0C1E33', texto_suave: '#4A5E75', acento: '#0369A1', sobre_acento: '#FFFFFF',
+  }),
+  uva: claro('Uva', {
+    fondo: '#FBF8FF', superficie: '#EFE7FB', superficie_alta: '#FFFFFF', borde: '#D3C4EE',
+    texto: '#1E1033', texto_suave: '#5B4B73', acento: '#6D28D9', sobre_acento: '#FFFFFF',
+  }),
+  oliva: claro('Oliva', {
+    fondo: '#F8F7F0', superficie: '#ECEADC', superficie_alta: '#FFFFFF', borde: '#CFCBB3',
+    texto: '#1F2114', texto_suave: '#565A44', acento: '#4D7C0F', sobre_acento: '#FFFFFF',
+  }),
+  rosa_chicle: claro('Rosa chicle', {
+    fondo: '#FFF5F8', superficie: '#FFE3EC', superficie_alta: '#FFFFFF', borde: '#F4B9CB',
+    texto: '#2B0F1A', texto_suave: '#6B4552', acento: '#BE185D', sobre_acento: '#FFFFFF',
+  }),
+  terracota: claro('Terracota', {
+    fondo: '#FAF4EF', superficie: '#F1E4D8', superficie_alta: '#FFFFFF', borde: '#DCC3AE',
+    texto: '#2A1B12', texto_suave: '#6A5244', acento: '#A8481F', sobre_acento: '#FFFFFF',
+  }),
+  medianoche_violeta: oscuro('Medianoche violeta', {
+    fondo: '#0F0B1A', superficie: '#1A1428', superficie_alta: '#241C36', borde: '#3A2F52',
+    texto: '#EEE9FB', texto_suave: '#A79CC4', acento: '#A78BFA', sobre_acento: '#160B2E',
+  }),
+  bosque_noche: oscuro('Bosque de noche', {
+    fondo: '#0B1410', superficie: '#13201A', superficie_alta: '#1B2B23', borde: '#2C4237',
+    texto: '#E6F2EA', texto_suave: '#9DB5A7', acento: '#34D399', sobre_acento: '#052016',
+  }),
+  carbon_coral: oscuro('Carbón y coral', {
+    fondo: '#121212', superficie: '#1E1E1E', superficie_alta: '#282828', borde: '#3D3D3D',
+    texto: '#F2F2F2', texto_suave: '#ABABAB', acento: '#FF7A59', sobre_acento: '#2A0E05',
+  }),
+  vino: oscuro('Vino', {
+    fondo: '#170B0F', superficie: '#241318', superficie_alta: '#301A21', borde: '#4A2A34',
+    texto: '#F6E8EC', texto_suave: '#BFA3AB', acento: '#F472B6', sobre_acento: '#2A0A18',
+  }),
 };
 
 // ---------- Tipografía ----------

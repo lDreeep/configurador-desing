@@ -50,7 +50,17 @@ export type PaletaId =
   | 'retro_gris'
   | 'fosforo_verde'
   | 'fosforo_ambar'
-  | 'cromo';
+  | 'cromo'
+  | 'durazno'
+  | 'cielo'
+  | 'uva'
+  | 'oliva'
+  | 'rosa_chicle'
+  | 'terracota'
+  | 'medianoche_violeta'
+  | 'bosque_noche'
+  | 'carbon_coral'
+  | 'vino';
 
 export type FuenteId =
   | 'inter'

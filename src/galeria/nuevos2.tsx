@@ -164,7 +164,7 @@ export const CARRUSELES: Categoria = {
 & .cm-k-slide:nth-child(3) { background: color-mix(in srgb, var(--color-acento) 18%, var(--color-fondo)); color: var(--color-texto); }
 & .cm-k-slide:nth-child(4) { background: var(--color-texto); color: var(--color-fondo); }
 & .cm-k-slide strong { font-family: var(--fuente-titulos); font-size: 22px; line-height: 1.1; }
-& .cm-k-slide span { font-size: 13.5px; opacity: .9; }
+& .cm-k-slide span { font-size: 13.5px; }
 & .cm-k-flecha { position: absolute; top: 85px; transform: translateY(-50%); width: 40px; height: 40px; border: none; border-radius: 999px; background: color-mix(in srgb, var(--color-fondo) 88%, transparent); color: var(--color-texto); font-size: 22px; line-height: 1; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,.15); }
 & .cm-k-prev { left: 8px; } & .cm-k-next { right: 8px; }
 & .cm-k-cuenta { display: none; }
