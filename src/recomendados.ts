@@ -54,6 +54,8 @@ const BASE: Recomendados['componentes'] = {
   notificaciones: ['clasica', 'punto', 'lineas'],
   usuario: ['clasico', 'solo_avatar', 'cabecera_color'],
   acceso: ['tarjeta', 'centrado', 'dividido'],
+  wizard: ['circulos', 'barra', 'pestanas'],
+  reserva: ['pastillas', 'cuadros', 'franja'],
 };
 
 const con = (extra: Recomendados['componentes']) => ({ ...BASE, ...extra });
@@ -157,6 +159,8 @@ export const RECOMENDADOS: Record<TipoProyecto, Recomendados> = {
       migas: ['volver', 'chevron', 'pastillas'],
       formulario: ['lista_agrupada', 'barra_fija', 'relleno', 'tarjetas'],
       acceso: ['sin_caja', 'centrado', 'pildora'],
+      wizard: ['puntos', 'conversacional', 'barra'],
+      reserva: ['franja', 'tonal', 'pastillas'],
       notificaciones: ['punto', 'pulso', 'clasica'],
       usuario: ['solo_avatar', 'clasico', 'cabecera_color'],
       subir: ['foto', 'tonal', 'zona'],
@@ -186,6 +190,8 @@ export const RECOMENDADOS: Record<TipoProyecto, Recomendados> = {
       buscador: ['comando', 'simple', 'subrayado'],
       formulario: ['compacto', 'lateral', 'lista_agrupada', 'en_linea'],
       acceso: ['dividido', 'tarjeta', 'oscuro'],
+      wizard: ['lateral', 'circulos', 'pestanas'],
+      reserva: ['lista', 'cuadros', 'sin_caja'],
       paginacion: ['cuadros', 'grupo', 'texto'],
       desplegable: ['tilde', 'contorno', 'clasico'],
       vacio: ['lateral', 'punteado', 'centrado'],

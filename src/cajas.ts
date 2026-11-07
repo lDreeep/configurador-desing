@@ -73,6 +73,21 @@ export const CAJAS: Record<CajaPresetId, CajaPreset> = {
   invertida: { nombre: 'Invertida', descripcion: 'Oscura sobre claro (o al revés)', params: p({ fondo: 'invertido', radio: '20', hover: 'escala' }) },
   gruesa: { nombre: 'Borde grueso', descripcion: 'Contorno pesado y redondo', params: p({ fondo: 'fondo', bordeGrosor: 4, bordeColor: 'texto', radio: '28' }) },
   flotante_vidrio: { nombre: 'Vidrio flotante', descripcion: 'Vidrio fuerte con sombra marcada', params: p({ transparencia: 65, desenfoque: 24, bordeGrosor: 1, sombra: 'marcada', radio: '28', hover: 'elevar' }) },
+  pildora_suave: { nombre: 'Píldora suave', descripcion: 'Muy redondeada, con aire y que crece al pasar', params: p({ radio: '40', relleno: 'amplio', hover: 'escala' }) },
+  compacta: { nombre: 'Compacta', descripcion: 'Contorno fino y poco espacio, para listas densas', params: p({ fondo: 'fondo', bordeGrosor: 1, relleno: 'compacto', radio: '6' }) },
+  acento_borde: { nombre: 'Tonal con borde', descripcion: 'Fondo suave del acento con su borde', params: p({ fondo: 'acento_suave', bordeGrosor: 2, bordeColor: 'acento', radio: '12', hover: 'borde' }) },
+  inclina: { nombre: 'Se inclina', descripcion: 'Sombra marcada; se inclina al pasar el mouse', params: p({ fondo: 'fondo', sombra: 'marcada', radio: '12', hover: 'inclinar' }) },
+  cabecera_vidrio: { nombre: 'Vidrio con cabecera', descripcion: 'Translúcida con una franja de color arriba', params: p({ forma: 'cabecera', transparencia: 50, desenfoque: 14, bordeGrosor: 1, radio: '20' }) },
+  ticket_punteado: { nombre: 'Cupón', descripcion: 'Muescas y borde de guiones, como un cupón', params: p({ forma: 'ticket', fondo: 'fondo', bordeGrosor: 2, bordeEstilo: 'dashed', bordeColor: 'texto', radio: '12' }) },
+  invertida_brillo: { nombre: 'Oscura que brilla', descripcion: 'Invertida con halo del acento', params: p({ fondo: 'invertido', sombra: 'brillo', radio: '12', hover: 'brillo' }) },
+  puntos_color: { nombre: 'Puntos con borde de color', descripcion: 'Trama de puntos y contorno del acento', params: p({ fondo: 'puntos', bordeGrosor: 2, bordeColor: 'acento', radio: '20' }) },
+  renglones: { nombre: 'Anotador', descripcion: 'Renglones con un filete arriba', params: p({ fondo: 'lineas', forma: 'filete' }) },
+  grano_dura: { nombre: 'Afiche', descripcion: 'Grano, borde negro y sombra dura, recta', params: p({ fondo: 'grano', bordeGrosor: 2, bordeColor: 'texto', sombra: 'dura', radio: '0' }) },
+  degradado_vidrio: { nombre: 'Degradado translúcido', descripcion: 'Degradado del acento con desenfoque', params: p({ fondo: 'degradado', transparencia: 30, desenfoque: 12, radio: '28', hover: 'elevar' }) },
+  barra_acento: { nombre: 'Nota destacada', descripcion: 'Barra lateral sobre fondo de acento suave', params: p({ forma: 'barra_lateral', fondo: 'acento_suave', radio: '12', hover: 'borde' }) },
+  cortada_contorno: { nombre: 'Corte con contorno', descripcion: 'Esquina cortada con borde del texto', params: p({ forma: 'esquina_cortada', fondo: 'fondo', bordeGrosor: 2, bordeColor: 'texto', radio: '0' }) },
+  aire: { nombre: 'Mucho aire', descripcion: 'Espacio interno amplio, borde fino y sombra apenas', params: p({ fondo: 'fondo', relleno: 'amplio', bordeGrosor: 1, radio: '28', sombra: 'suave' }) },
+  hundida_color: { nombre: 'Hundida de color', descripcion: 'Tallada hacia adentro, tono del acento', params: p({ fondo: 'acento_suave', sombra: 'interna', radio: '12' }) },
 };
 
 export const OPCIONES_CAJA = {

@@ -259,7 +259,22 @@ export type CajaPresetId =
   | 'sello'
   | 'invertida'
   | 'gruesa'
-  | 'flotante_vidrio';
+  | 'flotante_vidrio'
+  | 'pildora_suave'
+  | 'compacta'
+  | 'acento_borde'
+  | 'inclina'
+  | 'cabecera_vidrio'
+  | 'ticket_punteado'
+  | 'invertida_brillo'
+  | 'puntos_color'
+  | 'renglones'
+  | 'grano_dura'
+  | 'degradado_vidrio'
+  | 'barra_acento'
+  | 'cortada_contorno'
+  | 'aire'
+  | 'hundida_color';
 
 export type BotonEstiloId = 'relleno' | 'contorno' | 'tonal' | 'elevado' | 'sombra_dura';
 export type BotonTamano = 'compacto' | 'normal' | 'grande';

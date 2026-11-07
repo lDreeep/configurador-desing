@@ -702,7 +702,7 @@ const GRUPOS: { nombre: string; items: Editable[] }[] = [
   { nombre: 'Movimiento', items: ['movimiento', 'aparicion', 'cambio'] },
   { nombre: 'Botones', items: ['boton', 'color_boton', 'boton_sec', 'boton_icono'] },
   { nombre: 'Contenedores', items: ['caja', 'metrica', 'grafico', 'tabla'] },
-  { nombre: 'Formularios', items: ['formulario', 'acceso', 'campo', 'selector', 'desplegable', 'buscador', 'calendario', 'interruptor', 'casilla', 'deslizador', 'subir'] },
+  { nombre: 'Formularios', items: ['formulario', 'acceso', 'wizard', 'reserva', 'campo', 'selector', 'desplegable', 'buscador', 'calendario', 'interruptor', 'casilla', 'deslizador', 'subir'] },
   { nombre: 'Navegación', items: ['nav_web', 'nav_movil', 'migas', 'paginacion', 'pasos', 'notificaciones', 'usuario', 'pie'] },
   { nombre: 'Detalles', items: ['etiqueta', 'aviso', 'cargando', 'progreso', 'acordeon', 'avatar', 'tooltip', 'modal', 'vacio', 'carrusel', 'producto'] },
 ];

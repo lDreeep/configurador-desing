@@ -9,6 +9,7 @@ import { ACORDEONES, AVATARES, AVISOS, CARGANDO, ETIQUETAS, MODALES, PROGRESO, T
 import { NAV_MOVIL, NAV_WEB } from './navegacion';
 import { BUSCADORES, DESPLEGABLES, MIGAS, PAGINACION, PASOS, VACIOS } from './nuevos';
 import { ACCESOS, FORMULARIOS, SUBIR } from './formularios';
+import { RESERVAS, WIZARDS } from './formularios2';
 import { MAS_DISENOS } from './mas-disenos';
 import { NOTIFICACIONES, PRODUCTOS, USUARIOS } from './nuevos3';
 import { CALENDARIOS, CARRUSELES, PIES } from './nuevos2';
@@ -50,6 +51,8 @@ export const CATEGORIAS: Record<CategoriaId, Categoria> = {
   notificaciones: NOTIFICACIONES,
   usuario: USUARIOS,
   acceso: ACCESOS,
+  wizard: WIZARDS,
+  reserva: RESERVAS,
 };
 
 // Diseños sumados después: van al final de cada categoría (no pisan ninguno existente).
