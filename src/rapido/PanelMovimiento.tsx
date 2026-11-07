@@ -2,6 +2,7 @@
 // Cada opción se ve en vivo: las demos se repiten solas cada pocos segundos.
 // Las animaciones de los botones (al pasar el mouse y al tocar) ya se eligieron en el panel de botones.
 
+import { usePaso } from './BarraPasos';
 import { useEffect, useState, type CSSProperties } from 'react';
 import { APARICIONES, CAMBIOS, MOVIMIENTOS } from '../catalogo';
 import { BotonPrincipal } from '../componentes/BotonPrincipal';
@@ -35,7 +36,6 @@ function Bloques({ aparicion }: { aparicion: AparicionId }) {
 export function PanelMovimiento(props: {
   config: Config;
   setConfig: (fn: (c: Config) => Config) => void;
-  paso: string;
   onAtras: () => void;
   onSeguir: () => void;
 }) {
@@ -49,7 +49,7 @@ export function PanelMovimiento(props: {
     <div className={`panel-botones panel-movimiento pg ${estilo}`} style={s.tokens as CSSProperties}>
       <div className="pb-contenido">
         <header className="pb-cabecera">
-          <span className="pg-etiqueta">{props.paso}</span>
+          <span className="pg-etiqueta">{usePaso()}</span>
           <h1 className="pg-titulo">Elegí el movimiento</h1>
           <p className="pg-bajada">
             Cuánto se mueve tu app y a qué ritmo. Las demos se repiten solas; si querés verlas otra vez ya, tocá «Repetir». Las animaciones de los botones ya

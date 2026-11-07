@@ -1,5 +1,6 @@
 // Modo rápido, último paso: resumen y descarga del DESIGN.md, sin pasar por el modo avanzado.
 
+import { usePaso } from './BarraPasos';
 import { useMemo, useState, type CSSProperties } from 'react';
 import { BOTONES } from '../botones-disenos';
 import { CAJAS } from '../cajas';
@@ -71,7 +72,7 @@ export function PanelListo(props: { config: Config; onAtras: () => void; onAvanz
     <div className={`panel-botones panel-listo pg ${estilo}`} style={s.tokens as CSSProperties}>
       <div className="pb-contenido pl-contenido">
         <header className="pb-cabecera">
-          <span className="pg-etiqueta">Último paso</span>
+          <span className="pg-etiqueta">{usePaso()}</span>
           <h1 className="pg-titulo">Tu diseño está listo</h1>
           <p className="pg-bajada">
             Descargá el archivo y dáselo a la IA que uses (Claude, v0, Lovable…), junto con tu app o con lo que querés construir. Lleva cada elección con su CSS real, así la IA copia en vez de adivinar.

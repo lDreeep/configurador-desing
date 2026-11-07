@@ -1,6 +1,7 @@
 // Paso final del modo rápido: un prototipo que funciona con TODO lo elegido, para ver si combina.
 // Cada elemento se puede cambiar ahí mismo (modo edición) antes de descargar el archivo.
 
+import { usePaso } from './BarraPasos';
 import { createContext, useContext, useEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode } from 'react';
 import { BOTONES } from '../botones-disenos';
 import { CAJAS, clasesDeCaja, paramsDe } from '../cajas';
@@ -579,7 +580,7 @@ export function Prototipo(props: { config: Config; setConfig: (fn: (c: Config) =
       <div className="proto">
         <header className="proto-barra">
           <div className="proto-barra-titulo">
-            <span className="proto-paso">Último paso</span>
+            <span className="proto-paso">{usePaso()}</span>
             <h1>Tu prototipo</h1>
           </div>
           <p className="proto-ayuda">Usalo como si fuera tu app: navegá, escribí, tocá. Si algo no te convence, activá «Editar» y cambialo ahí mismo.</p>

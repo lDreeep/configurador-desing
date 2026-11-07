@@ -1,6 +1,7 @@
 // Panel genérico del modo rápido para una o más categorías de la galería (con pestañas).
 
-import { useState, type CSSProperties } from 'react';
+import { usePaso } from './BarraPasos';
+import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import { BotonPrincipal } from '../componentes/BotonPrincipal';
 import { sistemaDeDiseno } from '../export/sistema';
 import { CATEGORIAS, type CategoriaId, DISENO_INICIAL } from '../galeria';
@@ -12,7 +13,6 @@ import { SelloRecomendado, TituloRecomendados, TituloResto } from './Recomendado
 export function PanelGaleria(props: {
   config: Config;
   setConfig: (fn: (c: Config) => Config) => void;
-  paso: string;
   titulo: string;
   bajada: string;
   categorias: CategoriaId[];
@@ -23,14 +23,20 @@ export function PanelGaleria(props: {
   alFinal?: boolean;
 }) {
   const c = props.config;
+  const paso = usePaso();
   const s = sistemaDeDiseno(c);
   const [pestana, setPestana] = useState<CategoriaId>(props.alFinal ? props.categorias[props.categorias.length - 1] : props.categorias[0]);
   const indice = props.categorias.indexOf(pestana);
   const ultima = indice === props.categorias.length - 1;
+  const pestanas = useRef<HTMLDivElement>(null);
   const cambiarPestana = (id: CategoriaId) => {
     setPestana(id);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
+  // La pestaña activa siempre a la vista (en el celular las pestañas se desplazan de costado).
+  useEffect(() => {
+    pestanas.current?.querySelector<HTMLElement>('[aria-selected="true"]')?.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' });
+  }, [pestana]);
   const cat = CATEGORIAS[pestana];
   const elegido = (id: CategoriaId) => c.componentes[id];
   const estilo = c.visual.estilo !== 'clasico' ? `estilo-${c.visual.estilo}` : '';
@@ -63,7 +69,7 @@ export function PanelGaleria(props: {
       <div className="pb-contenido">
         <header className="pb-cabecera">
           <span className="pg-etiqueta">
-            {props.paso}
+            {paso}
             {props.categorias.length > 1 && ` · ${indice + 1} de ${props.categorias.length}: ${cat.nombre}`}
           </span>
           <h1 className="pg-titulo">{props.titulo}</h1>
@@ -71,7 +77,7 @@ export function PanelGaleria(props: {
         </header>
 
         {props.categorias.length > 1 && (
-          <div className="pg-pestanas" role="tablist" aria-label="Tipos de componente">
+          <div className="pg-pestanas" ref={pestanas} role="tablist" aria-label="Tipos de componente">
             {props.categorias.map((id) => (
               <button key={id} type="button" role="tab" aria-selected={pestana === id} onClick={() => cambiarPestana(id)}>
                 {CATEGORIAS[id].nombre}
@@ -93,7 +99,8 @@ export function PanelGaleria(props: {
 
       <footer className="pb-pie">
         <button type="button" className="pb-pie-atras" onClick={() => (indice > 0 ? cambiarPestana(props.categorias[indice - 1]) : props.onAtras())}>
-          {indice > 0 ? `Volver a ${CATEGORIAS[props.categorias[indice - 1]].nombre.toLowerCase()}` : props.atras}
+          <span className="solo-ancho">{indice > 0 ? `Volver a ${CATEGORIAS[props.categorias[indice - 1]].nombre.toLowerCase()}` : props.atras}</span>
+          <span className="solo-angosto">‹ Volver</span>
         </button>
         <span className="pb-pie-estado" aria-live="polite">
           {elegido(pestana) ? `Elegido: ${cat.disenos[elegido(pestana)!]?.nombre}` : 'Si no elegís, queda el primero recomendado'}
@@ -121,7 +128,14 @@ export function PanelGaleria(props: {
             }, 220)
           }
         >
-          {ultima ? 'Seguir' : `Siguiente: ${CATEGORIAS[props.categorias[indice + 1]].nombre.toLowerCase()}`}
+          {ultima ? (
+            'Seguir'
+          ) : (
+            <>
+              <span className="solo-ancho">Siguiente: {CATEGORIAS[props.categorias[indice + 1]].nombre.toLowerCase()}</span>
+              <span className="solo-angosto">Siguiente ›</span>
+            </>
+          )}
         </BotonPrincipal>
       </footer>
     </div>

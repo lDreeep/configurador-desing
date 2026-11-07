@@ -1,5 +1,6 @@
 // Modo rápido: «¿Qué vas a hacer?». Define el tipo de proyecto y qué paneles se muestran primero.
 
+import { usePaso } from './BarraPasos';
 import { useState, type CSSProperties } from 'react';
 import { DISENO_POR_ESTILO } from '../botones-disenos';
 import { ESTILOS, LAYOUTS } from '../estilos-visuales';
@@ -82,7 +83,7 @@ export function PanelTipo(props: { config: Config; setConfig: (fn: (c: Config) =
     <div className={`panel-botones panel-tipo pg ${estilo}`} style={s.tokens as CSSProperties}>
       <div className="pb-contenido pt-contenido">
         <header className="pb-cabecera">
-          <span className="pg-etiqueta">Paso 2</span>
+          <span className="pg-etiqueta">{usePaso()}</span>
           <h1 className="pg-titulo">¿Qué vas a hacer?</h1>
           <p className="pg-bajada">Con esto ordenamos lo que viene: por ejemplo, si es para celular te mostramos primero las barras de navegación inferiores.</p>
         </header>

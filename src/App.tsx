@@ -12,6 +12,7 @@ import { PanelCajas } from './rapido/PanelCajas';
 import { PanelGaleria } from './rapido/PanelGaleria';
 import { PanelListo } from './rapido/PanelListo';
 import { PanelTipo } from './rapido/PanelTipo';
+import { BarraPasos, PasoContexto } from './rapido/BarraPasos';
 import { PanelMovimiento } from './rapido/PanelMovimiento';
 import { Prototipo } from './rapido/Prototipo';
 
@@ -69,9 +70,25 @@ export function App() {
     // En dashboards y apps web, los datos van antes que los formularios.
     const esDatos = config.proyecto.tipo === 'dashboard' || config.proyecto.tipo === 'app_web';
     const navPrimero = config.proyecto.tipo === 'app_movil' ? (['nav_movil', 'nav_web'] as const) : (['nav_web', 'nav_movil'] as const);
+    // El orden de los pasos depende del tipo de proyecto; la numeración sale de acá.
+    const NOMBRES: Record<PasoRapido, string> = {
+      inicio: 'Diseño', tipo: 'Proyecto', botones: 'Botón principal', botones_mas: 'Más botones', cajas: 'Cajas',
+      formularios: 'Formularios', navegacion: 'Navegación', elementos: 'Detalles', datos: 'Datos',
+      movimiento: 'Movimiento', prototipo: 'Prototipo', listo: 'Descargar',
+    };
+    const orden: PasoRapido[] = [
+      'inicio', 'tipo', 'botones', 'botones_mas', 'cajas',
+      ...(esDatos ? (['datos', 'formularios', 'navegacion', 'elementos'] as const) : (['formularios', 'navegacion', 'elementos', 'datos'] as const)),
+      'movimiento', 'prototipo', 'listo',
+    ];
+    const pasos = orden.map((id) => ({ id, nombre: NOMBRES[id] }));
+    const n = orden.indexOf(pasoRapido);
+    const etiqueta = pasoRapido === 'listo' ? `Último paso · ${n + 1} de ${orden.length}` : `Paso ${n + 1} de ${orden.length} · ${NOMBRES[pasoRapido]}`;
     return (
-      <>
+      <PasoContexto.Provider value={etiqueta}>
+      <div className={`rapido ${pasoRapido === 'prototipo' ? 'rapido-alto-fijo' : ''}`}>
         <EstilosVisualesGlobales />
+        {pasoRapido !== 'inicio' && <BarraPasos config={config} pasos={pasos} actual={pasoRapido} onIr={(p) => irRapido(p, orden.indexOf(p) < n)} />}
         {pasoRapido === 'inicio' && (
           <Inicio
             config={config}
@@ -92,7 +109,6 @@ export function App() {
           <PanelGaleria
             {...comun}
             alFinal={volviendo}
-            paso="Paso 3 · segunda parte"
             titulo="Combiná tus botones"
             bajada="Casi nunca hay un solo botón: al lado del principal suele ir uno secundario, y en toda app hay botones de icono. Cada secundario aparece junto a tu principal para que veas cuál combina."
             categorias={['boton_sec', 'boton_icono']}
@@ -106,7 +122,6 @@ export function App() {
           <PanelGaleria
             {...comun}
             alFinal={volviendo}
-            paso="Paso 5"
             titulo="Elegí tus formularios"
             bajada="Campos de texto, selectores tipo slide, interruptores, casillas y deslizadores. Escribí, tocá y arrastrá cada uno: todos usan tus colores y tu letra."
             categorias={['campo', 'selector', 'interruptor', 'casilla', 'deslizador']}
@@ -119,7 +134,6 @@ export function App() {
           <PanelGaleria
             {...comun}
             alFinal={volviendo}
-            paso="Paso 6"
             titulo="Elegí tu navegación"
             bajada={
               config.proyecto.tipo === 'app_movil'
@@ -136,7 +150,6 @@ export function App() {
           <PanelGaleria
             {...comun}
             alFinal={volviendo}
-            paso="Paso 7"
             titulo="Elegí los detalles"
             bajada="Las piezas chicas que aparecen en toda app: etiquetas, avisos, cargas, progreso, preguntas frecuentes, avatares, ayudas y ventanas."
             categorias={['etiqueta', 'aviso', 'cargando', 'progreso', 'acordeon', 'avatar', 'tooltip', 'modal']}
@@ -149,7 +162,6 @@ export function App() {
           <PanelGaleria
             {...comun}
             alFinal={volviendo}
-            paso={esDatos ? 'Paso 5' : 'Paso 8'}
             titulo="Elegí cómo mostrar datos"
             bajada="Tarjetas de métricas, gráficos y tablas para dashboards y estadísticas. Pasá el mouse por los gráficos para ver cada dato."
             categorias={['metrica', 'grafico', 'tabla']}
@@ -159,7 +171,7 @@ export function App() {
           />
         )}
         {pasoRapido === 'movimiento' && (
-          <PanelMovimiento {...comun} paso="Paso 9" onAtras={() => irRapido(esDatos ? 'elementos' : 'datos', true)} onSeguir={() => irRapido('prototipo')} />
+          <PanelMovimiento {...comun} onAtras={() => irRapido(esDatos ? 'elementos' : 'datos', true)} onSeguir={() => irRapido('prototipo')} />
         )}
         {pasoRapido === 'prototipo' && (
           <Prototipo {...comun} onAtras={() => irRapido('movimiento', true)} onListo={() => irRapido('listo')} />
@@ -167,7 +179,8 @@ export function App() {
         {pasoRapido === 'listo' && (
           <PanelListo config={config} onAtras={() => irRapido('prototipo', true)} onAvanzado={() => alAvanzado('exportar')} onInicio={() => irRapido('inicio')} />
         )}
-      </>
+      </div>
+      </PasoContexto.Provider>
     );
   }
 
