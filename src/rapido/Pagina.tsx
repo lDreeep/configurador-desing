@@ -2,14 +2,12 @@
 // Usa solo los tokens de sistemaDeDiseno y el CSS de cada estilo: lo que se ve es lo que se exporta.
 
 import type { CSSProperties, ReactNode } from 'react';
-import { animarToque } from '../componentes/ui';
+import { animarToque, IconoFlecha } from '../componentes/ui';
 import { BOTONES, CSS_BASE_BOTON } from '../botones-disenos';
 import { BotonPrincipal } from '../componentes/BotonPrincipal';
 import { clasesDeCaja, CSS_CAJA, paramsDe } from '../cajas';
 import { cssDeEstilo, ESTILOS } from '../estilos-visuales';
-import { cssGaleria } from '../galeria';
 import { sistemaDeDiseno } from '../export/sistema';
-import { IconoFlecha } from '../pasos/visual';
 import type { BotonDisenoId, Config, EstiloId } from '../tipos';
 
 /** Hoja con el CSS de todos los estilos, cada uno limitado a su clase. Se monta una sola vez. */
@@ -21,7 +19,7 @@ export function EstilosVisualesGlobales() {
   ];
   // Las cajas van al final y con más especificidad: lo que se elige en su panel gana sobre el estilo.
   const cajas = CSS_CAJA.replace(/&/g, '.caja.caja.caja.caja');
-  return <style>{[...estilos, ...botones, cajas, cssGaleria()].join('\n')}</style>;
+  return <style>{[...estilos, ...botones, cajas].join('\n')}</style>;
 }
 
 export function contenido(c: Config) {

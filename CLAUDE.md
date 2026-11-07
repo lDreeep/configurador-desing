@@ -37,6 +37,7 @@ Antes de dar una tarea por terminada: `npm run typecheck && npm test`.
 | `src/componentes/BotonPrincipal.tsx` | El botón principal con el diseño elegido; lo usan todas las vistas. |
 | `src/rapido/` | Modo rápido: `Inicio.tsx` (página entera que cambia de diseño sola; Comenzar fijo en el centro; después se elige a mano, cambiando solo layout o solo estilo), `esquemas.tsx` (esquemas de cada layout), `BarraPasos.tsx` (barra de pasos y `usePaso()` con «Paso N de M»; el orden está en `App.tsx`), `PanelTipo.tsx`, `PanelBotones.tsx`, `PanelCajas.tsx`, `PanelGaleria.tsx` (panel genérico de la galería), `PanelMovimiento.tsx` (ritmo, aparición y cambio de pantalla con demos), `Prototipo.tsx` (app de prueba con todo lo elegido, modo edición y vista claro/oscuro), `PanelListo.tsx`, `combinar.ts` (combinaciones, candados, códigos), `Pagina.tsx` (los 12 layouts), `pagina.css`. |
 | `src/recomendados.ts` | Qué layouts, estilos, botones, cajas y componentes se recomiendan para cada tipo de proyecto. Es **datos**; los paneles los muestran primero (nunca esconden el resto). `src/rapido/textos-prototipo.ts` tiene los textos del prototipo por tipo. |
+| `src/ModoAvanzado.tsx` | El modo avanzado entero (pasos + vista previa). Se carga aparte con `lazy`, igual que los paneles del modo rápido (ver `cargar` en `App.tsx`); la portada (`Inicio`) es lo único que va en la carga inicial. |
 | `src/estilos.css` | Estilos de la interfaz (`--ui-*`) y de la vista previa (`.pv-*`, solo tokens exportados). |
 
 ## Reglas

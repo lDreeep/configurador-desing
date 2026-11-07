@@ -1,20 +1,40 @@
-import { useEffect, useRef, useState } from 'react';
-import { NotaPaso } from './componentes/ui';
-import { useConfig } from './estado';
-import { PASOS } from './pasos/pasos';
-import { Preview } from './preview/Preview';
+import { lazy, Suspense, useEffect, useState } from 'react';
 import { DISENO_POR_ESTILO } from './botones-disenos';
+import { useConfig } from './estado';
+import { BarraPasos, PasoContexto } from './rapido/BarraPasos';
 import { aplicarCombinacion } from './rapido/combinar';
 import { Inicio } from './rapido/Inicio';
 import { EstilosVisualesGlobales } from './rapido/Pagina';
-import { PanelBotones } from './rapido/PanelBotones';
-import { PanelCajas } from './rapido/PanelCajas';
-import { PanelGaleria } from './rapido/PanelGaleria';
-import { PanelListo } from './rapido/PanelListo';
-import { PanelTipo } from './rapido/PanelTipo';
-import { BarraPasos, PasoContexto } from './rapido/BarraPasos';
-import { PanelMovimiento } from './rapido/PanelMovimiento';
-import { Prototipo } from './rapido/Prototipo';
+
+// La portada carga sola; el resto se descarga aparte (y en segundo plano mientras se mira la portada).
+const cargar = {
+  tipo: () => import('./rapido/PanelTipo'),
+  botones: () => import('./rapido/PanelBotones'),
+  cajas: () => import('./rapido/PanelCajas'),
+  galeria: () => import('./rapido/PanelGaleria'),
+  movimiento: () => import('./rapido/PanelMovimiento'),
+  prototipo: () => import('./rapido/Prototipo'),
+  listo: () => import('./rapido/PanelListo'),
+  estilosGaleria: () => import('./galeria/EstilosGaleria'),
+  avanzado: () => import('./ModoAvanzado'),
+};
+const PanelTipo = lazy(() => cargar.tipo().then((m) => ({ default: m.PanelTipo })));
+const PanelBotones = lazy(() => cargar.botones().then((m) => ({ default: m.PanelBotones })));
+const PanelCajas = lazy(() => cargar.cajas().then((m) => ({ default: m.PanelCajas })));
+const PanelGaleria = lazy(() => cargar.galeria().then((m) => ({ default: m.PanelGaleria })));
+const PanelMovimiento = lazy(() => cargar.movimiento().then((m) => ({ default: m.PanelMovimiento })));
+const Prototipo = lazy(() => cargar.prototipo().then((m) => ({ default: m.Prototipo })));
+const PanelListo = lazy(() => cargar.listo().then((m) => ({ default: m.PanelListo })));
+const EstilosGaleria = lazy(cargar.estilosGaleria);
+const ModoAvanzado = lazy(cargar.avanzado);
+
+function Cargando() {
+  return (
+    <div className="cargando-panel" role="status">
+      Cargando…
+    </div>
+  );
+}
 
 type Modo = 'rapido' | 'avanzado';
 type PasoRapido = 'inicio' | 'tipo' | 'botones' | 'botones_mas' | 'cajas' | 'formularios' | 'navegacion' | 'elementos' | 'datos' | 'movimiento' | 'prototipo' | 'listo';
@@ -31,11 +51,8 @@ function leerModo(): Modo {
 export function App() {
   const { config, setConfig, reiniciar } = useConfig();
   const [modo, setModoEstado] = useState<Modo>(leerModo);
-  const [indice, setIndice] = useState(0);
+  const [pasoAvanzado, setPasoAvanzado] = useState('proyecto');
   const [pasoRapido, setPasoRapido] = useState<PasoRapido>('inicio');
-  const panel = useRef<HTMLElement>(null);
-  const paso = PASOS[indice];
-  const Componente = paso.componente;
 
   const setModo = (m: Modo) => {
     setModoEstado(m);
@@ -46,12 +63,6 @@ export function App() {
     }
   };
 
-  useEffect(() => {
-    panel.current?.scrollTo({ top: 0 });
-  }, [indice]);
-
-  const ir = (i: number) => setIndice(Math.max(0, Math.min(PASOS.length - 1, i)));
-  const progreso = Math.round(((indice + 1) / PASOS.length) * 100);
 
   // Al volver a un paso con pestañas, se entra por la última (la que se vio justo antes).
   const [volviendo, setVolviendo] = useState(false);
@@ -61,9 +72,17 @@ export function App() {
     window.scrollTo({ top: 0 });
   };
   const alAvanzado = (paso: string) => {
-    setIndice(Math.max(0, PASOS.findIndex((p) => p.id === paso)));
+    setPasoAvanzado(paso);
     setModo('avanzado');
   };
+
+  // Mientras se mira la portada, se bajan en segundo plano los pasos siguientes.
+  useEffect(() => {
+    const t = window.setTimeout(() => {
+      for (const k of ['tipo', 'botones', 'cajas', 'galeria', 'estilosGaleria', 'movimiento', 'prototipo', 'listo'] as const) void cargar[k]();
+    }, 2500);
+    return () => window.clearTimeout(t);
+  }, []);
 
   if (modo === 'rapido') {
     const comun = { config, setConfig };
@@ -89,6 +108,8 @@ export function App() {
       <div className={`rapido ${pasoRapido === 'prototipo' ? 'rapido-alto-fijo' : ''}`}>
         <EstilosVisualesGlobales />
         {pasoRapido !== 'inicio' && <BarraPasos config={config} pasos={pasos} actual={pasoRapido} onIr={(p) => irRapido(p, orden.indexOf(p) < n)} />}
+        <Suspense fallback={<Cargando />}>
+        {pasoRapido !== 'inicio' && <EstilosGaleria />}
         {pasoRapido === 'inicio' && (
           <Inicio
             config={config}
@@ -179,102 +200,24 @@ export function App() {
         {pasoRapido === 'listo' && (
           <PanelListo config={config} onAtras={() => irRapido('prototipo', true)} onAvanzado={() => alAvanzado('exportar')} onInicio={() => irRapido('inicio')} />
         )}
+        </Suspense>
       </div>
       </PasoContexto.Provider>
     );
   }
 
   return (
-    <div className="app">
-      <EstilosVisualesGlobales />
-      <header className="cabecera">
-        <div>
-          <h1>Armá el diseño de tu app</h1>
-          <p>
-            Modo avanzado · paso {indice + 1} de {PASOS.length} · se guarda solo en este navegador
-          </p>
-        </div>
-        <div className="cabecera-derecha">
-          <div
-            className="progreso"
-            role="progressbar"
-            aria-valuemin={0}
-            aria-valuemax={100}
-            aria-valuenow={progreso}
-            aria-label="Progreso"
-          >
-            <div style={{ width: `${progreso}%` }} />
-          </div>
-          <button
-            type="button"
-            className="boton secundario"
-            onClick={() => {
-              setPasoRapido('inicio');
-              setModo('rapido');
-            }}
-          >
-            Modo rápido
-          </button>
-          <button
-            type="button"
-            className="boton fantasma"
-            onClick={() => {
-              if (window.confirm('¿Empezar de cero? Se borra todo lo que elegiste.')) {
-                reiniciar();
-                setIndice(0);
-              }
-            }}
-          >
-            Empezar de cero
-          </button>
-        </div>
-      </header>
-
-      <div className="cuerpo">
-        <nav className="pasos" aria-label="Pasos">
-          <ol>
-            {PASOS.map((p, i) => (
-              <li key={p.id}>
-                <button type="button" aria-current={i === indice ? 'step' : undefined} onClick={() => ir(i)}>
-                  <span className="paso-num">{i + 1}</span>
-                  <span className="paso-texto">
-                    <span className="paso-nombre">{p.nombre}</span>
-                    <span className="paso-resumen">{p.resumen(config)}</span>
-                  </span>
-                </button>
-              </li>
-            ))}
-          </ol>
-        </nav>
-
-        <main className="panel" ref={panel}>
-          <Componente config={config} setConfig={setConfig} />
-          {paso.placeholderNota && (
-            <NotaPaso
-              valor={config.notas[paso.id] ?? ''}
-              placeholder={paso.placeholderNota}
-              onCambiar={(v) => setConfig((c) => ({ ...c, notas: { ...c.notas, [paso.id]: v } }))}
-            />
-          )}
-          <div className="navegacion-pasos">
-            {indice > 0 && (
-              <button type="button" className="boton secundario" onClick={() => ir(indice - 1)}>
-                Atrás
-              </button>
-            )}
-            <span className="espaciador" />
-            {indice < PASOS.length - 1 && (
-              <button type="button" className="boton primario" onClick={() => ir(indice + 1)}>
-                {indice === PASOS.length - 2 ? 'Ver mi DESIGN.md' : 'Siguiente'}
-              </button>
-            )}
-          </div>
-        </main>
-
-        <aside className="lateral-preview">
-          <Preview config={config} />
-        </aside>
-      </div>
-    </div>
+    <Suspense fallback={<Cargando />}>
+      <ModoAvanzado
+        config={config}
+        setConfig={setConfig}
+        reiniciar={reiniciar}
+        pasoInicial={pasoAvanzado}
+        onRapido={() => {
+          setPasoRapido('inicio');
+          setModo('rapido');
+        }}
+      />
+    </Suspense>
   );
 }

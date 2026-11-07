@@ -1,5 +1,6 @@
 // Pasos visuales: dirección, color, tipografía, forma, botones y movimiento.
 
+import { IconoFlecha } from '../componentes/ui';
 import { useMemo, useState, type CSSProperties, type ReactNode } from 'react';
 import {
   APARICIONES,
@@ -57,13 +58,6 @@ const lista = <T extends string, V extends { nombre: string; descripcion?: strin
 const setVisual = (setConfig: PropsPaso['setConfig'], cambio: Partial<Config['visual']>) =>
   setConfig((x) => ({ ...x, visual: { ...x.visual, ...cambio } }));
 
-export function IconoFlecha() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <path d="M5 12h14M13 6l6 6-6 6" />
-    </svg>
-  );
-}
 
 /** Mini vista previa con los tokens de una config (opcionalmente modificada). */
 function Mini({ config, cambio, clase = '', children }: { config: Config; cambio?: (c: Config) => Config; clase?: string; children: ReactNode }) {
@@ -537,3 +531,5 @@ export function PasoMovimiento({ config: c, setConfig }: PropsPaso) {
     </Seccion>
   );
 }
+
+export { IconoFlecha };

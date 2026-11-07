@@ -960,3 +960,4 @@ button:disabled { cursor: not-allowed; opacity: 0.4; }
 
 .solo-angosto { display: none; }
 @media (max-width: 720px) { .solo-angosto { display: inline; } }
+.cargando-panel { display: grid; place-items: center; min-height: 60vh; color: #6b7080; font: 600 14px Inter, system-ui, sans-serif; }
