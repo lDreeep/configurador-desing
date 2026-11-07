@@ -3,7 +3,35 @@
 
 import type { CategoriaId, DisenoComp } from './base';
 
+const pista = (css: string) => `& input::-webkit-slider-runnable-track { ${css} }
+& input::-moz-range-track { ${css} }`;
+const perilla = (css: string) => `& input::-webkit-slider-thumb { ${css} }
+& input::-moz-range-thumb { ${css} }`;
+
 export const MAS_DISENOS: Partial<Record<CategoriaId, Record<string, DisenoComp>>> = {
+  interruptor: {
+    lineas: { nombre: 'Con texto adentro', descripcion: 'Dice «SÍ» o «NO» dentro de la pista', css: `& .cm-pista { width: 62px; } & .cm-pista::before { content: 'NO'; position: absolute; right: 9px; top: 50%; transform: translateY(-50%); font: 800 10px var(--fuente-texto); color: var(--color-texto); } & input:checked + .cm-pista::before { content: 'SÍ'; right: auto; left: 10px; color: var(--color-sobre-acento); } & input:checked + .cm-pista .cm-perilla { transform: translateX(32px); }` },
+    contorno: { nombre: 'Contorno', descripcion: 'Pista vacía con borde; se rellena al activarse', css: `& .cm-pista { background: transparent; box-shadow: inset 0 0 0 2px var(--color-texto-suave); } & .cm-perilla { background: var(--color-texto-suave); box-shadow: none; transform: scale(.75); } & input:checked + .cm-pista { box-shadow: inset 0 0 0 2px var(--color-acento); } & input:checked + .cm-pista .cm-perilla { background: var(--color-sobre-acento); transform: translateX(22px) scale(1); }` },
+    pequeno: { nombre: 'Chico', descripcion: 'Más bajo y finito, para listas densas', css: `& .cm-pista { width: 38px; height: 20px; } & .cm-perilla { width: 14px; height: 14px; } & input:checked + .cm-pista .cm-perilla { transform: translateX(18px); }` },
+    brillo: { nombre: 'Con brillo', descripcion: 'Al activarse, la pista brilla con el acento', css: `& input:checked + .cm-pista { box-shadow: 0 0 0 4px color-mix(in srgb, var(--color-acento) 22%, transparent), 0 0 18px color-mix(in srgb, var(--color-acento) 60%, transparent); }` },
+    estirado: { nombre: 'Se estira', descripcion: 'La perilla se alarga mientras viaja', css: `& .cm-perilla { transition: transform var(--duracion-lenta) var(--curva-entrada), width var(--duracion-media) ease; } & input:active + .cm-pista .cm-perilla { width: 32px; }` },
+  },
+  casilla: {
+    circulo_lleno: { nombre: 'Círculo lleno', descripcion: 'Redonda que se llena desde el centro', css: `& .cm-marca { border-radius: 50%; } & input:checked + .cm-marca { animation: cm-cas-lleno var(--duracion-lenta) var(--curva-entrada); } @keyframes cm-cas-lleno { from { box-shadow: inset 0 0 0 11px var(--color-fondo); } }` },
+    tachar_suave: { nombre: 'Atenúa el texto', descripcion: 'Al marcar, el texto se pone gris', css: `& input:checked ~ .cm-txt { color: var(--color-texto-suave); }` },
+    tarjeta: { nombre: 'Tarjeta', descripcion: 'Toda la fila es una tarjeta que se marca', css: `& { padding: 10px 12px; border: 1.5px solid var(--color-borde); border-radius: var(--radio-medio); } &:has(input:checked) { border-color: var(--color-acento); background: color-mix(in srgb, var(--color-acento) 8%, var(--color-fondo)); }` },
+    cuadrada_grande: { nombre: 'Grande', descripcion: 'Más grande y fácil de tocar', css: `& .cm-marca { width: 30px; height: 30px; border-radius: 9px; } & svg { width: 20px; height: 20px; } & { font-size: 16px; }` },
+    oscura: { nombre: 'Marca oscura', descripcion: 'Se marca con el color del texto, no con el acento', css: `& input:checked + .cm-marca { background: var(--color-texto); border-color: var(--color-texto); } & svg { stroke: var(--color-fondo); }` },
+  },
+  deslizador: {
+    contorno: { nombre: 'Perilla hueca', descripcion: 'La perilla es un aro del color de acento', css: `${perilla('background: var(--color-fondo); border-width: 4px; box-shadow: none;')}` },
+    cuadrado: { nombre: 'Cuadrado', descripcion: 'Pista y perilla rectas', css: `${pista('border-radius: 0; height: 8px;')}
+${perilla('border-radius: 3px; width: 14px; height: 26px; margin-top: -9px; background: var(--color-acento); border: none;')}` },
+    tonal: { nombre: 'Tonal', descripcion: 'La pista vacía es un tono suave del acento', css: `${pista('height: 10px; background: linear-gradient(to right, var(--color-acento) var(--valor), color-mix(in srgb, var(--color-acento) 18%, var(--color-fondo)) var(--valor));')}
+${perilla('margin-top: -6px; border: none; background: var(--color-acento); box-shadow: 0 0 0 4px var(--color-fondo), 0 1px 6px rgba(0,0,0,.25);')}` },
+    oscuro: { nombre: 'Oscuro', descripcion: 'Relleno del color del texto, perilla blanca', css: `${pista('height: 6px; background: linear-gradient(to right, var(--color-texto) var(--valor), var(--color-borde) var(--valor));')}
+${perilla('border-color: var(--color-texto);')}` },
+  },
   etiqueta: {
     pildora_icono: { nombre: 'Con tilde', descripcion: 'Una tilde adelante, para estados confirmados', css: `&::before { content: '✓'; font-weight: 800; color: var(--color-acento-texto); }` },
     degradado: { nombre: 'Degradado', descripcion: 'Fondo con degradado del acento', css: `& { background: linear-gradient(90deg, var(--color-acento), color-mix(in srgb, var(--color-acento) 55%, var(--color-texto))); color: var(--color-sobre-acento); }` },

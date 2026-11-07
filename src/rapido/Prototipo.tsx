@@ -703,8 +703,8 @@ const GRUPOS: { nombre: string; items: Editable[] }[] = [
   { nombre: 'Botones', items: ['boton', 'color_boton', 'boton_sec', 'boton_icono'] },
   { nombre: 'Contenedores', items: ['caja', 'metrica', 'grafico', 'tabla'] },
   { nombre: 'Formularios', items: ['formulario', 'campo', 'selector', 'desplegable', 'buscador', 'calendario', 'interruptor', 'casilla', 'deslizador', 'subir'] },
-  { nombre: 'Navegación', items: ['nav_web', 'nav_movil', 'migas', 'paginacion', 'pasos', 'pie'] },
-  { nombre: 'Detalles', items: ['etiqueta', 'aviso', 'cargando', 'progreso', 'acordeon', 'avatar', 'tooltip', 'modal', 'vacio', 'carrusel'] },
+  { nombre: 'Navegación', items: ['nav_web', 'nav_movil', 'migas', 'paginacion', 'pasos', 'notificaciones', 'usuario', 'pie'] },
+  { nombre: 'Detalles', items: ['etiqueta', 'aviso', 'cargando', 'progreso', 'acordeon', 'avatar', 'tooltip', 'modal', 'vacio', 'carrusel', 'producto'] },
 ];
 
 function Editor(props: { config: Config; setConfig: (fn: (c: Config) => Config) => void; abierto: Editable | null; setAbierto: (e: Editable | null) => void }) {

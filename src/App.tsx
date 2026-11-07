@@ -162,7 +162,7 @@ export function App() {
                 ? 'Como es una app para celular, arrancamos por las barras inferiores. Tocá las pestañas para ver cómo marcan la activa.'
                 : 'Barras superiores, flotantes y menús laterales, y también las barras inferiores para cuando se vea en el celular.'
             }
-            categorias={[...navPrimero, 'migas', 'paginacion', 'pasos', 'pie']}
+            categorias={[...navPrimero, 'migas', 'paginacion', 'pasos', 'notificaciones', 'usuario', 'pie']}
             atras="Volver a los formularios"
             onAtras={() => irRapido('formularios', true)}
             onSeguir={() => irRapido('elementos')}
@@ -174,7 +174,7 @@ export function App() {
             alFinal={volviendo}
             titulo="Elegí los detalles"
             bajada="Las piezas chicas que aparecen en toda app: etiquetas, avisos, cargas, progreso, preguntas frecuentes, avatares, ayudas y ventanas."
-            categorias={['etiqueta', 'aviso', 'cargando', 'progreso', 'acordeon', 'avatar', 'tooltip', 'modal', 'vacio', 'carrusel']}
+            categorias={['etiqueta', 'aviso', 'cargando', 'progreso', 'acordeon', 'avatar', 'tooltip', 'modal', 'vacio', 'carrusel', 'producto']}
             atras="Volver a la navegación"
             onAtras={() => irRapido('navegacion', true)}
             onSeguir={() => irRapido(esDatos ? 'movimiento' : 'datos')}

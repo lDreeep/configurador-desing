@@ -986,3 +986,4 @@ button:disabled { cursor: not-allowed; opacity: 0.4; }
 .cm-lugar-desplegable { display: flex; justify-content: center; width: 100%; min-height: 230px; align-items: flex-start; padding-top: 4px; }
 .cm-lugar-pasos { width: 100%; }
 .proto-form-completo { display: flex; flex-direction: column; gap: 10px; margin-top: 28px; padding-top: 20px; border-top: 1px dashed var(--color-borde); }
+.cm-lugar-derecha { justify-content: flex-end; padding-right: 8px; min-height: 290px; }

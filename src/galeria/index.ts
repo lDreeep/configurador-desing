@@ -10,6 +10,7 @@ import { NAV_MOVIL, NAV_WEB } from './navegacion';
 import { BUSCADORES, DESPLEGABLES, MIGAS, PAGINACION, PASOS, VACIOS } from './nuevos';
 import { FORMULARIOS, SUBIR } from './formularios';
 import { MAS_DISENOS } from './mas-disenos';
+import { NOTIFICACIONES, PRODUCTOS, USUARIOS } from './nuevos3';
 import { CALENDARIOS, CARRUSELES, PIES } from './nuevos2';
 import { SELECTOR } from './selector';
 
@@ -45,6 +46,9 @@ export const CATEGORIAS: Record<CategoriaId, Categoria> = {
   pie: PIES,
   formulario: FORMULARIOS,
   subir: SUBIR,
+  producto: PRODUCTOS,
+  notificaciones: NOTIFICACIONES,
+  usuario: USUARIOS,
 };
 
 // Diseños sumados después: van al final de cada categoría (no pisan ninguno existente).
