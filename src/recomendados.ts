@@ -53,6 +53,7 @@ const BASE: Recomendados['componentes'] = {
   producto: ['clasica', 'sombra', 'sin_caja'],
   notificaciones: ['clasica', 'punto', 'lineas'],
   usuario: ['clasico', 'solo_avatar', 'cabecera_color'],
+  acceso: ['tarjeta', 'centrado', 'dividido'],
 };
 
 const con = (extra: Recomendados['componentes']) => ({ ...BASE, ...extra });
@@ -105,7 +106,7 @@ export const RECOMENDADOS: Record<TipoProyecto, Recomendados> = {
       modal: ['hoja', 'lateral', 'centrada'],
       progreso: ['pasos', 'fina', 'gruesa'],
       buscador: ['pildora', 'grande', 'acento'],
-      formulario: ['tarjetas', 'numerado', 'etiqueta_dentro', 'apilado'],
+      formulario: ['tarjetas', 'numerado', 'etiqueta_dentro', 'apilado', 'pastel'],
       carrusel: ['asoma', 'clasico', 'numeros'],
       producto: ['al_pasar', 'clasica', 'precio_foto', 'sombra'],
       pie: ['newsletter', 'columnas', 'acento'],
@@ -155,6 +156,7 @@ export const RECOMENDADOS: Record<TipoProyecto, Recomendados> = {
       cargando: ['puntos', 'anillo', 'esqueleto'],
       migas: ['volver', 'chevron', 'pastillas'],
       formulario: ['lista_agrupada', 'barra_fija', 'relleno', 'tarjetas'],
+      acceso: ['sin_caja', 'centrado', 'pildora'],
       notificaciones: ['punto', 'pulso', 'clasica'],
       usuario: ['solo_avatar', 'clasico', 'cabecera_color'],
       subir: ['foto', 'tonal', 'zona'],
@@ -183,6 +185,7 @@ export const RECOMENDADOS: Record<TipoProyecto, Recomendados> = {
       progreso: ['fina', 'circular', 'pasos'],
       buscador: ['comando', 'simple', 'subrayado'],
       formulario: ['compacto', 'lateral', 'lista_agrupada', 'en_linea'],
+      acceso: ['dividido', 'tarjeta', 'oscuro'],
       paginacion: ['cuadros', 'grupo', 'texto'],
       desplegable: ['tilde', 'contorno', 'clasico'],
       vacio: ['lateral', 'punteado', 'centrado'],

@@ -511,7 +511,7 @@ button:disabled { cursor: not-allowed; opacity: 0.4; }
 .pg-ayuda-cat { margin: -8px 0 0; font-size: 14px; color: var(--color-texto-suave); }
 .pg-grilla { grid-template-columns: repeat(auto-fill, minmax(min(var(--ancho-celda, 240px), 100%), 1fr)); }
 .pg-celda { gap: 10px; }
-.pg-muestra { display: flex; align-items: center; justify-content: center; min-height: 170px; padding: 22px 18px 10px; }
+.pg-muestra { container-type: inline-size; display: flex; align-items: center; justify-content: center; min-height: 170px; padding: 22px 18px 10px; }
 .pg-elegir {
   margin: 0 16px 16px; min-height: 42px; border-radius: 10px; border: 1.5px solid var(--color-borde); background: var(--color-fondo); color: var(--color-texto);
   font: inherit; font-size: 14px; font-weight: 700; cursor: pointer;

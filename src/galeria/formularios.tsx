@@ -2,8 +2,8 @@
 // Un mismo formulario con secciones, filas, selector, interruptor, fecha, notas y botones;
 // cada diseño cambia solo el CSS. Incluye el estilo «lista agrupada», tipo ajustes del celular.
 
-import { useId, useState, type CSSProperties } from 'react';
-import type { Categoria } from './base';
+import { useContext, useId, useState, type CSSProperties } from 'react';
+import { type Categoria, GaleriaContexto } from './base';
 
 const camara = (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -19,9 +19,59 @@ const reducirMov = '@media (prefers-reduced-motion: reduce) { &, & * { animation
 
 // ---------- Formulario completo ----------
 
-const MODOS = ['Mensual', 'Semestral', 'Anual'];
+/** Textos del formulario según el tipo de proyecto: la estructura es siempre la misma. */
+interface TextosForm {
+  titulo: string; ayuda: string;
+  s1: string; c1: [string, string, string]; c2: [string, string, string];
+  s2: string; segEtq: string; seg: [string, string, string]; fecha: string; valor: [string, string]; select: string; opciones: [string, string, string];
+  s3: string; sw: string; accion: string; nota: [string, string]; aviso: string; guardar: string;
+}
+const BASE_FORM: TextosForm = {
+  titulo: 'Nuevo registro', ayuda: 'El código se genera solo al guardar.',
+  s1: 'Contacto', c1: ['Nombre', 'Nombre y apellido', 'text'], c2: ['WhatsApp', '549 11 1234-5678', 'tel'],
+  s2: 'Detalle', segEtq: 'Modo', seg: ['Mensual', 'Semestral', 'Anual'], fecha: 'Inicio', valor: ['Valor', '$ 0'], select: 'Ubicación', opciones: ['Depósito norte', 'Depósito sur', 'Taller'],
+  s3: 'Estado', sw: 'Activo', accion: 'Sacar foto', nota: ['Observaciones', 'Algo para tener en cuenta…'], aviso: '«Sacar foto» la guarda al instante.', guardar: 'Guardar',
+};
+const CONTACTO: TextosForm = {
+  titulo: 'Pedí tu presupuesto', ayuda: 'Te respondemos en el día.',
+  s1: 'Contacto', c1: ['Nombre', 'Tu nombre', 'text'], c2: ['Email', 'vos@ejemplo.com', 'email'],
+  s2: 'Tu proyecto', segEtq: 'Tamaño', seg: ['Chico', 'Mediano', 'Grande'], fecha: 'Para cuándo', valor: ['Presupuesto', '$ 0'], select: 'Servicio', opciones: ['Diseño', 'Desarrollo', 'Consultoría'],
+  s3: 'Detalles', sw: 'Quiero que me llamen', accion: 'Adjuntar archivo', nota: ['Contanos más', 'Qué necesitás, para quién…'], aviso: 'No compartimos tus datos con nadie.', guardar: 'Enviar',
+};
+export const TEXTOS_FORM: Record<string, TextosForm> = {
+  app_web: BASE_FORM,
+  tienda: {
+    titulo: 'Finalizar compra', ayuda: 'Tus datos viajan protegidos.',
+    s1: 'Tus datos', c1: ['Nombre', 'Nombre y apellido', 'text'], c2: ['Email', 'vos@ejemplo.com', 'email'],
+    s2: 'Envío', segEtq: 'Entrega', seg: ['Domicilio', 'Sucursal', 'Retiro'], fecha: 'Fecha', valor: ['Código postal', '1406'], select: 'Provincia', opciones: ['Buenos Aires', 'Córdoba', 'Santa Fe'],
+    s3: 'Pago', sw: 'Guardar mis datos', accion: 'Agregar tarjeta', nota: ['Notas para el envío', 'Timbre, horario…'], aviso: 'Podés cambiar el envío hasta que despachemos.', guardar: 'Pagar $ 34.500',
+  },
+  app_movil: {
+    titulo: 'Creá tu cuenta', ayuda: 'Te lleva menos de un minuto.',
+    s1: 'Tus datos', c1: ['Nombre', 'Cómo te llamás', 'text'], c2: ['Celular', '11 1234-5678', 'tel'],
+    s2: 'Preferencias', segEtq: 'Avisos', seg: ['Diario', 'Semanal', 'Nunca'], fecha: 'Nacimiento', valor: ['Código de invitación', 'Opcional'], select: 'Ciudad', opciones: ['Buenos Aires', 'Rosario', 'Mendoza'],
+    s3: 'Cuenta', sw: 'Acepto los términos', accion: 'Subir foto de perfil', nota: ['Sobre vos', 'Contanos algo…'], aviso: 'Podés cambiar todo después.', guardar: 'Crear cuenta',
+  },
+  dashboard: {
+    titulo: 'Nuevo cliente', ayuda: 'Los campos con * son obligatorios.',
+    s1: 'Contacto', c1: ['Razón social *', 'Empresa S.A.', 'text'], c2: ['Teléfono', '11 4567-8900', 'tel'],
+    s2: 'Condiciones', segEtq: 'Pago', seg: ['Contado', '30 días', '60 días'], fecha: 'Alta', valor: ['Límite de crédito', '$ 0'], select: 'Vendedor', opciones: ['Ana', 'Martín', 'Juli'],
+    s3: 'Estado', sw: 'Activo', accion: 'Adjuntar contrato', nota: ['Observaciones', 'Notas internas…'], aviso: 'Solo lo ve tu equipo.', guardar: 'Guardar cliente',
+  },
+  landing: CONTACTO,
+  sitio: CONTACTO,
+  portfolio: CONTACTO,
+  blog: {
+    titulo: 'Escribí para el blog', ayuda: 'Leemos todas las propuestas.',
+    s1: 'Tus datos', c1: ['Nombre', 'Tu nombre', 'text'], c2: ['Email', 'vos@ejemplo.com', 'email'],
+    s2: 'Tu propuesta', segEtq: 'Tipo', seg: ['Nota', 'Guía', 'Opinión'], fecha: 'Fecha tentativa', valor: ['Extensión', '800 palabras'], select: 'Tema', opciones: ['Cultura', 'Tecnología', 'Viajes'],
+    s3: 'Detalles', sw: 'Ya publiqué antes', accion: 'Adjuntar borrador', nota: ['Resumen', 'De qué trata…'], aviso: 'Te contestamos en una semana.', guardar: 'Enviar propuesta',
+  },
+};
 
 function MuestraFormulario({ clase }: { clase: string; id: string }) {
+  const c = useContext(GaleriaContexto);
+  const t = TEXTOS_FORM[c?.proyecto.tipo ?? 'app_web'] ?? BASE_FORM;
   const u = useId();
   const [modo, setModo] = useState(0);
   const [activo, setActivo] = useState(true);
@@ -36,34 +86,34 @@ function MuestraFormulario({ clase }: { clase: string; id: string }) {
       }}
     >
       <header className="cm-fo-cab">
-        <strong className="cm-fo-titulo">Nuevo registro</strong>
-        <span className="cm-fo-ayuda">El código se genera solo al guardar.</span>
+        <strong className="cm-fo-titulo">{t.titulo}</strong>
+        <span className="cm-fo-ayuda">{t.ayuda}</span>
       </header>
 
       <section className="cm-fo-seccion">
-        <span className="cm-fo-sec-titulo">Contacto</span>
+        <span className="cm-fo-sec-titulo">{t.s1}</span>
         <div className="cm-fo-grupo">
           <label className="cm-fo-fila" htmlFor={`${u}-n`}>
-            <span className="cm-fo-etq">Nombre</span>
-            <input id={`${u}-n`} type="text" placeholder="Nombre y apellido" autoComplete="off" />
+            <span className="cm-fo-etq">{t.c1[0]}</span>
+            <input id={`${u}-n`} type={t.c1[2]} placeholder={t.c1[1]} autoComplete="off" />
           </label>
           <label className="cm-fo-fila" htmlFor={`${u}-t`}>
-            <span className="cm-fo-etq">WhatsApp</span>
-            <input id={`${u}-t`} type="tel" placeholder="549 11 1234-5678" />
+            <span className="cm-fo-etq">{t.c2[0]}</span>
+            <input id={`${u}-t`} type={t.c2[2]} placeholder={t.c2[1]} />
           </label>
         </div>
       </section>
 
       <section className="cm-fo-seccion">
-        <span className="cm-fo-sec-titulo">Detalle</span>
+        <span className="cm-fo-sec-titulo">{t.s2}</span>
         <div className="cm-fo-grupo">
-          <div className="cm-fo-fila" role="group" aria-label="Modo">
+          <div className="cm-fo-fila" role="group" aria-label={t.segEtq}>
             <span className="cm-fo-etq" aria-hidden="true">
-              Modo
+              {t.segEtq}
             </span>
-            <span className="cm-fo-segmento" style={{ '--i': modo, '--n': MODOS.length } as CSSProperties}>
+            <span className="cm-fo-segmento" style={{ '--i': modo, '--n': t.seg.length } as CSSProperties}>
               <span className="cm-fo-seg-ind" aria-hidden="true" />
-              {MODOS.map((m, i) => (
+              {t.seg.map((m, i) => (
                 <button key={m} type="button" aria-pressed={i === modo} onClick={() => setModo(i)}>
                   {m}
                 </button>
@@ -71,44 +121,44 @@ function MuestraFormulario({ clase }: { clase: string; id: string }) {
             </span>
           </div>
           <label className="cm-fo-fila" htmlFor={`${u}-f`}>
-            <span className="cm-fo-etq">Inicio</span>
+            <span className="cm-fo-etq">{t.fecha}</span>
             <input id={`${u}-f`} type="date" defaultValue="2026-11-07" />
           </label>
           <label className="cm-fo-fila" htmlFor={`${u}-v`}>
-            <span className="cm-fo-etq">Valor</span>
-            <input id={`${u}-v`} type="text" inputMode="numeric" placeholder="$ 0" />
+            <span className="cm-fo-etq">{t.valor[0]}</span>
+            <input id={`${u}-v`} type="text" placeholder={t.valor[1]} />
           </label>
           <label className="cm-fo-fila" htmlFor={`${u}-u`}>
-            <span className="cm-fo-etq">Ubicación</span>
+            <span className="cm-fo-etq">{t.select}</span>
             <select id={`${u}-u`} defaultValue="">
               <option value="" disabled>
                 Elegir
               </option>
-              <option>Depósito norte</option>
-              <option>Depósito sur</option>
-              <option>Taller</option>
+              {t.opciones.map((o) => (
+                <option key={o}>{o}</option>
+              ))}
             </select>
           </label>
         </div>
       </section>
 
       <section className="cm-fo-seccion">
-        <span className="cm-fo-sec-titulo">Estado</span>
+        <span className="cm-fo-sec-titulo">{t.s3}</span>
         <div className="cm-fo-grupo">
           <button type="button" className="cm-fo-fila cm-fo-switch" role="switch" aria-checked={activo} onClick={() => setActivo(!activo)}>
-            <span className="cm-fo-etq">Activo</span>
+            <span className="cm-fo-etq">{t.sw}</span>
             <span className="cm-fo-perilla" aria-hidden="true" />
           </button>
           <button type="button" className="cm-fo-fila cm-fo-accion">
             {camara}
-            <span>Sacar foto</span>
+            <span>{t.accion}</span>
           </button>
           <label className="cm-fo-fila cm-fo-nota-campo" htmlFor={`${u}-o`}>
-            <span className="cm-fo-etq">Observaciones</span>
-            <textarea id={`${u}-o`} rows={2} placeholder="Algo para tener en cuenta…" />
+            <span className="cm-fo-etq">{t.nota[0]}</span>
+            <textarea id={`${u}-o`} rows={2} placeholder={t.nota[1]} />
           </label>
         </div>
-        <span className="cm-fo-nota">«Sacar foto» la guarda al instante.</span>
+        <span className="cm-fo-nota">{t.aviso}</span>
       </section>
 
       <div className="cm-fo-acciones">
@@ -116,7 +166,7 @@ function MuestraFormulario({ clase }: { clase: string; id: string }) {
           Cancelar
         </button>
         <button type="submit" className="cm-fo-guardar" aria-live="polite">
-          {guardado ? '✓ Guardado' : 'Guardar'}
+          {guardado ? '✓ Listo' : t.guardar}
         </button>
       </div>
     </form>
@@ -130,7 +180,7 @@ export const FORMULARIOS: Categoria = {
   id: 'formulario',
   nombre: 'Formularios completos',
   singular: 'formulario',
-  descripcion: 'Para cargar datos de lo que sea: un cliente, un pedido, un turno, un vehículo. Mismo formulario, distinta forma. Probá escribir, cambiar el modo y el interruptor.',
+  descripcion: 'Una pantalla entera para cargar datos. El contenido cambia según lo que vas a hacer (checkout en una tienda, registro en una app, alta de cliente en un dashboard…); cada diseño cambia la forma.',
   estructura:
     '<form class="cm-formulario cm-formulario-DISEÑO"><header class="cm-fo-cab"><strong class="cm-fo-titulo">Título</strong><span class="cm-fo-ayuda">Ayuda</span></header><section class="cm-fo-seccion"><span class="cm-fo-sec-titulo">Sección</span><div class="cm-fo-grupo"><label class="cm-fo-fila"><span class="cm-fo-etq">Nombre</span><input></label>…<div class="cm-fo-fila"><span class="cm-fo-etq">Modo</span><span class="cm-fo-segmento" style="--i: 0; --n: 3"><span class="cm-fo-seg-ind"></span><button aria-pressed="true">Mensual</button>…</span></div><button class="cm-fo-fila cm-fo-switch" role="switch" aria-checked="true"><span class="cm-fo-etq">Activo</span><span class="cm-fo-perilla"></span></button><button class="cm-fo-fila cm-fo-accion"><svg/>Sacar foto</button><label class="cm-fo-fila cm-fo-nota-campo"><span class="cm-fo-etq">Observaciones</span><textarea></textarea></label></div><span class="cm-fo-nota">Nota</span></section>…<div class="cm-fo-acciones"><button class="cm-fo-cancelar">Cancelar</button><button type="submit" class="cm-fo-guardar">Guardar</button></div></form>',
   anchoCelda: 460,
@@ -271,4 +321,116 @@ ${reducirMov}`,
     neobrutal: { nombre: 'Neobrutal', descripcion: 'Borde negro y sombra dura', css: `& .cm-s-zona { border: 2px solid var(--color-texto); border-radius: 0; box-shadow: 5px 5px 0 var(--color-texto); } & .cm-s-ico { border-radius: 0; border: 2px solid var(--color-texto); background: var(--color-acento); color: var(--color-sobre-acento); } & .cm-s-lista li { border-radius: 0; border: 2px solid var(--color-texto); background: var(--color-fondo); }` },
   },
   Muestra: MuestraSubir,
+};
+
+// ---------- Inicio de sesión ----------
+
+function MuestraAcceso({ clase }: { clase: string; id: string }) {
+  const u = useId();
+  const [ver, setVer] = useState(false);
+  const [estado, setEstado] = useState<'' | 'entrando' | 'listo'>('');
+  return (
+    <form
+      className={clase}
+      onSubmit={(e) => {
+        e.preventDefault();
+        setEstado('entrando');
+        window.setTimeout(() => setEstado('listo'), 900);
+        window.setTimeout(() => setEstado(''), 2400);
+      }}
+    >
+      <div className="cm-ac-lado" aria-hidden="true">
+        <strong>Tu marca</strong>
+        <span>Todo en un solo lugar.</span>
+      </div>
+      <div className="cm-ac-cuerpo">
+        <span className="cm-ac-marca" aria-hidden="true">
+          <span className="cm-ac-logo">T</span> Tu marca
+        </span>
+        <strong className="cm-ac-titulo">Entrá a tu cuenta</strong>
+        <span className="cm-ac-sub">Qué bueno verte de nuevo.</span>
+        <button type="button" className="cm-ac-social">
+          ✉ Recibir un enlace por email
+        </button>
+        <span className="cm-ac-o">o</span>
+        <label className="cm-ac-campo" htmlFor={`${u}-e`}>
+          <span>Email</span>
+          <input id={`${u}-e`} type="email" placeholder="vos@ejemplo.com" autoComplete="off" />
+        </label>
+        <label className="cm-ac-campo" htmlFor={`${u}-p`}>
+          <span>Contraseña</span>
+          <span className="cm-ac-clave">
+            <input id={`${u}-p`} type={ver ? 'text' : 'password'} defaultValue="secreta123" />
+            <button type="button" className="cm-ac-ver" aria-pressed={ver} onClick={() => setVer(!ver)}>
+              {ver ? 'Ocultar' : 'Ver'}
+            </button>
+          </span>
+        </label>
+        <span className="cm-ac-fila">
+          <label className="cm-ac-recordar">
+            <input type="checkbox" defaultChecked /> Recordarme
+          </label>
+          <a href="#" onClick={(e) => e.preventDefault()}>
+            ¿Olvidaste tu contraseña?
+          </a>
+        </span>
+        <button type="submit" className="cm-ac-entrar" aria-live="polite">
+          {estado === 'entrando' ? 'Entrando…' : estado === 'listo' ? '✓ ¡Hola!' : 'Entrar'}
+        </button>
+        <span className="cm-ac-pie">
+          ¿No tenés cuenta?{' '}
+          <a href="#" onClick={(e) => e.preventDefault()}>
+            Registrate
+          </a>
+        </span>
+      </div>
+    </form>
+  );
+}
+
+export const ACCESOS: Categoria = {
+  id: 'acceso',
+  nombre: 'Inicio de sesión',
+  singular: 'pantalla de inicio de sesión',
+  descripcion: 'La pantalla para entrar a la cuenta. Probá «Ver» la contraseña y «Entrar».',
+  estructura:
+    '<form class="cm-acceso cm-acceso-DISEÑO"><div class="cm-ac-lado"><strong>Marca</strong><span>Frase</span></div><div class="cm-ac-cuerpo"><span class="cm-ac-marca"><span class="cm-ac-logo">T</span> Marca</span><strong class="cm-ac-titulo">Entrá a tu cuenta</strong><span class="cm-ac-sub">…</span><button class="cm-ac-social">Recibir un enlace por email</button><span class="cm-ac-o">o</span><label class="cm-ac-campo"><span>Email</span><input type="email"></label><label class="cm-ac-campo"><span>Contraseña</span><span class="cm-ac-clave"><input type="password"><button class="cm-ac-ver">Ver</button></span></label><span class="cm-ac-fila"><label class="cm-ac-recordar"><input type="checkbox"> Recordarme</label><a>¿Olvidaste tu contraseña?</a></span><button type="submit" class="cm-ac-entrar">Entrar</button><span class="cm-ac-pie">¿No tenés cuenta? <a>Registrate</a></span></div></form> — .cm-ac-lado (panel de marca) solo se ve en algunos diseños.',
+  anchoCelda: 360,
+  base: `& { display: flex; width: 100%; max-width: 380px; border-radius: var(--radio-grande); background: var(--color-fondo); border: 1px solid var(--color-borde); box-shadow: 0 12px 32px rgba(0,0,0,.08); overflow: hidden; font-family: var(--fuente-texto); color: var(--color-texto); font-size: 14px; }
+& .cm-ac-lado { display: none; }
+& .cm-ac-cuerpo { flex: 1; display: flex; flex-direction: column; gap: 12px; padding: 24px; }
+& .cm-ac-marca { display: inline-flex; align-items: center; gap: 8px; font-weight: 800; }
+& .cm-ac-logo { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 8px; background: var(--color-acento); color: var(--color-sobre-acento); font-size: 14px; }
+& .cm-ac-titulo { font-family: var(--fuente-titulos); font-weight: var(--titulos-peso); font-size: 24px; line-height: 1.15; margin-top: 6px; }
+& .cm-ac-sub { margin-top: -6px; color: var(--color-texto-suave); }
+& .cm-ac-social { min-height: 44px; border: 1px solid var(--color-borde); border-radius: var(--radio-boton); background: var(--color-fondo); color: var(--color-texto); font: inherit; font-weight: 600; cursor: pointer; }
+& .cm-ac-o { display: flex; align-items: center; gap: 10px; color: var(--color-texto-suave); font-size: 12px; }
+& .cm-ac-o::before, & .cm-ac-o::after { content: ''; flex: 1; height: 1px; background: var(--color-borde); }
+& .cm-ac-campo { display: flex; flex-direction: column; gap: 6px; font-weight: 600; font-size: 13px; }
+& .cm-ac-clave { position: relative; display: flex; }
+& input[type='email'], & input[type='password'], & input[type='text'] { width: 100%; min-height: 44px; padding: 0 12px; border: 1px solid var(--color-borde); border-radius: var(--radio-medio); background: var(--color-fondo); color: var(--color-texto); font: inherit; font-weight: 400; box-sizing: border-box; }
+& .cm-ac-clave input { padding-right: 76px; }
+& input:focus { outline: none; border-color: var(--color-acento); box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-acento) 22%, transparent); }
+& .cm-ac-ver { position: absolute; right: 4px; top: 4px; bottom: 4px; padding: 0 10px; border: none; border-radius: calc(var(--radio-medio) * .7); background: var(--color-superficie); color: var(--color-texto); font: inherit; font-size: 12.5px; font-weight: 700; cursor: pointer; }
+& .cm-ac-fila { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; font-size: 13px; }
+& .cm-ac-recordar { display: inline-flex; align-items: center; gap: 6px; min-height: 32px; }
+& .cm-ac-recordar input { width: 16px; height: 16px; accent-color: var(--color-acento); }
+& a { color: var(--color-acento-texto); font-weight: 600; text-decoration: none; }
+& a:hover { text-decoration: underline; text-underline-offset: 3px; }
+& .cm-ac-entrar { min-height: 48px; border: none; border-radius: var(--radio-boton); background: var(--boton-color); color: var(--boton-sobre); font: inherit; font-weight: 800; font-size: 15px; cursor: pointer; }
+& .cm-ac-pie { text-align: center; color: var(--color-texto-suave); font-size: 13px; }
+& button:focus-visible, & a:focus-visible { outline: 2px solid var(--color-acento); outline-offset: 2px; }`,
+  disenos: {
+    tarjeta: { nombre: 'Tarjeta', descripcion: 'Todo en una card con sombra suave', css: '' },
+    sin_caja: { nombre: 'Sin caja', descripcion: 'Directo sobre el fondo, sin borde ni sombra', css: `& { border: none; box-shadow: none; background: transparent; } & .cm-ac-cuerpo { padding: 8px 2px; }` },
+    centrado: { nombre: 'Centrado', descripcion: 'Logo arriba y todo centrado', css: `& .cm-ac-cuerpo { align-items: stretch; text-align: center; } & .cm-ac-marca { flex-direction: column; align-self: center; font-size: 0; } & .cm-ac-logo { width: 48px; height: 48px; border-radius: 14px; font-size: 22px; } & .cm-ac-campo { text-align: left; }` },
+    dividido: { nombre: 'Panel de marca', descripcion: 'Un panel de color al costado con la marca', css: `& { max-width: 560px; } & .cm-ac-lado { display: flex; flex-direction: column; justify-content: flex-end; gap: 4px; flex: 0 0 38%; padding: 22px; background: linear-gradient(160deg, var(--color-acento), color-mix(in srgb, var(--color-acento) 55%, #000000)); color: #FFFFFF; } & .cm-ac-lado strong { font-family: var(--fuente-titulos); font-size: 20px; } & .cm-ac-marca { display: none; } @container (max-width: 480px) { & { flex-direction: column; } & .cm-ac-lado { flex-basis: auto; min-height: 96px; } }` },
+    cabecera: { nombre: 'Cabecera de color', descripcion: 'Una franja del acento arriba con la marca', css: `& .cm-ac-cuerpo { padding-top: 0; } & .cm-ac-marca { margin: 0 -24px; padding: 18px 24px; background: var(--color-acento); color: var(--color-sobre-acento); } & .cm-ac-logo { background: var(--color-sobre-acento); color: var(--color-acento); }` },
+    pildora: { nombre: 'Redondeado', descripcion: 'Campos y botones en píldora', css: `& { border-radius: 28px; } & input[type='email'], & input[type='password'], & input[type='text'], & .cm-ac-social, & .cm-ac-entrar { border-radius: 999px; padding-left: 18px; } & .cm-ac-ver { border-radius: 999px; }` },
+    subrayado: { nombre: 'Subrayado', descripcion: 'Campos con una línea abajo, muy limpio', css: `& input[type='email'], & input[type='password'], & input[type='text'] { border: none; border-bottom: 1.5px solid var(--color-borde); border-radius: 0; padding: 0 2px; background: transparent; } & input:focus { box-shadow: none; border-bottom-color: var(--color-acento); } & .cm-ac-ver { background: transparent; }` },
+    oscuro: { nombre: 'Oscuro', descripcion: 'Tarjeta oscura', css: `& { background: #15171C; border-color: #2A2D35; color: #F1F2F4; } & .cm-ac-sub, & .cm-ac-pie, & .cm-ac-o { color: #A9AFBA; } & input[type='email'], & input[type='password'], & input[type='text'], & .cm-ac-social { background: #1F2229; border-color: #343844; color: #F1F2F4; } & .cm-ac-ver { background: #343844; color: #F1F2F4; } & .cm-ac-o::before, & .cm-ac-o::after { background: #343844; } & a { color: #C9D4FF; }` },
+    vidrio: { nombre: 'Vidrio', descripcion: 'Translúcida sobre un fondo de color', css: `& { background: color-mix(in srgb, var(--color-fondo) 62%, transparent); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-color: color-mix(in srgb, var(--color-texto) 14%, transparent); }` },
+    neobrutal: { nombre: 'Neobrutal', descripcion: 'Bordes negros gruesos y sombras duras', css: `& { border: 2px solid var(--color-texto); border-radius: 0; box-shadow: 6px 6px 0 var(--color-texto); } & input[type='email'], & input[type='password'], & input[type='text'], & .cm-ac-social, & .cm-ac-entrar { border: 2px solid var(--color-texto); border-radius: 0; box-shadow: 3px 3px 0 var(--color-texto); } & .cm-ac-ver, & .cm-ac-logo { border-radius: 0; }` },
+  },
+  Muestra: MuestraAcceso,
 };

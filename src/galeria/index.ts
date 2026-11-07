@@ -8,7 +8,7 @@ import { GRAFICOS_CAT, METRICAS, TABLAS } from './datos';
 import { ACORDEONES, AVATARES, AVISOS, CARGANDO, ETIQUETAS, MODALES, PROGRESO, TOOLTIPS } from './elementos';
 import { NAV_MOVIL, NAV_WEB } from './navegacion';
 import { BUSCADORES, DESPLEGABLES, MIGAS, PAGINACION, PASOS, VACIOS } from './nuevos';
-import { FORMULARIOS, SUBIR } from './formularios';
+import { ACCESOS, FORMULARIOS, SUBIR } from './formularios';
 import { MAS_DISENOS } from './mas-disenos';
 import { NOTIFICACIONES, PRODUCTOS, USUARIOS } from './nuevos3';
 import { CALENDARIOS, CARRUSELES, PIES } from './nuevos2';
@@ -49,6 +49,7 @@ export const CATEGORIAS: Record<CategoriaId, Categoria> = {
   producto: PRODUCTOS,
   notificaciones: NOTIFICACIONES,
   usuario: USUARIOS,
+  acceso: ACCESOS,
 };
 
 // Diseños sumados después: van al final de cada categoría (no pisan ninguno existente).
