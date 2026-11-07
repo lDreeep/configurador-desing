@@ -38,7 +38,9 @@ export type CategoriaId =
   | 'vacio'
   | 'calendario'
   | 'carrusel'
-  | 'pie';
+  | 'pie'
+  | 'formulario'
+  | 'subir';
 
 /** La config actual, para muestras que combinan con otras elecciones (por ejemplo, el botón principal). */
 export const GaleriaContexto = createContext<Config | null>(null);

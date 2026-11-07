@@ -145,8 +145,8 @@ export function App() {
             {...comun}
             alFinal={volviendo}
             titulo="Elegí tus formularios"
-            bajada="Campos de texto, selectores tipo slide, interruptores, casillas y deslizadores. Escribí, tocá y arrastrá cada uno: todos usan tus colores y tu letra."
-            categorias={['campo', 'selector', 'desplegable', 'buscador', 'calendario', 'interruptor', 'casilla', 'deslizador']}
+            bajada="Primero el formulario completo (cómo se ve una pantalla para cargar datos), después cada pieza: campos, selectores, menús, buscadores, calendarios, interruptores, casillas, deslizadores y subida de archivos."
+            categorias={['formulario', 'campo', 'selector', 'desplegable', 'buscador', 'calendario', 'interruptor', 'casilla', 'deslizador', 'subir']}
             atras={esDatos ? 'Volver a los datos' : 'Volver a las cajas'}
             onAtras={() => irRapido(esDatos ? 'datos' : 'cajas', true)}
             onSeguir={() => irRapido('navegacion')}

@@ -48,6 +48,8 @@ const BASE: Recomendados['componentes'] = {
   calendario: ['clasico', 'circulos', 'eventos'],
   carrusel: ['clasico', 'asoma', 'barras'],
   pie: ['columnas', 'newsletter', 'simple'],
+  formulario: ['apilado', 'tarjetas', 'etiqueta_dentro', 'barra_fija'],
+  subir: ['zona', 'boton', 'fila'],
 };
 
 const con = (extra: Recomendados['componentes']) => ({ ...BASE, ...extra });
@@ -100,6 +102,7 @@ export const RECOMENDADOS: Record<TipoProyecto, Recomendados> = {
       modal: ['hoja', 'lateral', 'centrada'],
       progreso: ['pasos', 'fina', 'gruesa'],
       buscador: ['pildora', 'grande', 'acento'],
+      formulario: ['tarjetas', 'numerado', 'etiqueta_dentro', 'apilado'],
       carrusel: ['asoma', 'clasico', 'numeros'],
       pie: ['newsletter', 'columnas', 'acento'],
       pasos: ['circulos', 'flechas', 'barras'],
@@ -122,6 +125,8 @@ export const RECOMENDADOS: Record<TipoProyecto, Recomendados> = {
       tabla: ['lineas', 'pastillas', 'cebra'],
       cargando: ['esqueleto', 'anillo', 'linea'],
       buscador: ['comando', 'simple', 'pildora'],
+      formulario: ['lista_agrupada', 'lateral', 'compacto', 'en_linea'],
+      subir: ['fila', 'zona', 'boton'],
       calendario: ['rango', 'eventos', 'compacto'],
       desplegable: ['tilde', 'clasico', 'contorno'],
       vacio: ['punteado', 'lateral', 'color'],
@@ -145,6 +150,8 @@ export const RECOMENDADOS: Record<TipoProyecto, Recomendados> = {
       campo: ['relleno', 'pildora', 'flotante', 'grande'],
       cargando: ['puntos', 'anillo', 'esqueleto'],
       migas: ['volver', 'chevron', 'pastillas'],
+      formulario: ['lista_agrupada', 'barra_fija', 'relleno', 'tarjetas'],
+      subir: ['foto', 'tonal', 'zona'],
       calendario: ['circulos', 'eventos', 'tonal'],
       carrusel: ['asoma', 'barras', 'escala'],
       pasos: ['puntos', 'barras', 'circulos'],
@@ -169,6 +176,7 @@ export const RECOMENDADOS: Record<TipoProyecto, Recomendados> = {
       cargando: ['esqueleto', 'linea', 'anillo'],
       progreso: ['fina', 'circular', 'pasos'],
       buscador: ['comando', 'simple', 'subrayado'],
+      formulario: ['compacto', 'lateral', 'lista_agrupada', 'en_linea'],
       paginacion: ['cuadros', 'grupo', 'texto'],
       desplegable: ['tilde', 'contorno', 'clasico'],
       vacio: ['lateral', 'punteado', 'centrado'],

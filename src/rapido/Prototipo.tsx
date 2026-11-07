@@ -478,6 +478,12 @@ export function Prototipo(props: { config: Config; setConfig: (fn: (c: Config) =
             <span className="proto-nota">Ventana (al eliminar)</span>
           </Zona>
         </div>
+        <div className="proto-form-completo">
+          <span className="proto-nota">Así se ve un formulario completo para cargar datos</span>
+          <Zona e="formulario">
+            <CATEGORIAS.formulario.Muestra clase={cl('formulario')} id={d('formulario')} />
+          </Zona>
+        </div>
       </div>
     ),
     ayuda: (
@@ -696,7 +702,7 @@ const GRUPOS: { nombre: string; items: Editable[] }[] = [
   { nombre: 'Movimiento', items: ['movimiento', 'aparicion', 'cambio'] },
   { nombre: 'Botones', items: ['boton', 'color_boton', 'boton_sec', 'boton_icono'] },
   { nombre: 'Contenedores', items: ['caja', 'metrica', 'grafico', 'tabla'] },
-  { nombre: 'Formularios', items: ['campo', 'selector', 'desplegable', 'buscador', 'calendario', 'interruptor', 'casilla', 'deslizador'] },
+  { nombre: 'Formularios', items: ['formulario', 'campo', 'selector', 'desplegable', 'buscador', 'calendario', 'interruptor', 'casilla', 'deslizador', 'subir'] },
   { nombre: 'Navegación', items: ['nav_web', 'nav_movil', 'migas', 'paginacion', 'pasos', 'pie'] },
   { nombre: 'Detalles', items: ['etiqueta', 'aviso', 'cargando', 'progreso', 'acordeon', 'avatar', 'tooltip', 'modal', 'vacio', 'carrusel'] },
 ];
