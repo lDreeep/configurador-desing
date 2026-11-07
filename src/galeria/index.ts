@@ -8,6 +8,7 @@ import { GRAFICOS_CAT, METRICAS, TABLAS } from './datos';
 import { ACORDEONES, AVATARES, AVISOS, CARGANDO, ETIQUETAS, MODALES, PROGRESO, TOOLTIPS } from './elementos';
 import { NAV_MOVIL, NAV_WEB } from './navegacion';
 import { BUSCADORES, DESPLEGABLES, MIGAS, PAGINACION, PASOS, VACIOS } from './nuevos';
+import { MAS_DISENOS } from './mas-disenos';
 import { SELECTOR } from './selector';
 
 export const CATEGORIAS: Record<CategoriaId, Categoria> = {
@@ -38,6 +39,11 @@ export const CATEGORIAS: Record<CategoriaId, Categoria> = {
   pasos: PASOS,
   vacio: VACIOS,
 };
+
+// Diseños sumados después: van al final de cada categoría (no pisan ninguno existente).
+for (const [id, extra] of Object.entries(MAS_DISENOS) as [CategoriaId, Record<string, Categoria['disenos'][string]>][]) {
+  for (const [k, d] of Object.entries(extra)) if (!(k in CATEGORIAS[id].disenos)) CATEGORIAS[id].disenos[k] = d;
+}
 
 /** El primer diseño de cada categoría: el que se usa si la persona no eligió otro. */
 export const DISENO_INICIAL = Object.fromEntries(
