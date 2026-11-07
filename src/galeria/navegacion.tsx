@@ -12,7 +12,7 @@ const ITEMS_MOVIL = [
   { id: 'perfil', nombre: 'Perfil' },
 ];
 
-function MuestraNavMovil({ clase }: { clase: string; id: string }) {
+function MuestraNavMovil({ clase, id }: { clase: string; id: string }) {
   const [activo, setActivo] = useState(0);
   return (
     <div className="cm-marco-movil">
@@ -21,7 +21,7 @@ function MuestraNavMovil({ clase }: { clase: string; id: string }) {
         <span className="cm-esq" style={{ width: '82%' }} />
         <span className="cm-esq cm-esq-alta" />
       </div>
-      <nav className={clase} style={{ '--i': activo, '--n': ITEMS_MOVIL.length } as CSSProperties} aria-label="Barra inferior de ejemplo">
+      <nav className={clase} style={{ '--i': activo, '--n': ITEMS_MOVIL.length } as CSSProperties} aria-label={`Barra inferior de ejemplo: ${NAV_MOVIL.disenos[id]?.nombre ?? id}`}>
         <span className="cm-ind" aria-hidden="true" />
         {ITEMS_MOVIL.map((it, i) => (
           <button key={it.id} type="button" className="cm-item" aria-current={i === activo ? 'page' : undefined} onClick={() => setActivo(i)}>
@@ -52,7 +52,7 @@ export const NAV_MOVIL: Categoria = {
   transition: color var(--duracion-rapida) ease, transform var(--duracion-media) var(--curva-entrada); }
 & .cm-ico { display: inline-flex; transition: transform var(--duracion-media) var(--curva-entrada), color var(--duracion-rapida) ease, background-color var(--duracion-media) ease; }
 & .cm-item[aria-current] { color: var(--color-texto); }
-& .cm-item[aria-current] .cm-ico { color: var(--color-acento); }
+& .cm-item[aria-current] .cm-ico { color: var(--color-acento-texto); }
 & .cm-item:focus-visible { outline: 2px solid var(--color-acento); outline-offset: -2px; border-radius: 10px; }
 @media (prefers-reduced-motion: reduce) { & *, & { transition: none !important; animation: none !important; } }`,
   disenos: {
@@ -165,11 +165,11 @@ const ITEMS_WEB = [
   { id: 'ajustes', nombre: 'Ajustes' },
 ];
 
-function MuestraNavWeb({ clase }: { clase: string; id: string }) {
+function MuestraNavWeb({ clase, id }: { clase: string; id: string }) {
   const [activo, setActivo] = useState(0);
   return (
     <div className={`cm-marco-web ${/lateral/.test(clase) ? 'es-lateral' : ''}`}>
-      <nav className={clase} style={{ '--i': activo, '--n': ITEMS_WEB.length } as CSSProperties} aria-label="Navegación de ejemplo">
+      <nav className={clase} style={{ '--i': activo, '--n': ITEMS_WEB.length } as CSSProperties} aria-label={`Navegación de ejemplo: ${NAV_WEB.disenos[id]?.nombre ?? id}`}>
         <span className="cm-marca">Marca</span>
         <div className="cm-items">
           <span className="cm-ind" aria-hidden="true" />
@@ -227,7 +227,7 @@ export const NAV_WEB: Categoria = {
     flotante: {
       nombre: 'Flotante', descripcion: 'Una barra redondeada que flota arriba',
       css: `& { margin: 10px 12px 0; border: 1px solid var(--color-borde); border-radius: 999px; box-shadow: 0 8px 24px rgba(0,0,0,.14); background: var(--color-superficie-alta); }
-& .cm-item[aria-current] { color: var(--color-acento); }`,
+& .cm-item[aria-current] { color: var(--color-acento-texto); }`,
     },
     vidrio: {
       nombre: 'Vidrio', descripcion: 'Translúcida sobre el contenido',
@@ -281,7 +281,7 @@ export const NAV_WEB: Categoria = {
       nombre: 'Editorial', descripcion: 'Mayúsculas espaciadas con barras',
       css: `& .cm-item { text-transform: uppercase; letter-spacing: 0.14em; font-size: 12px; }
 & .cm-item + .cm-item::before { content: '/'; position: absolute; left: -3px; color: var(--color-borde); }
-& .cm-item[aria-current] { color: var(--color-acento); }
+& .cm-item[aria-current] { color: var(--color-acento-texto); }
 & .cm-marca { font-style: italic; }`,
     },
     oscura: {
@@ -304,7 +304,7 @@ export const NAV_WEB: Categoria = {
     },
     lateral_oscura: {
       nombre: 'Lateral oscura', descripcion: 'Menú lateral oscuro con la activa encendida',
-      css: `& { flex-direction: column; align-items: stretch; justify-content: flex-start; width: 170px; padding: 14px 10px; border-bottom: none; background: #111318; color: #FFFFFF; }
+      css: `& { flex-direction: column; align-items: stretch; justify-content: flex-start; width: 170px; min-height: max-content; padding: 14px 10px; border-bottom: none; background: #111318; color: #FFFFFF; }
 & .cm-marca { padding: 0 10px 8px; }
 & .cm-items { grid-template-columns: minmax(0, 1fr); grid-auto-rows: 42px; }
 & .cm-item { justify-content: flex-start; border-radius: 8px; color: #9CA3AF; }

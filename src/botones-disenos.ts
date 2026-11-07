@@ -31,6 +31,12 @@ export const EFECTOS_TOQUE: Record<EfectoToque, string> = {
   propio: 'Se presiona hacia adentro',
 };
 
+/** Nombre corto de cada animación al tocar (para elegirla aparte). */
+export const NOMBRE_EFECTO: Record<EfectoToque, string> = {
+  onda: 'Onda', hundir: 'Hundir', gelatina: 'Gelatina', rebote: 'Rebote', pulso: 'Anillo', aplastar: 'Aplastar',
+  brillo: 'Destello', temblor: 'Temblor', latido: 'Latido', estallido: 'Chispas', propio: 'Se presiona',
+};
+
 export interface BotonDiseno {
   nombre: string;
   descripcion: string;
@@ -556,5 +562,35 @@ export const CSS_BASE_BOTON = `& {
 export const cssDeBoton = (id: BotonDisenoId, selector: string) =>
   (CSS_BASE_BOTON + '\n' + BOTONES[id].css).replace(/&/g, selector);
 
-/** Clases que lleva un botón con este diseño. */
-export const clasesDeBoton = (id: BotonDisenoId) => `bt bt-${id} bt-ef-${BOTONES[id].efecto}`;
+/** Clases que lleva un botón con este diseño (con otra animación al tocar si se eligió una). */
+export const clasesDeBoton = (id: BotonDisenoId, efecto: EfectoToque | 'del_diseno' = 'del_diseno') =>
+  `bt bt-${id} bt-ef-${efecto === 'del_diseno' ? BOTONES[id].efecto : efecto}`;
+
+/** La animación al tocar que tiene un botón: la elegida aparte o la de su diseño. */
+export const efectoDe = (id: BotonDisenoId, efecto: EfectoToque | 'del_diseno' = 'del_diseno'): EfectoToque =>
+  efecto === 'del_diseno' ? BOTONES[id].efecto : efecto;
+
+/**
+ * Familias: el mismo aspecto con distintas animaciones al pasar el mouse. El panel muestra el primero
+ * y «Ver variantes» despliega el resto. Lo que no está en ninguna familia se muestra solo.
+ */
+export const FAMILIAS_BOTON: { nombre: string; ids: BotonDisenoId[] }[] = [
+  { nombre: 'Sólido', ids: ['solido', 'brillo_barrido', 'flecha', 'texto_sube', 'deslizar_icono', 'magnetico'] },
+  { nombre: 'Contorno que se llena', ids: ['contorno', 'relleno_abajo', 'relleno_lateral', 'centro_expande', 'cortina', 'diagonal', 'circulo', 'tinta', 'subrayado_relleno'] },
+  { nombre: 'Borde animado', ids: ['borde_animado', 'brillo_borde', 'gradiente_borde'] },
+  { nombre: 'Solo texto', ids: ['subrayado', 'link_flecha', 'minimal_texto'] },
+  { nombre: 'Con volumen que se hunde', ids: ['empujable', 'extruido', 'tres_d_lateral', 'teclado', 'sombra_dura', 'sombra_color', 'doble_capa', 'desplazado'] },
+  { nombre: 'Inflado', ids: ['clay', 'almohada', 'acuoso', 'neumorfico'] },
+  { nombre: 'Vidrio', ids: ['vidrio', 'vidrio_ahumado', 'esmerilado'] },
+  { nombre: 'Metálico', ids: ['cromo', 'metal_oscuro', 'oro'] },
+  { nombre: 'Neón', ids: ['neon', 'neon_encendido'] },
+  { nombre: 'Papel y recortes', ids: ['sticker', 'papel_recortado', 'grano'] },
+  { nombre: 'Formas', ids: ['banderin', 'hexagonal', 'gota', 'pestana', 'plano_cuadrado'] },
+  { nombre: 'Retro', ids: ['bisel', 'terminal', 'mac_clasico', 'web_2000'] },
+];
+
+/** Los más llamativos: van en un cajón aparte, plegado, para no tapar a los de uso diario. */
+export const EXPERIMENTALES: BotonDisenoId[] = [
+  'estallido', 'tembloroso', 'onda_continua', 'respira', 'gira_borde', 'aurora', 'holografico', 'hormigas',
+  'synthwave', 'luz_neon_tubo', 'a_mano', 'tiza', 'cinta', 'pixel', 'arcade', 'gameboy',
+];

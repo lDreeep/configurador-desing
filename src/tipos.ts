@@ -343,6 +343,8 @@ export interface Config {
     diseno: BotonDisenoId | 'ninguno';
     /** 'acento' (de la paleta), 'texto' (monocromo) o un color hex propio. */
     color: string;
+    /** Animación al tocar: la del diseño elegido o una elegida aparte (se combina con cualquier diseño). */
+    efecto: import('./botones-disenos').EfectoToque | 'del_diseno';
   };
   /** Cajas y contenedores (panel del modo rápido). 'ninguno' = las cards por defecto del formato. */
   cajas: {

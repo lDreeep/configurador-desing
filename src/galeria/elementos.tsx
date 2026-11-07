@@ -24,7 +24,7 @@ export const ETIQUETAS: Categoria = {
     cuadrada: { nombre: 'Cuadrada', descripcion: 'Mayúsculas y esquinas rectas', css: `& { border-radius: 4px; text-transform: uppercase; letter-spacing: 0.08em; font-size: 11px; }` },
     neobrutal: { nombre: 'Neobrutal', descripcion: 'Borde negro y sombra', css: `& { border-radius: 4px; background: var(--color-fondo); border: 2px solid var(--color-texto); box-shadow: 2px 2px 0 var(--color-texto); }` },
     vidrio: { nombre: 'Vidrio', descripcion: 'Translúcida', css: `& { background: color-mix(in srgb, var(--color-fondo) 40%, transparent); border: 1px solid color-mix(in srgb, var(--color-texto) 18%, transparent); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }` },
-    sello: { nombre: 'Sello', descripcion: 'Torcida, como un sello', css: `& { background: transparent; color: var(--color-acento); box-shadow: inset 0 0 0 2px var(--color-acento); border-radius: 6px; text-transform: uppercase; letter-spacing: 0.1em; transform: rotate(-4deg); }` },
+    sello: { nombre: 'Sello', descripcion: 'Torcida, como un sello', css: `& { background: transparent; color: var(--color-acento-texto); box-shadow: inset 0 0 0 2px var(--color-acento); border-radius: 6px; text-transform: uppercase; letter-spacing: 0.1em; transform: rotate(-4deg); }` },
     colgante: { nombre: 'Etiqueta colgante', descripcion: 'Con forma de etiqueta de precio', css: `& { border-radius: 0 6px 6px 0; padding-left: 16px; background: var(--color-acento); color: var(--color-sobre-acento); clip-path: polygon(10px 0, 100% 0, 100% 100%, 10px 100%, 0 50%); }` },
     mono: { nombre: 'Código', descripcion: 'Monoespaciada, técnica', css: `& { border-radius: 4px; font-family: ui-monospace, Menlo, monospace; font-weight: 600; background: var(--color-superficie); box-shadow: inset 0 0 0 1px var(--color-borde); }` },
   },
@@ -102,7 +102,7 @@ export const CARGANDO: Categoria = {
   descripcion: 'Lo que se ve mientras algo carga.',
   estructura: '<div class="cm-cargando cm-cargando-DISEÑO" role="status" aria-label="Cargando"><span></span><span></span><span></span></div>',
   anchoCelda: 200,
-  base: `& { position: relative; display: inline-flex; align-items: center; justify-content: center; gap: 6px; width: 56px; height: 56px; color: var(--color-acento); }
+  base: `& { position: relative; display: inline-flex; align-items: center; justify-content: center; gap: 6px; width: 56px; height: 56px; color: var(--color-acento-texto); }
 & span { display: none; }
 @media (prefers-reduced-motion: reduce) { & *, & { animation-duration: 3s !important; } }`,
   disenos: {
@@ -206,7 +206,7 @@ ${sinMovimiento}`,
     lineas: { nombre: 'Con líneas', descripcion: 'Separadas por líneas finas', css: '' },
     tarjetas: { nombre: 'Tarjetas', descripcion: 'Cada pregunta es una tarjeta', css: `& { gap: 8px; } & details + details { border-top: none; } & details { padding: 0 12px; border-radius: var(--radio-medio); background: var(--color-superficie); }` },
     mas_menos: { nombre: 'Más y menos', descripcion: 'Un + que se vuelve −', css: `& summary::after { content: '+'; width: auto; height: auto; border: none; transform: none; font-size: 22px; font-weight: 400; line-height: 1; } & details[open] summary::after { content: '−'; transform: none; }` },
-    numerado: { nombre: 'Numerado', descripcion: 'Con número grande adelante', css: `& { counter-reset: preg; } & summary { justify-content: flex-start; } & summary::before { counter-increment: preg; content: counter(preg, decimal-leading-zero); font-family: var(--fuente-titulos); color: var(--color-acento); font-size: 14px; } & summary::after { margin-left: auto; }` },
+    numerado: { nombre: 'Numerado', descripcion: 'Con número grande adelante', css: `& { counter-reset: preg; } & summary { justify-content: flex-start; } & summary::before { counter-increment: preg; content: counter(preg, decimal-leading-zero); font-family: var(--fuente-titulos); color: var(--color-acento-texto); font-size: 14px; } & summary::after { margin-left: auto; }` },
     resaltado: { nombre: 'Abierta resaltada', descripcion: 'La abierta se pinta con una barra de color', css: `& details { padding: 0 12px; border-left: 3px solid transparent; transition: background-color var(--duracion-media) ease; } & details[open] { background: color-mix(in srgb, var(--color-acento) 10%, var(--color-fondo)); border-left-color: var(--color-acento); }` },
     grande: { nombre: 'Grande', descripcion: 'Preguntas con letra de título', css: `& summary { font-family: var(--fuente-titulos); font-size: 19px; font-weight: var(--subtitulos-peso); min-height: 60px; } & details + details { border-top: 1.5px solid var(--color-texto); }` },
   },
@@ -233,7 +233,7 @@ export const AVATARES: Categoria = {
   anchoCelda: 240,
   base: `& { display: flex; align-items: center; gap: 8px; font-family: var(--fuente-texto); }
 & .cm-av { position: relative; display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; background: var(--color-acento); color: var(--color-sobre-acento); font-size: 15px; font-weight: 700; }
-& .cm-av:nth-child(2) { background: color-mix(in srgb, var(--color-acento) 55%, var(--color-texto)); color: #FFFFFF; }
+& .cm-av:nth-child(2) { background: color-mix(in srgb, var(--color-texto) 88%, var(--color-acento)); color: var(--color-fondo); }
 & .cm-av:nth-child(3) { background: var(--color-superficie); color: var(--color-texto); }
 & .cm-mas { background: var(--color-texto) !important; color: var(--color-fondo) !important; font-size: 13px; }`,
   disenos: {
@@ -345,7 +345,7 @@ ${sinMovimiento}`,
     centrada: { nombre: 'Centrada', descripcion: 'Aparece en el medio, agrandándose', css: '' },
     hoja: { nombre: 'Hoja de abajo', descripcion: 'Sube desde abajo, típica del celular', css: `& .cm-ventana { left: 0; right: 0; top: auto; bottom: 0; width: auto; transform: none; border-radius: 22px 22px 0 0; } & .cm-ventana::before { content: ''; align-self: center; width: 40px; height: 4px; border-radius: 2px; background: var(--color-borde); margin-bottom: 6px; } & .cm-ventana.cm-entra { animation: cm-hoja 420ms var(--curva-entrada) both; } @keyframes cm-hoja { from { transform: translateY(100%); } }` },
     lateral: { nombre: 'Panel lateral', descripcion: 'Entra desde la derecha', css: `& .cm-ventana { left: auto; right: 0; top: 0; bottom: 0; width: 62%; transform: none; border-radius: 16px 0 0 16px; justify-content: center; } & .cm-ventana.cm-entra { animation: cm-lateral 420ms var(--curva-entrada) both; } @keyframes cm-lateral { from { transform: translateX(100%); } }` },
-    alerta: { nombre: 'Alerta con icono', descripcion: 'Centrada, con icono arriba', css: `& .cm-ventana { align-items: center; text-align: center; } & .cm-ventana-ico { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; background: color-mix(in srgb, var(--color-acento) 18%, var(--color-fondo)); color: var(--color-acento); margin-bottom: 4px; } & .cm-ventana-acciones { justify-content: center; }` },
+    alerta: { nombre: 'Alerta con icono', descripcion: 'Centrada, con icono arriba', css: `& .cm-ventana { align-items: center; text-align: center; } & .cm-ventana-ico { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; background: color-mix(in srgb, var(--color-acento) 18%, var(--color-fondo)); color: var(--color-acento-texto); margin-bottom: 4px; } & .cm-ventana-acciones { justify-content: center; }` },
     vidrio: { nombre: 'Vidrio', descripcion: 'Ventana translúcida sobre fondo desenfocado', css: `& .cm-fondo-modal { background: rgba(10,10,14,.2); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); } & .cm-ventana { background: color-mix(in srgb, var(--color-fondo) 60%, transparent); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); border: 1px solid color-mix(in srgb, var(--color-texto) 14%, transparent); }` },
     neobrutal: { nombre: 'Neobrutal', descripcion: 'Bordes negros y sombra sólida', css: `& .cm-ventana { border-radius: 0; border: 2px solid var(--color-texto); box-shadow: 7px 7px 0 var(--color-texto); background: var(--color-fondo); } & .cm-ventana-acciones button { border-radius: 0; border: 2px solid var(--color-texto); }` },
   },

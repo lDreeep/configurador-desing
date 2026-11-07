@@ -49,9 +49,9 @@ export const BOTON_SEC: Categoria = {
     con_icono: { nombre: 'Con icono', descripcion: 'Un icono en círculo antes del texto', css: `& { padding-left: 6px; } & .cm-ico { display: grid; place-items: center; width: calc(var(--boton-alto) - 12px); aspect-ratio: 1; border-radius: 50%; background: var(--color-superficie); } &:hover .cm-ico { background: var(--color-acento); color: var(--color-sobre-acento); }` },
     elevado: { nombre: 'Elevado claro', descripcion: 'Blanco con sombra suave', css: `& { background: var(--color-superficie-alta); box-shadow: 0 2px 8px rgba(0,0,0,.12); } &:hover { box-shadow: 0 6px 16px rgba(0,0,0,.16); transform: translateY(-1px); }` },
     neobrutal: { nombre: 'Neobrutal claro', descripcion: 'Borde y sombra sólida, sin color', css: `& { background: var(--color-fondo); border: 2px solid var(--color-texto); box-shadow: 3px 3px 0 var(--color-texto); } &:hover { transform: translate(-1px, -1px); box-shadow: 4px 4px 0 var(--color-texto); }` },
-    pildora: { nombre: 'Píldora contorno', descripcion: 'Redondo con borde fino', css: `& { border-radius: 999px; border: 1.5px solid var(--color-borde); } &:hover { border-color: var(--color-acento); color: var(--color-acento); }` },
-    mayusculas: { nombre: 'Mayúsculas finas', descripcion: 'Chico, espaciado, sin caja', css: `& { font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; } &:hover { color: var(--color-acento); }` },
-    contorno_acento: { nombre: 'Contorno de color', descripcion: 'Borde y texto del color de acento', css: `& { border: 1.5px solid var(--color-acento); color: var(--color-acento); } &:hover { background: color-mix(in srgb, var(--color-acento) 10%, transparent); }` },
+    pildora: { nombre: 'Píldora contorno', descripcion: 'Redondo con borde fino', css: `& { border-radius: 999px; border: 1.5px solid var(--color-borde); } &:hover { border-color: var(--color-acento); color: var(--color-acento-texto); }` },
+    mayusculas: { nombre: 'Mayúsculas finas', descripcion: 'Chico, espaciado, sin caja', css: `& { font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; } &:hover { color: var(--color-acento-texto); }` },
+    contorno_acento: { nombre: 'Contorno de color', descripcion: 'Borde y texto del color de acento', css: `& { border: 1.5px solid var(--color-acento); color: var(--color-acento-texto); } &:hover { background: color-mix(in srgb, var(--color-acento) 10%, transparent); }` },
     gris_solido: { nombre: 'Gris sólido', descripcion: 'Relleno neutro, sin color', css: `& { background: color-mix(in srgb, var(--color-texto) 12%, var(--color-fondo)); } &:hover { background: color-mix(in srgb, var(--color-texto) 18%, var(--color-fondo)); }` },
     oscuro: { nombre: 'Oscuro', descripcion: 'Relleno del color del texto', css: `& { background: var(--color-texto); color: var(--color-fondo); } &:hover { filter: brightness(1.15); }` },
     contorno_recto: { nombre: 'Contorno recto', descripcion: 'Borde fino y esquinas rectas', css: `& { border: 1.5px solid var(--color-texto); border-radius: 0; } &:hover { background: var(--color-superficie); }` },
@@ -60,10 +60,10 @@ export const BOTON_SEC: Categoria = {
     contorno_doble: { nombre: 'Doble línea', descripcion: 'Marco doble fino', css: `& { border: 3px double var(--color-texto); border-radius: 0; }` },
     pastilla_suave: { nombre: 'Pastilla gris', descripcion: 'Redonda, gris y sin borde', css: `& { border-radius: 999px; background: var(--color-superficie); padding: 0 calc(var(--boton-padding) * 1.2); } &:hover { background: color-mix(in srgb, var(--color-texto) 12%, var(--color-fondo)); }` },
     vidrio_oscuro: { nombre: 'Vidrio oscuro', descripcion: 'Translúcido y oscuro', css: `& { background: rgba(10,10,14,.55); color: #FFFFFF; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,.18); }` },
-    punteado_redondo: { nombre: 'Punteado redondo', descripcion: 'Píldora con borde de puntos', css: `& { border-radius: 999px; border: 2px dotted var(--color-texto-suave); } &:hover { border-color: var(--color-acento); color: var(--color-acento); }` },
+    punteado_redondo: { nombre: 'Punteado redondo', descripcion: 'Píldora con borde de puntos', css: `& { border-radius: 999px; border: 2px dotted var(--color-texto-suave); } &:hover { border-color: var(--color-acento); color: var(--color-acento-texto); }` },
     neon_contorno: { nombre: 'Neón suave', descripcion: 'Borde que brilla del acento', css: `& { border: 1.5px solid var(--color-acento); box-shadow: 0 0 10px color-mix(in srgb, var(--color-acento) 45%, transparent); } &:hover { box-shadow: 0 0 18px color-mix(in srgb, var(--color-acento) 70%, transparent); }` },
     retro_bisel: { nombre: 'Bisel retro', descripcion: 'Gris con relieve, de los 90', css: `& { background: #D4D0C8; color: #000; border-radius: 0; border: 2px solid; border-color: #FFFFFF #404040 #404040 #FFFFFF; }` },
-    solo_icono_texto: { nombre: 'Texto con más', descripcion: 'Un + delante, discreto', css: `& { padding: 0 6px; } &::before { content: '+'; font-size: 1.2em; font-weight: 400; color: var(--color-acento); }` },
+    solo_icono_texto: { nombre: 'Texto con más', descripcion: 'Un + delante, discreto', css: `& { padding: 0 6px; } &::before { content: '+'; font-size: 1.2em; font-weight: 400; color: var(--color-acento-texto); }` },
     sombra_dura_gris: { nombre: 'Sombra dura gris', descripcion: 'Borde fino y sombra sólida gris', css: `& { background: var(--color-fondo); border: 1.5px solid var(--color-texto); box-shadow: 3px 3px 0 color-mix(in srgb, var(--color-texto) 35%, transparent); border-radius: 6px; } &:hover { transform: translate(-1px,-1px); box-shadow: 4px 4px 0 color-mix(in srgb, var(--color-texto) 35%, transparent); }` },
   },
   Muestra: MuestraSecundario,
@@ -99,7 +99,7 @@ export const BOTON_ICONO: Categoria = {
   base: `& { position: relative; display: inline-grid; place-items: center; width: 44px; height: 44px; border: none; border-radius: 50%; background: transparent; color: var(--color-texto); cursor: pointer;
   transition: background-color var(--duracion-media) ease, color var(--duracion-media) ease, transform var(--duracion-media) var(--curva-entrada), box-shadow var(--duracion-media) ease; }
 &:focus-visible { outline: 3px solid var(--color-acento); outline-offset: 2px; }
-&[data-activo] { color: var(--color-acento); }
+&[data-activo] { color: var(--color-acento-texto); }
 &.toque { animation: cm-ico-toque 340ms cubic-bezier(.3,1.6,.5,1); }
 @keyframes cm-ico-toque { 40% { transform: scale(.85); } }
 @media (prefers-reduced-motion: reduce) { & { transition: none; animation: none !important; } }`,

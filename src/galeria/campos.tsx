@@ -107,12 +107,12 @@ export const CAMPOS: Categoria = {
       css: `& .cm-caja { border: 1.5px solid var(--color-borde); background: var(--color-fondo); border-radius: 12px; }
 & .cm-icono { display: inline-flex; }
 & .cm-caja:focus-within { border-color: var(--color-acento); }
-& .cm-caja:focus-within .cm-icono { color: var(--color-acento); }`,
+& .cm-caja:focus-within .cm-icono { color: var(--color-acento-texto); }`,
     },
     terminal: {
       nombre: 'Terminal', descripcion: 'Monoespaciado con prompt',
       css: `& .cm-caja { background: var(--color-superficie); border-left: 3px solid var(--color-acento); border-radius: 0; font-family: ui-monospace, Menlo, monospace; }
-& .cm-caja::before { content: '>'; color: var(--color-acento); font-family: ui-monospace, Menlo, monospace; font-weight: 700; }
+& .cm-caja::before { content: '>'; color: var(--color-acento-texto); font-family: ui-monospace, Menlo, monospace; font-weight: 700; }
 & input { font-family: ui-monospace, Menlo, monospace; }
 & .cm-etq { font-family: ui-monospace, Menlo, monospace; text-transform: lowercase; }
 & .cm-caja:focus-within { background: color-mix(in srgb, var(--color-acento) 10%, var(--color-superficie)); }`,
@@ -187,7 +187,7 @@ export const CAMPOS: Categoria = {
 & .cm-etq { position: absolute; top: 2px; left: 12px; padding: 0 6px; background: var(--color-fondo); font-size: 12px; z-index: 1; }
 & .cm-caja { border: 1.5px solid var(--color-borde); background: var(--color-fondo); border-radius: 10px; }
 & .cm-caja:focus-within { border-color: var(--color-acento); }
-&:focus-within .cm-etq { color: var(--color-acento); }`,
+&:focus-within .cm-etq { color: var(--color-acento-texto); }`,
     },
     invertido: {
       nombre: 'Invertido', descripcion: 'Oscuro sobre claro (o al revés)',

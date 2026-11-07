@@ -804,8 +804,8 @@ button:disabled { cursor: not-allowed; opacity: 0.4; }
 /* Inicio: cambiar solo layout o solo estilo, y esquemas de layouts */
 .modo-eleccion .inicio-centro-caja { flex-direction: column; gap: 10px; padding: 12px; border-radius: 24px; }
 .inicio-ajustes { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 8px; }
-.inicio-ajuste { display: inline-flex; align-items: center; gap: 2px; padding: 3px; border-radius: 999px; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.14); }
-.inicio-ajuste-etq { padding: 0 6px 0 10px; font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: #a8adb8; }
+.inicio-ajuste { display: inline-flex; align-items: center; gap: 2px; padding: 3px; border-radius: 999px; background: rgba(8,9,12,.62); border: 1px solid rgba(255,255,255,.18); }
+.inicio-ajuste-etq { padding: 0 6px 0 10px; font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: #d4d7de; }
 .inicio-ajuste button { width: 34px; height: 34px; border: none; border-radius: 999px; background: transparent; color: #fff; font-size: 20px; line-height: 1; cursor: pointer; }
 .inicio-ajuste button:hover { background: rgba(255,255,255,.14); }
 .inicio-ajuste button:focus-visible, .inicio-ver-layouts:focus-visible, .inicio-layout:focus-visible { outline: 2px solid #9fb3ff; outline-offset: 2px; }
@@ -913,9 +913,10 @@ button:disabled { cursor: not-allowed; opacity: 0.4; }
 
 /* Modo rápido: marco y barra de pasos */
 .rapido { min-height: 100%; display: flex; flex-direction: column; }
-.rapido > .panel-botones { flex: 1; }
+.rapido-main { flex: 1; display: flex; flex-direction: column; min-height: 0; }
+.rapido-main > .panel-botones { flex: 1; }
 .rapido-alto-fijo { height: 100%; height: 100dvh; }
-.rapido-alto-fijo > .proto { flex: 1; min-height: 0; height: auto; }
+.rapido-alto-fijo .rapido-main > .proto { flex: 1; min-height: 0; height: auto; }
 .barra-pasos { position: sticky; top: 0; z-index: 30; display: flex; align-items: center; gap: 10px; padding: 8px clamp(12px, 3vw, 32px); background: color-mix(in srgb, var(--color-fondo) 90%, transparent); color: var(--color-texto); border-bottom: 1px solid var(--color-borde); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); font-family: var(--fuente-texto); }
 .rapido-alto-fijo .barra-pasos { position: relative; }
 .bp-contador { flex: none; font-size: 12px; font-weight: 700; color: var(--color-texto-suave); font-variant-numeric: tabular-nums; }
@@ -961,3 +962,22 @@ button:disabled { cursor: not-allowed; opacity: 0.4; }
 .solo-angosto { display: none; }
 @media (max-width: 720px) { .solo-angosto { display: inline; } }
 .cargando-panel { display: grid; place-items: center; min-height: 60vh; color: #6b7080; font: 600 14px Inter, system-ui, sans-serif; }
+
+/* Botones: familias, variantes y experimentales */
+.pb-familias-ayuda { grid-column: 1 / -1; margin: -4px 2px 4px; color: var(--color-texto-suave); font-size: .9rem; }
+.pb-ver-variantes { margin: 0 12px 12px; min-height: 40px; padding: 0 12px; border-radius: 10px; border: 1px dashed var(--color-borde); background: transparent; color: var(--color-texto); font: inherit; font-size: 13px; font-weight: 700; cursor: pointer; align-self: flex-start; }
+.pb-ver-variantes[aria-expanded='true'] { border-style: solid; background: var(--color-superficie); }
+.pb-ver-variantes:focus-visible { outline: 2px solid var(--color-acento); outline-offset: 2px; }
+.pb-variantes-titulo { padding: 10px 14px; margin-top: 4px; border-radius: 12px 12px 0 0; background: var(--color-superficie); border-left: 3px solid var(--color-acento); }
+.pb-variantes-titulo .rec-titulo-texto { font-size: .95rem; }
+.pb-variantes-fin { grid-column: 1 / -1; height: 3px; border-radius: 3px; background: var(--color-superficie); margin-bottom: 8px; }
+.pb-experimentales { grid-column: 1 / -1; margin-top: 18px; padding-top: 18px; border-top: 1px solid var(--color-borde); }
+.pb-experimentales summary { display: flex; flex-direction: column; gap: 2px; min-height: 44px; justify-content: center; cursor: pointer; list-style: none; }
+.pb-experimentales summary::-webkit-details-marker { display: none; }
+.pb-experimentales summary .rec-titulo-texto::before { content: '▸ '; }
+.pb-experimentales[open] summary .rec-titulo-texto::before { content: '▾ '; }
+.pb-experimentales > .pb-grilla { margin-top: 14px; }
+.pb-celda { display: flex; flex-direction: column; }
+.pb-cabecera .pg-etiqueta { align-self: flex-start; }
+
+.solo-lectores { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }

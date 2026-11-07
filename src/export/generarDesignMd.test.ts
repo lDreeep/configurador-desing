@@ -152,7 +152,7 @@ describe('tipografía, botones y movimiento', () => {
 
   it('exporta botones y cada efecto de movimiento', () => {
     let c = aplicarMovimiento(configCompleta(), 'expresivo');
-    c = { ...c, botones: { estilo: 'tonal', tamano: 'grande', mayusculas: true, icono: 'derecha', diseno: 'ninguno', color: 'acento' }, visual: { ...c.visual, hover: 'brillo' } };
+    c = { ...c, botones: { estilo: 'tonal', tamano: 'grande', mayusculas: true, icono: 'derecha', diseno: 'ninguno', color: 'acento', efecto: 'del_diseno' }, visual: { ...c.visual, hover: 'brillo' } };
     const md = generarDesignMd(c);
     const comp = parse(bloquesYaml(md).find((b) => b.startsWith('botones:'))!);
     expect(comp.botones).toMatchObject({ estilo: 'tonal', tamano: 'grande', alto: '56px', mayusculas: 'si', icono: 'derecha' });
@@ -406,6 +406,36 @@ describe('recomendados por tipo de proyecto', () => {
         const disenos = CATEGORIAS[cat as keyof typeof CATEGORIAS].disenos as Record<string, unknown>;
         for (const id of ids!) expect(disenos[id], `${tipo} ${cat} ${id}`).toBeDefined();
       }
+    }
+  });
+});
+
+describe('familias de botones', () => {
+  it('cada botón está una sola vez entre familias, sueltos y experimentales', async () => {
+    const { BOTONES, FAMILIAS_BOTON, EXPERIMENTALES } = await import('../botones-disenos');
+    const vistos = [...FAMILIAS_BOTON.flatMap((f) => f.ids), ...EXPERIMENTALES];
+    for (const id of vistos) expect(BOTONES[id], id).toBeDefined();
+    expect(new Set(vistos).size).toBe(vistos.length);
+  });
+
+  it('la animación al tocar elegida aparte llega al export', () => {
+    const c = configCompleta();
+    const md = generarDesignMd({ ...c, botones: { ...c.botones, diseno: 'solido', efecto: 'gelatina' } });
+    const comp = parse(bloquesYaml(md).find((b) => b.startsWith('botones:'))!);
+    expect(comp.botones.al_tocar).toBe('gelatina');
+    expect(comp.botones.clases).toContain('bt-ef-gelatina');
+  });
+});
+
+describe('acento como texto', () => {
+  it('--color-acento-texto se lee a 4.5:1 sobre fondo y superficie en todas las paletas', async () => {
+    const { sistemaDeDiseno } = await import('./sistema');
+    for (const id of Object.keys(PALETAS)) {
+      const c = configCompleta();
+      const s = sistemaDeDiseno({ ...c, visual: { ...c.visual, paleta: id as keyof typeof PALETAS } });
+      const t = s.tokens['--color-acento-texto'];
+      expect(contraste(t, s.paleta.roles.fondo), `${id} fondo`).toBeGreaterThanOrEqual(4.5);
+      expect(contraste(t, s.paleta.roles.superficie), `${id} superficie`).toBeGreaterThanOrEqual(4.5);
     }
   });
 });

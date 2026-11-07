@@ -31,7 +31,7 @@ Antes de dar una tarea por terminada: `npm run typecheck && npm test`.
 | `src/pasos/pasos.tsx` | Registro `PASOS`: cada paso del configurador (componente, resumen, placeholder de la nota). |
 | `src/preview/Preview.tsx` | Vista previa en vivo del modo avanzado. Usa solo variables CSS de `sistema.ts`. |
 | `src/estilos-visuales.ts` | Estilos visuales (con su CSS y reglas) y layouts. El CSS se exporta tal cual en §19. |
-| `src/botones-disenos.ts` | Los 80 diseños del panel de botones (aspecto, hover y animación al tocar, en CSS). Se exporta tal cual en §10. |
+| `src/botones-disenos.ts` | Los 80 diseños del panel de botones (aspecto, hover y animación al tocar, en CSS), sus familias (`FAMILIAS_BOTON`) y los experimentales. Se exporta tal cual en §10. |
 | `src/cajas.ts` | Los 29 diseños de caja, sus parámetros, los tokens `--caja-*` y la regla `.caja`. Se exporta en §20. |
 | `src/galeria/` | Galería de componentes por categoría (campos, interruptores, casillas, deslizadores, barras inferiores, navegación web): estructura fija + diseños en CSS. Se exporta en §21. |
 | `src/componentes/BotonPrincipal.tsx` | El botón principal con el diseño elegido; lo usan todas las vistas. |
@@ -45,6 +45,7 @@ Antes de dar una tarea por terminada: `npm run typecheck && npm test`.
 - **Opciones nuevas van en `catalogo.ts`** (o en `estilos-visuales.ts` si son estilos o layouts). No escribas opciones a mano dentro de un componente.
 - **La vista previa no usa colores ni medidas propios**: solo los tokens `--color-*`, `--texto-*`, `--espacio-*`, `--radio-*`, `--sombra-*`, `--duracion-*`, `--curva-*`.
 - **Todo cambio en la salida del export** actualiza `DESIGN.md` (§3, y §5 si cambia un paso), sube la versión según §7 y se anota en §12. También `VERSION_FORMATO`.
+- **Texto del color de acento**: usá `--color-acento-texto` (no `--color-acento`) cuando el acento es color de letra; `--color-acento` queda para fondos, bordes y marcas.
 - **Paletas nuevas pasan contraste AA**: lo verifica `generarDesignMd.test.ts`.
 - **Accesibilidad**: botones y links reales, `label` en cada campo, áreas táctiles de 44px, foco visible.
 - **Textos de la interfaz en español rioplatense** (vos). Claves YAML del export en español sin tildes.

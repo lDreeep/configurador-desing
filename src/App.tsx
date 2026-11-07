@@ -108,6 +108,7 @@ export function App() {
       <div className={`rapido ${pasoRapido === 'prototipo' ? 'rapido-alto-fijo' : ''}`}>
         <EstilosVisualesGlobales />
         {pasoRapido !== 'inicio' && <BarraPasos config={config} pasos={pasos} actual={pasoRapido} onIr={(p) => irRapido(p, orden.indexOf(p) < n)} />}
+        <main className="rapido-main">
         <Suspense fallback={<Cargando />}>
         {pasoRapido !== 'inicio' && <EstilosGaleria />}
         {pasoRapido === 'inicio' && (
@@ -201,6 +202,7 @@ export function App() {
           <PanelListo config={config} onAtras={() => irRapido('prototipo', true)} onAvanzado={() => alAvanzado('exportar')} onInicio={() => irRapido('inicio')} />
         )}
         </Suspense>
+        </main>
       </div>
       </PasoContexto.Provider>
     );

@@ -1,6 +1,6 @@
 # DESIGN.md: especificación del formato
 
-> **Versión del formato:** 0.8.0 (borrador)
+> **Versión del formato:** 0.8.1 (borrador)
 > **Última actualización:** 2026-11-06
 > **Estado:** configurador en v0.2 (10 pasos + export): 8 direcciones, 13 paletas + personalizada, 23 fuentes, botones y movimiento detallados. Falta la primera ronda de pruebas con IA (§9).
 
@@ -134,7 +134,7 @@ Todo archivo exportado empieza con este bloque, que permite saber con qué versi
 
 ```yaml
 formato: design-md
-version_formato: 0.8.0
+version_formato: 0.8.1
 generado_por: configurador-diseno
 fecha: 2026-11-06
 idioma: es
@@ -367,6 +367,7 @@ roles:
   acento:          "#2F5BFF"      # acción principal, links, foco
   sobre_acento:    "#FFFFFF"      # texto encima del acento
   acento_suave:    "#DCE4FF"      # acento mezclado al 16% con el fondo (botón tonal, resaltados)
+  # token --color-acento-texto: el acento corregido para usarse como TEXTO (4.5:1 sobre fondo, superficie y acento suave)
 estados:
   exito:   "#1F7A4D"
   aviso:   "#B45309"
@@ -849,7 +850,7 @@ Así se vería un archivo real generado por el MVP. Las secciones `[v0.2]` apare
 ````markdown
 ```yaml
 formato: design-md
-version_formato: 0.8.0
+version_formato: 0.8.1
 generado_por: configurador-diseno
 fecha: 2026-11-06
 idioma: es
@@ -1160,6 +1161,8 @@ Formato: fecha · decisión · por qué · alternativas descartadas.
 | D52 | 2026-11-07 | Barra de pasos fija arriba en el modo rápido: todos los pasos a la vista, el actual marcado, los hechos con ✓ y cualquiera se toca para ir directo; la numeración («Paso 6 de 12 · Formularios») sale del orden real según el tipo de proyecto | La numeración a mano se desordenaba (había «Paso 3 · segunda parte») y no se veía cuánto faltaba | Solo un número de paso sin poder saltar |
 | D53 | 2026-11-07 | En el celular, el pie usa textos cortos («‹ Volver», «Siguiente ›») en un renglón, la barra de pasos muestra solo números salvo el actual y el prototipo deja cambiar claro/oscuro | El pie ocupaba dos renglones y tapaba contenido | — |
 | D54 | 2026-11-07 | La portada carga sola; paneles, prototipo, exportación, CSS de la galería y modo avanzado se bajan aparte, en segundo plano a los 2,5 s de abrir | La primera carga pasó de 145 KB a 84 KB comprimidos | Cargar todo junto |
+| D55 | 2026-11-07 | Botones por familias (mismo aspecto, otra animación al pasar): cada familia muestra uno y «Ver variantes» despliega el resto; los 16 más llamativos van en «Experimentales», plegado; la animación al tocar se elige aparte y se combina con cualquier diseño (`botones.efecto`) | 80 botones juntos abrumaban; ahora la vista inicial muestra 53 y nada se pierde | Esconder los experimentales del todo |
+| D56 | 2026-11-07 | Revisión de accesibilidad con axe en todos los pasos: `<main>` en el modo rápido, capas ocultas del inicio con `inert`, h1 en el modo elección, etiquetas únicas en las navegaciones de ejemplo, token `--color-acento-texto` y estados de datos mezclados con el texto para pasar 4.5:1 en cualquier paleta | axe marcaba contraste y estructura según la paleta que saliera | — |
 | D43 | 2026-11-06 | Si la persona no describe un proyecto, el archivo se exporta como sistema de diseño (`modo: sistema_de_diseno`): sirve para mejorar una app existente o para construir lo que se explique junto con el archivo; la pantalla final ofrece un mensaje para copiar para cada caso | El modo rápido no pide detalles del proyecto; tratar las pantallas de ejemplo como obligatorias llevaba a la IA a construir una app genérica | Obligar a completar el proyecto antes de exportar |
 
 ---
@@ -1265,5 +1268,6 @@ Lo que todavía no tiene lugar en §5. Se mueve allá cuando se decide hacerlo.
 | 0.6.1 | 2026-11-06 | Sin cambios de formato: más valores en listas existentes (`al_tocar` suma temblor, latido y estallido; cajas suman `fondo: invertido` y `sombra: color`). |
 | 0.6.2 | 2026-11-06 | Sin cambios de formato: §21 suma 14 categorías nuevas (las claves nuevas son opcionales). |
 | 0.7.0 | 2026-11-06 | Campo `modo` (`proyecto` \| `sistema_de_diseno`) en el encabezado y en §2, y variante de las instrucciones de §1 para el modo sistema de diseño. Compatible: un archivo sin `modo` equivale a `proyecto`. |
+| 0.8.1 | 2026-11-07 | §10: `al_tocar` puede ser una animación elegida aparte del diseño (se anota la del diseño en un comentario) y `clases` lleva esa `bt-ef-*`. §16 suma `--color-acento-texto` (el acento usado como texto, siempre a 4.5:1); los componentes de §21 lo usan en lugar de `--color-acento` para texto. |
 | 0.8.0 | 2026-11-07 | §6 suma `modo_alterno` (roles del modo opuesto) y §16 sus tokens con `prefers-color-scheme` y `data-tema`, cuando la persona pide los dos modos. §19 tiene 3 estilos nuevos. |
 | 0.7.1 | 2026-11-06 | Las instrucciones de §1 (en los dos modos) empiezan pidiendo a la IA una maqueta de cómo va a quedar, para que la persona la apruebe antes de aplicar todo. |

@@ -5,14 +5,14 @@ import { ESTILOS_BOTON, INTEGRACIONES, PATRONES_NAV, TAMANOS_BOTON } from '../ca
 import type { BotonEstiloId } from '../tipos';
 import type { Config } from '../tipos';
 import { paresDeContraste } from '../color';
-import { BOTONES, clasesDeBoton, cssDeBoton, EFECTOS_TOQUE } from '../botones-disenos';
+import { BOTONES, clasesDeBoton, cssDeBoton, EFECTOS_TOQUE, efectoDe } from '../botones-disenos';
 import { CAJAS, clasesDeCaja, CSS_CAJA, paramsDe } from '../cajas';
 import { cssDeEstilo, ESTILOS, LAYOUTS } from '../estilos-visuales';
 import { CATEGORIAS, type CategoriaId } from '../galeria';
 import { cssBaseDe, cssDisenoDe } from '../galeria/base';
 import { paletaActiva, sistemaDeDiseno, tokensCss } from './sistema';
 
-export const VERSION_FORMATO = '0.8.0';
+export const VERSION_FORMATO = '0.8.1';
 
 const q = (s: string) => JSON.stringify(s);
 const valor = (s: string) => (s.trim() ? q(s.trim()) : 'sin_definir');
@@ -363,14 +363,14 @@ elevacion:
     10,
     'Componentes',
     (disenoB
-      ? `Botón principal «${disenoB.nombre}» (${disenoB.descripcion.toLowerCase()}); al tocarlo: ${EFECTOS_TOQUE[disenoB.efecto].toLowerCase()}. Su CSS está abajo: usalo tal cual.`
+      ? `Botón principal «${disenoB.nombre}» (${disenoB.descripcion.toLowerCase()}); al tocarlo: ${EFECTOS_TOQUE[efectoDe(b.diseno as keyof typeof BOTONES, b.efecto)].toLowerCase()}. Su CSS está abajo: usalo tal cual.`
       : `Botones ${ESTILOS_BOTON[b.estilo].nombre.toLowerCase()}.`) +
       ` Tamaño ${TAMANOS_BOTON[b.tamano].nombre.toLowerCase()}. El resto de los componentes usa los valores por defecto del formato.`,
     `
 botones:
   diseno: ${b.diseno}${disenoB ? `
-  clases: ${q(clasesDeBoton(b.diseno as keyof typeof BOTONES))}
-  al_tocar: ${disenoB.efecto}` : ''}
+  clases: ${q(clasesDeBoton(b.diseno as keyof typeof BOTONES, b.efecto))}
+  al_tocar: ${efectoDe(b.diseno as keyof typeof BOTONES, b.efecto)}${b.efecto !== 'del_diseno' ? '  # elegida aparte; la del diseño era ' + disenoB.efecto : ''}` : ''}
   estilo: ${b.estilo}
   color: ${b.color === 'acento' || b.color === 'texto' ? b.color : q(b.color)}
   color_fondo: ${q(s.colorBoton.fondo)}

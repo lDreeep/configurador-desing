@@ -8,7 +8,7 @@ import type { BotonDisenoId, Config } from '../tipos';
 import { animarToque } from './ui';
 
 export function claseBotonPrincipal(c: Config, diseno: BotonDisenoId | 'ninguno' = c.botones.diseno) {
-  return diseno === 'ninguno' ? `pv-boton pv-primario est-${c.botones.estilo}` : `pv-boton ${clasesDeBoton(diseno)}`;
+  return diseno === 'ninguno' ? `pv-boton pv-primario est-${c.botones.estilo}` : `pv-boton ${clasesDeBoton(diseno, c.botones.efecto)}`;
 }
 
 export function BotonPrincipal(props: {

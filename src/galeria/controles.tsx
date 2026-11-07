@@ -230,7 +230,7 @@ export const CASILLAS: Categoria = {
 & .cm-marca { border: none; background: transparent; width: 26px; height: 26px; }
 & .cm-marca::after { content: '★'; font-size: 24px; line-height: 1; color: var(--color-borde); transition: color var(--duracion-media) ease, transform var(--duracion-media) cubic-bezier(.3,1.6,.5,1); }
 & input:checked + .cm-marca { background: transparent; }
-& input:checked + .cm-marca::after { color: var(--color-acento); transform: scale(1.2) rotate(72deg); }`,
+& input:checked + .cm-marca::after { color: var(--color-acento-texto); transform: scale(1.2) rotate(72deg); }`,
     },
     chip: {
       nombre: 'Chip', descripcion: 'Toda la opción es una pastilla que se pinta',

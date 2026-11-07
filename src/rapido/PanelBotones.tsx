@@ -2,8 +2,8 @@
 // Usa los colores, la letra y el estilo de la página elegida en el inicio.
 
 import { usePaso } from './BarraPasos';
-import { useState, type CSSProperties } from 'react';
-import { BOTONES, CATEGORIAS_BOTON, type CategoriaBoton, EFECTOS_TOQUE } from '../botones-disenos';
+import { Fragment, useState, type CSSProperties } from 'react';
+import { BOTONES, CATEGORIAS_BOTON, type CategoriaBoton, EFECTOS_TOQUE, type EfectoToque, efectoDe, EXPERIMENTALES, FAMILIAS_BOTON, NOMBRE_EFECTO } from '../botones-disenos';
 import { TAMANOS_BOTON } from '../catalogo';
 import { BotonPrincipal } from '../componentes/BotonPrincipal';
 import { sistemaDeDiseno } from '../export/sistema';
@@ -52,10 +52,28 @@ export function PanelBotones(props: {
   const elegido = c.botones.diseno;
   const colorMuestra = (id: string) => (id === 'acento' ? s.paleta.roles.acento : id === 'texto' ? s.paleta.roles.texto : id);
   const estilo = c.visual.estilo !== 'clasico' ? `estilo-${c.visual.estilo}` : '';
+  // Familias en el orden del catálogo; lo que no está en ninguna va solo. Los experimentales, aparte.
+  const enFamilia = new Set(FAMILIAS_BOTON.flatMap((f) => f.ids));
+  const grupos: BotonDisenoId[][] = (Object.keys(BOTONES) as BotonDisenoId[]).flatMap((id) => {
+    if (EXPERIMENTALES.includes(id)) return [];
+    const f = FAMILIAS_BOTON.find((x) => x.ids[0] === id);
+    if (f) return [f.ids];
+    return enFamilia.has(id) ? [] : [[id]];
+  });
+  const [abiertas, setAbiertas] = useState<Set<BotonDisenoId>>(() => new Set(grupos.filter((g) => g.slice(1).includes(elegido as BotonDisenoId)).map((g) => g[0])));
+  const alternar = (id: BotonDisenoId) =>
+    setAbiertas((a) => {
+      const n = new Set(a);
+      if (n.has(id)) n.delete(id);
+      else n.add(id);
+      return n;
+    });
   const orden = ordenar(ids, cat === 'todas' ? RECOMENDADOS[c.proyecto.tipo].botones : []);
-  const celda = (id: BotonDisenoId, rec: boolean) => {
+  const celda = (id: BotonDisenoId, rec: boolean, grupo?: BotonDisenoId[]) => {
     const b = BOTONES[id];
     const sel = elegido === id;
+    const variantes = grupo && grupo.length > 1 ? grupo.length - 1 : 0;
+    const variantesElegida = grupo?.slice(1).find((x) => x === elegido);
     return (
       <div key={id} className={`pb-celda pg-card ${sel ? 'elegida' : ''} ${rec ? 'recomendada' : ''}`}>
         {rec && <SelloRecomendado />}
@@ -67,8 +85,14 @@ export function PanelBotones(props: {
         <div className="pb-info">
           <span className="pg-card-titulo">{b.nombre}</span>
           <span className="pb-desc">{b.descripcion}</span>
-          <span className="pb-efecto">Al tocar: {EFECTOS_TOQUE[b.efecto].toLowerCase()}</span>
+          <span className="pb-efecto">Al tocar: {EFECTOS_TOQUE[efectoDe(id, c.botones.efecto)].toLowerCase()}</span>
         </div>
+        {variantes > 0 && (
+          <button type="button" className="pb-ver-variantes" aria-expanded={abiertas.has(id)} onClick={() => alternar(id)}>
+            {abiertas.has(id) ? 'Ocultar variantes' : `Ver ${variantes} variante${variantes > 1 ? 's' : ''}`}
+            {variantesElegida && !abiertas.has(id) ? ' · tenés una elegida' : ''}
+          </button>
+        )}
         {sel && (
           <span className="pb-sello" aria-hidden="true">
             Elegido
@@ -151,6 +175,12 @@ export function PanelBotones(props: {
             valor={c.botones.mayusculas ? 'si' : 'no'}
             onElegir={(v) => setB({ mayusculas: v === 'si' })}
           />
+          <Segmentado<EfectoToque | 'del_diseno'>
+            etiqueta="Al tocar"
+            opciones={[['del_diseno', 'La de cada diseño'], ...(Object.entries(EFECTOS_TOQUE) as [EfectoToque, string][]).filter(([id]) => id !== 'propio').map(([id]) => [id, NOMBRE_EFECTO[id]] as [EfectoToque, string])]}
+            valor={c.botones.efecto ?? 'del_diseno'}
+            onElegir={(efecto) => setB({ efecto })}
+          />
         </section>
 
         <div className="pb-filtros" role="group" aria-label="Filtrar botones">
@@ -164,8 +194,35 @@ export function PanelBotones(props: {
         <div className="pb-grilla">
           {orden.recomendados.length > 0 && <TituloRecomendados tipo={c.proyecto.tipo} explicar />}
           {orden.recomendados.map((id) => celda(id, true))}
-          {orden.recomendados.length > 0 && <TituloResto texto="Todos los demás botones" />}
-          {orden.resto.map((id) => celda(id, false))}
+          {cat !== 'todas' && orden.recomendados.length > 0 && <TituloResto texto="Todos los demás botones" />}
+          {cat !== 'todas' && orden.resto.map((id) => celda(id, false))}
+          {cat === 'todas' && (
+            <>
+              <TituloResto texto="Todos los botones, por familia" />
+              <p className="pb-familias-ayuda">Cada familia muestra uno; tocá «Ver variantes» para ver el mismo botón con otras animaciones.</p>
+              {grupos.map((g) => (
+                <Fragment key={g[0]}>
+                  {celda(g[0], false, g)}
+                  {abiertas.has(g[0]) && (
+                    <>
+                      <div className="rec-titulo pb-variantes-titulo" role="presentation">
+                        <span className="rec-titulo-texto">Variantes de «{BOTONES[g[0]].nombre}»: mismo aspecto, otra animación</span>
+                      </div>
+                      {g.slice(1).map((id) => celda(id, false))}
+                      <div className="pb-variantes-fin" role="presentation" />
+                    </>
+                  )}
+                </Fragment>
+              ))}
+              <details className="pb-experimentales" open={EXPERIMENTALES.includes(elegido as BotonDisenoId) || undefined}>
+                <summary>
+                  <span className="rec-titulo-texto">Experimentales ({EXPERIMENTALES.length})</span>
+                  <span className="rec-porque">Los más llamativos: con animación constante, chispas, píxeles o texturas. Para proyectos con mucha personalidad.</span>
+                </summary>
+                <div className="pb-grilla">{EXPERIMENTALES.map((id) => celda(id, false))}</div>
+              </details>
+            </>
+          )}
         </div>
       </div>
 

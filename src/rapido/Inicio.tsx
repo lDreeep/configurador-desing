@@ -171,6 +171,7 @@ export function Inicio(props: { config: Config; onElegir: (k: Combinacion) => vo
               key={capa.id}
               className={`inicio-capa ${animando ? (ultima ? `entra-${capa.sentido}` : `sale-${capas[capas.length - 1].sentido}`) : ''}`}
               aria-hidden={!ultima || modo === 'muestra'}
+              {...(!ultima || modo === 'muestra' ? { inert: '' } : {})}
               onAnimationEnd={(e) => {
                 if (ultima && animando && e.target === e.currentTarget) setCapas((cs) => cs.slice(-1));
               }}
@@ -181,6 +182,7 @@ export function Inicio(props: { config: Config; onElegir: (k: Combinacion) => vo
         })}
       </div>
 
+      <h1 className="solo-lectores">Elegí el diseño de tu página</h1>
       <div className="inicio-velo" aria-hidden="true" />
 
       {modo === 'eleccion' && (

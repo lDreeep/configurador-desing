@@ -228,8 +228,8 @@ export const ESTILOS: Record<EstiloId, EstiloVisual> = {
     direccionBase: 'tecnico',
     css: `
 & .pg-titulo, & .pg-marca { text-shadow: 0 0 12px color-mix(in srgb, var(--color-acento) 55%, transparent); }
-& .pg-titulo::before { content: '> '; color: var(--color-acento); }
-& .pg-titulo::after { content: '_'; color: var(--color-acento); animation: pg-cursor 1s steps(1) infinite; }
+& .pg-titulo::before { content: '> '; color: var(--color-acento-texto); }
+& .pg-titulo::after { content: '_'; color: var(--color-acento-texto); animation: pg-cursor 1s steps(1) infinite; }
 @keyframes pg-cursor { 50% { opacity: 0; } }
 & .pg-card { border: 1px dashed var(--color-borde); background: transparent; box-shadow: none; }
 & .pg-media { background: repeating-linear-gradient(0deg, var(--color-superficie) 0 3px, transparent 3px 6px); border: 1px solid var(--color-borde); }
@@ -253,7 +253,7 @@ export const ESTILOS: Record<EstiloId, EstiloVisual> = {
     css: `
 & .pg-card { background: transparent; box-shadow: none; border: none; border-top: 1px solid var(--color-texto); border-radius: 0; padding-left: 0 !important; padding-right: 0 !important; }
 & .pg-bajada { font-style: italic; }
-& .pg-bajada::first-letter { float: left; font-family: var(--fuente-titulos); font-size: 3.4em; line-height: 0.85; padding-right: 8px; font-style: normal; color: var(--color-acento); }
+& .pg-bajada::first-letter { float: left; font-family: var(--fuente-titulos); font-size: 3.4em; line-height: 0.85; padding-right: 8px; font-style: normal; color: var(--color-acento-texto); }
 & .pg-etiqueta { font-style: italic; text-transform: none; letter-spacing: 0; font-weight: 400; }
 & .pg-media { background: var(--color-superficie); border: 1px solid var(--color-texto); }
 & .pg-nav { border-bottom: 3px double var(--color-texto); }
@@ -301,7 +301,7 @@ export const ESTILOS: Record<EstiloId, EstiloVisual> = {
 & .pg-titulo { background: linear-gradient(100deg, var(--color-texto) 30%, var(--color-acento)); -webkit-background-clip: text; background-clip: text; color: transparent; }
 & .pg-boton { background-image: linear-gradient(180deg, rgba(255,255,255,.45), rgba(255,255,255,0) 50%); }
 & .pg-media { background: radial-gradient(circle at 30% 30%, #FFFFFF, var(--deco-3) 40%, var(--deco-2) 75%, var(--deco-1)); border-radius: 999px; }
-& .pg-deco > span::before { content: '\\2726'; position: absolute; color: var(--color-acento); }
+& .pg-deco > span::before { content: '\\2726'; position: absolute; color: var(--color-acento-texto); }
 & .pg-deco .a::before { top: 10%; right: 10%; font-size: 48px; }
 & .pg-deco .b::before { top: 55%; left: 4%; font-size: 30px; }
 & .pg-deco .c::before { bottom: 8%; right: 30%; font-size: 22px; }
@@ -348,7 +348,7 @@ export const ESTILOS: Record<EstiloId, EstiloVisual> = {
     css: `
 & .pg-titulo { letter-spacing: -0.035em; }
 & .pg-etiqueta { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; }
-& .pg-etiqueta::before { content: '// '; color: var(--color-acento); }
+& .pg-etiqueta::before { content: '// '; color: var(--color-acento-texto); }
 & .pg-card { background: var(--color-fondo); border: 1px solid var(--color-borde); box-shadow: none; }
 & .pg-card:hover { border-color: var(--color-texto-suave); }
 & .pg-media { background-color: var(--color-superficie); border: 1px solid var(--color-borde); background-image: radial-gradient(var(--color-borde) 1px, transparent 1px); background-size: 16px 16px; }

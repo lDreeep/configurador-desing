@@ -13,7 +13,7 @@ import {
   TAMANOS_BOTON,
   type Paleta,
 } from '../catalogo';
-import { derivarRoles, ESTADOS_CLAROS, ESTADOS_OSCUROS, esHex, esOscuro, mezclar, paresDeContraste, rolesInvertidos, textoSobre } from '../color';
+import { asegurarContraste, derivarRoles, ESTADOS_CLAROS, ESTADOS_OSCUROS, esHex, esOscuro, mezclar, paresDeContraste, rolesInvertidos, textoSobre } from '../color';
 import { pesoDisponible } from '../estado';
 import { paramsDe, tokensDeCaja } from '../cajas';
 import type { Config } from '../tipos';
@@ -112,6 +112,8 @@ export function sistemaDeDiseno(c: Config) {
     '--color-acento': r.acento,
     '--color-sobre-acento': r.sobre_acento,
     '--color-acento-suave': mezclar(r.fondo, r.acento, 0.16),
+    // El acento usado como TEXTO (links, etiquetas): corregido para leerse a 4.5:1 sobre fondo, superficie y acento suave.
+    '--color-acento-texto': asegurarContraste(asegurarContraste(asegurarContraste(r.acento, r.fondo, r.texto), r.superficie, r.texto), mezclar(r.fondo, r.acento, 0.16), r.texto),
     '--color-exito': paleta.estados.exito,
     '--color-aviso': paleta.estados.aviso,
     '--color-error': paleta.estados.error,

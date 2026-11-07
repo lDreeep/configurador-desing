@@ -35,22 +35,22 @@ export const METRICAS: Categoria = {
 & .cm-m-ico, & .cm-m-spark, & .cm-m-meta, & .cm-m-meta-txt { display: none; }
 & .cm-m-etq { font-size: 13px; color: var(--color-texto-suave); font-weight: 600; }
 & .cm-m-valor { font-family: var(--fuente-titulos); font-weight: var(--titulos-peso); font-size: 30px; line-height: 1.1; letter-spacing: var(--titulos-espaciado); font-variant-numeric: tabular-nums; }
-& .cm-m-cambio { font-size: 12.5px; font-weight: 700; color: var(--color-exito); }
-& .cm-m-spark { width: 100%; height: 36px; margin-top: 6px; color: var(--color-acento); }
+& .cm-m-cambio { font-size: 12.5px; font-weight: 700; color: color-mix(in srgb, var(--color-exito) 78%, var(--color-texto)); }
+& .cm-m-spark { width: 100%; height: 36px; margin-top: 6px; color: var(--color-acento-texto); }
 & .cm-m-meta { position: relative; height: 6px; margin-top: 10px; border-radius: 3px; background: color-mix(in srgb, var(--color-texto) 12%, transparent); overflow: hidden; }
 & .cm-m-meta-relleno { position: absolute; inset: 0 auto 0 0; width: var(--p); border-radius: 3px; background: var(--color-acento); }
 & .cm-m-meta-txt { font-size: 12px; color: var(--color-texto-suave); }`,
   disenos: {
     simple: { nombre: 'Simple', descripcion: 'Etiqueta, número y cambio', css: '' },
     sparkline: { nombre: 'Con mini gráfico', descripcion: 'Una línea con la tendencia', css: `& .cm-m-spark { display: block; }` },
-    icono: { nombre: 'Con icono', descripcion: 'Un icono de color arriba', css: `& .cm-m-ico { display: grid; place-items: center; width: 40px; height: 40px; margin-bottom: 8px; border-radius: 12px; background: color-mix(in srgb, var(--color-acento) 16%, var(--color-fondo)); color: var(--color-acento); }` },
+    icono: { nombre: 'Con icono', descripcion: 'Un icono de color arriba', css: `& .cm-m-ico { display: grid; place-items: center; width: 40px; height: 40px; margin-bottom: 8px; border-radius: 12px; background: color-mix(in srgb, var(--color-acento) 16%, var(--color-fondo)); color: var(--color-acento-texto); }` },
     hero: { nombre: 'Número protagonista', descripcion: 'El valor enorme, todo lo demás chico', css: `& { background: transparent; padding: 8px 0; } & .cm-m-valor { font-size: 48px; } & .cm-m-etq { text-transform: uppercase; letter-spacing: 0.08em; font-size: 11px; }` },
     acento: { nombre: 'De color', descripcion: 'Fondo de acento, texto claro', css: `& { background: var(--color-acento); color: var(--color-sobre-acento); } & .cm-m-etq, & .cm-m-cambio { color: var(--color-sobre-acento); }` },
     meta: { nombre: 'Con meta', descripcion: 'Barra de avance hacia un objetivo', css: `& .cm-m-meta, & .cm-m-meta-txt { display: block; } & .cm-m-cambio { display: none; }` },
     borde: { nombre: 'Borde lateral', descripcion: 'Una línea de color a la izquierda', css: `& { background: var(--color-fondo); border-left: 4px solid var(--color-acento); border-radius: 4px; box-shadow: 0 2px 10px rgba(0,0,0,.08); }` },
     oscura: { nombre: 'Oscura', descripcion: 'Fondo oscuro con mini gráfico', css: `& { background: #15171C; color: #FFFFFF; } & .cm-m-etq { color: #B8BDC7; } & .cm-m-cambio { color: #4ADE80; } & .cm-m-spark { display: block; color: #FFFFFF; }` },
     neobrutal: { nombre: 'Neobrutal', descripcion: 'Borde negro y sombra sólida', css: `& { background: var(--color-fondo); border: 2px solid var(--color-texto); border-radius: 0; box-shadow: 5px 5px 0 var(--color-texto); }` },
-    pastilla: { nombre: 'Cambio en pastilla', descripcion: 'El cambio va en una pastilla de color suave', css: `& .cm-m-cambio { align-self: flex-start; margin-top: 6px; padding: 3px 9px; border-radius: 999px; background: color-mix(in srgb, var(--color-exito) 16%, var(--color-fondo)); }` },
+    pastilla: { nombre: 'Cambio en pastilla', descripcion: 'El cambio va en una pastilla de color suave', css: `& .cm-m-cambio { align-self: flex-start; margin-top: 6px; padding: 3px 9px; border-radius: 999px; background: color-mix(in srgb, var(--color-exito) 12%, var(--color-fondo)); color: color-mix(in srgb, var(--color-exito) 62%, var(--color-texto)); }` },
   },
   Muestra: ({ clase }) => (
     <div className={clase}>
@@ -398,16 +398,16 @@ export const TABLAS: Categoria = {
 & tbody tr { transition: background-color var(--duracion-rapida) ease; }
 & .cm-t-estado { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; }
 & .cm-t-estado::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
-& .cm-t-estado[data-estado='pagado'] { color: var(--color-exito); }
-& .cm-t-estado[data-estado='pendiente'] { color: var(--color-aviso); }
-& .cm-t-estado[data-estado='vencido'] { color: var(--color-error); }`,
+& .cm-t-estado[data-estado='pagado'] { color: color-mix(in srgb, var(--color-exito) 78%, var(--color-texto)); }
+& .cm-t-estado[data-estado='pendiente'] { color: color-mix(in srgb, var(--color-aviso) 78%, var(--color-texto)); }
+& .cm-t-estado[data-estado='vencido'] { color: color-mix(in srgb, var(--color-error) 78%, var(--color-texto)); }`,
   disenos: {
     lineas: { nombre: 'Con líneas', descripcion: 'Filas separadas por líneas finas', css: `& td { border-top: 1px solid var(--color-borde); } & tbody tr:hover { background: var(--color-superficie); }` },
     cebra: { nombre: 'Cebra', descripcion: 'Filas alternadas', css: `& tbody tr:nth-child(odd) { background: var(--color-superficie); } & tbody tr:hover { background: color-mix(in srgb, var(--color-acento) 10%, var(--color-fondo)); }` },
     encabezado: { nombre: 'Encabezado oscuro', descripcion: 'La primera fila resalta', css: `& th { background: var(--color-texto); color: var(--color-fondo); } & th:first-child { border-radius: 8px 0 0 8px; } & th:last-child { border-radius: 0 8px 8px 0; } & td { border-bottom: 1px solid var(--color-borde); }` },
     tarjeta: { nombre: 'En tarjeta', descripcion: 'Dentro de una caja con sombra', css: `& { background: var(--color-superficie-alta); border-radius: var(--radio-medio); box-shadow: 0 4px 16px rgba(0,0,0,.08); overflow: hidden; } & th { background: var(--color-superficie); } & td { border-top: 1px solid var(--color-borde); }` },
     grilla: { nombre: 'Grilla', descripcion: 'Bordes en todas las celdas', css: `& { border: 1px solid var(--color-borde); border-radius: 8px; overflow: hidden; } & th, & td { border-right: 1px solid var(--color-borde); border-bottom: 1px solid var(--color-borde); } & th:last-child, & td:last-child { border-right: none; } & tbody tr:last-child td { border-bottom: none; }` },
-    pastillas: { nombre: 'Estados en pastilla', descripcion: 'El estado va en una pastilla de color suave', css: `& td { border-top: 1px solid var(--color-borde); } & .cm-t-estado { padding: 3px 9px; border-radius: 999px; background: color-mix(in srgb, currentColor 14%, var(--color-fondo)); } & tbody tr:hover td { background: var(--color-superficie); }` },
+    pastillas: { nombre: 'Estados en pastilla', descripcion: 'El estado va en una pastilla de color suave', css: `& td { border-top: 1px solid var(--color-borde); } & .cm-t-estado { padding: 3px 9px; border-radius: 999px; background: color-mix(in srgb, currentColor 12%, var(--color-fondo)); color: color-mix(in srgb, currentColor 62%, var(--color-texto)); } & tbody tr:hover td { background: var(--color-superficie); }` },
   },
   Muestra: ({ clase, id }) => (
     <table className={clase}>
