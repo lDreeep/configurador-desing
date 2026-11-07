@@ -34,6 +34,9 @@ export function Segmentado<T extends string>(props: { etiqueta: string; opciones
   );
 }
 
+import { ordenar, RECOMENDADOS } from '../recomendados';
+import { SelloRecomendado, TituloRecomendados, TituloResto } from './Recomendados';
+
 export function PanelBotones(props: {
   config: Config;
   setConfig: (fn: (c: Config) => Config) => void;
@@ -48,6 +51,31 @@ export function PanelBotones(props: {
   const elegido = c.botones.diseno;
   const colorMuestra = (id: string) => (id === 'acento' ? s.paleta.roles.acento : id === 'texto' ? s.paleta.roles.texto : id);
   const estilo = c.visual.estilo !== 'clasico' ? `estilo-${c.visual.estilo}` : '';
+  const orden = ordenar(ids, cat === 'todas' ? RECOMENDADOS[c.proyecto.tipo].botones : []);
+  const celda = (id: BotonDisenoId, rec: boolean) => {
+    const b = BOTONES[id];
+    const sel = elegido === id;
+    return (
+      <div key={id} className={`pb-celda pg-card ${sel ? 'elegida' : ''} ${rec ? 'recomendada' : ''}`}>
+        {rec && <SelloRecomendado />}
+        <div className="pb-muestra">
+          <BotonPrincipal config={c} diseno={id} presionado={sel} etiqueta={`${b.nombre}: elegir este botón`} onClick={() => setB({ diseno: id })}>
+            Comenzar
+          </BotonPrincipal>
+        </div>
+        <div className="pb-info">
+          <span className="pg-card-titulo">{b.nombre}</span>
+          <span className="pb-desc">{b.descripcion}</span>
+          <span className="pb-efecto">Al tocar: {EFECTOS_TOQUE[b.efecto].toLowerCase()}</span>
+        </div>
+        {sel && (
+          <span className="pb-sello" aria-hidden="true">
+            Elegido
+          </span>
+        )}
+      </div>
+    );
+  };
 
   return (
     <div className={`panel-botones pg ${estilo}`} style={s.tokens as CSSProperties}>
@@ -133,35 +161,16 @@ export function PanelBotones(props: {
         </div>
 
         <div className="pb-grilla">
-          {ids.map((id) => {
-            const b = BOTONES[id];
-            const sel = elegido === id;
-            return (
-              <div key={id} className={`pb-celda pg-card ${sel ? 'elegida' : ''}`}>
-                <div className="pb-muestra">
-                  <BotonPrincipal config={c} diseno={id} presionado={sel} etiqueta={`${b.nombre}: elegir este botón`} onClick={() => setB({ diseno: id })}>
-                    Comenzar
-                  </BotonPrincipal>
-                </div>
-                <div className="pb-info">
-                  <span className="pg-card-titulo">{b.nombre}</span>
-                  <span className="pb-desc">{b.descripcion}</span>
-                  <span className="pb-efecto">Al tocar: {EFECTOS_TOQUE[b.efecto].toLowerCase()}</span>
-                </div>
-                {sel && (
-                  <span className="pb-sello" aria-hidden="true">
-                    Elegido
-                  </span>
-                )}
-              </div>
-            );
-          })}
+          {orden.recomendados.length > 0 && <TituloRecomendados tipo={c.proyecto.tipo} explicar />}
+          {orden.recomendados.map((id) => celda(id, true))}
+          {orden.recomendados.length > 0 && <TituloResto texto="Todos los demás botones" />}
+          {orden.resto.map((id) => celda(id, false))}
         </div>
       </div>
 
       <footer className="pb-pie">
         <button type="button" className="pb-pie-atras" onClick={props.onAtras}>
-          Volver al inicio
+          Volver
         </button>
         <span className="pb-pie-estado" aria-live="polite">
           {elegido !== 'ninguno' ? `Elegido: ${BOTONES[elegido].nombre}` : 'Tocá un botón para elegirlo'}

@@ -6,6 +6,8 @@ import { sistemaDeDiseno } from '../export/sistema';
 import { CATEGORIAS, type CategoriaId, DISENO_INICIAL } from '../galeria';
 import { claseDe, GaleriaContexto } from '../galeria/base';
 import type { Config } from '../tipos';
+import { ordenar, RECOMENDADOS } from '../recomendados';
+import { SelloRecomendado, TituloRecomendados, TituloResto } from './Recomendados';
 
 export function PanelGaleria(props: {
   config: Config;
@@ -26,6 +28,26 @@ export function PanelGaleria(props: {
   const estilo = c.visual.estilo !== 'clasico' ? `estilo-${c.visual.estilo}` : '';
   const elegir = (d: string) => props.setConfig((x) => ({ ...x, componentes: { ...x.componentes, [pestana]: d } }));
   const listos = props.categorias.filter((id) => elegido(id)).length;
+  const orden = ordenar(Object.keys(cat.disenos), RECOMENDADOS[c.proyecto.tipo].componentes[pestana]);
+  const celda = (id: string, rec: boolean) => {
+    const d = cat.disenos[id];
+    const sel = elegido(pestana) === id;
+    return (
+      <div key={`${pestana}-${id}`} className={`pb-celda pg-celda ${sel ? 'elegida' : ''} ${rec ? 'recomendada' : ''}`}>
+        {rec && <SelloRecomendado />}
+        <div className="pg-muestra">
+          <cat.Muestra clase={claseDe(pestana, id)} id={id} />
+        </div>
+        <div className="pb-info">
+          <span className="pg-card-titulo">{d.nombre}</span>
+          <span className="pb-desc">{d.descripcion}</span>
+        </div>
+        <button type="button" className="pg-elegir" aria-pressed={sel} onClick={() => elegir(id)}>
+          {sel ? 'Elegido' : 'Elegir este'}
+        </button>
+      </div>
+    );
+  };
 
   return (
     <GaleriaContexto.Provider value={c}>
@@ -51,23 +73,10 @@ export function PanelGaleria(props: {
         <p className="pg-ayuda-cat">{cat.descripcion}</p>
 
         <div className="pb-grilla pg-grilla" style={{ '--ancho-celda': `${cat.anchoCelda}px` } as CSSProperties} role="tabpanel">
-          {Object.entries(cat.disenos).map(([id, d]) => {
-            const sel = elegido(pestana) === id;
-            return (
-              <div key={`${pestana}-${id}`} className={`pb-celda pg-celda ${sel ? 'elegida' : ''}`}>
-                <div className="pg-muestra">
-                  <cat.Muestra clase={claseDe(pestana, id)} id={id} />
-                </div>
-                <div className="pb-info">
-                  <span className="pg-card-titulo">{d.nombre}</span>
-                  <span className="pb-desc">{d.descripcion}</span>
-                </div>
-                <button type="button" className="pg-elegir" aria-pressed={sel} onClick={() => elegir(id)}>
-                  {sel ? 'Elegido' : 'Elegir este'}
-                </button>
-              </div>
-            );
-          })}
+          {orden.recomendados.length > 0 && <TituloRecomendados tipo={c.proyecto.tipo} />}
+          {orden.recomendados.map((id) => celda(id, true))}
+          {orden.recomendados.length > 0 && <TituloResto />}
+          {orden.resto.map((id) => celda(id, false))}
         </div>
       </div>
 
@@ -77,7 +86,7 @@ export function PanelGaleria(props: {
         </button>
         <span className="pb-pie-estado" aria-live="polite">
           {listos} de {props.categorias.length} elegidos
-          {listos < props.categorias.length && ' · lo que no elijas queda con el primero de la lista'}
+          {listos < props.categorias.length && ' · lo que no elijas queda con el primero recomendado'}
         </span>
         <BotonPrincipal
           config={c}
@@ -86,7 +95,7 @@ export function PanelGaleria(props: {
               // Lo que no se eligió queda con el primer diseño, así el archivo siempre lo define.
               props.setConfig((x) => ({
                 ...x,
-                componentes: Object.fromEntries(props.categorias.map((id) => [id, x.componentes[id] ?? DISENO_INICIAL[id]]).concat(Object.entries(x.componentes))),
+                componentes: Object.fromEntries(props.categorias.map((id) => [id, x.componentes[id] ?? RECOMENDADOS[x.proyecto.tipo].componentes[id]?.[0] ?? DISENO_INICIAL[id]]).concat(Object.entries(x.componentes))),
               }));
               props.onSeguir();
             }, 220)

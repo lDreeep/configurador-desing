@@ -18,6 +18,7 @@ import { aplicarCombinacion } from './combinar';
 import { baseDesdeColores, derivarRoles, hexesDeTexto } from '../color';
 import { COLORES } from './PanelBotones';
 import { Pagina } from './Pagina';
+import { TEXTOS_PROTOTIPO } from './textos-prototipo';
 
 /** ¿Se está viendo desde un teléfono? */
 const enTelefono = () => {
@@ -147,6 +148,8 @@ export function Prototipo(props: { config: Config; setConfig: (fn: (c: Config) =
   const s = useMemo(() => sistemaDeDiseno(c), [c]);
   const modoBase = paletaActiva(real).modo;
   const modoOtro = modoBase === 'claro' ? 'oscuro' : 'claro';
+  const T = TEXTOS_PROTOTIPO[real.proyecto.tipo];
+  const nombreDePantalla = (id: Pantalla) => T.pantallas[PANTALLAS.findIndex((p) => p.id === id)];
 
   const [dispositivo, setDispositivo] = useState<'computadora' | 'celular'>(c.proyecto.tipo === 'app_movil' || enTelefono() ? 'celular' : 'computadora');
   const [pantalla, setPantalla] = useState<Pantalla>('portada');
@@ -217,7 +220,7 @@ export function Prototipo(props: { config: Config; setConfig: (fn: (c: Config) =
             <span className="cm-ico">
               <Icono nombre={p.icono} />
             </span>
-            <span className="cm-lbl">{p.nombre}</span>
+            <span className="cm-lbl">{nombreDePantalla(p.id)}</span>
           </button>
         ))}
       </nav>
@@ -234,7 +237,7 @@ export function Prototipo(props: { config: Config; setConfig: (fn: (c: Config) =
               <span className="cm-ico">
                 <Icono nombre={p.icono} tamano={18} />
               </span>
-              <span className="cm-lbl">{p.nombre}</span>
+              <span className="cm-lbl">{nombreDePantalla(p.id)}</span>
             </button>
           ))}
         </div>
@@ -259,17 +262,17 @@ export function Prototipo(props: { config: Config; setConfig: (fn: (c: Config) =
     ),
     panel: (
       <div className="proto-pantalla">
-        <Titulo t="Panel" sub="Así se ven tus números del mes." />
-        <Botones principal="Nueva venta" secundario="Ver reportes" />
+        <Titulo t={T.panel.titulo} sub={T.panel.sub} />
+        <Botones principal={T.panel.principal} secundario={T.panel.secundario} />
         <Zona e="metrica" clase="proto-fila">
-          <Metrica etq="Ventas del mes" valor="$ 48.230" cambio="▲ 12,4% vs. mes anterior" meta="72%" />
-          <Metrica etq="Clientes nuevos" valor="128" cambio="▲ 8% vs. mes anterior" meta="64%" />
-          <Metrica etq="Ticket promedio" valor="$ 3.120" cambio="▲ 3,1% vs. mes anterior" meta="81%" />
+          {T.panel.metricas.map((m) => (
+            <Metrica key={m.etq} {...m} />
+          ))}
         </Zona>
         <div className="proto-dos">
           <div className={cc}>
             <Zona e="grafico">
-              <Grafico clase={cl('grafico')} id={d('grafico')} titulo="Ventas de la semana" />
+              <Grafico clase={cl('grafico')} id={d('grafico')} titulo={T.panel.grafico} />
             </Zona>
           </div>
           <div className={cc}>
@@ -282,7 +285,7 @@ export function Prototipo(props: { config: Config; setConfig: (fn: (c: Config) =
     ),
     explorar: (
       <div className="proto-pantalla">
-        <Titulo t="Explorar" sub="Buscá, filtrá y guardá lo que te guste." />
+        <Titulo t={T.explorar.titulo} sub={T.explorar.sub} />
         <div className="proto-filtros">
           <Zona e="campo" clase="proto-crece">
             <div className={cl('campo')}>
@@ -293,7 +296,7 @@ export function Prototipo(props: { config: Config; setConfig: (fn: (c: Config) =
                 <span className="cm-icono">
                   <Icono nombre="buscar" tamano={18} />
                 </span>
-                <input id="proto-buscar" type="search" placeholder="Productos, servicios…" onInput={(e) => reanimar(e.currentTarget.parentElement, 'escribiendo')} />
+                <input id="proto-buscar" type="search" placeholder={T.explorar.buscar} onInput={(e) => reanimar(e.currentTarget.parentElement, 'escribiendo')} />
                 <span className="cm-linea" aria-hidden="true" />
               </div>
             </div>
@@ -301,7 +304,7 @@ export function Prototipo(props: { config: Config; setConfig: (fn: (c: Config) =
           <Zona e="selector">
             <div className={cl('selector')} role="radiogroup" aria-label="Filtrar" style={{ '--i': filtro, '--n': 3 } as CSSProperties}>
               <span className="cm-ind" aria-hidden="true" />
-              {['Todos', 'Nuevos', 'Ofertas'].map((o, j) => (
+              {T.explorar.filtros.map((o, j) => (
                 <button key={o} type="button" role="radio" aria-checked={j === filtro} onClick={() => setFiltro(j)}>
                   {o}
                 </button>
@@ -310,17 +313,17 @@ export function Prototipo(props: { config: Config; setConfig: (fn: (c: Config) =
           </Zona>
         </div>
         <Zona e="etiqueta" clase="proto-etiquetas">
-          {['Diseño', 'Fotografía', 'Ilustración', 'Música'].map((t) => (
+          {T.explorar.temas.map((t) => (
             <span key={t} className={cl('etiqueta')}>
               {t}
             </span>
           ))}
         </Zona>
         <Zona e="caja" clase="proto-grilla">
-          {['Kit de marca', 'Sesión de fotos', 'Pack de íconos', 'Asesoría'].map((t, i) => (
+          {T.explorar.items.map(([t, etq], i) => (
             <article key={t} className={cc}>
               <div className="proto-tarjeta-cabeza">
-                <span className={cl('etiqueta')}>{i === 0 ? 'Nuevo' : i === 2 ? '20% off' : 'Popular'}</span>
+                <span className={cl('etiqueta')}>{etq}</span>
                 <button type="button" className={cl('boton_icono')} aria-label={`Guardar ${t}`} onClick={(e) => {
                   e.currentTarget.toggleAttribute('data-activo');
                   reanimar(e.currentTarget, 'toque');
@@ -328,15 +331,16 @@ export function Prototipo(props: { config: Config; setConfig: (fn: (c: Config) =
                   <Icono nombre="corazon" tamano={20} />
                 </button>
               </div>
-              <h3 className="proto-tarjeta-titulo">{t}</h3>
-              <p className="proto-tarjeta-texto">Todo listo para usar en tu proyecto.</p>
+              <h3 className="proto-tarjeta-titulo">{t.split(' · ')[0]}</h3>
+              {t.includes(' · ') && <strong className="proto-precio">{t.split(' · ')[1]}</strong>}
+              <p className="proto-tarjeta-texto">{T.explorar.texto}</p>
               {i === 1 && (
                 <div className={cl('progreso')} style={{ '--p': '45%' } as CSSProperties}>
                   <div className="cm-etq">
-                    <span>Cupos ocupados</span>
+                    <span>{T.explorar.progreso}</span>
                     <span>45%</span>
                   </div>
-                  <div className="cm-pista" role="progressbar" aria-valuenow={45} aria-valuemin={0} aria-valuemax={100} aria-label="Cupos ocupados">
+                  <div className="cm-pista" role="progressbar" aria-valuenow={45} aria-valuemin={0} aria-valuemax={100} aria-label={T.explorar.progreso}>
                     <span className="cm-relleno" />
                   </div>
                 </div>
@@ -367,7 +371,7 @@ export function Prototipo(props: { config: Config; setConfig: (fn: (c: Config) =
     ),
     crear: (
       <div className="proto-pantalla">
-        <Titulo t="Crear" sub="Probá el formulario: guardá para ver la carga y el aviso, o eliminá para ver la ventana." />
+        <Titulo t={T.crear.titulo} sub={T.crear.sub} />
         <form className={`${cc} proto-form`} onSubmit={(e) => e.preventDefault()}>
           <Zona e="campo" clase="proto-dos-campos">
             {[
@@ -392,7 +396,7 @@ export function Prototipo(props: { config: Config; setConfig: (fn: (c: Config) =
           <Zona e="selector">
             <div className={`${cl('selector')} cm-grande`} role="radiogroup" aria-label="Plan" style={{ '--i': plan, '--n': 2 } as CSSProperties}>
               <span className="cm-ind" aria-hidden="true" />
-              {['Mensual', 'Anual · 2 meses gratis'].map((o, j) => (
+              {T.crear.plan.map((o, j) => (
                 <button key={o} type="button" role="radio" aria-checked={j === plan} onClick={() => setPlan(j)}>
                   {o}
                 </button>
@@ -402,8 +406,8 @@ export function Prototipo(props: { config: Config; setConfig: (fn: (c: Config) =
           <Zona e="deslizador">
             <div className={cl('deslizador')} style={{ '--valor': `${presupuesto}%` } as CSSProperties}>
               <label htmlFor="proto-presupuesto" className="cm-etq">
-                <span>Presupuesto</span>
-                <output htmlFor="proto-presupuesto">$ {presupuesto * 1000}</output>
+                <span>{T.crear.rango}</span>
+                <output htmlFor="proto-presupuesto">{/presupuesto|propina|descuento/i.test(T.crear.rango) ? (/descuento/i.test(T.crear.rango) ? `${Math.round(presupuesto / 2)}%` : `$ ${presupuesto * 1000}`) : presupuesto}</output>
               </label>
               <input id="proto-presupuesto" type="range" min={0} max={100} value={presupuesto} onChange={(e) => setPresupuesto(+e.target.value)} />
             </div>
@@ -440,7 +444,7 @@ export function Prototipo(props: { config: Config; setConfig: (fn: (c: Config) =
                 </div>
               </Zona>
             ) : (
-              <Botones principal="Guardar" secundario="Eliminar" onPrincipal={guardar} onSecundario={() => setModal(true)} />
+              <Botones principal={T.crear.principal} secundario={T.crear.secundario} onPrincipal={guardar} onSecundario={() => setModal(true)} />
             )}
           </div>
         </form>
@@ -463,11 +467,7 @@ export function Prototipo(props: { config: Config; setConfig: (fn: (c: Config) =
         <div className="proto-dos">
           <Zona e="acordeon">
             <div className={cl('acordeon')}>
-              {[
-                ['¿Cómo cambio mi plan?', 'Desde Crear podés elegir mensual o anual cuando quieras.'],
-                ['¿Puedo cancelar?', 'Sí, sin costo y en cualquier momento.'],
-                ['¿Dónde veo mis ventas?', 'En el Panel, con gráficos y la tabla de pagos.'],
-              ].map(([p, r], i) => (
+              {T.ayuda.faqs.map(([p, r], i) => (
                 <details key={p} open={i === 0}>
                   <summary>{p}</summary>
                   <div className="cm-resp">{r}</div>
@@ -486,8 +486,8 @@ export function Prototipo(props: { config: Config; setConfig: (fn: (c: Config) =
                   ))}
                 </div>
               </Zona>
-              <strong>¿Seguís con dudas?</strong>
-              <span className="proto-sub">El equipo responde en menos de una hora.</span>
+              <strong>{T.ayuda.dudas}</strong>
+              <span className="proto-sub">{T.ayuda.dudasSub}</span>
               <Zona e="tooltip">
                 <span className={cl('tooltip')}>
                   <button type="button" aria-describedby="proto-tip">
@@ -506,7 +506,7 @@ export function Prototipo(props: { config: Config; setConfig: (fn: (c: Config) =
     ),
   };
 
-  const nombrePantalla = PANTALLAS.find((x) => x.id === pantalla)?.nombre ?? '';
+  const nombrePantalla = nombreDePantalla(pantalla);
   const appBar = (
     <div className="proto-appbar">
       <span className="proto-appbar-titulo">{pantalla === 'portada' ? c.proyecto.nombre.trim() || 'Tu marca' : nombrePantalla}</span>

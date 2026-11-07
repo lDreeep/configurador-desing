@@ -389,3 +389,23 @@ describe('otros formatos', () => {
     expect(t.split('\n').length).toBeLessThan(16);
   });
 });
+
+describe('recomendados por tipo de proyecto', () => {
+  it('cada id recomendado existe en su catálogo', async () => {
+    const { RECOMENDADOS } = await import('../recomendados');
+    const { BOTONES } = await import('../botones-disenos');
+    const { CAJAS } = await import('../cajas');
+    const { ESTILOS, LAYOUTS } = await import('../estilos-visuales');
+    const { CATEGORIAS } = await import('../galeria');
+    for (const [tipo, r] of Object.entries(RECOMENDADOS)) {
+      for (const id of r.layouts) expect(LAYOUTS[id], `${tipo} layout ${id}`).toBeDefined();
+      for (const id of r.estilos) expect(ESTILOS[id], `${tipo} estilo ${id}`).toBeDefined();
+      for (const id of r.botones) expect(BOTONES[id], `${tipo} botón ${id}`).toBeDefined();
+      for (const id of r.cajas) expect(CAJAS[id], `${tipo} caja ${id}`).toBeDefined();
+      for (const [cat, ids] of Object.entries(r.componentes)) {
+        const disenos = CATEGORIAS[cat as keyof typeof CATEGORIAS].disenos as Record<string, unknown>;
+        for (const id of ids!) expect(disenos[id], `${tipo} ${cat} ${id}`).toBeDefined();
+      }
+    }
+  });
+});

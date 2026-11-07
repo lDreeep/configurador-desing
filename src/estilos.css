@@ -880,3 +880,33 @@ button:disabled { cursor: not-allowed; opacity: 0.4; }
 .pl-detalle summary { min-height: 44px; display: flex; align-items: center; cursor: pointer; font-weight: 600; }
 .pl-pre { margin: 0 0 8px; padding: 12px; max-height: 260px; overflow: auto; white-space: pre-wrap; font-size: 12.5px; line-height: 1.5; border-radius: var(--radio-pequeno); background: var(--color-fondo); color: var(--color-texto); border: 1px solid var(--color-borde); }
 .pl-botones-extra { display: flex; flex-wrap: wrap; gap: 8px; }
+
+/* Recomendados según el tipo de proyecto */
+.rec-titulo { grid-column: 1 / -1; display: flex; flex-direction: column; gap: 2px; padding: 6px 2px 0; }
+.rec-titulo-texto { font-family: var(--fuente-titulos); font-weight: 700; font-size: 1.05rem; color: var(--color-texto); }
+.rec-porque { font-size: .9rem; color: var(--color-texto-suave); max-width: 70ch; }
+.rec-resto { margin-top: 18px; padding-top: 18px; border-top: 1px solid var(--color-borde); }
+.rec-resto .rec-titulo-texto { font-size: .95rem; color: var(--color-texto-suave); }
+.pb-celda, .pc-celda { position: relative; }
+.rec-sello { position: absolute; top: 8px; left: 8px; z-index: 2; display: grid; place-items: center; width: 24px; height: 24px; border-radius: 999px; background: var(--color-acento); color: var(--color-sobre-acento); font-size: 13px; line-height: 1; pointer-events: none; }
+
+/* ¿Qué vas a hacer?: sugerencia de diseño según el tipo */
+.pt-sugerencia { margin-top: 24px; padding: 20px; scroll-margin-top: 16px; }
+.pt-sug-titulo { margin: 0; font-family: var(--fuente-titulos); font-size: 1.3rem; }
+.pt-sug-porque { margin: 6px 0 16px; color: var(--color-texto-suave); max-width: 70ch; }
+.pt-sug-grilla { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 14px; }
+.pt-sug-opcion { display: flex; flex-direction: column; gap: 4px; padding: 8px; text-align: left; border-radius: var(--radio-medio); border: 2px solid var(--color-borde); background: var(--color-fondo); color: var(--color-texto); font: inherit; cursor: pointer; }
+.pt-sug-opcion:hover { border-color: var(--color-acento); }
+.pt-sug-opcion:focus-visible { outline: 2px solid var(--color-acento); outline-offset: 2px; }
+.pt-sug-tuyo { border-style: dashed; }
+.pt-sug-nombre { font-weight: 700; margin-top: 4px; }
+.pt-sug-desc { font-size: .88rem; color: var(--color-texto-suave); }
+.pt-mini { position: relative; display: block; width: 100%; aspect-ratio: 16 / 10; overflow: hidden; border-radius: calc(var(--radio-medio) * .6); container-type: inline-size; pointer-events: none; }
+.pt-mini-pagina { position: absolute; top: 0; left: 0; width: 1280px; height: 800px; overflow: hidden; transform: scale(.17); transform-origin: 0 0; }
+@container (min-width: 240px) { .pt-mini-pagina { transform: scale(.1875); } }
+@container (min-width: 260px) { .pt-mini-pagina { transform: scale(.203); } }
+@container (min-width: 280px) { .pt-mini-pagina { transform: scale(.219); } }
+@container (min-width: 300px) { .pt-mini-pagina { transform: scale(.235); } }
+@container (min-width: 330px) { .pt-mini-pagina { transform: scale(.258); } }
+@container (min-width: 370px) { .pt-mini-pagina { transform: scale(.289); } }
+.proto-precio { display: block; font-family: var(--fuente-titulos); font-size: 1.15rem; color: var(--color-texto); }

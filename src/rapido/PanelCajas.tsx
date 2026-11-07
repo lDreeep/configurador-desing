@@ -6,6 +6,8 @@ import { BotonPrincipal } from '../componentes/BotonPrincipal';
 import { sistemaDeDiseno } from '../export/sistema';
 import type { CajaPresetId, Config } from '../tipos';
 import { Segmentado } from './PanelBotones';
+import { ordenar, RECOMENDADOS } from '../recomendados';
+import { SelloRecomendado, TituloRecomendados, TituloResto } from './Recomendados';
 
 function Contenido({ titulo = 'Plan Pro' }: { titulo?: string }) {
   return (
@@ -52,6 +54,30 @@ export function PanelCajas(props: {
     }));
   const tokens = (params: ParamsCaja) => tokensDeCaja(params, s.paleta, s.radio.medio) as CSSProperties;
   const hayAjustes = Object.keys(c.cajas.ajustes).length > 0;
+  const orden = ordenar(Object.keys(CAJAS) as CajaPresetId[], RECOMENDADOS[c.proyecto.tipo].cajas);
+  const celda = (id: CajaPresetId, rec: boolean) => {
+    const x = CAJAS[id];
+    const sel = elegido === id;
+    return (
+      <button key={id} type="button" className={`pc-celda ${sel ? 'elegida' : ''} ${rec ? 'recomendada' : ''}`} aria-pressed={sel} onClick={() => elegir(id)}>
+        {rec && <SelloRecomendado />}
+        <span className="pc-escena" aria-hidden="true">
+          <span className={clasesDeCaja(x.params)} style={tokens(x.params)}>
+            <Contenido />
+          </span>
+        </span>
+        <span className="pc-info">
+          <span className="pc-nombre">{x.nombre}</span>
+          <span className="pc-desc">{x.descripcion}</span>
+        </span>
+        {sel && (
+          <span className="pb-sello" aria-hidden="true">
+            {hayAjustes ? 'Elegido · ajustado' : 'Elegido'}
+          </span>
+        )}
+      </button>
+    );
+  };
 
   return (
     <div className={`panel-botones panel-cajas pg ${estilo}`} style={s.tokens as CSSProperties}>
@@ -67,28 +93,10 @@ export function PanelCajas(props: {
 
         <div className="pc-cuerpo">
           <div className="pc-grilla">
-            {(Object.keys(CAJAS) as CajaPresetId[]).map((id) => {
-              const x = CAJAS[id];
-              const sel = elegido === id;
-              return (
-                <button key={id} type="button" className={`pc-celda ${sel ? 'elegida' : ''}`} aria-pressed={sel} onClick={() => elegir(id)}>
-                  <span className="pc-escena" aria-hidden="true">
-                    <span className={clasesDeCaja(x.params)} style={tokens(x.params)}>
-                      <Contenido />
-                    </span>
-                  </span>
-                  <span className="pc-info">
-                    <span className="pc-nombre">{x.nombre}</span>
-                    <span className="pc-desc">{x.descripcion}</span>
-                  </span>
-                  {sel && (
-                    <span className="pb-sello" aria-hidden="true">
-                      {hayAjustes ? 'Elegido · ajustado' : 'Elegido'}
-                    </span>
-                  )}
-                </button>
-              );
-            })}
+            {orden.recomendados.length > 0 && <TituloRecomendados tipo={c.proyecto.tipo} />}
+            {orden.recomendados.map((id) => celda(id, true))}
+            {orden.recomendados.length > 0 && <TituloResto />}
+            {orden.resto.map((id) => celda(id, false))}
           </div>
 
           <aside className="pc-lateral" aria-label="Ajustes de las cajas">
