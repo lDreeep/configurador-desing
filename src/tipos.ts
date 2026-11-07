@@ -124,7 +124,9 @@ export type LayoutId =
   | 'horizontal'
   | 'galeria'
   | 'precios'
-  | 'portada_video';
+  | 'portada_video'
+  | 'blog_lateral'
+  | 'equipo';
 
 export type EscalaId = 'sutil' | 'medio' | 'dramatico' | 'extremo';
 export type EspaciadoTitulos = 'apretado' | 'normal' | 'amplio';

@@ -321,6 +321,88 @@ function Layout({ c, k }: { c: Config; k: Contenido }) {
           <section className="pg-fila">{cards}</section>
         </>
       );
+    case 'blog_lateral':
+      return (
+        <>
+          <Nav k={k} />
+          <section className="pg-hero pg-blog-cabeza">
+            <span className="pg-etiqueta">Blog</span>
+            <Titulo k={k} />
+            <Bajada k={k} />
+          </section>
+          <section className="pg-blog">
+            <div className="pg-blog-lista">
+              {k.items.slice(0, 3).map((it, i) => (
+                <article key={i} className="pg-articulo" style={{ animationDelay: `${i * 70}ms` }}>
+                  <Media clase="pg-articulo-foto" />
+                  <div className="pg-articulo-texto">
+                    <span className="pg-etiqueta">{['Novedades', 'Guías', 'Historias'][i]}</span>
+                    <span className="pg-card-titulo">{it.titulo}</span>
+                    {it.texto && <span className="pg-card-texto">{it.texto}</span>}
+                    <span className="pg-articulo-meta">{[5, 8, 3][i]} min de lectura</span>
+                  </div>
+                </article>
+              ))}
+            </div>
+            <aside className="pg-blog-lateral">
+              <div className={`pg-card ${cc}`}>
+                <span className="pg-card-titulo">Sobre {k.marca}</span>
+                <span className="pg-card-texto">Notas, guías y novedades, una vez por semana.</span>
+                <Botones c={c} k={k} />
+              </div>
+              <div className="pg-chips">
+                {['Diseño', 'Producto', 'Equipo', 'Clientes', 'Tutoriales'].map((t) => (
+                  <span key={t} className="pg-chip">
+                    {t}
+                  </span>
+                ))}
+              </div>
+            </aside>
+          </section>
+        </>
+      );
+    case 'equipo': {
+      const personas = [
+        ['Ana López', 'Fundadora'],
+        ['Martín Ruiz', 'Diseño'],
+        ['Juli Paz', 'Desarrollo'],
+        ['Sofi Díaz', 'Atención'],
+      ];
+      const citas = ['Nos cambió la forma de trabajar.', 'Rápido, claro y siempre atentos.', 'Lo recomiendo sin dudar.'];
+      return (
+        <>
+          <Nav k={k} />
+          <section className="pg-hero pg-centro">
+            <span className="pg-etiqueta">Quiénes somos</span>
+            <Titulo k={k} />
+            <Bajada k={k} />
+          </section>
+          <section className="pg-equipo">
+            {personas.map(([n, r]) => (
+              <div key={n} className="pg-persona">
+                <Media clase="pg-persona-foto" />
+                <span className="pg-card-titulo">{n}</span>
+                <span className="pg-card-texto">{r}</span>
+              </div>
+            ))}
+          </section>
+          <section className="pg-testimonios">
+            {citas.map((q, i) => (
+              <figure key={q} className={`pg-card pg-testimonio ${cc}`} style={{ animationDelay: `${i * 70}ms` }}>
+                <span className="pg-estrellas" aria-label="5 de 5 estrellas">
+                  ★★★★★
+                </span>
+                <blockquote>{q}</blockquote>
+                <figcaption>{['Laura G.', 'Pedro M.', 'Caro S.'][i]}</figcaption>
+              </figure>
+            ))}
+          </section>
+          <section className="pg-centro pg-equipo-acciones">
+            <Botones c={c} k={k} />
+          </section>
+        </>
+      );
+    }
     case 'mosaico':
       return (
         <>

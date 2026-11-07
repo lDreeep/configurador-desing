@@ -146,7 +146,7 @@ export function App() {
             alFinal={volviendo}
             titulo="Elegí tus formularios"
             bajada="Campos de texto, selectores tipo slide, interruptores, casillas y deslizadores. Escribí, tocá y arrastrá cada uno: todos usan tus colores y tu letra."
-            categorias={['campo', 'selector', 'desplegable', 'buscador', 'interruptor', 'casilla', 'deslizador']}
+            categorias={['campo', 'selector', 'desplegable', 'buscador', 'calendario', 'interruptor', 'casilla', 'deslizador']}
             atras={esDatos ? 'Volver a los datos' : 'Volver a las cajas'}
             onAtras={() => irRapido(esDatos ? 'datos' : 'cajas', true)}
             onSeguir={() => irRapido('navegacion')}
@@ -162,7 +162,7 @@ export function App() {
                 ? 'Como es una app para celular, arrancamos por las barras inferiores. Tocá las pestañas para ver cómo marcan la activa.'
                 : 'Barras superiores, flotantes y menús laterales, y también las barras inferiores para cuando se vea en el celular.'
             }
-            categorias={[...navPrimero, 'migas', 'paginacion', 'pasos']}
+            categorias={[...navPrimero, 'migas', 'paginacion', 'pasos', 'pie']}
             atras="Volver a los formularios"
             onAtras={() => irRapido('formularios', true)}
             onSeguir={() => irRapido('elementos')}
@@ -174,7 +174,7 @@ export function App() {
             alFinal={volviendo}
             titulo="Elegí los detalles"
             bajada="Las piezas chicas que aparecen en toda app: etiquetas, avisos, cargas, progreso, preguntas frecuentes, avatares, ayudas y ventanas."
-            categorias={['etiqueta', 'aviso', 'cargando', 'progreso', 'acordeon', 'avatar', 'tooltip', 'modal', 'vacio']}
+            categorias={['etiqueta', 'aviso', 'cargando', 'progreso', 'acordeon', 'avatar', 'tooltip', 'modal', 'vacio', 'carrusel']}
             atras="Volver a la navegación"
             onAtras={() => irRapido('navegacion', true)}
             onSeguir={() => irRapido(esDatos ? 'movimiento' : 'datos')}

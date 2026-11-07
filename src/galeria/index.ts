@@ -9,6 +9,7 @@ import { ACORDEONES, AVATARES, AVISOS, CARGANDO, ETIQUETAS, MODALES, PROGRESO, T
 import { NAV_MOVIL, NAV_WEB } from './navegacion';
 import { BUSCADORES, DESPLEGABLES, MIGAS, PAGINACION, PASOS, VACIOS } from './nuevos';
 import { MAS_DISENOS } from './mas-disenos';
+import { CALENDARIOS, CARRUSELES, PIES } from './nuevos2';
 import { SELECTOR } from './selector';
 
 export const CATEGORIAS: Record<CategoriaId, Categoria> = {
@@ -38,6 +39,9 @@ export const CATEGORIAS: Record<CategoriaId, Categoria> = {
   migas: MIGAS,
   pasos: PASOS,
   vacio: VACIOS,
+  calendario: CALENDARIOS,
+  carrusel: CARRUSELES,
+  pie: PIES,
 };
 
 // Diseños sumados después: van al final de cada categoría (no pisan ninguno existente).

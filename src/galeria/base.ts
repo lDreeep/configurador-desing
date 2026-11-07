@@ -35,7 +35,10 @@ export type CategoriaId =
   | 'paginacion'
   | 'migas'
   | 'pasos'
-  | 'vacio';
+  | 'vacio'
+  | 'calendario'
+  | 'carrusel'
+  | 'pie';
 
 /** La config actual, para muestras que combinan con otras elecciones (por ejemplo, el botón principal). */
 export const GaleriaContexto = createContext<Config | null>(null);

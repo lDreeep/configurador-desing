@@ -259,6 +259,9 @@ export function Prototipo(props: { config: Config; setConfig: (fn: (c: Config) =
         <Zona e="estilo" clase="proto-zona-portada">
           <Pagina config={c} />
         </Zona>
+        <Zona e="pie">
+          <CATEGORIAS.pie.Muestra clase={cl('pie')} id={d('pie')} />
+        </Zona>
       </div>
     ),
     panel: (
@@ -322,6 +325,9 @@ export function Prototipo(props: { config: Config; setConfig: (fn: (c: Config) =
               {t}
             </span>
           ))}
+        </Zona>
+        <Zona e="carrusel">
+          <CATEGORIAS.carrusel.Muestra clase={cl('carrusel')} id={d('carrusel')} />
         </Zona>
         <Zona e="caja" clase="proto-grilla">
           {T.explorar.items.map(([t, etq], i) => (
@@ -412,6 +418,9 @@ export function Prototipo(props: { config: Config; setConfig: (fn: (c: Config) =
                 </button>
               ))}
             </div>
+          </Zona>
+          <Zona e="calendario">
+            <CATEGORIAS.calendario.Muestra clase={cl('calendario')} id={d('calendario')} />
           </Zona>
           <Zona e="deslizador">
             <div className={cl('deslizador')} style={{ '--valor': `${presupuesto}%` } as CSSProperties}>
@@ -687,9 +696,9 @@ const GRUPOS: { nombre: string; items: Editable[] }[] = [
   { nombre: 'Movimiento', items: ['movimiento', 'aparicion', 'cambio'] },
   { nombre: 'Botones', items: ['boton', 'color_boton', 'boton_sec', 'boton_icono'] },
   { nombre: 'Contenedores', items: ['caja', 'metrica', 'grafico', 'tabla'] },
-  { nombre: 'Formularios', items: ['campo', 'selector', 'desplegable', 'buscador', 'interruptor', 'casilla', 'deslizador'] },
-  { nombre: 'Navegación', items: ['nav_web', 'nav_movil', 'migas', 'paginacion', 'pasos'] },
-  { nombre: 'Detalles', items: ['etiqueta', 'aviso', 'cargando', 'progreso', 'acordeon', 'avatar', 'tooltip', 'modal', 'vacio'] },
+  { nombre: 'Formularios', items: ['campo', 'selector', 'desplegable', 'buscador', 'calendario', 'interruptor', 'casilla', 'deslizador'] },
+  { nombre: 'Navegación', items: ['nav_web', 'nav_movil', 'migas', 'paginacion', 'pasos', 'pie'] },
+  { nombre: 'Detalles', items: ['etiqueta', 'aviso', 'cargando', 'progreso', 'acordeon', 'avatar', 'tooltip', 'modal', 'vacio', 'carrusel'] },
 ];
 
 function Editor(props: { config: Config; setConfig: (fn: (c: Config) => Config) => void; abierto: Editable | null; setAbierto: (e: Editable | null) => void }) {
