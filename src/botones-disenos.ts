@@ -519,6 +519,11 @@ export const DISENO_POR_ESTILO: Record<EstiloId, BotonDisenoId> = {
   minimal_tecnico: 'solido',
   oscuro_precision: 'brillo_borde',
   producto_amable: 'pildora',
+  periodico: 'subrayado',
+  japones: 'contorno',
+  dopamina: 'almohada',
+  lujo: 'doble',
+  cyber: 'neon',
 };
 
 /** CSS base de todos los botones del panel y de las animaciones al tocar. */

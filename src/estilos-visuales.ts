@@ -402,6 +402,125 @@ export const ESTILOS: Record<EstiloId, EstiloVisual> = {
 & .pg-etiqueta { border-radius: 999px; padding: 4px 12px; background: color-mix(in srgb, var(--color-acento) 14%, transparent); color: var(--color-texto); }
 `,
   },
+  periodico: {
+    nombre: 'Diario',
+    descripcion: 'Columnas, filetes finos y titulares de diario',
+    palabrasClave: ['informativo', 'clásico', 'denso'],
+    reglas: [
+      'Titulares en serif grande y apretado; texto en columnas angostas',
+      'Filetes (líneas finas) separan secciones en lugar de cajas',
+      'Casi sin color: tinta sobre papel, el acento solo en una etiqueta o un link',
+      'Fechas y secciones en mayúsculas chicas',
+    ],
+    paletas: ['papel', 'alto_contraste', 'retro_gris'],
+    fuentes: [['playfair', 'source_serif'], ['libre_baskerville', 'lora'], ['dm_serif', 'source_serif']],
+    pesoTitulos: 800, radio: 'recto', elevacion: 'plana', bordes: 'sutil', boton: 'contorno', movimiento: 'minimo',
+    direccionBase: 'editorial',
+    css: `
+& .pg-titulo { letter-spacing: -0.02em; line-height: 0.98; }
+& .pg-nav { border-bottom: 3px double var(--color-texto); }
+& .pg-etiqueta { font-size: 11px; text-transform: uppercase; letter-spacing: 0.14em; border-top: 1px solid var(--color-texto); border-bottom: 1px solid var(--color-texto); padding: 3px 0; }
+& .pg-card { background: var(--color-fondo); box-shadow: none; border-radius: 0; border-top: 1px solid var(--color-texto); }
+& .pg-bajada { column-count: 2; column-gap: 24px; column-rule: 1px solid var(--color-borde); }
+& .pg-media { background: repeating-linear-gradient(0deg, var(--color-borde) 0 1px, transparent 1px 6px), var(--color-superficie); filter: grayscale(1); border-radius: 0; }
+`,
+  },
+  japones: {
+    nombre: 'Calma japonesa',
+    descripcion: 'Mucho vacío, asimetría y tonos naturales',
+    palabrasClave: ['sereno', 'esencial', 'natural'],
+    reglas: [
+      'El espacio vacío es protagonista: márgenes enormes y pocos elementos',
+      'Composición asimétrica, nada perfectamente centrado',
+      'Tonos naturales apagados y un solo acento tipo sello',
+      'Líneas finísimas, sin sombras, animaciones lentas y suaves',
+    ],
+    paletas: ['arena', 'papel', 'menta'],
+    fuentes: [['cormorant', 'work_sans'], ['instrument_serif', 'dm_sans'], ['lora', 'work_sans']],
+    pesoTitulos: 400, radio: 'apenas_suave', elevacion: 'plana', bordes: 'sutil', boton: 'contorno', movimiento: 'sutil',
+    direccionBase: 'calmo',
+    css: `
+& { --deco-1: #B23A2E; }
+& .pg-titulo { font-weight: 400; letter-spacing: 0.01em; }
+& .pg-hero { padding-top: 12vh; }
+& .pg-card { background: var(--color-fondo); box-shadow: none; border: none; border-left: 1px solid var(--color-borde); border-radius: 0; }
+& .pg-etiqueta { letter-spacing: 0.3em; font-size: 11px; color: var(--color-texto-suave); }
+& .pg-media { background: var(--color-superficie); border-radius: 0; box-shadow: inset 0 0 0 1px var(--color-borde); }
+& .pg-deco .a { position: absolute; top: 14%; right: 12%; width: 56px; height: 56px; border-radius: 50%; background: var(--deco-1); opacity: .85; }
+`,
+  },
+  dopamina: {
+    nombre: 'Dopamina',
+    descripcion: 'Colores saturados, formas grandes y mucha energía',
+    palabrasClave: ['alegre', 'vibrante', 'joven'],
+    reglas: [
+      'Varios colores saturados juntos, sin miedo',
+      'Formas grandes y redondeadas, como stickers',
+      'Títulos enormes y gruesos; botones en píldora',
+      'Movimiento con rebote al tocar y al aparecer',
+    ],
+    paletas: ['caramelo', 'memphis', 'coral_calido'],
+    fuentes: [['unbounded', 'dm_sans'], ['bricolage', 'nunito'], ['syne', 'outfit']],
+    pesoTitulos: 800, radio: 'pildora', elevacion: 'suave', bordes: 'ninguno', boton: 'relleno', movimiento: 'expresivo',
+    direccionBase: 'jugueton',
+    css: `
+& { --deco-1: #FF5FA2; --deco-2: #FFD23F; --deco-3: #3BCEAC; --deco-4: #7B5CFF; }
+& .pg-card:nth-child(4n+1) { background: color-mix(in srgb, var(--deco-1) 22%, var(--color-fondo)); }
+& .pg-card:nth-child(4n+2) { background: color-mix(in srgb, var(--deco-2) 30%, var(--color-fondo)); }
+& .pg-card:nth-child(4n+3) { background: color-mix(in srgb, var(--deco-3) 25%, var(--color-fondo)); }
+& .pg-card:nth-child(4n) { background: color-mix(in srgb, var(--deco-4) 20%, var(--color-fondo)); }
+& .pg-card { border-radius: 28px; }
+& .pg-media { border-radius: 40px; background: radial-gradient(circle at 25% 30%, var(--deco-2) 0 22%, transparent 23%), radial-gradient(circle at 75% 70%, var(--deco-3) 0 26%, transparent 27%), var(--deco-1); }
+& .pg-deco .a { position: absolute; top: 8%; right: 6%; width: 90px; height: 90px; border-radius: 50%; background: var(--deco-2); }
+& .pg-deco .b { position: absolute; bottom: 10%; left: 4%; width: 70px; height: 70px; border-radius: 22px; background: var(--deco-4); transform: rotate(14deg); }
+`,
+  },
+  lujo: {
+    nombre: 'Lujo sobrio',
+    descripcion: 'Oscuro, dorado discreto y tipografía fina',
+    palabrasClave: ['exclusivo', 'elegante', 'premium'],
+    reglas: [
+      'Fondo oscuro profundo; el dorado solo en detalles finos',
+      'Serif fina y grande, mucho espacio entre letras en etiquetas',
+      'Nada de sombras marcadas ni colores vivos',
+      'Animaciones lentas, que aparecen con calma',
+    ],
+    paletas: ['noche_dorada', 'grafito', 'arena'],
+    fuentes: [['cormorant', 'manrope'], ['playfair', 'inter'], ['poiret_one', 'manrope']],
+    pesoTitulos: 500, radio: 'recto', elevacion: 'plana', bordes: 'sutil', boton: 'contorno', movimiento: 'sutil',
+    direccionBase: 'lujoso',
+    css: `
+& .pg-titulo { font-weight: 400; letter-spacing: 0.01em; }
+& .pg-etiqueta { letter-spacing: 0.32em; text-transform: uppercase; font-size: 11px; color: var(--color-acento-texto); }
+& .pg-card { background: var(--color-fondo); box-shadow: none; border: 1px solid color-mix(in srgb, var(--color-acento) 35%, transparent); border-radius: 0; }
+& .pg-boton { letter-spacing: 0.16em; text-transform: uppercase; font-size: 13px; }
+& .pg-media { border-radius: 0; background: linear-gradient(160deg, color-mix(in srgb, var(--color-acento) 30%, var(--color-superficie)), var(--color-superficie) 60%); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--color-acento) 40%, transparent); }
+& .pg-deco { background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--color-acento) 30%, transparent), transparent) center 72px / 100% 1px no-repeat; }
+`,
+  },
+  cyber: {
+    nombre: 'Cyber',
+    descripcion: 'Neón sobre negro, cortes en diagonal y líneas de escaneo',
+    palabrasClave: ['futurista', 'gamer', 'tecnológico'],
+    reglas: [
+      'Fondo negro con un solo neón fuerte; nada de pasteles',
+      'Esquinas cortadas en diagonal en lugar de redondeadas',
+      'Etiquetas en monoespaciada y mayúsculas',
+      'Brillos y líneas de escaneo muy sutiles; nunca sobre el texto largo',
+    ],
+    paletas: ['tinta_y_lima', 'fosforo_verde', 'vidrio'],
+    fuentes: [['space_grotesk', 'jetbrains_mono'], ['unbounded', 'ibm_plex_sans'], ['silkscreen', 'jetbrains_mono']],
+    pesoTitulos: 700, radio: 'recto', elevacion: 'plana', bordes: 'marcado', boton: 'relleno', movimiento: 'rapido',
+    direccionBase: 'tecnico',
+    css: `
+& .pg-titulo { text-transform: uppercase; letter-spacing: 0.02em; text-shadow: 0 0 18px color-mix(in srgb, var(--color-acento) 45%, transparent); }
+& .pg-etiqueta { font-family: 'JetBrains Mono', ui-monospace, monospace; text-transform: uppercase; letter-spacing: 0.12em; color: var(--color-acento-texto); }
+& .pg-card { border-radius: 0; background: var(--color-superficie); border: 1px solid color-mix(in srgb, var(--color-acento) 45%, var(--color-borde)); clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 16px 100%, 0 calc(100% - 16px)); box-shadow: none; }
+& .pg-boton { clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px)); border-radius: 0; }
+& .pg-media { border-radius: 0; background: repeating-linear-gradient(0deg, color-mix(in srgb, var(--color-acento) 14%, transparent) 0 1px, transparent 1px 4px), linear-gradient(135deg, color-mix(in srgb, var(--color-acento) 30%, var(--color-superficie)), var(--color-superficie)); clip-path: polygon(0 0, calc(100% - 28px) 0, 100% 28px, 100% 100%, 28px 100%, 0 calc(100% - 28px)); }
+& .pg-deco { background: repeating-linear-gradient(0deg, rgba(255,255,255,.025) 0 1px, transparent 1px 3px); }
+`,
+  },
 };
 
 export interface Layout {

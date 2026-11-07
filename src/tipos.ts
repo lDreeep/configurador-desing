@@ -102,7 +102,12 @@ export type EstiloId =
   | 'organico'
   | 'minimal_tecnico'
   | 'oscuro_precision'
-  | 'producto_amable';
+  | 'producto_amable'
+  | 'periodico'
+  | 'japones'
+  | 'dopamina'
+  | 'lujo'
+  | 'cyber';
 
 export type LayoutId =
   | 'hero_partido'

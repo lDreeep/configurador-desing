@@ -82,7 +82,7 @@ export const RECOMENDADOS: Record<TipoProyecto, Recomendados> = {
     para: 'tienda',
     porque: 'En una tienda manda el producto: botones de compra que inviten a tocar, cards de producto limpias y avisos de «agregado».',
     layouts: ['mosaico', 'hero_partido', 'bento', 'horizontal'],
-    estilos: ['producto_amable', 'editorial', 'clay', 'neobrutalismo', 'organico'],
+    estilos: ['producto_amable', 'editorial', 'lujo', 'dopamina', 'clay', 'neobrutalismo'],
     botones: ['pildora', 'solido', 'relleno_abajo', 'sombra_suave_color', 'almohada', 'deslizar_icono'],
     cajas: ['elevada', 'superficie', 'flotante', 'ticket', 'sombra_color'],
     componentes: con({
@@ -125,7 +125,7 @@ export const RECOMENDADOS: Record<TipoProyecto, Recomendados> = {
     para: 'app de celular',
     porque: 'En el celular todo se toca con el pulgar: barra de abajo, botones grandes, controles que respondan al toque y hojas que suben.',
     layouts: ['apiladas', 'minimo', 'bento', 'hero_partido'],
-    estilos: ['producto_amable', 'clay', 'vidrio', 'oscuro_precision', 'memphis'],
+    estilos: ['producto_amable', 'dopamina', 'clay', 'vidrio', 'oscuro_precision'],
     botones: ['pildora', 'almohada', 'empujable', 'acuoso', 'clay', 'respira'],
     cajas: ['elevada', 'flotante', 'superficie', 'vidrio', 'neumorfica'],
     componentes: con({
@@ -170,7 +170,7 @@ export const RECOMENDADOS: Record<TipoProyecto, Recomendados> = {
     para: 'portfolio',
     porque: 'En un portfolio lo importante es el trabajo: tipografía con carácter, mucho aire, imágenes grandes y botones discretos.',
     layouts: ['tipografico', 'revista', 'mosaico', 'minimo', 'horizontal'],
-    estilos: ['suizo', 'editorial', 'art_deco', 'bauhaus', 'y2k'],
+    estilos: ['suizo', 'editorial', 'japones', 'art_deco', 'bauhaus', 'cyber'],
     botones: ['subrayado', 'link_flecha', 'texto_sube', 'minimal_texto', 'circulo_flecha', 'contorno'],
     cajas: ['editorial', 'contorno', 'papel', 'invertida', 'gruesa'],
     componentes: con({
@@ -187,7 +187,7 @@ export const RECOMENDADOS: Record<TipoProyecto, Recomendados> = {
     para: 'blog',
     porque: 'Un blog es para leer: buena tipografía, columnas cómodas, etiquetas de tema y autores visibles.',
     layouts: ['revista', 'indice', 'tipografico', 'minimo'],
-    estilos: ['editorial', 'organico', 'suizo', 'retro_os'],
+    estilos: ['editorial', 'periodico', 'organico', 'japones', 'suizo'],
     botones: ['subrayado', 'link_flecha', 'contorno', 'solido', 'tinta', 'subrayado_relleno'],
     cajas: ['editorial', 'papel', 'contorno', 'cuaderno', 'barra'],
     componentes: con({
