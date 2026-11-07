@@ -286,6 +286,9 @@ export function Prototipo(props: { config: Config; setConfig: (fn: (c: Config) =
     ),
     explorar: (
       <div className="proto-pantalla">
+        <Zona e="migas">
+          <CATEGORIAS.migas.Muestra clase={cl('migas')} id={d('migas')} />
+        </Zona>
         <Titulo t={T.explorar.titulo} sub={T.explorar.sub} />
         <div className="proto-filtros">
           <Zona e="campo" clase="proto-crece">
@@ -357,6 +360,9 @@ export function Prototipo(props: { config: Config; setConfig: (fn: (c: Config) =
             </article>
           ))}
         </Zona>
+        <Zona e="paginacion">
+          <CATEGORIAS.paginacion.Muestra clase={cl('paginacion')} id={d('paginacion')} />
+        </Zona>
         <div className="proto-editables-sueltos">
           <Zona e="boton_icono">
             <span className="proto-nota">Botones de icono</span>
@@ -373,6 +379,9 @@ export function Prototipo(props: { config: Config; setConfig: (fn: (c: Config) =
     crear: (
       <div className="proto-pantalla">
         <Titulo t={T.crear.titulo} sub={T.crear.sub} />
+        <Zona e="pasos">
+          <CATEGORIAS.pasos.Muestra clase={cl('pasos')} id={d('pasos')} />
+        </Zona>
         <form className={`${cc} proto-form`} onSubmit={(e) => e.preventDefault()}>
           <Zona e="campo" clase="proto-dos-campos">
             {[
@@ -678,9 +687,9 @@ const GRUPOS: { nombre: string; items: Editable[] }[] = [
   { nombre: 'Movimiento', items: ['movimiento', 'aparicion', 'cambio'] },
   { nombre: 'Botones', items: ['boton', 'color_boton', 'boton_sec', 'boton_icono'] },
   { nombre: 'Contenedores', items: ['caja', 'metrica', 'grafico', 'tabla'] },
-  { nombre: 'Formularios', items: ['campo', 'selector', 'interruptor', 'casilla', 'deslizador'] },
-  { nombre: 'Navegación', items: ['nav_web', 'nav_movil'] },
-  { nombre: 'Detalles', items: ['etiqueta', 'aviso', 'cargando', 'progreso', 'acordeon', 'avatar', 'tooltip', 'modal'] },
+  { nombre: 'Formularios', items: ['campo', 'selector', 'desplegable', 'buscador', 'interruptor', 'casilla', 'deslizador'] },
+  { nombre: 'Navegación', items: ['nav_web', 'nav_movil', 'migas', 'paginacion', 'pasos'] },
+  { nombre: 'Detalles', items: ['etiqueta', 'aviso', 'cargando', 'progreso', 'acordeon', 'avatar', 'tooltip', 'modal', 'vacio'] },
 ];
 
 function Editor(props: { config: Config; setConfig: (fn: (c: Config) => Config) => void; abierto: Editable | null; setAbierto: (e: Editable | null) => void }) {

@@ -39,6 +39,12 @@ const BASE: Recomendados['componentes'] = {
   metrica: ['simple', 'sparkline', 'icono', 'meta'],
   grafico: ['barras', 'linea_suave', 'area', 'dona'],
   tabla: ['lineas', 'pastillas', 'tarjeta'],
+  desplegable: ['clasico', 'tilde', 'pildora'],
+  buscador: ['simple', 'pildora', 'acento'],
+  paginacion: ['numeros', 'acento', 'texto'],
+  migas: ['chevron', 'barra', 'volver'],
+  pasos: ['circulos', 'barras', 'puntos'],
+  vacio: ['centrado', 'color', 'punteado'],
 };
 
 const con = (extra: Recomendados['componentes']) => ({ ...BASE, ...extra });
@@ -90,6 +96,9 @@ export const RECOMENDADOS: Record<TipoProyecto, Recomendados> = {
       nav_movil: ['central', 'indicador', 'pildora', 'burbuja'],
       modal: ['hoja', 'lateral', 'centrada'],
       progreso: ['pasos', 'fina', 'gruesa'],
+      buscador: ['pildora', 'grande', 'acento'],
+      pasos: ['circulos', 'flechas', 'barras'],
+      paginacion: ['acento', 'numeros', 'puntos'],
     }),
   },
   app_web: {
@@ -107,6 +116,9 @@ export const RECOMENDADOS: Record<TipoProyecto, Recomendados> = {
       modal: ['centrada', 'lateral', 'alerta'],
       tabla: ['lineas', 'pastillas', 'cebra'],
       cargando: ['esqueleto', 'anillo', 'linea'],
+      buscador: ['comando', 'simple', 'pildora'],
+      desplegable: ['tilde', 'clasico', 'contorno'],
+      vacio: ['punteado', 'lateral', 'color'],
     }),
   },
   app_movil: {
@@ -126,6 +138,10 @@ export const RECOMENDADOS: Record<TipoProyecto, Recomendados> = {
       modal: ['hoja', 'alerta', 'centrada'],
       campo: ['relleno', 'pildora', 'flotante', 'grande'],
       cargando: ['puntos', 'anillo', 'esqueleto'],
+      migas: ['volver', 'chevron', 'pastillas'],
+      pasos: ['puntos', 'barras', 'circulos'],
+      paginacion: ['puntos', 'texto', 'acento'],
+      vacio: ['grande', 'flota', 'color'],
     }),
   },
   dashboard: {
@@ -144,6 +160,10 @@ export const RECOMENDADOS: Record<TipoProyecto, Recomendados> = {
       etiqueta: ['punto', 'suave', 'mono'],
       cargando: ['esqueleto', 'linea', 'anillo'],
       progreso: ['fina', 'circular', 'pasos'],
+      buscador: ['comando', 'simple', 'subrayado'],
+      paginacion: ['cuadros', 'grupo', 'texto'],
+      desplegable: ['tilde', 'contorno', 'clasico'],
+      vacio: ['lateral', 'punteado', 'centrado'],
     }),
   },
   portfolio: {
@@ -159,6 +179,8 @@ export const RECOMENDADOS: Record<TipoProyecto, Recomendados> = {
       etiqueta: ['contorno', 'mono', 'cuadrada'],
       campo: ['subrayado', 'invisible', 'grande', 'leyenda'],
       avatar: ['circulo', 'contorno', 'anillo'],
+      migas: ['mayusculas', 'punto', 'barra'],
+      paginacion: ['texto', 'subrayado', 'numeros'],
     }),
   },
   blog: {
@@ -174,6 +196,9 @@ export const RECOMENDADOS: Record<TipoProyecto, Recomendados> = {
       avatar: ['circulo', 'anillo', 'apilados'],
       acordeon: ['lineas', 'numerado', 'grande'],
       campo: ['subrayado', 'contorno', 'cuaderno'],
+      buscador: ['subrayado', 'grande', 'simple'],
+      migas: ['mayusculas', 'chevron', 'punto'],
+      paginacion: ['texto', 'numeros', 'subrayado'],
     }),
   },
 };

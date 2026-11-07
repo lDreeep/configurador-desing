@@ -7,6 +7,7 @@ import { CASILLAS, DESLIZADORES, INTERRUPTORES } from './controles';
 import { GRAFICOS_CAT, METRICAS, TABLAS } from './datos';
 import { ACORDEONES, AVATARES, AVISOS, CARGANDO, ETIQUETAS, MODALES, PROGRESO, TOOLTIPS } from './elementos';
 import { NAV_MOVIL, NAV_WEB } from './navegacion';
+import { BUSCADORES, DESPLEGABLES, MIGAS, PAGINACION, PASOS, VACIOS } from './nuevos';
 import { SELECTOR } from './selector';
 
 export const CATEGORIAS: Record<CategoriaId, Categoria> = {
@@ -30,6 +31,12 @@ export const CATEGORIAS: Record<CategoriaId, Categoria> = {
   metrica: METRICAS,
   grafico: GRAFICOS_CAT,
   tabla: TABLAS,
+  desplegable: DESPLEGABLES,
+  buscador: BUSCADORES,
+  paginacion: PAGINACION,
+  migas: MIGAS,
+  pasos: PASOS,
+  vacio: VACIOS,
 };
 
 /** El primer diseño de cada categoría: el que se usa si la persona no eligió otro. */
