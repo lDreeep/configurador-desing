@@ -1,6 +1,6 @@
 // Más componentes: tarjetas de producto, notificaciones y menú de usuario.
 
-import { useState } from 'react';
+import { useId, useState, type CSSProperties } from 'react';
 import type { Categoria } from './base';
 
 const reducirMov = '@media (prefers-reduced-motion: reduce) { &, & * { animation: none !important; transition: none !important; } }';
@@ -12,29 +12,53 @@ const campana = (
 
 // ---------- Tarjeta de producto ----------
 
+/** Ilustración propia, sin imágenes externas ni marcas. El color sigue la variante elegida. */
+function ProductoIlustrado() {
+  return (
+    <svg className="cm-pr-ilustracion" viewBox="0 0 360 280" role="img" aria-label="Zapatilla urbana de perfil, con suela clara y cordones">
+      <ellipse cx="180" cy="226" rx="133" ry="13" fill="var(--color-texto)" opacity=".1" />
+      <g transform="rotate(-12 180 160)">
+        <path d="M46 180c8-19 10-55 20-70l30 22 29-41 40 13 36 44 62 24c26 10 47 12 50 34H47Z" fill="var(--producto-tono, var(--color-acento))" />
+        <path d="m91 134 39-28 28 9 35 43-35 21-31-28Z" fill="var(--color-fondo)" opacity=".65" />
+        <path d="M48 196c45 9 74-1 109 2s80 18 154 7v17H48c-12 0-15-22 0-26Z" fill="var(--color-superficie-alta)" stroke="var(--color-texto)" strokeWidth="2" />
+        <path d="m130 125 27 2m-18 11 28 1m-19 12 29 1" stroke="var(--color-fondo)" strokeWidth="6" strokeLinecap="round" />
+        <path d="m204 169 28 9m-26-2 23 8M72 153l-4 26" stroke="var(--color-fondo)" strokeWidth="3" strokeLinecap="round" opacity=".6" />
+        <path d="M56 212h35m17 0h24m110 3h49" stroke="var(--color-borde)" strokeWidth="3" strokeLinecap="round" />
+      </g>
+    </svg>
+  );
+}
+
 function MuestraProducto({ clase }: { clase: string; id: string }) {
   const [fav, setFav] = useState(false);
   const [agregado, setAgregado] = useState(false);
+  const [talle, setTalle] = useState('');
+  const [color, setColor] = useState(0);
+  const [intento, setIntento] = useState(false);
+  const u = useId();
+  const colores = ['Acento', 'Tinta', 'Suave'];
+  const tonos = ['var(--color-acento)', 'var(--color-texto)', 'color-mix(in srgb, var(--color-acento) 35%, var(--color-superficie))'];
+  const error = intento && !talle;
   return (
-    <article className={clase}>
+    <article className={clase} style={{ '--producto-tono': tonos[color] } as CSSProperties}>
       <div className="cm-pr-foto">
-        <span className="cm-pr-etq">-20%</span>
-        <button type="button" className="cm-pr-fav" aria-pressed={fav} aria-label="Guardar en favoritos" onClick={() => setFav(!fav)}>
-          {fav ? '♥' : '♡'}
-        </button>
+        <ProductoIlustrado />
+        <span className="cm-pr-etq">−20%</span>
+        <button type="button" className="cm-pr-fav" aria-pressed={fav} aria-label={fav ? 'Quitar de favoritos' : 'Guardar en favoritos'} onClick={() => setFav(!fav)}>{fav ? '♥' : '♡'}</button>
       </div>
       <div className="cm-pr-info">
-        <span className="cm-pr-cat">Calzado</span>
+        <span className="cm-pr-cat">Colección urbana · Unisex</span>
         <strong className="cm-pr-nombre">Zapatillas urbanas</strong>
-        <span className="cm-pr-estrellas" aria-label="4 de 5 estrellas, 128 opiniones">
-          ★★★★☆ <small>(128)</small>
-        </span>
-        <span className="cm-pr-precio">
-          <b>$ 34.500</b> <s>$ 43.100</s>
-        </span>
-        <button type="button" className="cm-pr-boton" onClick={() => setAgregado(!agregado)}>
-          {agregado ? '✓ En el carrito' : 'Agregar al carrito'}
-        </button>
+        <span className="cm-pr-estrellas" aria-label="4 de 5 estrellas, 128 opiniones">★★★★☆ <small>(128)</small></span>
+        <span className="cm-pr-precio"><b>$ 34.500</b> <s aria-label="Precio anterior: 43.100 pesos">$ 43.100</s></span>
+        <div className="cm-pr-opciones">
+          <fieldset className="cm-pr-colores"><legend>Color: {colores[color]}</legend>{colores.map((nombre, i) => <label key={nombre} style={{ '--muestra-color': tonos[i] } as CSSProperties}><input type="radio" name={`${u}-color`} value={nombre} checked={color === i} onChange={() => { setColor(i); setAgregado(false); }} /><span className="cm-pr-muestra-color" aria-hidden="true" /><span className="cm-pr-sr">{nombre}</span></label>)}</fieldset>
+          <div className="cm-pr-talle"><label htmlFor={`${u}-talle`}>Talle</label><select id={`${u}-talle`} value={talle} onChange={e => { setTalle(e.target.value); setAgregado(false); }} aria-invalid={error || undefined} aria-describedby={error ? `${u}-error` : undefined}><option value="">Elegí</option>{['36', '37', '38', '39', '40', '41', '42'].map(n => <option key={n}>{n}</option>)}</select></div>
+          {error && <span className="cm-pr-error" id={`${u}-error`} role="status">Elegí un talle para agregar.</span>}
+        </div>
+        <span className="cm-pr-disponible">✓ Disponible · envío en 48 h</span>
+        <button type="button" className="cm-pr-boton" onClick={() => { setIntento(true); if (talle) setAgregado(!agregado); else document.getElementById(`${u}-talle`)?.focus(); }}>{agregado ? 'Quitar del carrito' : 'Agregar al carrito'}</button>
+        <span className="cm-pr-confirmacion" role="status">{agregado ? `✓ Agregado · talle ${talle} · ${colores[color].toLowerCase()}` : ''}</span>
       </div>
     </article>
   );
@@ -44,15 +68,15 @@ export const PRODUCTOS: Categoria = {
   id: 'producto',
   nombre: 'Tarjetas de producto',
   singular: 'tarjeta de producto',
-  descripcion: 'Para tiendas y catálogos: foto, nombre, precio y botón. Tocá el corazón y «Agregar».',
+  descripcion: 'Probá una compra: elegí color y talle, guardá en favoritos y agregá al carrito. La ilustración cambia con la variante. Son datos de muestra; no se realizan compras.',
   estructura:
-    '<article class="cm-producto cm-producto-DISEÑO"><div class="cm-pr-foto"><span class="cm-pr-etq">-20%</span><button class="cm-pr-fav" aria-pressed="false">♡</button></div><div class="cm-pr-info"><span class="cm-pr-cat">Calzado</span><strong class="cm-pr-nombre">Zapatillas urbanas</strong><span class="cm-pr-estrellas">★★★★☆ <small>(128)</small></span><span class="cm-pr-precio"><b>$ 34.500</b> <s>$ 43.100</s></span><button class="cm-pr-boton">Agregar al carrito</button></div></article> — la foto real va como fondo de .cm-pr-foto o como <img> adentro.',
+    '<article class="cm-producto cm-producto-DISEÑO"><div class="cm-pr-foto"><img class="cm-pr-ilustracion" src="producto.webp" alt="Descripción del producto"><span class="cm-pr-etq">−20%</span><button type="button" class="cm-pr-fav" aria-label="Guardar en favoritos" aria-pressed="false">♡</button></div><div class="cm-pr-info"><span class="cm-pr-cat">Categoría</span><strong class="cm-pr-nombre">Producto</strong><span class="cm-pr-estrellas" aria-label="4 de 5 estrellas, 128 opiniones">★★★★☆ (128)</span><span class="cm-pr-precio"><b>$ 34.500</b><s>$ 43.100</s></span><div class="cm-pr-opciones"><fieldset class="cm-pr-colores"><legend>Color</legend><label><input type="radio" name="color" value="acento"><span class="cm-pr-muestra-color" aria-hidden="true"></span>Acento</label>…</fieldset><div class="cm-pr-talle"><label for="talle">Talle</label><select id="talle"><option value="">Elegí</option>…</select></div><span class="cm-pr-error" id="error-talle" role="status"></span></div><span class="cm-pr-disponible">Disponible</span><button type="button" class="cm-pr-boton">Agregar al carrito</button><span class="cm-pr-confirmacion" role="status"></span></div></article> — Usar ids y names únicos por instancia. Seleccionar color actualiza --producto-tono y la imagen de variante; seleccionar talle habilita agregar; si falta, anunciar error y enfocar el selector con aria-invalid y aria-describedby. Favoritos usa aria-pressed. Agregar/quitar actualiza el carrito real del proyecto y anuncia el resultado. La galería solo lo simula.',
   anchoCelda: 260,
   base: `& { display: flex; flex-direction: column; width: 100%; max-width: 260px; border-radius: var(--radio-grande); background: var(--color-fondo); border: 1px solid var(--color-borde); overflow: hidden; font-family: var(--fuente-texto); color: var(--color-texto); }
 & .cm-pr-foto { position: relative; aspect-ratio: 1; background: radial-gradient(circle at 35% 40%, color-mix(in srgb, var(--color-acento) 45%, var(--color-fondo)) 0 28%, transparent 29%), color-mix(in srgb, var(--color-acento) 14%, var(--color-superficie)); }
 & .cm-pr-etq { position: absolute; top: 10px; left: 10px; padding: 3px 8px; border-radius: 999px; background: var(--color-texto); color: var(--color-fondo); font-size: 12px; font-weight: 800; }
-& .cm-pr-fav { position: absolute; top: 8px; right: 8px; width: 38px; height: 38px; border: none; border-radius: 50%; background: var(--color-fondo); color: var(--color-texto); font-size: 18px; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,.12); }
-& .cm-pr-fav[aria-pressed='true'] { color: #D9264F; }
+& .cm-pr-fav { position: absolute; top: 8px; right: 8px; width: 44px; height: 44px; border: none; border-radius: 50%; background: var(--color-fondo); color: var(--color-texto); font-size: 18px; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,.12); }
+& .cm-pr-fav[aria-pressed='true'] { color: var(--color-acento-texto); }
 & .cm-pr-info { display: flex; flex-direction: column; gap: 4px; padding: 12px 14px 14px; }
 & .cm-pr-cat { font-size: 11.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--color-texto-suave); }
 & .cm-pr-nombre { font-family: var(--fuente-titulos); font-size: 16px; }
@@ -61,17 +85,34 @@ export const PRODUCTOS: Categoria = {
 & .cm-pr-precio { display: flex; align-items: baseline; gap: 8px; margin-top: 2px; }
 & .cm-pr-precio b { font-size: 18px; }
 & .cm-pr-precio s { font-size: 13px; color: var(--color-texto-suave); }
-& .cm-pr-boton { margin-top: 8px; min-height: 42px; border: none; border-radius: var(--radio-boton); background: var(--boton-color); color: var(--boton-sobre); font: inherit; font-weight: 700; cursor: pointer; }
-& button:focus-visible { outline: 2px solid var(--color-acento); outline-offset: 2px; }
+& .cm-pr-boton { margin-top: 8px; min-height: 44px; border: none; border-radius: var(--radio-boton); background: var(--boton-color); color: var(--boton-sobre); font: inherit; font-weight: 700; cursor: pointer; }
+& .cm-pr-ilustracion { display: block; width: 100%; height: 100%; position: absolute; inset: 0; object-fit: contain; transition: transform var(--duracion-media) var(--curva-entrada); }
+&:hover .cm-pr-ilustracion { transform: scale(1.04); }
+& .cm-pr-opciones { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: end; margin-top: 8px; }
+& .cm-pr-colores { border: 0; padding: 0; margin: 0; display: flex; gap: 0; min-width: 0; }
+& .cm-pr-colores legend, & .cm-pr-talle label { font-size: 12px; color: var(--color-texto-suave); padding: 0; }
+& .cm-pr-colores label { position: relative; display: grid; place-items: center; width: 44px; height: 44px; cursor: pointer; }
+& .cm-pr-colores input { position: absolute; inset: 0; opacity: 0; margin: 0; width: 100%; height: 100%; cursor: pointer; }
+& .cm-pr-muestra-color { width: 22px; height: 22px; border-radius: 50%; background: var(--muestra-color, var(--color-acento)); border: 1px solid var(--color-texto-suave); }
+& .cm-pr-colores input:checked + .cm-pr-muestra-color { outline: 2px solid var(--color-texto); outline-offset: 3px; }
+& .cm-pr-colores input:focus-visible + .cm-pr-muestra-color { outline: 3px solid var(--color-acento-texto); outline-offset: 4px; }
+& .cm-pr-talle { display: flex; flex-direction: column; gap: 4px; flex: 1; min-width: 68px; }
+& .cm-pr-talle select { min-height: 44px; width: 100%; border: 1px solid var(--color-borde); border-radius: var(--radio-pequeno); padding: 0 8px; background: var(--color-fondo); color: var(--color-texto); font: inherit; font-size: 16px; }
+& .cm-pr-disponible { font-size: 12px; color: var(--color-texto-suave); margin-top: 8px; }
+& .cm-pr-error, & .cm-pr-confirmacion { font-size: 12px; line-height: 1.5; color: var(--color-texto); }
+& .cm-pr-error { flex-basis: 100%; border-inline-start: 3px solid var(--color-error); padding-inline-start: 8px; }
+& .cm-pr-confirmacion:empty { display: none; }
+& .cm-pr-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+& button:focus-visible, & select:focus-visible { outline: 2px solid var(--color-acento-texto); outline-offset: 2px; }
 ${reducirMov}`,
   disenos: {
     clasica: { nombre: 'Clásica', descripcion: 'Foto, datos y botón a lo ancho', css: '' },
     sin_caja: { nombre: 'Sin caja', descripcion: 'Solo la foto redondeada y los datos abajo, sin borde', css: `& { border: none; background: transparent; overflow: visible; } & .cm-pr-foto { border-radius: var(--radio-grande); } & .cm-pr-info { padding: 10px 2px 0; } & .cm-pr-boton { background: transparent; color: var(--color-texto); border: 1.5px solid var(--color-borde); }` },
-    al_pasar: { nombre: 'Botón al pasar', descripcion: 'El botón aparece sobre la foto al pasar el mouse', css: `& { position: relative; container-type: inline-size; } & .cm-pr-boton { position: absolute; left: 12px; right: 12px; top: calc(100cqw - 56px); margin: 0; opacity: 0; transform: translateY(8px); transition: opacity var(--duracion-media) ease, transform var(--duracion-media) var(--curva-entrada); } &:hover .cm-pr-boton, & .cm-pr-boton:focus-visible { opacity: 1; transform: none; } @media (hover: none) { & .cm-pr-boton { position: static; opacity: 1; transform: none; margin-top: 8px; } }` },
-    horizontal: { nombre: 'Horizontal', descripcion: 'Foto a la izquierda, para listas y carritos', css: `& { flex-direction: row; max-width: 360px; } & .cm-pr-foto { flex: 0 0 120px; aspect-ratio: auto; } & .cm-pr-etq, & .cm-pr-estrellas { display: none; } & .cm-pr-fav { width: 30px; height: 30px; font-size: 14px; } & .cm-pr-info { flex: 1; padding: 10px 12px; } & .cm-pr-boton { min-height: 36px; font-size: 13px; }` },
+    al_pasar: { nombre: 'Botón al pasar', descripcion: 'El botón aparece sobre la foto al pasar el mouse', css: `& { position: relative; container-type: inline-size; } & .cm-pr-boton { position: absolute; left: 12px; right: 12px; top: calc(100cqw - 56px); margin: 0; opacity: 0; transform: translateY(8px); transition: opacity var(--duracion-media) ease, transform var(--duracion-media) var(--curva-entrada); } &:hover .cm-pr-boton, &:focus-within .cm-pr-boton, & .cm-pr-boton:focus-visible { opacity: 1; transform: none; } @media (hover: none) { & .cm-pr-boton { position: static; opacity: 1; transform: none; margin-top: 8px; } }` },
+    horizontal: { nombre: 'Horizontal', descripcion: 'Foto a la izquierda, para listas y carritos', css: `& { flex-direction: row; max-width: 360px; } & .cm-pr-foto { flex: 0 0 120px; aspect-ratio: auto; } & .cm-pr-etq, & .cm-pr-estrellas { display: none; } & .cm-pr-fav { width: 44px; height: 44px; font-size: 16px; } & .cm-pr-info { flex: 1; padding: 10px 12px; } & .cm-pr-boton { min-height: 44px; font-size: 13px; }` },
     precio_foto: { nombre: 'Precio sobre la foto', descripcion: 'El precio va en una pastilla encima de la imagen', css: `& .cm-pr-foto { display: flex; align-items: flex-end; padding: 10px; } & .cm-pr-precio { position: absolute; } & .cm-pr-info { position: relative; } & .cm-pr-precio { top: -48px; left: 10px; padding: 6px 12px; border-radius: 999px; background: var(--color-fondo); box-shadow: 0 4px 12px rgba(0,0,0,.15); } & .cm-pr-precio s { display: none; }` },
     sombra: { nombre: 'Flotante', descripcion: 'Sin borde, con sombra que crece al pasar', css: `& { border: none; box-shadow: 0 2px 10px rgba(0,0,0,.08); transition: transform var(--duracion-media) var(--curva-entrada), box-shadow var(--duracion-media) ease; } &:hover { transform: translateY(-4px); box-shadow: 0 16px 34px rgba(0,0,0,.14); }` },
-    minimal: { nombre: 'Mínima', descripcion: 'Solo foto, nombre y precio; sin estrellas ni botón', css: `& { border: none; border-radius: 0; } & .cm-pr-foto { border-radius: 0; } & .cm-pr-estrellas, & .cm-pr-boton, & .cm-pr-cat, & .cm-pr-etq { display: none; } & .cm-pr-info { flex-direction: row; justify-content: space-between; align-items: baseline; padding: 10px 0; } & .cm-pr-nombre { font-size: 14px; font-weight: 500; } & .cm-pr-precio b { font-size: 14px; }` },
+    minimal: { nombre: 'Mínima', descripcion: 'Solo foto, nombre y precio; sin estrellas ni botón', css: `& { border: none; border-radius: 0; } & .cm-pr-foto { border-radius: 0; } & .cm-pr-estrellas, & .cm-pr-boton, & .cm-pr-cat, & .cm-pr-etq, & .cm-pr-opciones, & .cm-pr-disponible, & .cm-pr-confirmacion { display: none; } & .cm-pr-info { flex-direction: row; justify-content: space-between; align-items: baseline; padding: 10px 0; } & .cm-pr-nombre { font-size: 14px; font-weight: 500; } & .cm-pr-precio b { font-size: 14px; }` },
     neobrutal: { nombre: 'Neobrutal', descripcion: 'Borde negro, sombra dura y etiqueta torcida', css: `& { border: 2px solid var(--color-texto); border-radius: 0; box-shadow: 5px 5px 0 var(--color-texto); } & .cm-pr-foto { border-bottom: 2px solid var(--color-texto); } & .cm-pr-etq { border-radius: 0; background: var(--color-acento); color: var(--color-sobre-acento); transform: rotate(-6deg); border: 2px solid var(--color-texto); } & .cm-pr-boton { border-radius: 0; border: 2px solid var(--color-texto); box-shadow: 3px 3px 0 var(--color-texto); }` },
   },
   Muestra: MuestraProducto,

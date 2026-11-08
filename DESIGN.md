@@ -1,6 +1,6 @@
 # DESIGN.md: especificación del formato
 
-> **Versión del formato:** 0.8.1 (borrador)
+> **Versión del formato:** 0.8.2 (borrador)
 > **Última actualización:** 2026-11-06
 > **Estado:** configurador en v0.2 (10 pasos + export): 8 direcciones, 13 paletas + personalizada, 23 fuentes, botones y movimiento detallados. Falta la primera ronda de pruebas con IA (§9).
 
@@ -134,7 +134,7 @@ Todo archivo exportado empieza con este bloque, que permite saber con qué versi
 
 ```yaml
 formato: design-md
-version_formato: 0.8.1
+version_formato: 0.8.2
 generado_por: configurador-diseno
 fecha: 2026-11-06
 idioma: es
@@ -784,6 +784,30 @@ Categorías (20):
 | Detalles | `etiqueta` (10), `aviso` (8), `cargando` (10), `progreso` (8), `acordeon` (6), `avatar` (6), `tooltip` (6), `modal` (6) |
 | Datos | `metrica` (10), `grafico` (10), `tabla` (6) |
 
+Desde 0.8.2, las muestras de **formularios completos** y **productos** incluyen
+comportamientos de referencia en `estructura`, además de su CSS:
+
+- Formulario: nombre y contacto obligatorios, error junto al campo con
+  `aria-invalid`/`aria-describedby`, foco en el primer error, estado ocupado,
+  confirmación en `role="status"`, adjunto y limpieza. La muestra simula el guardado
+  localmente y lo dice; el proyecto final debe conectar la operación real.
+- Producto: ilustración propia de muestra (reemplazable por fotografía), favoritos,
+  color, talle, disponibilidad y confirmación al agregar/quitar. Cada instancia
+  usa identificadores y grupos de radio únicos. Si falta talle, se anuncia el
+  problema y se enfoca el selector. Las fichas «Mínima» conservan su carácter de
+  exhibición, sin controles de compra.
+- La estructura y los estados usan clases `cm-fo-error`, `cm-fo-resultado`,
+  `cm-pr-ilustracion`, `cm-pr-opciones`, `cm-pr-colores`, `cm-pr-talle`,
+  `cm-pr-error`, `cm-pr-disponible`, `cm-pr-confirmacion`. Su CSS viaja en §21.
+- Se agregan 12 diseños propios, sin copiar referencias de marcas, en
+  `src/galeria/coleccion-curada.ts`: formularios `expediente`, `editorial_abierto`,
+  `panel_operativo`, `recorrido_movil`; navegación web `lateral_espacios`,
+  `cabecera_doble`, `indice_numerado`, `muelle_iconos`; productos `ficha_editorial`,
+  `catalogo_detallado`, `escaparate`, `pedido_rapido`. Los ids anteriores se conservan.
+- La galería permite comparar hasta tres diseños de una misma categoría con
+  contenido idéntico. La comparación es una herramienta de elección: no cambia
+  el formato exportado ni agrega pasos. Al cambiar de categoría se limpia.
+
 Los gráficos siguen la guía de visualización del proyecto: una serie por color (los de partes de un total usan pasos de luminosidad de un mismo tono, con leyenda y valores), marcas finas, extremos de 4px redondeados apoyados en la base, líneas de 2px, grilla tenue, textos con los colores de texto y un tooltip (`<title>`) en cada marca. Los estados de las tablas llevan punto + texto, nunca solo color. Sigue un bloque `css` con la base de cada categoría y el diseño elegido. Las barras de navegación usan `--i` (pestaña activa) y `--n` (cantidad) para mover sus indicadores.
 
 ---
@@ -1175,6 +1199,9 @@ Formato: fecha · decisión · por qué · alternativas descartadas.
 | D66 | 2026-11-07 | Formularios en pasos (8 diseños) y reserva de turnos (8) en el paso Formularios; 15 cajas más (44 en total); 8 diseños más de navegación | Registros largos y turnos son de lo más pedido; más variedad en cards y barras | — |
 | D43 | 2026-11-06 | Si la persona no describe un proyecto, el archivo se exporta como sistema de diseño (`modo: sistema_de_diseno`): sirve para mejorar una app existente o para construir lo que se explique junto con el archivo; la pantalla final ofrece un mensaje para copiar para cada caso | El modo rápido no pide detalles del proyecto; tratar las pantallas de ejemplo como obligatorias llevaba a la IA a construir una app genérica | Obligar a completar el proyecto antes de exportar |
 
+| D67 | 2026-11-07 | Se amplían las categorías existentes con 12 composiciones propias para formularios, navegación y productos; las muestras permiten validar, adjuntar y probar una compra simulada | Mejorar la calidad y la variedad visible conservando el recorrido actual | Agregar un panel de decisiones transversales |
+| D68 | 2026-11-07 | Comparación opcional de hasta tres diseños dentro de cada categoría, con el mismo contenido | Facilitar la evaluación sin depender de recordar muestras anteriores | Abrir un recorrido nuevo para comparar |
+
 ---
 
 ## 9. Registro de pruebas
@@ -1186,6 +1213,12 @@ Cada vez que pasamos un export por una IA, se anota acá. Es lo que valida (o co
 | P1 | | 0.2.0 | Barbería (app web, calmo) | | | | |
 | P2 | | 0.2.0 | Landing de producto (audaz) | | | | |
 | P3 | | 0.2.0 | Dashboard interno (técnico) | | | | |
+
+Validación técnica del catálogo (0.8.2, 2026-11-07): TypeScript, Vitest y build;
+recorrido con Chromium en escritorio y celular, paleta clara y oscura. Se prueban
+validación/limpieza de formulario, comparación y límite de tres, navegación,
+color/talle/favoritos/carrito simulado y descarga con las elecciones. Estas pruebas
+no reemplazan las pruebas con IA de P1–P3 ni una auditoría WCAG completa.
 
 **Qué mirar en cada prueba:**
 - ¿Usó los tokens o metió colores y medidas sueltos?
@@ -1268,6 +1301,7 @@ Lo que todavía no tiene lugar en §5. Se mueve allá cuando se decide hacerlo.
 
 | Versión | Fecha | Cambios |
 |---|---|---|
+| 0.8.2 | 2026-11-07 | Sin nuevas secciones ni campos de configuración: 12 diseños en §21, estructuras de formulario/producto con estados e instrucciones de interacción y CSS correspondiente. Comparación opcional en la galería. Los exports anteriores siguen siendo válidos. |
 | 0.1.0 | 2026-11-06 | Primera versión del formato: 19 secciones, reglas generales, prioridades, plan del configurador, ejemplo completo y registros. |
 | 0.1.0 | 2026-11-06 | Sin cambios de formato. Primer configurador implementado (D10 a D13); el export cumple §3 según D12. |
 | 0.2.0 | 2026-11-06 | Cambios que no rompen nada: §6 suma `paleta: personalizada`, el bloque `personalizada` y el rol `acento_suave`; un contraste que no pasa se anota en §18 en vez de bloquear (D15). §7 suma `peso_titulos`, `espaciado_titulos` y `contraste_tamanos` (4 niveles). §9 suma `elevacion: dura` y `bordes.componente`. §10 suma `botones.estilo`, `tamano`, `alto`, `padding_horizontal`, `texto`, `mayusculas` e `icono`. §12 suma el nivel `rapido`, `al_presionar` y más valores en `hover_botones`, `aparicion_listas` y `cambio_de_pantalla`. §5 pasa de 4 a 8 direcciones. Tokens nuevos en §16: `--color-acento-suave`, `--titulos-peso`, `--subtitulos-peso`, `--titulos-espaciado`, `--borde-componente`, `--boton-*`. |

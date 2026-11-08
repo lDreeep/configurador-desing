@@ -1,3 +1,4 @@
+import { COLECCION_CURADA } from './coleccion-curada';
 // Registro de todas las categorías de la galería, en el orden en que aparecen.
 
 import { type Categoria, type CategoriaId, cssBaseDe, cssDisenoDe } from './base';
@@ -55,9 +56,11 @@ export const CATEGORIAS: Record<CategoriaId, Categoria> = {
   reserva: RESERVAS,
 };
 
-// Diseños sumados después: van al final de cada categoría (no pisan ninguno existente).
-for (const [id, extra] of Object.entries(MAS_DISENOS) as [CategoriaId, Record<string, Categoria['disenos'][string]>][]) {
-  for (const [k, d] of Object.entries(extra)) if (!(k in CATEGORIAS[id].disenos)) CATEGORIAS[id].disenos[k] = d;
+// Las colecciones se registran sin reemplazar diseños existentes.
+for (const coleccion of [MAS_DISENOS, COLECCION_CURADA]) {
+  for (const [id, extra] of Object.entries(coleccion) as [CategoriaId, Record<string, Categoria['disenos'][string]>][]) {
+    for (const [k, d] of Object.entries(extra)) if (!(k in CATEGORIAS[id].disenos)) CATEGORIAS[id].disenos[k] = d;
+  }
 }
 
 /** El primer diseño de cada categoría: el que se usa si la persona no eligió otro. */
