@@ -1,4 +1,3 @@
-import { DECISIONES_UI, IDS_DECISIONES, alternativaUI, normalizarDecisiones } from '../decisiones';
 // Modo rápido, último paso: resumen y descarga del DESIGN.md, sin pasar por el modo avanzado.
 
 import { usePaso } from './BarraPasos';
@@ -35,14 +34,12 @@ export function PanelListo(props: { config: Config; onAtras: () => void; onAvanz
   };
   const estilo = c.visual.estilo !== 'clasico' ? `estilo-${c.visual.estilo}` : '';
 
-  const decisiones = normalizarDecisiones(c.decisiones);
   const filas: [string, string][] = [
     ['Estilo', c.visual.estilo !== 'clasico' ? ESTILOS[c.visual.estilo].nombre : 'Clásico'],
     ['Layout', LAYOUTS[c.visual.layout].nombre],
     ['Colores', s.paleta.nombre],
     ['Tipografía', `${s.titulos.nombre} + ${s.texto.nombre}`],
     ['Botón', c.botones.diseno !== 'ninguno' ? BOTONES[c.botones.diseno].nombre : 'Simple'],
-    ...IDS_DECISIONES.filter(id => decisiones[id] !== 'heredar').map(id => [DECISIONES_UI[id].nombre, alternativaUI(decisiones, id).nombre] as [string, string]),
     ['Cajas', c.cajas.preset !== 'ninguno' ? CAJAS[c.cajas.preset].nombre : 'Por defecto'],
     ...(Object.keys(CATEGORIAS) as CategoriaId[])
       .filter((id) => c.componentes[id])

@@ -1,5 +1,3 @@
-import { CSS_DECISIONES, clasesDecisiones } from '../export/decisiones';
-import { normalizarDecisiones } from '../decisiones';
 // Renderiza una página completa con el layout y el estilo de la config.
 // Usa solo los tokens de sistemaDeDiseno y el CSS de cada estilo: lo que se ve es lo que se exporta.
 
@@ -21,7 +19,7 @@ export function EstilosVisualesGlobales() {
   ];
   // Las cajas van al final y con más especificidad: lo que se elige en su panel gana sobre el estilo.
   const cajas = CSS_CAJA.replace(/&/g, '.caja.caja.caja.caja');
-  return <style>{[...estilos, ...botones, cajas, CSS_DECISIONES].join('\n')}</style>;
+  return <style>{[...estilos, ...botones, cajas].join('\n')}</style>;
 }
 
 export function contenido(c: Config) {
@@ -491,7 +489,6 @@ export function Pagina({ config, contenido: propio }: { config: Config; contenid
   const conDiseno = config.botones.diseno !== 'ninguno';
   const clases = [
     'pg pgp',
-    clasesDecisiones(normalizarDecisiones(config.decisiones)),
     `pg-l-${v.layout}`,
     v.estilo !== 'clasico' ? `estilo-${v.estilo}` : '',
     conDiseno ? '' : `pv-hover-${v.hover}`,
