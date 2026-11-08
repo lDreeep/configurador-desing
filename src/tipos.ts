@@ -143,7 +143,12 @@ export type LayoutId =
   | 'widgets_fondo'
   | 'autor_panaderia'
   | 'autor_finanzas'
-  | 'autor_portfolio';
+  | 'autor_portfolio'
+  | 'autor_festival'
+  | 'autor_correr'
+  | 'autor_cafeteria'
+  | 'autor_floreria'
+  | 'autor_refugio';
 
 export type EscalaId = 'sutil' | 'medio' | 'dramatico' | 'extremo';
 export type EspaciadoTitulos = 'apretado' | 'normal' | 'amplio';

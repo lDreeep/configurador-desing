@@ -11,6 +11,7 @@ import { cssDeFondo, FONDOS, type FondoId, SELECTOR_FONDO } from '../fondos';
 import { sistemaDeDiseno } from '../export/sistema';
 import { CONTENIDO_TIPO } from './contenido-tipo';
 import { Finanzas, Panaderia, Portfolio } from './autor';
+import { Cafeteria, Correr, Festival, Floreria, Refugio } from './autor2';
 import type { BotonDisenoId, Config, EstiloId } from '../tipos';
 
 /** Hoja con el CSS de todos los estilos, cada uno limitado a su clase. Se monta una sola vez. */
@@ -262,6 +263,16 @@ function Layout({ c, k }: { c: Config; k: Contenido }) {
       return <Finanzas c={c} marca={marcaPropia} />;
     case 'autor_portfolio':
       return <Portfolio c={c} marca={marcaPropia} />;
+    case 'autor_festival':
+      return <Festival c={c} marca={marcaPropia} />;
+    case 'autor_correr':
+      return <Correr c={c} marca={marcaPropia} />;
+    case 'autor_cafeteria':
+      return <Cafeteria c={c} marca={marcaPropia} />;
+    case 'autor_floreria':
+      return <Floreria c={c} marca={marcaPropia} />;
+    case 'autor_refugio':
+      return <Refugio c={c} marca={marcaPropia} />;
     case 'hero_partido':
       return (
         <>

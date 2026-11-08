@@ -133,3 +133,140 @@
   .au-por-g4 { grid-column: 4 / span 3; }
 }
 @media (prefers-reduced-motion: reduce) { .au * { transition: none !important; } }
+
+/* ---------- Festival ---------- */
+.au-fes { isolation: isolate; overflow: clip; background: #1A0636; color: #FFF4F8; }
+.au-fes .au-lead { color: #E9D8F6; }
+.au-fes-calor { position: absolute; inset: 0; z-index: -1; background: linear-gradient(160deg, #2A0A5C, #12042A); }
+.au-fes-calor i { position: absolute; border-radius: 50%; filter: blur(30px); }
+.au-fes-calor i:nth-child(1) { width: 60cqw; height: 60cqw; right: -10cqw; top: -8cqw; background: radial-gradient(circle, #FFF6C2 0 8%, #FFC24A 20%, #FF5A3C 38%, #E8308C 58%, transparent 72%); }
+.au-fes-calor i:nth-child(2) { width: 34cqw; height: 34cqw; left: -8cqw; top: 70%; background: radial-gradient(circle, #FFB347 0 10%, #E8308C 40%, transparent 70%); }
+.au-fes-calor i:nth-child(3) { width: 20cqw; height: 20cqw; left: 40%; top: 38%; background: radial-gradient(circle, #FF7A45 0, #8B1F9E 50%, transparent 72%); opacity: .8; }
+.au-fes-hero { display: flex; flex-direction: column; gap: 22px; padding: clamp(40px, 8cqw, 120px) var(--au-borde) clamp(32px, 5cqw, 72px); }
+.au-fes-fecha { margin: 0; font-weight: 700; font-size: clamp(14px, 1.4cqw, 18px); }
+.au-fes-h1 { margin: 0; font-size: clamp(64px, 15cqw, 240px) !important; line-height: .85 !important; letter-spacing: -0.04em; color: #FFF4F8 !important; -webkit-text-fill-color: #FFF4F8; }
+.au-fes-cartel { display: flex; flex-direction: column; gap: clamp(6px, 1cqw, 14px); padding: clamp(32px, 6cqw, 88px) var(--au-borde); border-top: 1px solid rgba(255,255,255,.2); border-bottom: 1px solid rgba(255,255,255,.2); }
+.au-fes-fila { display: flex; flex-wrap: wrap; gap: 0 .35em; margin: 0; font-family: var(--fuente-titulos); font-weight: var(--titulos-peso); line-height: 1.02; letter-spacing: -0.02em; text-transform: uppercase; }
+.au-fes-fila i { font-style: normal; margin-left: .35em; color: #FF7A45; }
+.au-fes-f0 { font-size: clamp(36px, 7.4cqw, 116px); }
+.au-fes-f1 { font-size: clamp(24px, 4.2cqw, 64px); }
+.au-fes-f2 { font-size: clamp(18px, 2.6cqw, 40px); color: #E9D8F6; }
+.au-fes-entradas { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.6fr); gap: 24px clamp(24px, 5cqw, 72px); align-items: start; padding: clamp(48px, 8cqw, 112px) var(--au-borde); }
+.au-fes-entradas ul { margin: 0; padding: 0; list-style: none; }
+.au-fes-entradas li { display: grid; grid-template-columns: 1fr auto auto; gap: 16px; align-items: baseline; padding: 18px 0; border-bottom: 1px solid rgba(255,255,255,.2); }
+.au-fes-entradas li span:nth-child(2) { font-size: 13px; color: #E9D8F6; }
+.au-fes-entradas li b { font-family: var(--fuente-titulos); font-size: 24px; font-variant-numeric: tabular-nums; }
+.au-fes-entradas li.agotada b, .au-fes-entradas li.agotada span:first-child { text-decoration: line-through; opacity: .55; }
+.au-fes-entradas .pv-boton { grid-column: 2; justify-self: start; }
+.au-fes .au-pie { border-top-color: rgba(255,255,255,.2); color: #E9D8F6; }
+.au-fes .au-pie-marca { color: #FFF4F8; }
+
+/* ---------- App para correr ---------- */
+.au-nav-accion { padding: 6px 14px; border-radius: 999px; background: var(--color-texto); color: var(--color-fondo); font-weight: 700; }
+.au-run-hero { display: grid; grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr); gap: clamp(24px, 4cqw, 64px); align-items: center; padding: clamp(24px, 4cqw, 56px) var(--au-borde) clamp(48px, 7cqw, 96px); }
+.au-run-texto { display: flex; flex-direction: column; gap: 22px; }
+.au-run-h1 { margin: 0; font-size: clamp(34px, 4.4cqw, 64px) !important; line-height: 1.02 !important; }
+.au-run-mapa { position: relative; height: clamp(320px, 42cqw, 560px); border-radius: var(--radio-grande); overflow: hidden; background: color-mix(in srgb, var(--color-acento) 8%, var(--color-fondo)); border: 1px solid color-mix(in srgb, var(--color-texto) 10%, transparent); }
+.au-run-mapa svg { width: 100%; height: 100%; display: block; }
+.au-run-curva { fill: none; stroke: color-mix(in srgb, var(--color-texto) 16%, transparent); stroke-width: 1; }
+.au-run-ruta { fill: none; stroke: var(--color-acento); stroke-width: 5; stroke-linecap: round; stroke-linejoin: round; }
+.au-run-pin { fill: var(--color-fondo); stroke: var(--color-acento); stroke-width: 4; }
+.au-run-pin.fin { fill: var(--color-acento); }
+.au-run-agua { fill: #2B9FD9; stroke: var(--color-fondo); stroke-width: 2; }
+.au-run-datos { position: absolute; left: 16px; right: 16px; bottom: 16px; display: flex; flex-wrap: wrap; gap: 8px; }
+.au-run-datos span { padding: 10px 14px; border-radius: 14px; background: var(--color-fondo); box-shadow: 0 10px 24px -12px rgba(0,0,0,.35); font-size: 13px; }
+.au-run-datos b { font-family: var(--fuente-titulos); font-size: 22px; font-variant-numeric: tabular-nums; }
+.au-run-semana { display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); gap: clamp(24px, 5cqw, 72px); align-items: end; padding: clamp(48px, 7cqw, 96px) var(--au-borde); background: var(--color-superficie); }
+.au-run-total { margin: 12px 0 0; font-family: var(--fuente-titulos); font-size: 20px; }
+.au-run-total b { font-size: clamp(64px, 9cqw, 128px); line-height: .9; letter-spacing: -0.04em; font-variant-numeric: tabular-nums; }
+.au-run-nota { margin: 6px 0 0; color: var(--color-texto-suave); }
+.au-run-barras { display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; height: 240px; padding-top: 24px; }
+.au-run-barras span { position: relative; height: 100%; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; gap: 8px; }
+.au-run-barras i { width: 100%; max-width: 44px; min-height: 4px; border-radius: 6px 6px 2px 2px; background: color-mix(in srgb, var(--color-acento) 35%, var(--color-fondo)); }
+.au-run-barras span.max i { background: var(--color-acento); }
+.au-run-barras small { font-size: 12px; color: var(--color-texto-suave); }
+.au-run-barras em { position: absolute; top: -22px; font-style: normal; font-size: 12px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.au-run-rutas { display: flex; flex-direction: column; gap: 24px; padding: clamp(48px, 7cqw, 96px) var(--au-borde); }
+.au-run-rutas ul { margin: 0; padding: 0; list-style: none; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.au-run-rutas li { display: flex; flex-direction: column; gap: 4px; padding: 16px; border-radius: var(--radio-grande); border: 1px solid color-mix(in srgb, var(--color-texto) 12%, transparent); }
+.au-run-rutas svg { width: 100%; height: 90px; margin-bottom: 8px; border-radius: var(--radio-medio); background: repeating-radial-gradient(circle at 70% 40%, transparent 0 9px, color-mix(in srgb, var(--color-texto) 8%, transparent) 9px 10px), color-mix(in srgb, var(--color-acento) 6%, var(--color-fondo)); }
+.au-run-rutas svg .au-run-ruta { stroke-width: 4; }
+.au-run-rutas li span { font-size: 13px; color: var(--color-texto-suave); }
+
+/* ---------- Cafetería ---------- */
+.au-caf-hero { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); min-height: clamp(480px, 58cqw, 720px); }
+.au-caf-hero-img { min-height: 100%; }
+.au-caf-hero-texto { display: flex; flex-direction: column; justify-content: center; gap: 22px; padding: clamp(28px, 5cqw, 72px) var(--au-borde); }
+.au-caf-h1 { margin: 0; font-size: clamp(36px, 4.8cqw, 72px) !important; line-height: 1 !important; }
+.au-caf-pizarra { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.6fr); gap: 20px clamp(24px, 5cqw, 72px); padding: clamp(48px, 8cqw, 112px) var(--au-borde); background: #1E1B18; color: #F3ECE2; }
+.au-caf-pizarra dl { margin: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 0 32px; }
+.au-caf-pizarra dl > div { display: flex; justify-content: space-between; gap: 12px; padding: 14px 0; border-bottom: 1px dashed rgba(243,236,226,.3); font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 15px; }
+.au-caf-pizarra dd { margin: 0; font-variant-numeric: tabular-nums; }
+.au-caf-leche { grid-column: 2; margin: 0; font-size: 13px; color: #C9BEB0; }
+.au-caf-origen { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); grid-auto-rows: clamp(60px, 8cqw, 110px); gap: 14px; padding: clamp(48px, 8cqw, 112px) var(--au-borde); }
+.au-caf-o1 { grid-column: 1 / span 5; grid-row: 1 / span 5; border-radius: var(--radio-grande); }
+.au-caf-origen-texto { grid-column: 7 / span 6; grid-row: 1 / span 3; display: flex; flex-direction: column; gap: 16px; align-self: center; align-items: flex-start; }
+.au-caf-origen-texto p { margin: 0; max-width: 44ch; color: var(--color-texto-suave); }
+.au-caf-o2 { grid-column: 7 / span 3; grid-row: 4 / span 2; border-radius: var(--radio-grande); }
+.au-caf-o3 { grid-column: 10 / span 3; grid-row: 4 / span 2; border-radius: var(--radio-grande); }
+
+/* ---------- Florería ---------- */
+.au-flo-hero { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(24px, 5cqw, 72px); align-items: center; padding: clamp(32px, 6cqw, 96px) var(--au-borde); }
+.au-flo-texto { display: flex; flex-direction: column; gap: 22px; align-items: flex-start; }
+.au-flo-h1 { margin: 0; font-size: clamp(40px, 5.6cqw, 88px) !important; line-height: .98 !important; }
+.au-flo-collage { position: relative; height: clamp(380px, 46cqw, 620px); }
+.au-flo-collage .au-img { position: absolute; border-radius: var(--radio-grande); box-shadow: 0 30px 60px -28px rgba(0,0,0,.45); }
+.au-flo-c1 { left: 0; top: 0; width: 64% !important; height: 70% !important; }
+.au-flo-c2 { right: 0; top: 18%; width: 44% !important; height: 46% !important; }
+.au-flo-c3 { left: 22%; bottom: 0; width: 52% !important; height: 40% !important; }
+.au-flo-planes { display: flex; flex-direction: column; align-items: center; gap: 24px; padding: clamp(48px, 8cqw, 112px) var(--au-borde); text-align: center; background: color-mix(in srgb, var(--color-acento) 10%, var(--color-fondo)); }
+.au-flo-selector { display: inline-flex; flex-wrap: wrap; justify-content: center; gap: 6px; padding: 6px; border-radius: 999px; background: var(--color-fondo); border: 1px solid color-mix(in srgb, var(--color-texto) 12%, transparent); }
+.au-flo-selector button { min-height: 44px; padding: 0 20px; border: none; border-radius: 999px; background: transparent; color: var(--color-texto); font: inherit; font-weight: 600; cursor: pointer; transition: background var(--duracion-media) ease, color var(--duracion-media) ease; }
+.au-flo-selector button[aria-checked='true'] { background: var(--color-acento); color: var(--color-sobre-acento); }
+.au-flo-selector button:focus-visible { outline: 2px solid var(--color-acento); outline-offset: 2px; }
+.au-flo-precio { margin: 0; font-family: var(--fuente-titulos); font-weight: var(--titulos-peso); font-size: clamp(48px, 7cqw, 96px); line-height: 1; font-variant-numeric: tabular-nums; }
+.au-flo-precio small { display: block; margin-top: 8px; font-family: var(--fuente-texto); font-size: 15px; color: var(--color-texto-suave); }
+.au-flo-semana { display: flex; flex-direction: column; gap: 4px; max-width: 46ch; }
+.au-flo-semana span { color: var(--color-texto-suave); }
+
+/* ---------- Refugio ---------- */
+.au-ref-hero { position: relative; display: flex; flex-direction: column; min-height: clamp(560px, 66cqw, 820px); color: #FFFFFF; }
+.au-ref-hero-img { position: absolute; inset: 0; z-index: 0; }
+.au-ref-velo { position: absolute; inset: 0; z-index: 0; background: radial-gradient(ellipse 70% 55% at 10% 72%, rgba(0,0,0,.62), transparent 70%), linear-gradient(to bottom, rgba(0,0,0,.45), transparent 30%, transparent 55%, rgba(0,0,0,.6)); }
+.au-ref-hero > .au-nav, .au-ref-texto, .au-ref-reserva { position: relative; z-index: 1; }
+.au-ref-hero .au-nav { color: #FFFFFF; }
+.au-ref-texto { margin-top: auto; padding: 0 var(--au-borde) 28px; }
+.au-ref-h1 { margin: 0; max-width: 16ch; font-size: clamp(36px, 5.2cqw, 80px) !important; line-height: 1 !important; color: #FFFFFF !important; -webkit-text-fill-color: #FFFFFF; text-shadow: 0 2px 24px rgba(0,0,0,.3); }
+.au-ref-reserva { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)) auto; gap: 12px; align-items: end; margin: 0 var(--au-borde) clamp(24px, 4cqw, 48px); padding: 14px; border-radius: var(--radio-grande); background: var(--color-fondo); color: var(--color-texto); box-shadow: 0 30px 60px -24px rgba(0,0,0,.5); }
+.au-ref-reserva label { display: flex; flex-direction: column; gap: 4px; font-size: 12px; font-weight: 700; color: var(--color-texto-suave); }
+.au-ref-reserva input, .au-ref-reserva select { min-height: 44px; padding: 0 10px; border: 1px solid color-mix(in srgb, var(--color-texto) 16%, transparent); border-radius: var(--radio-medio); background: var(--color-fondo); color: var(--color-texto); font: inherit; font-size: 15px; font-weight: 500; }
+.au-ref-habs { display: flex; flex-direction: column; gap: 28px; padding: clamp(48px, 8cqw, 112px) var(--au-borde); }
+.au-ref-habs ul { margin: 0; padding: 0; list-style: none; display: grid; grid-template-columns: 1.3fr 1fr 1fr; gap: 20px; }
+.au-ref-habs li { display: flex; flex-direction: column; gap: 6px; }
+.au-ref-foto { aspect-ratio: 4 / 5; height: auto !important; border-radius: var(--radio-medio); margin-bottom: 8px; }
+.au-ref-habs li:first-child .au-ref-foto { aspect-ratio: 5 / 5.2; }
+.au-ref-habs li b { font-family: var(--fuente-titulos); font-weight: var(--titulos-peso); font-size: 22px; }
+.au-ref-habs li span { color: var(--color-texto-suave); }
+.au-ref-precio { color: var(--color-texto) !important; font-weight: 700; font-variant-numeric: tabular-nums; }
+.au-ref-precio small { font-weight: 400; color: var(--color-texto-suave); }
+.au-ref-llegar { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(24px, 5cqw, 72px); align-items: center; padding: 0 var(--au-borde) clamp(48px, 8cqw, 112px); }
+.au-ref-llegar-img { height: clamp(260px, 32cqw, 440px) !important; border-radius: var(--radio-grande); }
+.au-ref-llegar > div { display: flex; flex-direction: column; gap: 16px; align-items: flex-start; }
+.au-ref-km { margin: 0; font-family: var(--fuente-titulos); font-weight: var(--titulos-peso); font-size: clamp(32px, 4.6cqw, 68px); line-height: 1; letter-spacing: var(--titulos-espaciado); }
+.au-ref-llegar p:not(.au-ref-km) { margin: 0; max-width: 42ch; color: var(--color-texto-suave); }
+
+@container (max-width: 760px) {
+  .au-fes-entradas, .au-run-hero, .au-run-semana, .au-caf-hero, .au-caf-pizarra, .au-flo-hero, .au-ref-llegar { grid-template-columns: minmax(0, 1fr); }
+  .au-fes-entradas .pv-boton, .au-caf-leche { grid-column: 1; }
+  .au-run-rutas ul, .au-ref-habs ul { grid-template-columns: minmax(0, 1fr); }
+  .au-caf-hero-img { height: 300px; }
+  .au-caf-pizarra dl { grid-template-columns: minmax(0, 1fr); }
+  .au-caf-origen { grid-template-columns: repeat(6, minmax(0, 1fr)); grid-auto-rows: 70px; }
+  .au-caf-origen-texto { grid-column: 1 / -1; grid-row: span 4; }
+  .au-caf-o1 { grid-column: 1 / -1; grid-row: span 4; }
+  .au-caf-o2 { grid-column: 1 / span 3; grid-row: span 3; }
+  .au-caf-o3 { grid-column: 4 / span 3; grid-row: span 3; }
+  .au-flo-collage { height: 360px; }
+  .au-ref-reserva { grid-template-columns: 1fr 1fr; }
+  .au-ref-reserva .pv-boton { grid-column: 1 / -1; justify-content: center; }
+}

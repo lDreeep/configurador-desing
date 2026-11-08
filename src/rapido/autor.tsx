@@ -10,7 +10,7 @@ import { animarToque } from '../componentes/ui';
 import type { Config } from '../tipos';
 import { creditos, FOTOS, type FotoId } from './fotos';
 
-function Img({ id, clase = '', prioridad = false }: { id: FotoId; clase?: string; prioridad?: boolean }) {
+export function Img({ id, clase = '', prioridad = false }: { id: FotoId; clase?: string; prioridad?: boolean }) {
   const f = FOTOS[id];
   return (
     <img
@@ -26,7 +26,7 @@ function Img({ id, clase = '', prioridad = false }: { id: FotoId; clase?: string
   );
 }
 
-function Secundario({ c, children }: { c: Config; children: ReactNode }) {
+export function Secundario({ c, children }: { c: Config; children: ReactNode }) {
   return (
     <button type="button" className={`pv-boton pv-secundario est-${c.botones.estilo} pg-boton-sec`} onClick={(e) => animarToque(e.currentTarget, e)}>
       {children}
@@ -34,7 +34,7 @@ function Secundario({ c, children }: { c: Config; children: ReactNode }) {
   );
 }
 
-function Pie({ marca, fotos, links }: { marca: string; fotos: FotoId[]; links: string[] }) {
+export function Pie({ marca, fotos, links }: { marca: string; fotos: FotoId[]; links: string[] }) {
   return (
     <footer className="au-pie">
       <span className="au-pie-marca">{marca}</span>
