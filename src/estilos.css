@@ -1023,3 +1023,7 @@ button:disabled { cursor: not-allowed; opacity: 0.4; }
 .inicio-layouts-sub { margin: 4px 2px 10px; font-size: 13px; color: #c9ccd3; }
 .inicio-layouts-grilla + .inicio-layouts-sub { margin-top: 18px; }
 .inicio-layout-autor { background: rgba(159,179,255,.12); }
+
+/* Dentro del prototipo manda su propia navegación (la que funciona): la barra dibujada de la página se oculta. */
+.proto-zona-portada .pg-nav, .proto-zona-portada .au-nav { display: none; }
+.proto-zona-portada .au-ref-hero { padding-top: 24px; }

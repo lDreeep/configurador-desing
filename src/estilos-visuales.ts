@@ -580,3 +580,9 @@ export const RECETAS_AUTOR: Partial<Record<LayoutId, { estilo: EstiloId; paleta:
   autor_refugio: { estilo: 'lujo', paleta: 'noche_dorada', titulos: 'cormorant', texto: 'manrope', fondo: 'ninguno' },
 };
 export const esAutor = (l: LayoutId) => l.startsWith('autor_');
+
+/** La marca de ejemplo de cada plantilla de autor (se usa si la persona no escribió el nombre de su proyecto). */
+export const MARCAS_AUTOR: Partial<Record<LayoutId, string>> = {
+  autor_panaderia: 'Horno Thames', autor_finanzas: 'Moneda', autor_portfolio: 'Estudio Ferro', autor_festival: 'Infrarrojo',
+  autor_correr: 'Ruta', autor_cafeteria: 'Tueste', autor_floreria: 'Flores de Estación', autor_refugio: 'Refugio Lenga',
+};

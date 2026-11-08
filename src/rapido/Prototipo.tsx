@@ -7,7 +7,7 @@ import { BOTONES } from '../botones-disenos';
 import { CAJAS, clasesDeCaja, paramsDe } from '../cajas';
 import { APARICIONES, CAMBIOS, COMBINACIONES, MOVIMIENTOS, FUENTES, PALETAS } from '../catalogo';
 import { BotonPrincipal } from '../componentes/BotonPrincipal';
-import { ESTILOS } from '../estilos-visuales';
+import { ESTILOS, MARCAS_AUTOR } from '../estilos-visuales';
 import { conPaletaAlterna, paletaActiva, sistemaDeDiseno } from '../export/sistema';
 import { CATEGORIAS, type CategoriaId, DISENO_INICIAL } from '../galeria';
 import { claseDe, GaleriaContexto, reanimar } from '../galeria/base';
@@ -191,6 +191,7 @@ export function Prototipo(props: { config: Config; setConfig: (fn: (c: Config) =
   const estilo = c.visual.estilo !== 'clasico' ? `estilo-${c.visual.estilo}` : '';
   const indice = PANTALLAS.findIndex((p) => p.id === pantalla);
   const lateral = /lateral/.test(d('nav_web'));
+  const marca = c.proyecto.nombre.trim() || MARCAS_AUTOR[c.visual.layout] || 'Tu marca';
 
   useEffect(() => {
     if (!aviso) return;
@@ -232,7 +233,7 @@ export function Prototipo(props: { config: Config; setConfig: (fn: (c: Config) =
   const navWeb = (
     <Zona e="nav_web" clase={`proto-zona-nav ${lateral ? 'es-lateral' : ''}`}>
       <nav className={cl('nav_web')} style={{ '--i': indice, '--n': PANTALLAS.length } as CSSProperties} aria-label="Navegación del prototipo">
-        <span className="cm-marca">{c.proyecto.nombre.trim() || 'Tu marca'}</span>
+        <span className="cm-marca">{marca}</span>
         <div className="cm-items">
           <span className="cm-ind" aria-hidden="true" />
           {PANTALLAS.map((p) => (
@@ -536,7 +537,7 @@ export function Prototipo(props: { config: Config; setConfig: (fn: (c: Config) =
   const nombrePantalla = nombreDePantalla(pantalla);
   const appBar = (
     <div className="proto-appbar">
-      <span className="proto-appbar-titulo">{pantalla === 'portada' ? c.proyecto.nombre.trim() || 'Tu marca' : nombrePantalla}</span>
+      <span className="proto-appbar-titulo">{pantalla === 'portada' ? marca : nombrePantalla}</span>
       <Zona e="boton_icono" clase="proto-appbar-iconos">
         {[
           ['buscar', 'Buscar'],
