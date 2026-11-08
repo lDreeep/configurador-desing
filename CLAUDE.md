@@ -61,6 +61,15 @@ Antes de dar una tarea por terminada: `npm run typecheck && npm test`.
 5. Sección en `generarDesignMd.ts` y test en `generarDesignMd.test.ts`.
 6. `DESIGN.md`: §3 (formato), §5 (estado → `[MVP]` hecho), §8 (decisión), §12 (versión).
 
+## Diseñar páginas y composiciones
+
+Antes de crear o rehacer un layout, una composición o un estilo, cargá la skill `frontend-design`
+(`.claude/skills/`): pide una idea propia para cada caso y evita los recursos genéricos (cards
+numeradas 01/02/03, etiquetas en mayúsculas sobre todo, la misma sombra en todas las cajas,
+animaciones de entrada en cada sección). Para datos concretos (combinaciones de letras, paletas por
+rubro, reglas de UX) consultá `ui-ux-pro-max`:
+`python3 .claude/skills/ui-ux-pro-max/scripts/search.py "consulta" --domain typography`.
+
 ## Sumar diseños a la base
 
 Usá la skill `agregar-diseno-desde-referencia` (`.claude/skills/`): convierte capturas o links en entradas del catálogo.

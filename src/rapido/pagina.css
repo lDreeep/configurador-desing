@@ -255,3 +255,29 @@
 @media (prefers-reduced-motion: reduce) {
   .pg.pgp *, .pg.pgp *::before, .pg.pgp *::after { animation: none !important; transition: none !important; }
 }
+
+/* Ícono de cada card (en vez de numeritos: el contenido no es una secuencia) */
+.pgp .pg-card-ico { display: grid; place-items: center; width: 40px; height: 40px; margin-bottom: 4px; border-radius: calc(var(--radio-medio) * .8); background: color-mix(in srgb, var(--color-acento) 14%, transparent); color: var(--color-acento-texto); }
+
+/* Escena del hero: ventana del producto con datos y avisos flotantes, sobre el visual o el fondo */
+.pgp .pg-media.con-escena { position: relative; overflow: hidden; display: grid; place-items: center; container-type: inline-size; padding: clamp(18px, 6%, 44px); box-sizing: border-box; }
+.pgp .pg-escena { position: relative; width: min(100%, 420px); }
+.pgp .pg-esc-ventana { position: relative; z-index: 1; border-radius: calc(var(--radio-grande) * .8 + 4px); background: var(--color-fondo); color: var(--color-texto); box-shadow: 0 1px 0 rgba(255,255,255,.4) inset, 0 30px 60px -20px rgba(0,0,0,.45), 0 10px 22px -10px rgba(0,0,0,.25); overflow: hidden; transform: rotate(-2deg); font-family: var(--fuente-texto); }
+.pgp .pg-esc-barra { display: flex; align-items: center; gap: 6px; padding: 10px 14px; border-bottom: 1px solid color-mix(in srgb, var(--color-texto) 10%, transparent); font-size: 12px; font-weight: 700; color: var(--color-texto-suave); }
+.pgp .pg-esc-barra i { width: 9px; height: 9px; border-radius: 50%; background: color-mix(in srgb, var(--color-texto) 18%, transparent); }
+.pgp .pg-esc-barra span { margin-left: 8px; }
+.pgp .pg-esc-cuerpo { display: flex; flex-direction: column; gap: 12px; padding: 16px; }
+.pgp .pg-esc-tit { font-family: var(--fuente-titulos); font-weight: var(--titulos-peso); font-size: 17px; line-height: 1.15; }
+.pgp .pg-esc-grafico { display: flex; align-items: flex-end; gap: 7px; height: 92px; padding-bottom: 2px; border-bottom: 1px solid color-mix(in srgb, var(--color-texto) 12%, transparent); }
+.pgp .pg-esc-grafico span { flex: 1; border-radius: 4px 4px 1px 1px; background: color-mix(in srgb, var(--color-acento) 30%, var(--color-fondo)); }
+.pgp .pg-esc-grafico span.dest { background: var(--color-acento); }
+.pgp .pg-esc-filas { display: flex; flex-direction: column; gap: 8px; }
+.pgp .pg-esc-fila { display: grid; grid-template-columns: 26px minmax(0, 1fr) auto; align-items: center; gap: 10px; font-size: 12.5px; }
+.pgp .pg-esc-av { display: grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; background: color-mix(in srgb, var(--color-acento) 20%, var(--color-fondo)); color: var(--color-acento-texto); font-size: 11px; }
+.pgp .pg-esc-linea { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.pgp .pg-esc-dato { font-weight: 700; font-variant-numeric: tabular-nums; }
+.pgp .pg-esc-chip { position: absolute; z-index: 2; display: inline-flex; align-items: center; gap: 8px; padding: 10px 14px; border-radius: 999px; background: var(--color-fondo); color: var(--color-texto); font: 600 12.5px var(--fuente-texto); white-space: nowrap; box-shadow: 0 14px 30px -8px rgba(0,0,0,.35); }
+.pgp .pg-esc-chip.uno { left: -6%; bottom: -14px; transform: rotate(-4deg); }
+.pgp .pg-esc-chip.dos { right: -5%; top: 8%; transform: rotate(3deg); background: var(--color-acento); color: var(--color-sobre-acento); }
+.pgp .pg-esc-ok { display: grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; background: color-mix(in srgb, var(--color-exito) 85%, var(--color-texto)); color: #FFFFFF; font-size: 12px; }
+@container (max-width: 300px) { .pgp .pg-esc-chip.dos { display: none; } .pgp .pg-esc-chip.uno { left: 0; } }

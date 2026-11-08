@@ -92,7 +92,11 @@ function Nav({ k, simple = false }: { k: Contenido; simple?: boolean }) {
 
 const Card = ({ i, item, cc = '', children }: { i: number; item: { titulo: string; texto: string }; cc?: string; children?: ReactNode }) => (
   <div className={`pg-card ${cc}`} style={{ animationDelay: `${i * 70}ms` }}>
-    <span className="pg-etiqueta">{String(i + 1).padStart(2, '0')}</span>
+    <span className="pg-card-ico" aria-hidden="true">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d={ICONOS_CARD[i % ICONOS_CARD.length]} />
+      </svg>
+    </span>
     <span className="pg-card-titulo">{item.titulo}</span>
     {item.texto && <span className="pg-card-texto">{item.texto}</span>}
     {children}
@@ -101,7 +105,56 @@ const Card = ({ i, item, cc = '', children }: { i: number; item: { titulo: strin
 
 const Titulo = ({ k }: { k: Contenido }) => <h2 className="pg-titulo">{k.titular}</h2>;
 const Bajada = ({ k }: { k: Contenido }) => <p className="pg-bajada">{k.bajada}</p>;
-const Media = ({ clase = '' }: { clase?: string }) => <div className={`pg-media ${clase}`} aria-hidden="true" />;
+const Media = ({ clase = '', escena }: { clase?: string; escena?: Contenido }) => (
+  <div className={`pg-media ${clase} ${escena ? 'con-escena' : ''}`} aria-hidden="true">
+    {escena && <Escena k={escena} />}
+  </div>
+);
+
+/**
+ * El visual del hero: en vez de un bloque de color vacío, una ventana del producto con datos
+ * reales del proyecto y dos avisos flotantes. Le da profundidad a la página y usa solo tokens.
+ */
+function Escena({ k }: { k: Contenido }) {
+  const alturas = [38, 54, 46, 72, 60, 88, 70];
+  return (
+    <div className="pg-escena">
+      <div className="pg-esc-ventana">
+        <div className="pg-esc-barra">
+          <i />
+          <i />
+          <i />
+          <span>{k.marca}</span>
+        </div>
+        <div className="pg-esc-cuerpo">
+          <span className="pg-esc-tit">{k.items[0]?.titulo}</span>
+          <div className="pg-esc-grafico">
+            {alturas.map((h, i) => (
+              <span key={i} style={{ height: `${h}%` }} className={i === 5 ? 'dest' : ''} />
+            ))}
+          </div>
+          <div className="pg-esc-filas">
+            {k.items.slice(0, 3).map((it, i) => (
+              <span key={i} className="pg-esc-fila">
+                <b className="pg-esc-av">{it.titulo.slice(0, 1)}</b>
+                <span className="pg-esc-linea">{it.titulo}</span>
+                <span className="pg-esc-dato">{['$ 12.400', '$ 8.900', '$ 21.300'][i]}</span>
+              </span>
+            ))}
+          </div>
+        </div>
+      </div>
+      <div className="pg-esc-chip uno">
+        <span className="pg-esc-ok">✓</span> {k.cta}: listo
+      </div>
+      <div className="pg-esc-chip dos">
+        <b>+24%</b> este mes
+      </div>
+    </div>
+  );
+}
+
+const ICONOS_CARD = ['M4 12l5 5L20 6', 'M12 3v18M3 12h18', 'M4 6h16M4 12h10M4 18h7', 'M12 21s-7-4.5-9-9a5 5 0 0 1 9-3 5 5 0 0 1 9 3c-2 4.5-9 9-9 9z'];
 
 function Layout({ c, k }: { c: Config; k: Contenido }) {
   const caja = paramsDe(c);
@@ -118,7 +171,7 @@ function Layout({ c, k }: { c: Config; k: Contenido }) {
               <Bajada k={k} />
               <Botones c={c} k={k} />
             </div>
-            <Media />
+            <Media escena={k} />
           </section>
           <section className="pg-fila">{cards}</section>
         </>
@@ -133,7 +186,7 @@ function Layout({ c, k }: { c: Config; k: Contenido }) {
               <Bajada k={k} />
               <Botones c={c} k={k} />
             </div>
-            <Media clase="pg-bento-media" />
+            <Media clase="pg-bento-media" escena={k} />
             {cards}
           </section>
         </>
@@ -513,7 +566,7 @@ function Layout({ c, k }: { c: Config; k: Contenido }) {
           <section className="pg-mosaico">
             <Media clase="alto" />
             {cards[0]}
-            <Media />
+            <Media escena={k} />
             {cards[1]}
             <Media clase="alto" />
             {cards[2]}
@@ -572,7 +625,7 @@ function Layout({ c, k }: { c: Config; k: Contenido }) {
           <section className="pg-horizontal" tabIndex={0} aria-label="Paneles de ejemplo">
             {k.items.map((it, i) => (
               <Card key={i} i={i} item={it} cc={cc}>
-                <Media />
+                <Media escena={k} />
               </Card>
             ))}
           </section>
