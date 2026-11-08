@@ -74,6 +74,12 @@ Para datos concretos (combinaciones de letras, paletas por
 rubro, reglas de UX) consultá `ui-ux-pro-max`:
 `python3 .claude/skills/ui-ux-pro-max/scripts/search.py "consulta" --domain typography`.
 
+Otras skills de diseño instaladas en `.claude/skills/`:
+- `impeccable` (pbakaus, Apache 2.0): critica, audita y pule UI («audit», «polish», «bolder», «typeset»…). Su lanzador baja un programa desde GitHub la primera vez que se usa.
+- `web-design-guidelines` (Vercel): auditoría contra más de 100 reglas de interfaz; lee las reglas actualizadas de internet y deja una copia en `guias-copia-local.md`.
+- `web-design-engineer` (ConardLi, MIT): recetas para páginas, dashboards y prototipos en HTML/CSS/React.
+- `shadcn` (shadcn/ui, MIT): solo aplica a proyectos con shadcn/ui; este configurador no lo usa, sirve como referencia de componentes.
+
 ## Sumar diseños a la base
 
 Usá la skill `agregar-diseno-desde-referencia` (`.claude/skills/`): convierte capturas o links en entradas del catálogo.
