@@ -7,6 +7,7 @@ import { BOTONES, CSS_BASE_BOTON } from '../botones-disenos';
 import { BotonPrincipal } from '../componentes/BotonPrincipal';
 import { clasesDeCaja, CSS_CAJA, paramsDe } from '../cajas';
 import { cssDeEstilo, ESTILOS } from '../estilos-visuales';
+import { cssDeFondo, FONDOS, type FondoId, SELECTOR_FONDO } from '../fondos';
 import { sistemaDeDiseno } from '../export/sistema';
 import type { BotonDisenoId, Config, EstiloId } from '../tipos';
 
@@ -19,7 +20,9 @@ export function EstilosVisualesGlobales() {
   ];
   // Las cajas van al final y con más especificidad: lo que se elige en su panel gana sobre el estilo.
   const cajas = CSS_CAJA.replace(/&/g, '.caja.caja.caja.caja');
-  return <style>{[...estilos, ...botones, cajas].join('\n')}</style>;
+  // Los fondos van después de los estilos: si se elige uno, gana sobre el visual del estilo.
+  const fondos = (Object.keys(FONDOS) as FondoId[]).map((id) => cssDeFondo(id, SELECTOR_FONDO(id)));
+  return <style>{[...estilos, ...fondos, ...botones, cajas].join('\n')}</style>;
 }
 
 export function contenido(c: Config) {
@@ -403,6 +406,102 @@ function Layout({ c, k }: { c: Config; k: Contenido }) {
         </>
       );
     }
+    case 'fondo_protagonista':
+      return (
+        <section className="pg-fp">
+          <div className="pg-fondo-area" aria-hidden="true" />
+          <div className="pg-fp-velo" aria-hidden="true" />
+          <div className="pg-fp-nav">
+            <Nav k={k} />
+          </div>
+          <div className="pg-fp-texto">
+            <span className="pg-etiqueta">Temporada 2027</span>
+            <Titulo k={k} />
+            <Bajada k={k} />
+          </div>
+          <div className="pg-card pg-fp-tarjeta">
+            <span className="pg-etiqueta">Próximas fechas</span>
+            {k.items.slice(0, 3).map((it, i) => (
+              <span key={i} className="pg-fp-fila">
+                <span>{it.titulo}</span>
+                <b>{['Sáb 14', 'Dom 15', 'Sáb 21'][i]}</b>
+              </span>
+            ))}
+            <BotonPrincipal config={c} clase="pg-boton" onClick={k.onPrincipal}>
+              {k.cta}
+            </BotonPrincipal>
+          </div>
+        </section>
+      );
+    case 'tarjeta_sobre_fondo':
+      return (
+        <section className="pg-tsf">
+          <div className="pg-fondo-area" aria-hidden="true" />
+          <div className="pg-card pg-tsf-tarjeta">
+            <span className="pg-marca">{k.marca}</span>
+            <Titulo k={k} />
+            <Bajada k={k} />
+            <ul className="pg-tsf-lista">
+              {k.items.slice(0, 3).map((it, i) => (
+                <li key={i}>{it.titulo}</li>
+              ))}
+            </ul>
+            <Botones c={c} k={k} />
+          </div>
+        </section>
+      );
+    case 'editorial_fondo':
+      return (
+        <>
+          <Nav k={k} />
+          <section className="pg-hero pg-ef">
+            <div className="pg-ef-texto">
+              <span className="pg-etiqueta">Edición de otoño</span>
+              <Titulo k={k} />
+              <Bajada k={k} />
+              <Botones c={c} k={k} />
+            </div>
+            <div className="pg-ef-lamina">
+              <div className="pg-fondo-area" aria-hidden="true" />
+              <div className="pg-card pg-ef-ficha">
+                <span className="pg-etiqueta">Salidas</span>
+                <span className="pg-card-titulo">14 al 21 de marzo</span>
+                <span className="pg-card-texto">Quedan 6 lugares</span>
+              </div>
+            </div>
+          </section>
+          <section className="pg-fila">{cards}</section>
+        </>
+      );
+    case 'widgets_fondo':
+      return (
+        <section className="pg-wf">
+          <div className="pg-fondo-area" aria-hidden="true" />
+          <div className="pg-wf-nav">
+            <Nav k={k} />
+          </div>
+          <div className="pg-wf-grilla">
+            <div className="pg-card pg-wf-grande">
+              <span className="pg-etiqueta">Hoy</span>
+              <span className="pg-wf-numero">22:40</span>
+              <span className="pg-card-texto">{k.titular}</span>
+            </div>
+            <div className="pg-card pg-wf-accion">
+              <span className="pg-card-titulo">{k.items[0]?.titulo}</span>
+              <span className="pg-card-texto">{k.bajada}</span>
+              <Botones c={c} k={k} />
+            </div>
+            <div className="pg-card pg-wf-chica">
+              <span className="pg-etiqueta">Carga</span>
+              <span className="pg-wf-numero chico">41%</span>
+            </div>
+            <div className="pg-card pg-wf-chica">
+              <span className="pg-etiqueta">Afuera</span>
+              <span className="pg-wf-numero chico">9°</span>
+            </div>
+          </div>
+        </section>
+      );
     case 'mosaico':
       return (
         <>
@@ -494,6 +593,7 @@ export function Pagina({ config, contenido: propio }: { config: Config; contenid
     conDiseno ? '' : `pv-hover-${v.hover}`,
     conDiseno ? '' : `pv-presionar-${v.presionar}`,
     `pv-aparicion-${v.aparicion}`,
+    v.fondo && v.fondo !== 'ninguno' ? `fondo-${v.fondo}` : '',
   ].join(' ');
   return (
     <div className={clases} style={s.tokens as CSSProperties}>

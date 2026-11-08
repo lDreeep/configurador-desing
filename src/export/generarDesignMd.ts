@@ -11,8 +11,9 @@ import { cssDeEstilo, ESTILOS, LAYOUTS } from '../estilos-visuales';
 import { CATEGORIAS, type CategoriaId } from '../galeria';
 import { cssBaseDe, cssDisenoDe } from '../galeria/base';
 import { paletaActiva, sistemaDeDiseno, tokensCss } from './sistema';
+import { cssDeFondo, FONDOS, type FondoId } from '../fondos';
 
-export const VERSION_FORMATO = '0.8.2';
+export const VERSION_FORMATO = '0.8.3';
 
 const q = (s: string) => JSON.stringify(s);
 const valor = (s: string) => (s.trim() ? q(s.trim()) : 'sin_definir');
@@ -474,15 +475,24 @@ preguntas_sugeridas:${lista(preguntas)}`,
   const v = c.visual;
   const lay = LAYOUTS[v.layout];
   const estV = v.estilo !== 'clasico' ? ESTILOS[v.estilo] : null;
+  const fondoV = v.fondo && v.fondo !== 'ninguno' ? FONDOS[v.fondo] : null;
   secciones.push(
     [
       '## 19. Estilo visual y layout',
       estV
-        ? `Estilo ${estV.nombre.toLowerCase()} (${estV.descripcion.toLowerCase()}) sobre el layout «${lay.nombre}». El CSS de abajo le da la textura: usalo tal cual.`
+        ? `Estilo ${estV.nombre.toLowerCase()} (${estV.descripcion.toLowerCase()}) sobre el layout «${lay.nombre}»${fondoV ? `, con el fondo «${fondoV.nombre}»` : ''}. El CSS de abajo le da la textura: usalo tal cual.`
         : `Layout «${lay.nombre}», sin estilo visual especial (solo la dirección de la sección 5).`,
       yaml(`
 layout: ${v.layout}
 layout_estructura: ${q(lay.estructura)}
+fondo: ${v.fondo ?? 'ninguno'}${
+        fondoV
+          ? `
+fondo_descripcion: ${q(fondoV.descripcion)}
+fondo_uso: ${q('capa decorativa vacía (aria-hidden) detrás del contenido, en los visuales (.pg-media) y en las áreas de fondo (.pg-fondo-area); el texto encima va sobre un velo oscuro o dentro de una tarjeta, nunca directo')}
+fondo_texto_encima: ${fondoV.oscuro ? 'claro' : 'oscuro'}`
+          : ''
+      }
 estilo: ${v.estilo}${
         estV
           ? `
@@ -490,6 +500,11 @@ estilo_palabras_clave: [${estV.palabrasClave.join(', ')}]
 estilo_reglas:${lista(estV.reglas)}`
           : ''
       }`),
+      fondoV
+        ? '```css\n/* Fondo «' + fondoV.nombre + '»: se aplica a la capa de fondo. Todo es CSS (gradientes y SVG), sin imágenes externas. */\n' +
+          cssDeFondo(v.fondo as FondoId, '.fondo-capa') +
+          '\n```'
+        : '',
       estV
         ? '```css\n/* Clases de referencia: .pg (raíz de la página), .pg-nav, .pg-marca, .pg-hero, .pg-titulo, .pg-bajada,\n   .pg-etiqueta, .pg-card, .pg-card-titulo, .pg-media, .pg-boton, .pg-boton-sec, .pg-deco (.a .b .c) */\n' +
           cssDeEstilo(v.estilo as keyof typeof ESTILOS, '.pg') +

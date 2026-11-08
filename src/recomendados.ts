@@ -64,7 +64,7 @@ export const RECOMENDADOS: Record<TipoProyecto, Recomendados> = {
   landing: {
     para: 'página web',
     porque: 'Una página que presenta algo vive del primer impacto: título grande, un botón que se note y secciones claras.',
-    layouts: ['hero_partido', 'portada_video', 'precios', 'equipo', 'cinta', 'bento', 'tipografico'],
+    layouts: ['fondo_protagonista', 'hero_partido', 'tarjeta_sobre_fondo', 'portada_video', 'precios', 'equipo', 'cinta', 'bento'],
     estilos: ['producto_amable', 'neobrutalismo', 'suizo', 'vidrio', 'minimal_tecnico'],
     botones: ['flecha', 'pildora', 'degradado', 'brillo_barrido', 'sombra_dura', 'circulo_flecha'],
     cajas: ['elevada', 'contorno', 'acento', 'degradado', 'sombra_color'],
@@ -92,7 +92,7 @@ export const RECOMENDADOS: Record<TipoProyecto, Recomendados> = {
   tienda: {
     para: 'tienda',
     porque: 'En una tienda manda el producto: botones de compra que inviten a tocar, cards de producto limpias y avisos de «agregado».',
-    layouts: ['galeria', 'mosaico', 'hero_partido', 'portada_video', 'bento'],
+    layouts: ['galeria', 'editorial_fondo', 'mosaico', 'hero_partido', 'fondo_protagonista', 'bento'],
     estilos: ['producto_amable', 'editorial', 'lujo', 'dopamina', 'clay', 'neobrutalismo'],
     botones: ['pildora', 'solido', 'relleno_abajo', 'sombra_suave_color', 'almohada', 'deslizar_icono'],
     cajas: ['elevada', 'superficie', 'flotante', 'ticket', 'sombra_color'],
@@ -142,7 +142,7 @@ export const RECOMENDADOS: Record<TipoProyecto, Recomendados> = {
   app_movil: {
     para: 'app de celular',
     porque: 'En el celular todo se toca con el pulgar: barra de abajo, botones grandes, controles que respondan al toque y hojas que suben.',
-    layouts: ['apiladas', 'minimo', 'bento', 'hero_partido'],
+    layouts: ['widgets_fondo', 'apiladas', 'minimo', 'bento', 'hero_partido'],
     estilos: ['producto_amable', 'dopamina', 'clay', 'vidrio', 'oscuro_precision'],
     botones: ['pildora', 'almohada', 'empujable', 'acuoso', 'clay', 'respira'],
     cajas: ['elevada', 'flotante', 'superficie', 'vidrio', 'neumorfica'],
@@ -200,7 +200,7 @@ export const RECOMENDADOS: Record<TipoProyecto, Recomendados> = {
   portfolio: {
     para: 'portfolio',
     porque: 'En un portfolio lo importante es el trabajo: tipografía con carácter, mucho aire, imágenes grandes y botones discretos.',
-    layouts: ['tipografico', 'galeria', 'revista', 'mosaico', 'portada_video', 'minimo'],
+    layouts: ['editorial_fondo', 'tipografico', 'galeria', 'revista', 'mosaico', 'tarjeta_sobre_fondo', 'minimo'],
     estilos: ['suizo', 'editorial', 'japones', 'art_deco', 'bauhaus', 'cyber'],
     botones: ['subrayado', 'link_flecha', 'texto_sube', 'minimal_texto', 'circulo_flecha', 'contorno'],
     cajas: ['editorial', 'contorno', 'papel', 'invertida', 'gruesa'],

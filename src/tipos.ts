@@ -136,7 +136,11 @@ export type LayoutId =
   | 'precios'
   | 'portada_video'
   | 'blog_lateral'
-  | 'equipo';
+  | 'equipo'
+  | 'fondo_protagonista'
+  | 'tarjeta_sobre_fondo'
+  | 'editorial_fondo'
+  | 'widgets_fondo';
 
 export type EscalaId = 'sutil' | 'medio' | 'dramatico' | 'extremo';
 export type EspaciadoTitulos = 'apretado' | 'normal' | 'amplio';
@@ -366,6 +370,8 @@ export interface Config {
     presionar: PresionarId;
     aparicion: AparicionId;
     cambio: CambioId;
+    /** Fondo con textura para los visuales y las composiciones ('ninguno' = el de cada estilo). */
+    fondo: import('./fondos').FondoId | 'ninguno';
     /** true: el archivo incluye también la versión opuesta de la paleta (claro ↔ oscuro). */
     ambosModos: boolean;
   };

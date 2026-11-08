@@ -172,6 +172,51 @@
 .pgp .pg-estrellas { color: var(--color-acento-texto); letter-spacing: 2px; font-size: 14px; }
 .pgp .pg-equipo-acciones { padding-top: 8px; }
 
+/* Capa de fondo (la pintan los fondos con textura; sin fondo elegido, un degradé del acento) */
+.pgp .pg-fondo-area { position: absolute; inset: 0; z-index: 0; border-radius: inherit; background: radial-gradient(ellipse at 30% 30%, color-mix(in srgb, var(--color-acento) 55%, var(--color-fondo)), transparent 60%), linear-gradient(150deg, color-mix(in srgb, var(--color-acento) 70%, #000000), color-mix(in srgb, var(--color-acento) 30%, var(--color-fondo))); }
+
+/* Composición: fondo protagonista */
+.pgp .pg-fp { position: relative; display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); grid-template-rows: auto 1fr; align-items: end; gap: 24px; min-height: clamp(460px, 62cqw, 660px); padding: 0 clamp(18px, 4cqw, 48px) clamp(18px, 4cqw, 48px); border-radius: var(--radio-grande); overflow: hidden; margin-top: 8px; }
+.pgp .pg-fp > :not(.pg-fondo-area):not(.pg-fp-velo) { position: relative; z-index: 2; }
+.pgp .pg-fp-velo { position: absolute; inset: 0; z-index: 1; background: radial-gradient(ellipse 70% 60% at 15% 85%, rgba(0,0,0,.62), transparent 70%), linear-gradient(to bottom, rgba(0,0,0,.32), transparent 22%); pointer-events: none; }
+.pgp .pg-fp-nav { grid-column: 1 / -1; align-self: start; }
+.pgp .pg-fp-nav .pg-nav { color: #FFFFFF; border-bottom-color: rgba(255,255,255,.25); }
+.pgp .pg-fp-nav .pg-marca, .pgp .pg-fp-nav .pg-links { color: #FFFFFF; }
+.pgp .pg-fp-texto { display: flex; flex-direction: column; gap: 14px; align-items: flex-start; color: #FFFFFF; }
+.pgp .pg-fp-texto .pg-titulo, .pgp .pg-fp-texto .pg-bajada, .pgp .pg-fp-texto .pg-etiqueta { color: #FFFFFF; -webkit-text-fill-color: #FFFFFF; background: none; text-shadow: 0 2px 18px rgba(0,0,0,.35); }
+.pgp .pg-fp-texto .pg-etiqueta { border-color: rgba(255,255,255,.6); }
+.pgp .pg-fp-tarjeta { display: flex; flex-direction: column; gap: 10px; }
+.pgp .pg-fp-fila { display: flex; justify-content: space-between; gap: 12px; padding: 8px 0; border-top: 1px solid var(--color-borde); font-size: 14px; }
+.pgp .pg-fp-tarjeta .pv-boton { align-self: stretch; justify-content: center; margin-top: 6px; }
+
+/* Las tarjetas de las composiciones siempre son sólidas: el texto nunca queda sobre la textura. */
+.pg.pgp .pg-card.pg-fp-tarjeta, .pg.pgp .pg-card.pg-tsf-tarjeta, .pg.pgp .pg-card.pg-ef-ficha { background: var(--color-fondo); color: var(--color-texto); padding: clamp(16px, 2cqw, 24px); border-radius: var(--radio-grande); box-shadow: 0 20px 50px rgba(0,0,0,.22); border: 1px solid color-mix(in srgb, var(--color-texto) 10%, transparent); }
+.pg.pgp .pg-wf-grilla .pg-card { background: color-mix(in srgb, var(--color-fondo) 86%, transparent); color: var(--color-texto); padding: clamp(16px, 2cqw, 24px); border-radius: var(--radio-grande); border: 1px solid color-mix(in srgb, var(--color-fondo) 60%, transparent); }
+
+/* Composición: tarjeta sobre fondo */
+.pgp .pg-tsf { position: relative; display: grid; place-items: center; min-height: clamp(460px, 60cqw, 640px); padding: clamp(18px, 5cqw, 64px); border-radius: var(--radio-grande); overflow: hidden; margin-top: 8px; }
+.pgp .pg-tsf-tarjeta { position: relative; z-index: 1; display: flex; flex-direction: column; gap: 14px; align-items: flex-start; width: min(520px, 100%); padding: clamp(22px, 3cqw, 36px); background: var(--color-fondo); box-shadow: 0 30px 60px rgba(0,0,0,.25); }
+.pgp .pg-tsf-tarjeta .pg-titulo { font-size: clamp(30px, 4cqw, 46px); }
+.pgp .pg-tsf-lista { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 6px; font-size: 14px; }
+.pgp .pg-tsf-lista li::before { content: '✓'; margin-right: 8px; color: var(--color-acento-texto); font-weight: 700; }
+
+/* Composición: editorial con fondo */
+.pgp .pg-ef { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); gap: clamp(20px, 4cqw, 56px); align-items: stretch; }
+.pgp .pg-ef-texto { display: flex; flex-direction: column; gap: 18px; align-items: flex-start; justify-content: center; padding: clamp(10px, 3cqw, 40px) 0; }
+.pgp .pg-ef-lamina { position: relative; min-height: clamp(300px, 40cqw, 520px); border-radius: var(--radio-grande); overflow: hidden; }
+.pgp .pg-ef-ficha { position: absolute; z-index: 1; right: 18px; bottom: 18px; min-width: 190px; background: var(--color-fondo); }
+
+/* Composición: widgets sobre fondo */
+.pgp .pg-wf { position: relative; display: flex; flex-direction: column; gap: 24px; min-height: clamp(460px, 60cqw, 640px); padding: 0 clamp(16px, 4cqw, 48px) clamp(16px, 4cqw, 48px); border-radius: var(--radio-grande); overflow: hidden; margin-top: 8px; }
+.pgp .pg-wf > :not(.pg-fondo-area) { position: relative; z-index: 1; }
+.pgp .pg-wf-nav .pg-nav { background: color-mix(in srgb, var(--color-fondo) 80%, transparent); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); margin: 14px 0 0; padding: 10px 16px; border-radius: 999px; border-bottom: none; }
+.pgp .pg-wf-grilla { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+.pgp .pg-wf-grilla .pg-card { background: color-mix(in srgb, var(--color-fondo) 84%, transparent); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
+.pgp .pg-wf-grande { grid-column: span 2; grid-row: span 2; justify-content: space-between; min-height: 240px; }
+.pgp .pg-wf-accion { grid-column: span 2; }
+.pgp .pg-wf-numero { font-family: var(--fuente-titulos); font-weight: var(--titulos-peso); font-size: clamp(56px, 8cqw, 104px); line-height: .95; letter-spacing: -0.03em; }
+.pgp .pg-wf-numero.chico { font-size: clamp(30px, 3.6cqw, 44px); }
+
 /* Aparición de cards según el movimiento elegido */
 .pgp.pv-aparicion-fundido .pg-card { animation: pv-fundido var(--duracion-media) var(--curva-entrada) both; }
 .pgp.pv-aparicion-subir .pg-card, .pgp.pv-aparicion-escalonada .pg-card { animation: pv-subir var(--duracion-media) var(--curva-entrada) both; }
@@ -199,6 +244,11 @@
   .pgp .pg-articulo { grid-template-columns: 96px minmax(0, 1fr); gap: 12px; }
   .pgp .pg-equipo { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .pgp .pg-blog-lateral { position: static; }
+  .pgp .pg-fp, .pgp .pg-ef { grid-template-columns: minmax(0, 1fr); }
+  .pgp .pg-fp { align-items: stretch; padding-top: 0; }
+  .pgp .pg-fp-texto { padding-top: 80px; }
+  .pgp .pg-wf-grilla { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .pgp .pg-ef-ficha { position: relative; right: auto; bottom: auto; margin: 14px; }
   .pgp .pg-video-play { top: 16px; left: auto; right: 16px; transform: none; width: 52px; height: 52px; font-size: 16px; }
 }
 

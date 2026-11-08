@@ -1,6 +1,6 @@
 # DESIGN.md: especificación del formato
 
-> **Versión del formato:** 0.8.2 (borrador)
+> **Versión del formato:** 0.8.3 (borrador)
 > **Última actualización:** 2026-11-06
 > **Estado:** configurador en v0.2 (10 pasos + export): 8 direcciones, 13 paletas + personalizada, 23 fuentes, botones y movimiento detallados. Falta la primera ronda de pruebas con IA (§9).
 
@@ -134,7 +134,7 @@ Todo archivo exportado empieza con este bloque, que permite saber con qué versi
 
 ```yaml
 formato: design-md
-version_formato: 0.8.2
+version_formato: 0.8.3
 generado_por: configurador-diseno
 fecha: 2026-11-06
 idioma: es
@@ -1197,6 +1197,7 @@ Formato: fecha · decisión · por qué · alternativas descartadas.
 | D64 | 2026-11-07 | Tarjetas de producto (8, en Detalles), notificaciones (8) y menú de usuario (8, en Navegación); 14 diseños más en interruptores, casillas y deslizadores | Piezas típicas de tiendas y apps con cuenta, y más variedad en controles | — |
 | D65 | 2026-11-07 | El formulario completo cambia de contenido según el tipo de proyecto (checkout en tienda, registro en app de celular, alta de cliente en dashboard, presupuesto en web, propuesta en blog); 6 diseños más de formulario (20 en total) e «Inicio de sesión» (10 diseños) como segunda pestaña de Formularios | Ver la pantalla con datos de su propio proyecto ayuda a elegir; el login es una pantalla que casi toda app necesita | — |
 | D66 | 2026-11-07 | Formularios en pasos (8 diseños) y reserva de turnos (8) en el paso Formularios; 15 cajas más (44 en total); 8 diseños más de navegación | Registros largos y turnos son de lo más pedido; más variedad en cards y barras | — |
+| D67 | 2026-11-08 | 21 fondos con textura (`src/fondos.ts`): fieltro, vidrio acanalado, térmico, agua, grafito, paisaje de un tono, plano técnico, semitono, grano, pasto, tramado, papel, curvas de nivel, cielo, mosaico de píxeles, lente, punteado, grilla de cuadraditos, foto desenfocada, iridiscente e impresionista. Son CSS puro (gradientes y SVG generados), los que pueden usan la paleta; se eligen en el inicio («Fondo ‹ ›») y en el editor del prototipo, viajan en el código de la combinación (6.º carácter) y se exportan en §19. Se suman 4 composiciones que los lucen, con el texto siempre sobre un velo o una tarjeta sólida | Los diseños planos se ven genéricos; un fondo con textura le da carácter y es lo que más se nota en una portada | Fotos o imágenes de stock: pesan, tienen derechos y no se adaptan a la paleta |
 | D43 | 2026-11-06 | Si la persona no describe un proyecto, el archivo se exporta como sistema de diseño (`modo: sistema_de_diseno`): sirve para mejorar una app existente o para construir lo que se explique junto con el archivo; la pantalla final ofrece un mensaje para copiar para cada caso | El modo rápido no pide detalles del proyecto; tratar las pantallas de ejemplo como obligatorias llevaba a la IA a construir una app genérica | Obligar a completar el proyecto antes de exportar |
 
 | D67 | 2026-11-07 | Se amplían las categorías existentes con 12 composiciones propias para formularios, navegación y productos; las muestras permiten validar, adjuntar y probar una compra simulada | Mejorar la calidad y la variedad visible conservando el recorrido actual | Agregar un panel de decisiones transversales |
@@ -1301,6 +1302,7 @@ Lo que todavía no tiene lugar en §5. Se mueve allá cuando se decide hacerlo.
 
 | Versión | Fecha | Cambios |
 |---|---|---|
+| 0.8.3 | 2026-11-08 | §19 suma `fondo` (uno de 21 fondos con textura, o `ninguno`), `fondo_descripcion`, `fondo_uso`, `fondo_texto_encima` y un bloque `css` con el fondo aplicado a `.fondo-capa`. 4 layouts nuevos pensados para el fondo: `fondo_protagonista`, `tarjeta_sobre_fondo`, `editorial_fondo`, `widgets_fondo`. |
 | 0.8.2 | 2026-11-07 | Sin nuevas secciones ni campos de configuración: 12 diseños en §21, estructuras de formulario/producto con estados e instrucciones de interacción y CSS correspondiente. Comparación opcional en la galería. Los exports anteriores siguen siendo válidos. |
 | 0.1.0 | 2026-11-06 | Primera versión del formato: 19 secciones, reglas generales, prioridades, plan del configurador, ejemplo completo y registros. |
 | 0.1.0 | 2026-11-06 | Sin cambios de formato. Primer configurador implementado (D10 a D13); el export cumple §3 según D12. |

@@ -14,6 +14,7 @@ import { claseDe, GaleriaContexto, reanimar } from '../galeria/base';
 import { Grafico } from '../galeria/datos';
 import { Icono } from '../galeria/iconos';
 import { aplicarMovimiento } from '../estado';
+import { FONDOS, type FondoId } from '../fondos';
 import type { AparicionId, BotonDisenoId, CajaPresetId, CambioId, MovimientoId, Config, EstiloId, PaletaId } from '../tipos';
 import { aplicarCombinacion } from './combinar';
 import { baseDesdeColores, derivarRoles, hexesDeTexto } from '../color';
@@ -44,7 +45,7 @@ const PANTALLAS: { id: Pantalla; nombre: string; icono: string }[] = [
 ];
 
 /** Qué se puede cambiar desde el modo edición. */
-type Editable = CategoriaId | 'boton' | 'caja' | 'paleta' | 'tipografia' | 'estilo' | 'cambio' | 'color_boton' | 'movimiento' | 'aparicion';
+type Editable = CategoriaId | 'boton' | 'caja' | 'paleta' | 'tipografia' | 'estilo' | 'cambio' | 'color_boton' | 'movimiento' | 'aparicion' | 'fondo';
 const NOMBRES_EXTRA: Record<Exclude<Editable, CategoriaId>, string> = {
   boton: 'Botón principal',
   caja: 'Cajas',
@@ -53,6 +54,7 @@ const NOMBRES_EXTRA: Record<Exclude<Editable, CategoriaId>, string> = {
   estilo: 'Estilo visual',
   cambio: 'Cambio de pantalla',
   movimiento: 'Ritmo general',
+  fondo: 'Fondo con textura',
   aparicion: 'Cómo aparece el contenido',
   color_boton: 'Color de los botones',
 };
@@ -698,7 +700,7 @@ export function Prototipo(props: { config: Config; setConfig: (fn: (c: Config) =
 // ---------- Editor lateral ----------
 
 const GRUPOS: { nombre: string; items: Editable[] }[] = [
-  { nombre: 'General', items: ['estilo', 'paleta', 'tipografia'] },
+  { nombre: 'General', items: ['estilo', 'paleta', 'tipografia', 'fondo'] },
   { nombre: 'Movimiento', items: ['movimiento', 'aparicion', 'cambio'] },
   { nombre: 'Botones', items: ['boton', 'color_boton', 'boton_sec', 'boton_icono'] },
   { nombre: 'Contenedores', items: ['caja', 'metrica', 'grafico', 'tabla'] },
@@ -753,6 +755,10 @@ function Editor(props: { config: Config; setConfig: (fn: (c: Config) => Config) 
     opciones = (Object.keys(MOVIMIENTOS) as MovimientoId[]).map((id) => ({ id, nombre: MOVIMIENTOS[id].nombre, descripcion: MOVIMIENTOS[id].descripcion }));
     actual = c.visual.movimiento;
     elegir = (id) => set((x) => aplicarMovimiento(x, id as MovimientoId));
+  } else if (e === 'fondo') {
+    opciones = [{ id: 'ninguno', nombre: 'Sin fondo', descripcion: 'El visual de cada estilo' }, ...(Object.keys(FONDOS) as FondoId[]).map((id) => ({ id, nombre: FONDOS[id].nombre, descripcion: FONDOS[id].descripcion }))];
+    actual = c.visual.fondo ?? 'ninguno';
+    elegir = (id) => set((x) => ({ ...x, visual: { ...x.visual, fondo: id as FondoId | 'ninguno' } }));
   } else if (e === 'aparicion') {
     opciones = (Object.keys(APARICIONES) as AparicionId[]).map((id) => ({ id, nombre: APARICIONES[id].nombre, descripcion: APARICIONES[id].descripcion }));
     actual = c.visual.aparicion;

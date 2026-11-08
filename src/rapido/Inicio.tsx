@@ -5,9 +5,10 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { ESTILOS, LAYOUTS } from '../estilos-visuales';
 import type { Config } from '../tipos';
-import { aplicarCombinacion, codigo, type Combinacion, combinacionAlAzar, decodificar } from './combinar';
+import { aplicarCombinacion, codigo, type Combinacion, combinacionAlAzar, decodificar, LISTA_FONDOS } from './combinar';
 import { type Contenido, contenido as contenidoDe, Pagina } from './Pagina';
 import { Esquema } from './esquemas';
+import { FONDOS, type FondoId } from '../fondos';
 import type { EstiloId, LayoutId } from '../tipos';
 
 const INTERVALO = 4000;
@@ -95,6 +96,12 @@ export function Inicio(props: { config: Config; onElegir: (k: Combinacion) => vo
     const estilo = LISTA_ESTILOS[(i + paso + LISTA_ESTILOS.length) % LISTA_ESTILOS.length];
     const e = ESTILOS[estilo];
     irA({ ...actual, estilo, paleta: e.paletas[0], titulos: e.fuentes[0][0], texto: e.fuentes[0][1] }, paso < 0 ? 'atras' : 'adelante');
+  };
+  /** Cambia solo el fondo con textura (incluye «sin fondo»). */
+  const LISTA_FONDO: (FondoId | 'ninguno')[] = ['ninguno', ...LISTA_FONDOS];
+  const cambiarFondo = (paso: number) => {
+    const i = LISTA_FONDO.indexOf(actual.fondo ?? 'ninguno');
+    irA({ ...actual, fondo: LISTA_FONDO[(i + paso + LISTA_FONDO.length) % LISTA_FONDO.length] }, paso < 0 ? 'atras' : 'adelante');
   };
   const [verLayouts, setVerLayouts] = useState(false);
 
@@ -230,6 +237,18 @@ export function Inicio(props: { config: Config; onElegir: (k: Combinacion) => vo
                     {ESTILOS[actual.estilo].nombre}
                   </span>
                   <button type="button" aria-label="Estilo siguiente" onClick={() => cambiarEstilo(1)}>
+                    ›
+                  </button>
+                </div>
+                <div className="inicio-ajuste" role="group" aria-label="Cambiar solo el fondo">
+                  <span className="inicio-ajuste-etq">Fondo</span>
+                  <button type="button" aria-label="Fondo anterior" onClick={() => cambiarFondo(-1)}>
+                    ‹
+                  </button>
+                  <span className="inicio-ajuste-valor" aria-live="polite">
+                    {actual.fondo && actual.fondo !== 'ninguno' ? FONDOS[actual.fondo].nombre : 'Sin fondo'}
+                  </span>
+                  <button type="button" aria-label="Fondo siguiente" onClick={() => cambiarFondo(1)}>
                     ›
                   </button>
                 </div>

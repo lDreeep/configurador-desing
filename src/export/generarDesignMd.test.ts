@@ -450,3 +450,25 @@ describe('más diseños', () => {
     }
   });
 });
+
+describe('fondos con textura', () => {
+  it('cada fondo genera un export válido con su CSS en la sección 19', async () => {
+    const { FONDOS } = await import('../fondos');
+    for (const id of Object.keys(FONDOS) as (keyof typeof FONDOS)[]) {
+      const c = configCompleta();
+      const md = generarDesignMd({ ...c, visual: { ...c.visual, fondo: id, layout: 'fondo_protagonista' } });
+      for (const b of bloquesYaml(md)) expect(() => parse(b), id).not.toThrow();
+      expect(md, id).toContain(`fondo: ${id}`);
+      expect(md, id).toContain('.fondo-capa');
+    }
+  });
+
+  it('el código de una combinación conserva el fondo', async () => {
+    const { codigo, decodificar } = await import('../rapido/combinar');
+    const k = { estilo: 'suizo', layout: 'bento', paleta: 'suizo_rojo', titulos: 'inter', texto: 'inter', fondo: 'curvas_nivel' } as const;
+    expect(decodificar(codigo(k))).toEqual(k);
+    const sinFondo = { ...k, fondo: 'ninguno' as const };
+    expect(codigo(sinFondo)).toHaveLength(5);
+    expect(decodificar(codigo(sinFondo))).toEqual(sinFondo);
+  });
+});
