@@ -1,3 +1,5 @@
+import { clasesDecisiones } from '../export/decisiones';
+import { normalizarDecisiones } from '../decisiones';
 import { useMemo, useState, type CSSProperties } from 'react';
 import { sistemaDeDiseno } from '../export/sistema';
 import type { Config } from '../tipos';
@@ -117,7 +119,7 @@ export function Preview({ config }: { config: Config }) {
       </div>
       <div className={`pv-marco pv-${dispositivo}`}>
         <div
-          className={`pv pg ${config.visual.estilo !== 'clasico' ? `estilo-${config.visual.estilo}` : ''} ${layout} ${config.botones.diseno === 'ninguno' ? `pv-hover-${config.visual.hover} pv-presionar-${config.visual.presionar}` : ''} pv-cambio-${config.visual.cambio} pv-aparicion-${config.visual.aparicion}`}
+          className={`${clasesDecisiones(normalizarDecisiones(config.decisiones))} pv pg ${config.visual.estilo !== 'clasico' ? `estilo-${config.visual.estilo}` : ''} ${layout} ${config.botones.diseno === 'ninguno' ? `pv-hover-${config.visual.hover} pv-presionar-${config.visual.presionar}` : ''} pv-cambio-${config.visual.cambio} pv-aparicion-${config.visual.aparicion}`}
           style={estilo}
         >
           {nav}
