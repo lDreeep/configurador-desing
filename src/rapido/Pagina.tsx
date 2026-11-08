@@ -12,6 +12,7 @@ import { sistemaDeDiseno } from '../export/sistema';
 import { CONTENIDO_TIPO } from './contenido-tipo';
 import { Finanzas, Panaderia, Portfolio } from './autor';
 import { Cafeteria, Correr, Festival, Floreria, Refugio } from './autor2';
+import { Concesionario } from './concesionario';
 import type { BotonDisenoId, Config, EstiloId } from '../tipos';
 
 /** Hoja con el CSS de todos los estilos, cada uno limitado a su clase. Se monta una sola vez. */
@@ -257,6 +258,8 @@ function Layout({ c, k }: { c: Config; k: Contenido }) {
   const cards = k.items.map((it, i) => <Card key={i} i={i} item={it} cc={cc} />);
   const marcaPropia = c.proyecto.nombre.trim() || undefined;
   switch (c.visual.layout) {
+    case 'autor_concesionario':
+      return <Concesionario c={c} marca={marcaPropia} />;
     case 'autor_panaderia':
       return <Panaderia c={c} marca={marcaPropia} />;
     case 'autor_finanzas':

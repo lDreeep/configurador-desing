@@ -1,0 +1,66 @@
+// Hoja compartida por la vista previa y el export; no depende del procesamiento CSS del entorno.
+export const CSS_CONCESIONARIO = `/* Tracción: composición aprobada. Color, letra, forma y botones dependen de los tokens. */
+.au-mot { background: var(--color-fondo); }
+.au-mot button, .au-mot summary { min-height: 44px; }
+.au-mot-nav { flex-wrap: wrap; border-bottom: 1px solid var(--color-borde); }
+.au-mot .au-marca { font-size: clamp(25px, 3.2cqw, 42px); font-style: italic; }
+.au-mot-nav nav button, .au-mot .au-pie button {
+  font: inherit; color: inherit; background: transparent; border: 0; padding: 8px 4px; cursor: pointer;
+}
+.au-mot-nav nav button:hover, .au-mot .au-pie button:hover { color: var(--color-acento-texto); text-decoration: underline; }
+.au-mot :is(button, summary):focus-visible { outline: 3px solid var(--color-acento-texto); outline-offset: 4px; }
+.au-mot-hero { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.35fr); align-items: center; gap: 16px; padding: clamp(28px, 5cqw, 72px) var(--au-borde); }
+.au-mot-intro { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: flex-start; gap: 24px; }
+.au-mot-h1 { margin: 0; font-size: clamp(36px, 5cqw, 76px) !important; line-height: 1.02 !important; letter-spacing: var(--titulos-espaciado); max-width: 13ch; }
+.au-mot-portada { position: relative; min-width: 0; }
+.au-mot-silueta { position: absolute; inset: 0; font-family: var(--fuente-titulos); font-weight: var(--titulos-peso); font-size: clamp(90px, 22cqw, 330px); line-height: 1; color: transparent; -webkit-text-stroke: 1px var(--color-borde); pointer-events: none; }
+.au-mot-vehiculo { position: relative; overflow: hidden; width: 100%; aspect-ratio: 2748 / 1717; isolation: isolate; }
+.au-mot-vehiculo img { position: absolute; inset: 0 auto auto 0; display: block; width: 100%; height: 300%; max-width: none; object-fit: fill; transform: translateY(calc(var(--mot-fila) * -100% / 3)); }
+.au-mot-portada .au-mot-vehiculo { margin-top: clamp(35px, 7cqw, 100px); }
+.au-mot-catalogo { padding: 0 var(--au-borde) clamp(32px, 5cqw, 72px); scroll-margin-top: 24px; }
+.au-mot-selector { display: flex; flex-wrap: wrap; gap: 12px 24px; border-bottom: 1px solid var(--color-borde); }
+.au-mot-selector button { padding: 12px 16px; border: 0; border-bottom: 4px solid transparent; color: var(--color-texto-suave); background: transparent; font: inherit; font-size: clamp(17px, 2cqw, 24px); cursor: pointer; }
+.au-mot-selector button[aria-pressed="true"] { color: var(--color-acento-texto); border-bottom-color: var(--color-acento); }
+.au-mot-selector button:hover { background: var(--color-superficie); }
+.au-mot-modelo { display: grid; grid-template-columns: minmax(0, .85fr) minmax(0, 1.4fr); align-items: center; gap: clamp(20px, 4cqw, 56px); padding-top: 24px; }
+.au-mot-ficha { display: flex; flex-direction: column; gap: 20px; min-width: 0; }
+.au-mot-ficha p { margin: 12px 0 0; color: var(--color-texto-suave); line-height: 1.55; }
+.au-mot-datos { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); margin: 24px 0 0; }
+.au-mot-datos div { min-width: 0; padding: 0 14px; border-left: 1px solid var(--color-borde); }
+.au-mot-datos div:first-child { padding-left: 0; border: 0; }
+.au-mot-datos dt { color: var(--color-texto-suave); font-size: 13px; }
+.au-mot-datos dd { margin: 8px 0 0; font-size: clamp(17px, 2cqw, 24px); overflow-wrap: anywhere; font-variant-numeric: tabular-nums; }
+.au-mot-detalle { border-top: 1px solid var(--color-borde); }
+.au-mot-detalle summary { display: list-item; padding: 14px 4px; color: var(--color-acento-texto); cursor: pointer; }
+.au-mot-detalle p { padding-bottom: 12px; }
+.au-mot-prueba { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); align-items: center; gap: 24px; padding: clamp(30px, 4cqw, 56px) var(--au-borde); background: var(--color-acento); color: var(--color-sobre-acento); }
+.au-mot-prueba .au-h2 { font-size: clamp(26px, 3cqw, 44px); }
+.au-mot-prueba > div { justify-self: end; }
+.au-mot-prueba .pv-boton { --boton-color: var(--color-sobre-acento); --boton-sobre: var(--color-acento); background: var(--color-sobre-acento); color: var(--color-acento); border-color: var(--color-sobre-acento); }
+.au-mot-respuesta { margin: 16px 0 0; max-width: 42ch; font-size: 14px; line-height: 1.5; }
+.au-mot .au-pie { gap: 12px 24px; }
+@container (max-width: 760px) {
+  .au-mot-hero, .au-mot-modelo, .au-mot-prueba { grid-template-columns: minmax(0, 1fr); }
+  .au-mot-h1 { max-width: 19ch; font-size: clamp(34px, 8cqw, 56px) !important; }
+  .au-mot-portada .au-mot-vehiculo { margin-top: 10px; }
+  .au-mot-nav > .pv-boton { font-size: 13px; }
+  .au-mot-nav { gap: 12px; }
+  .au-mot-prueba > div { justify-self: start; }
+  .au-mot-selector { gap: 4px; justify-content: space-between; }
+  .au-mot-selector button { padding-inline: 10px; }
+  .au-mot-intro > .pv-boton, .au-mot-prueba .pv-boton { width: 100%; }
+}
+
+/* Base de la composición también incluida en el export, sin depender de autor.css. */
+.au-mot { --au-borde: clamp(16px, 5cqw, 72px); position: relative; display: flex; flex-direction: column; color: var(--color-texto); font-family: var(--fuente-texto); }
+.au-mot .au-nav { position: relative; display: flex; align-items: center; justify-content: space-between; padding: 22px var(--au-borde); }
+.au-mot .au-marca, .au-mot .au-h2, .au-mot-h1 { font-family: var(--fuente-titulos); font-weight: var(--titulos-peso); letter-spacing: var(--titulos-espaciado); }
+.au-mot .au-nav nav { display: flex; gap: clamp(14px, 2.4cqw, 32px); }
+.au-mot .au-lead { margin: 0; max-width: 46ch; font-size: clamp(16px, 1.5cqw, 19px); line-height: 1.55; color: var(--color-texto-suave); }
+.au-mot .au-h2 { margin: 0; font-size: clamp(28px, 3.6cqw, 48px); line-height: 1.05; text-wrap: balance; }
+.au-mot .au-pie { display: flex; flex-wrap: wrap; align-items: baseline; padding: 28px var(--au-borde); border-top: 1px solid var(--color-borde); font-size: 13px; color: var(--color-texto-suave); }
+.au-mot .au-pie-marca { font-family: var(--fuente-titulos); font-weight: var(--titulos-peso); color: var(--color-texto); }
+.au-mot .au-pie-creditos { flex-basis: 100%; font-size: 12px; }
+@container (max-width: 760px) { .au-mot .au-nav nav { display: none; } }
+@media (prefers-reduced-motion: reduce) { .au-mot *, .au-mot *::before, .au-mot *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; } }
+`;

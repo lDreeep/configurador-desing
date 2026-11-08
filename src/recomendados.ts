@@ -64,7 +64,7 @@ export const RECOMENDADOS: Record<TipoProyecto, Recomendados> = {
   landing: {
     para: 'página web',
     porque: 'Una página que presenta algo vive del primer impacto: título grande, un botón que se note y secciones claras.',
-    layouts: ['autor_festival', 'autor_panaderia', 'autor_refugio', 'fondo_protagonista', 'hero_partido', 'tarjeta_sobre_fondo', 'portada_video', 'precios', 'equipo', 'cinta', 'bento'],
+    layouts: ['autor_concesionario', 'autor_festival', 'autor_panaderia', 'autor_refugio', 'fondo_protagonista', 'hero_partido', 'tarjeta_sobre_fondo', 'portada_video', 'precios', 'equipo', 'cinta', 'bento'],
     estilos: ['producto_amable', 'neobrutalismo', 'suizo', 'vidrio', 'minimal_tecnico'],
     botones: ['flecha', 'pildora', 'degradado', 'brillo_barrido', 'sombra_dura', 'circulo_flecha'],
     cajas: ['elevada', 'contorno', 'acento', 'degradado', 'sombra_color'],
@@ -79,7 +79,7 @@ export const RECOMENDADOS: Record<TipoProyecto, Recomendados> = {
   sitio: {
     para: 'sitio institucional',
     porque: 'Un sitio con varias secciones necesita orden: navegación clara, textos que se lean bien y botones sobrios.',
-    layouts: ['autor_refugio', 'autor_cafeteria', 'hero_partido', 'equipo', 'revista', 'indice', 'precios', 'apiladas'],
+    layouts: ['autor_concesionario', 'autor_refugio', 'autor_cafeteria', 'hero_partido', 'equipo', 'revista', 'indice', 'precios', 'apiladas'],
     estilos: ['editorial', 'suizo', 'organico', 'minimal_tecnico'],
     botones: ['solido', 'contorno', 'flecha', 'subrayado', 'link_flecha', 'tonal'],
     cajas: ['contorno', 'superficie', 'editorial', 'cabecera', 'barra'],
@@ -92,7 +92,7 @@ export const RECOMENDADOS: Record<TipoProyecto, Recomendados> = {
   tienda: {
     para: 'tienda',
     porque: 'En una tienda manda el producto: botones de compra que inviten a tocar, cards de producto limpias y avisos de «agregado».',
-    layouts: ['autor_floreria', 'autor_cafeteria', 'autor_panaderia', 'galeria', 'editorial_fondo', 'mosaico', 'hero_partido', 'fondo_protagonista', 'bento'],
+    layouts: ['autor_concesionario', 'autor_floreria', 'autor_cafeteria', 'autor_panaderia', 'galeria', 'editorial_fondo', 'mosaico', 'hero_partido', 'fondo_protagonista', 'bento'],
     estilos: ['producto_amable', 'editorial', 'lujo', 'dopamina', 'clay', 'neobrutalismo'],
     botones: ['pildora', 'solido', 'relleno_abajo', 'sombra_suave_color', 'almohada', 'deslizar_icono'],
     cajas: ['elevada', 'superficie', 'flotante', 'ticket', 'sombra_color'],
