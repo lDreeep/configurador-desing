@@ -215,6 +215,7 @@ export function Prototipo(props: { config: Config; setConfig: (fn: (c: Config) =
   const area = useRef<HTMLDivElement>(null);
   const [escala, setEscala] = useState(1);
   const [pantallaChica, setPantallaChica] = useState(enTelefono());
+  useEffect(() => { if (pantallaChica) setDispositivo('celular'); }, [pantallaChica]);
   useEffect(() => {
     const el = area.current;
     if (!el) return;

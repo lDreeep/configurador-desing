@@ -46,8 +46,9 @@ try {
   await mkdir('screenshots/concesionario', { recursive: true });
   for (const width of [1440, 390, 320]) {
     await page.setViewportSize({ width, height: 1000 });
+    await page.waitForTimeout(250);
     await page.screenshot({ path: 'screenshots/concesionario/recorrido-simple-' + width + '.png', fullPage: true });
-    assert(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1), 'Desborde a ' + width);
+    assert(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1), 'Desborde a ' + width + ': ' + JSON.stringify(await page.evaluate(() => Array.from(document.querySelectorAll('body *')).filter(e => { const r = e.getBoundingClientRect(); return r.width > 0 && r.right > window.innerWidth + 2; }).slice(0, 10).map(e => ({ tag: e.tagName, class: e.className, rect: e.getBoundingClientRect().toJSON() })))));
   }
   await page.setViewportSize({ width: 1440, height: 1000 });
   await page.getByRole('button', { name: 'Editar', exact: true }).click();

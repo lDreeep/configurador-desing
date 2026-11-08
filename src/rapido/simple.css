@@ -78,3 +78,25 @@
 }
 
 .proto [data-editor-categoria="boton"][data-seleccionado="true"] { outline: 3px solid var(--color-acento-texto); outline-offset: 4px; }
+
+/* Mayor especificidad que la hoja heredada: la barra nueva no depende del orden de imports. */
+.proto.proto { font-family: Manrope, system-ui, sans-serif; background: #181818; }
+.proto.proto .proto-barra { display: flex; flex-wrap: wrap; gap: 12px 16px; padding: 16px; align-items: center; min-width: 0; }
+.proto.proto .proto-barra-titulo { flex: 1 1 220px; min-width: 0; }
+.proto.proto .proto-barra-titulo h1 { font-family: inherit; font-size: 24px; line-height: 32px; font-weight: 600; white-space: normal; }
+.proto.proto .proto-ayuda, .proto.proto .proto-modos, .proto.proto .proto-paso { display: none; }
+.proto.proto .proto-simple-acciones { display: flex; flex: 0 1 auto; width: auto; flex-wrap: wrap; }
+.proto.proto .proto-proyecto { display: flex; flex: 0 1 200px; min-width: 0; }
+.proto.proto .proto-proyecto select { flex: 1; min-width: 0; }
+.proto.proto .proto-editar { min-height: 44px; border-radius: 8px; }
+.proto.proto .proto-zona-portada .au-nav, .proto.proto .proto-zona-portada .pg-nav { display: none; }
+.proto.proto .proto-editor { background: #1f1f1f; border-color: #313131; }
+@media (max-width: 760px) {
+  .proto.proto .proto-barra { padding: 12px; gap: 8px; }
+  .proto.proto .proto-barra-titulo { flex-basis: 100%; }
+  .proto.proto .proto-barra-titulo h1 { font-size: 20px; line-height: 28px; }
+  .proto.proto .proto-proyecto { flex: 1 1 140px; }
+  .proto.proto .proto-simple-acciones { order: 4; flex: 1 1 100%; justify-content: space-between; }
+  .proto.proto .proto-seg { display: none; }
+  .proto.proto .proto-cuerpo { min-width: 0; }
+}
