@@ -443,8 +443,9 @@ describe('acento como texto', () => {
 describe('más diseños', () => {
   it('ningún diseño sumado pisa uno que ya existía', async () => {
     const { MAS_DISENOS } = await import('../galeria/mas-disenos');
+    const { COLECCION_CURADA } = await import('../galeria/coleccion-curada');
     const { CATEGORIAS } = await import('../galeria');
-    for (const [cat, extra] of Object.entries(MAS_DISENOS)) {
+    for (const coleccion of [MAS_DISENOS, COLECCION_CURADA]) for (const [cat, extra] of Object.entries(coleccion)) {
       for (const [id, d] of Object.entries(extra!)) expect(CATEGORIAS[cat as keyof typeof CATEGORIAS].disenos[id], `${cat}.${id}`).toBe(d);
     }
   });

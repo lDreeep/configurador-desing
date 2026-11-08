@@ -1,7 +1,7 @@
 // Panel genérico del modo rápido para una o más categorías de la galería (con pestañas).
 
 import { usePaso } from './BarraPasos';
-import { useEffect, useRef, useState, type CSSProperties } from 'react';
+import { useEffect, useId, useRef, useState, type CSSProperties } from 'react';
 import { BotonPrincipal } from '../componentes/BotonPrincipal';
 import { sistemaDeDiseno } from '../export/sistema';
 import { CATEGORIAS, type CategoriaId, DISENO_INICIAL } from '../galeria';
@@ -38,6 +38,10 @@ export function PanelGaleria(props: {
     pestanas.current?.querySelector<HTMLElement>('[aria-selected="true"]')?.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' });
   }, [pestana]);
   const cat = CATEGORIAS[pestana];
+  const [comparados, setComparados] = useState<string[]>([]);
+  const comparacionId = useId();
+  useEffect(() => setComparados([]), [pestana]);
+  const comparar = (id: string) => setComparados(actual => actual.includes(id) ? actual.filter(d => d !== id) : actual.length < 3 ? [...actual, id] : actual);
   const elegido = (id: CategoriaId) => c.componentes[id];
   const estilo = c.visual.estilo !== 'clasico' ? `estilo-${c.visual.estilo}` : '';
   const elegir = (d: string) => props.setConfig((x) => ({ ...x, componentes: { ...x.componentes, [pestana]: d } }));
@@ -56,6 +60,9 @@ export function PanelGaleria(props: {
           <span className="pg-card-titulo">{d.nombre}</span>
           <span className="pb-desc">{d.descripcion}</span>
         </div>
+        <button type="button" className="pg-comparar" aria-pressed={comparados.includes(id)} disabled={!comparados.includes(id) && comparados.length >= 3} onClick={() => comparar(id)}>
+          {comparados.includes(id) ? 'Quitar de la comparación' : 'Comparar'}
+        </button>
         <button type="button" className="pg-elegir" aria-pressed={sel} onClick={() => elegir(id)}>
           {sel ? 'Elegido' : 'Elegir este'}
         </button>
@@ -88,6 +95,15 @@ export function PanelGaleria(props: {
         )}
 
         <p className="pg-ayuda-cat">{cat.descripcion}</p>
+        <p className="pg-ayuda-comparar" role="status">Compará hasta 3 diseños con el mismo contenido. {comparados.length > 0 ? `${comparados.length} de 3 seleccionados.` : 'Marcá «Comparar» en las opciones que te gusten.'}</p>
+        {comparados.length > 0 && (
+          <section className="pg-comparacion" aria-labelledby={comparacionId}>
+            <header className="pg-comparacion-cab"><h2 id={comparacionId}>Compará tus opciones</h2><button type="button" onClick={() => setComparados([])}>Limpiar comparación</button></header>
+            <div className="pg-comparacion-grilla" style={{ '--comparados': comparados.length } as CSSProperties}>
+              {comparados.filter(id => cat.disenos[id]).map(id => <article className="pg-comparacion-card" key={`${pestana}-${id}`}><header><h3>{cat.disenos[id].nombre}</h3><button type="button" aria-label={`Quitar ${cat.disenos[id].nombre} de la comparación`} onClick={() => comparar(id)}>×</button></header><div className="pg-muestra"><cat.Muestra clase={claseDe(pestana, id)} id={id} /></div><button type="button" className="pg-elegir" aria-pressed={elegido(pestana) === id} onClick={() => elegir(id)}>{elegido(pestana) === id ? 'Elegido' : 'Elegir este'}</button></article>)}
+            </div>
+          </section>
+        )}
 
         <div className="pb-grilla pg-grilla" style={{ '--ancho-celda': `${cat.anchoCelda}px` } as CSSProperties} role="tabpanel">
           {orden.recomendados.length > 0 && <TituloRecomendados tipo={c.proyecto.tipo} />}

@@ -2,7 +2,7 @@
 // Un mismo formulario con secciones, filas, selector, interruptor, fecha, notas y botones;
 // cada diseño cambia solo el CSS. Incluye el estilo «lista agrupada», tipo ajustes del celular.
 
-import { useContext, useId, useState, type CSSProperties } from 'react';
+import { useContext, useEffect, useId, useRef, useState, type CSSProperties } from 'react';
 import { type Categoria, GaleriaContexto } from './base';
 
 const camara = (
@@ -30,7 +30,7 @@ const BASE_FORM: TextosForm = {
   titulo: 'Nuevo registro', ayuda: 'El código se genera solo al guardar.',
   s1: 'Contacto', c1: ['Nombre', 'Nombre y apellido', 'text'], c2: ['WhatsApp', '549 11 1234-5678', 'tel'],
   s2: 'Detalle', segEtq: 'Modo', seg: ['Mensual', 'Semestral', 'Anual'], fecha: 'Inicio', valor: ['Valor', '$ 0'], select: 'Ubicación', opciones: ['Depósito norte', 'Depósito sur', 'Taller'],
-  s3: 'Estado', sw: 'Activo', accion: 'Sacar foto', nota: ['Observaciones', 'Algo para tener en cuenta…'], aviso: '«Sacar foto» la guarda al instante.', guardar: 'Guardar',
+  s3: 'Estado', sw: 'Activo', accion: 'Sacar foto', nota: ['Observaciones', 'Algo para tener en cuenta…'], aviso: 'El archivo elegido queda adjunto a este registro de muestra.', guardar: 'Guardar',
 };
 const CONTACTO: TextosForm = {
   titulo: 'Pedí tu presupuesto', ayuda: 'Te respondemos en el día.',
@@ -76,13 +76,37 @@ function MuestraFormulario({ clase }: { clase: string; id: string }) {
   const [modo, setModo] = useState(0);
   const [activo, setActivo] = useState(true);
   const [guardado, setGuardado] = useState(false);
+  const [guardando, setGuardando] = useState(false);
+  const [nombre, setNombre] = useState('');
+  const [contacto, setContacto] = useState('');
+  const [errores, setErrores] = useState<{ nombre?: string; contacto?: string }>({});
+  const [archivo, setArchivo] = useState('');
+  const adjunto = useRef<HTMLInputElement>(null);
+  useEffect(() => {
+    if (!guardando) return;
+    const temporizador = window.setTimeout(() => { setGuardando(false); setGuardado(true); }, 800);
+    return () => window.clearTimeout(temporizador);
+  }, [guardando]);
   return (
     <form
       className={clase}
+      noValidate
+      aria-busy={guardando}
+      onReset={() => { setNombre(''); setContacto(''); setErrores({}); setModo(0); setActivo(true); setArchivo(''); setGuardado(false); setGuardando(false); }}
       onSubmit={(e) => {
         e.preventDefault();
-        setGuardado(true);
-        window.setTimeout(() => setGuardado(false), 1800);
+        const campo = e.currentTarget.elements.namedItem('contacto') as HTMLInputElement;
+        const nuevos = {
+          nombre: nombre.trim() ? undefined : `Completá ${t.c1[0].replace(' *', '').toLowerCase()}.`,
+          contacto: contacto.trim() && campo.validity.valid ? undefined : t.c2[2] === 'email' ? 'Ingresá un email válido, por ejemplo vos@ejemplo.com.' : `Completá ${t.c2[0].toLowerCase()}.`,
+        };
+        setErrores(nuevos);
+        setGuardado(false);
+        if (nuevos.nombre || nuevos.contacto) {
+          document.getElementById(`${u}-${nuevos.nombre ? 'n' : 't'}`)?.focus();
+          return;
+        }
+        setGuardando(true);
       }}
     >
       <header className="cm-fo-cab">
@@ -95,11 +119,13 @@ function MuestraFormulario({ clase }: { clase: string; id: string }) {
         <div className="cm-fo-grupo">
           <label className="cm-fo-fila" htmlFor={`${u}-n`}>
             <span className="cm-fo-etq">{t.c1[0]}</span>
-            <input id={`${u}-n`} type={t.c1[2]} placeholder={t.c1[1]} autoComplete="off" />
+            <input id={`${u}-n`} name="nombre" type={t.c1[2]} placeholder={t.c1[1]} autoComplete="off" required value={nombre} onChange={e => { setNombre(e.target.value); setErrores(x => ({ ...x, nombre: undefined })); setGuardado(false); }} aria-invalid={!!errores.nombre || undefined} aria-describedby={errores.nombre ? `${u}-error-n` : undefined} />
+            {errores.nombre && <span className="cm-fo-error" id={`${u}-error-n`} role="status">{errores.nombre}</span>}
           </label>
           <label className="cm-fo-fila" htmlFor={`${u}-t`}>
             <span className="cm-fo-etq">{t.c2[0]}</span>
-            <input id={`${u}-t`} type={t.c2[2]} placeholder={t.c2[1]} />
+            <input id={`${u}-t`} name="contacto" type={t.c2[2]} placeholder={t.c2[1]} required value={contacto} onChange={e => { setContacto(e.target.value); setErrores(x => ({ ...x, contacto: undefined })); setGuardado(false); }} aria-invalid={!!errores.contacto || undefined} aria-describedby={errores.contacto ? `${u}-error-t` : undefined} />
+            {errores.contacto && <span className="cm-fo-error" id={`${u}-error-t`} role="status">{errores.contacto}</span>}
           </label>
         </div>
       </section>
@@ -149,10 +175,11 @@ function MuestraFormulario({ clase }: { clase: string; id: string }) {
             <span className="cm-fo-etq">{t.sw}</span>
             <span className="cm-fo-perilla" aria-hidden="true" />
           </button>
-          <button type="button" className="cm-fo-fila cm-fo-accion">
+          <button type="button" className="cm-fo-fila cm-fo-accion" onClick={() => adjunto.current?.click()}>
             {camara}
-            <span>{t.accion}</span>
+            <span>{archivo || t.accion}</span>
           </button>
+          <input ref={adjunto} type="file" hidden accept={/foto/i.test(t.accion) ? 'image/*' : undefined} aria-label={t.accion} onChange={e => setArchivo(e.target.files?.[0]?.name ?? '')} />
           <label className="cm-fo-fila cm-fo-nota-campo" htmlFor={`${u}-o`}>
             <span className="cm-fo-etq">{t.nota[0]}</span>
             <textarea id={`${u}-o`} rows={2} placeholder={t.nota[1]} />
@@ -162,13 +189,14 @@ function MuestraFormulario({ clase }: { clase: string; id: string }) {
       </section>
 
       <div className="cm-fo-acciones">
-        <button type="button" className="cm-fo-cancelar">
-          Cancelar
+        <button type="reset" className="cm-fo-cancelar">
+          Limpiar
         </button>
-        <button type="submit" className="cm-fo-guardar" aria-live="polite">
-          {guardado ? '✓ Listo' : t.guardar}
+        <button type="submit" className="cm-fo-guardar" disabled={guardando}>
+          {guardando ? 'Guardando…' : t.guardar}
         </button>
       </div>
+      <p className="cm-fo-resultado" role="status">{guardando ? 'Guardando en esta demostración…' : guardado ? '✓ Listo. Los datos se guardaron en esta demostración.' : 'Muestra interactiva · nombre y contacto obligatorios · no envía datos.'}</p>
     </form>
   );
 }
@@ -180,9 +208,9 @@ export const FORMULARIOS: Categoria = {
   id: 'formulario',
   nombre: 'Formularios completos',
   singular: 'formulario',
-  descripcion: 'Una pantalla entera para cargar datos. El contenido cambia según lo que vas a hacer (checkout en una tienda, registro en una app, alta de cliente en un dashboard…); cada diseño cambia la forma.',
+  descripcion: 'Probá completar nombre y contacto, adjuntar un archivo, guardar o limpiar. No envía datos. Una pantalla entera para cargar datos. El contenido cambia según lo que vas a hacer (checkout en una tienda, registro en una app, alta de cliente en un dashboard…); cada diseño cambia la forma.',
   estructura:
-    '<form class="cm-formulario cm-formulario-DISEÑO"><header class="cm-fo-cab"><strong class="cm-fo-titulo">Título</strong><span class="cm-fo-ayuda">Ayuda</span></header><section class="cm-fo-seccion"><span class="cm-fo-sec-titulo">Sección</span><div class="cm-fo-grupo"><label class="cm-fo-fila"><span class="cm-fo-etq">Nombre</span><input></label>…<div class="cm-fo-fila"><span class="cm-fo-etq">Modo</span><span class="cm-fo-segmento" style="--i: 0; --n: 3"><span class="cm-fo-seg-ind"></span><button aria-pressed="true">Mensual</button>…</span></div><button class="cm-fo-fila cm-fo-switch" role="switch" aria-checked="true"><span class="cm-fo-etq">Activo</span><span class="cm-fo-perilla"></span></button><button class="cm-fo-fila cm-fo-accion"><svg/>Sacar foto</button><label class="cm-fo-fila cm-fo-nota-campo"><span class="cm-fo-etq">Observaciones</span><textarea></textarea></label></div><span class="cm-fo-nota">Nota</span></section>…<div class="cm-fo-acciones"><button class="cm-fo-cancelar">Cancelar</button><button type="submit" class="cm-fo-guardar">Guardar</button></div></form>',
+    '<form class="cm-formulario cm-formulario-DISEÑO"><header class="cm-fo-cab"><strong class="cm-fo-titulo">Título</strong><span class="cm-fo-ayuda">Ayuda</span></header><section class="cm-fo-seccion"><span class="cm-fo-sec-titulo">Sección</span><div class="cm-fo-grupo"><label class="cm-fo-fila"><span class="cm-fo-etq">Nombre</span><input></label>…<div class="cm-fo-fila"><span class="cm-fo-etq">Modo</span><span class="cm-fo-segmento" style="--i: 0; --n: 3"><span class="cm-fo-seg-ind"></span><button aria-pressed="true">Mensual</button>…</span></div><button class="cm-fo-fila cm-fo-switch" role="switch" aria-checked="true"><span class="cm-fo-etq">Activo</span><span class="cm-fo-perilla"></span></button><button class="cm-fo-fila cm-fo-accion"><svg/>Sacar foto</button><label class="cm-fo-fila cm-fo-nota-campo"><span class="cm-fo-etq">Observaciones</span><textarea></textarea></label></div><span class="cm-fo-nota">Nota</span></section>…<div class="cm-fo-acciones"><button type="reset" class="cm-fo-cancelar">Limpiar</button><button type="submit" class="cm-fo-guardar">Guardar</button></div><p class="cm-fo-resultado" role="status"></p></form> — Usar ids únicos asociados con label y nombres de campo. Nombre y contacto son obligatorios. Al enviar, validar y mostrar .cm-fo-error junto al campo (aria-invalid y aria-describedby), enfocando el primer error. Deshabilitar Guardar mientras procesa y anunciar carga, éxito o error en .cm-fo-resultado. Limpiar es type="reset". Adjuntar abre un input type="file" y muestra el nombre seleccionado. La galería simula guardado; en la app, conectar la operación real sin simular resultados.',
   anchoCelda: 460,
   base: `& { display: flex; flex-direction: column; gap: 18px; width: 100%; max-width: 480px; font-family: var(--fuente-texto); font-size: 14px; color: var(--color-texto); text-align: left; }
 & .cm-fo-cab { display: flex; flex-direction: column; gap: 2px; }
@@ -193,12 +221,12 @@ export const FORMULARIOS: Categoria = {
 & .cm-fo-grupo { display: flex; flex-direction: column; gap: 12px; }
 & .cm-fo-fila { display: flex; flex-direction: column; gap: 6px; width: 100%; font: inherit; color: inherit; text-align: left; }
 & .cm-fo-etq { font-weight: 600; font-size: 13px; }
-& input, & select, & textarea { width: 100%; min-height: 44px; padding: 0 12px; border: 1px solid var(--color-borde); border-radius: var(--radio-medio); background: var(--color-fondo); color: var(--color-texto); font: inherit; box-sizing: border-box; }
+& input, & select, & textarea { width: 100%; min-width: 0; min-height: 44px; padding: 0 12px; border: 1px solid var(--color-borde); border-radius: var(--radio-medio); background: var(--color-fondo); color: var(--color-texto); font: inherit; box-sizing: border-box; }
 & textarea { padding: 10px 12px; min-height: 64px; resize: vertical; }
 & input:focus, & select:focus, & textarea:focus { outline: none; border-color: var(--color-acento); box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-acento) 22%, transparent); }
 & .cm-fo-segmento { position: relative; display: grid; grid-template-columns: repeat(var(--n), 1fr); padding: 3px; border-radius: var(--radio-medio); background: var(--color-superficie); }
 & .cm-fo-seg-ind { position: absolute; top: 3px; bottom: 3px; left: 3px; width: calc((100% - 6px) / var(--n)); border-radius: calc(var(--radio-medio) * .75); background: var(--color-fondo); box-shadow: 0 1px 3px rgba(0,0,0,.15); transform: translateX(calc(var(--i) * 100%)); transition: transform var(--duracion-media) var(--curva-entrada); }
-& .cm-fo-segmento button { position: relative; min-height: 36px; border: none; background: transparent; color: var(--color-texto-suave); font: inherit; font-size: 13px; font-weight: 600; cursor: pointer; }
+& .cm-fo-segmento button { position: relative; min-height: 44px; border: none; background: transparent; color: var(--color-texto-suave); font: inherit; font-size: 13px; font-weight: 600; cursor: pointer; }
 & .cm-fo-segmento button[aria-pressed='true'] { color: var(--color-texto); }
 & .cm-fo-switch { flex-direction: row; justify-content: space-between; align-items: center; min-height: 44px; border: none; background: transparent; padding: 0; cursor: pointer; }
 & .cm-fo-perilla { position: relative; flex: none; width: 46px; height: 28px; border-radius: 999px; background: var(--color-borde); transition: background var(--duracion-media) ease; }
@@ -210,7 +238,14 @@ export const FORMULARIOS: Categoria = {
 & .cm-fo-acciones button { min-height: 46px; padding: 0 18px; border-radius: var(--radio-boton); font: inherit; font-weight: 700; cursor: pointer; }
 & .cm-fo-cancelar { border: 1.5px solid var(--color-borde); background: transparent; color: var(--color-texto); }
 & .cm-fo-guardar { border: none; background: var(--boton-color); color: var(--boton-sobre); }
-& button:focus-visible { outline: 2px solid var(--color-acento); outline-offset: 2px; }
+& .cm-fo-fila { box-sizing: border-box; }
+& input[hidden] { display: none; }
+& .cm-fo-fila:has(.cm-fo-error) { flex-wrap: wrap; }
+& .cm-fo-error { flex-basis: 100%; display: block; font-size: 12px; line-height: 1.5; border-inline-start: 3px solid var(--color-error); padding-inline-start: 8px; color: inherit; }
+& .cm-fo-resultado { margin: 0; font-size: 12px; line-height: 1.5; color: inherit; }
+& .cm-fo-guardar:disabled { opacity: .65; cursor: wait; }
+& button:focus-visible { outline: 2px solid var(--color-acento-texto); outline-offset: 2px; }
+@media (pointer: coarse) { & input, & select, & textarea { font-size: 16px; min-height: 44px; } }
 ${reducirMov}`,
   disenos: {
     apilado: { nombre: 'Clásico apilado', descripcion: 'La etiqueta arriba de cada campo; el más claro y universal', css: '' },

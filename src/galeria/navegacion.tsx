@@ -183,10 +183,11 @@ function MuestraNavWeb({ clase, id }: { clase: string; id: string }) {
           ))}
         </div>
       </nav>
-      <div className="cm-cuerpo" aria-hidden="true">
-        <span className="cm-esq" style={{ width: '60%' }} />
-        <span className="cm-esq" style={{ width: '40%' }} />
-        <span className="cm-esq cm-esq-alta" />
+      <div className="cm-cuerpo cm-nav-contenido">
+        <span className="cm-nav-ruta">Tu espacio / {ITEMS_WEB[activo].nombre}</span>
+        <strong className="cm-nav-pagina" aria-live="polite">{ITEMS_WEB[activo].nombre}</strong>
+        <p>{['Todo lo importante para empezar el día.', 'Un vistazo a cómo crece tu proyecto.', 'Tus contactos y conversaciones, en orden.', 'Organizá tu espacio como te quede cómodo.'][activo]}</p>
+        <div className="cm-nav-registro"><span>{['Tareas de hoy', 'Visitas este mes', 'Clientes activos', 'Miembros del equipo'][activo]}</span><b>{[8, 1280, 24, 4][activo].toLocaleString('es-AR')}</b></div>
       </div>
     </div>
   );
@@ -204,7 +205,7 @@ export const NAV_WEB: Categoria = {
 & .cm-marca { font-family: var(--fuente-titulos); font-weight: var(--titulos-peso); font-size: 16px; }
 & .cm-items { position: relative; display: grid; grid-template-columns: repeat(var(--n), minmax(0, 1fr)); gap: 0; }
 & .cm-ind { display: none; }
-& .cm-item { position: relative; z-index: 1; display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 40px; padding: 0 12px; border: none; background: none; cursor: pointer; color: var(--color-texto-suave); font: inherit; font-size: 14px; font-weight: 600; white-space: nowrap; transition: color var(--duracion-rapida) ease; }
+& .cm-item { position: relative; z-index: 1; display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 44px; padding: 0 12px; border: none; background: none; cursor: pointer; color: var(--color-texto-suave); font: inherit; font-size: 14px; font-weight: 600; white-space: nowrap; transition: color var(--duracion-rapida) ease; }
 & .cm-ico { display: none; }
 & .cm-item[aria-current] { color: var(--color-texto); }
 & .cm-item:focus-visible { outline: 2px solid var(--color-acento); outline-offset: -2px; border-radius: 8px; }
