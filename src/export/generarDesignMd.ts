@@ -13,7 +13,7 @@ import { cssBaseDe, cssDisenoDe } from '../galeria/base';
 import { paletaActiva, sistemaDeDiseno, tokensCss } from './sistema';
 import { cssDeFondo, FONDOS, type FondoId } from '../fondos';
 
-export const VERSION_FORMATO = '0.8.4';
+export const VERSION_FORMATO = '0.8.5';
 
 const q = (s: string) => JSON.stringify(s);
 const valor = (s: string) => (s.trim() ? q(s.trim()) : 'sin_definir');

@@ -3,7 +3,7 @@
 // aparecen las flechas para pasar de a una y el botón central pasa a ser «Elegir este diseño».
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { ESTILOS, LAYOUTS } from '../estilos-visuales';
+import { esAutor, ESTILOS, LAYOUTS, RECETAS_AUTOR } from '../estilos-visuales';
 import type { Config } from '../tipos';
 import { aplicarCombinacion, codigo, type Combinacion, combinacionAlAzar, decodificar, LISTA_FONDOS } from './combinar';
 import { type Contenido, contenido as contenidoDe, Pagina } from './Pagina';
@@ -273,8 +273,28 @@ export function Inicio(props: { config: Config; onElegir: (k: Combinacion) => vo
               ×
             </button>
           </div>
+          <p className="inicio-layouts-sub">Diseños de autor: páginas pensadas para un negocio concreto. Se abren con su estilo, sus colores y su letra; después cambiás lo que quieras.</p>
           <div className="inicio-layouts-grilla">
-            {(Object.keys(LAYOUTS) as LayoutId[]).map((id) => (
+            {(Object.keys(LAYOUTS) as LayoutId[]).filter(esAutor).map((id) => (
+              <button
+                key={id}
+                type="button"
+                className="inicio-layout inicio-layout-autor"
+                aria-pressed={actual.layout === id}
+                onClick={() => {
+                  irA({ ...actual, layout: id, ...RECETAS_AUTOR[id] });
+                  setVerLayouts(false);
+                }}
+              >
+                <Esquema id={id} />
+                <span className="inicio-layout-nombre">{LAYOUTS[id].nombre}</span>
+                <span className="inicio-layout-desc">{LAYOUTS[id].descripcion}</span>
+              </button>
+            ))}
+          </div>
+          <p className="inicio-layouts-sub">Estructuras para cualquier proyecto: se mantiene el estilo, los colores y la letra.</p>
+          <div className="inicio-layouts-grilla">
+            {(Object.keys(LAYOUTS) as LayoutId[]).filter((id) => !esAutor(id)).map((id) => (
               <button
                 key={id}
                 type="button"

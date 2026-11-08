@@ -140,7 +140,10 @@ export type LayoutId =
   | 'fondo_protagonista'
   | 'tarjeta_sobre_fondo'
   | 'editorial_fondo'
-  | 'widgets_fondo';
+  | 'widgets_fondo'
+  | 'autor_panaderia'
+  | 'autor_finanzas'
+  | 'autor_portfolio';
 
 export type EscalaId = 'sutil' | 'medio' | 'dramatico' | 'extremo';
 export type EspaciadoTitulos = 'apretado' | 'normal' | 'amplio';

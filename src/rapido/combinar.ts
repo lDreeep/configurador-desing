@@ -2,7 +2,7 @@
 // Cada combinación tiene un código de 4 caracteres para volver a ella o compartirla.
 
 import { FUENTES, MOVIMIENTOS, PALETAS } from '../catalogo';
-import { ESTILOS, LAYOUTS } from '../estilos-visuales';
+import { esAutor, ESTILOS, LAYOUTS, RECETAS_AUTOR } from '../estilos-visuales';
 import type { Config, EstiloId, FuenteId, LayoutId, PaletaId } from '../tipos';
 import { FONDOS, type FondoId } from '../fondos';
 
@@ -41,6 +41,9 @@ export function combinacionAlAzar(actual: Combinacion | null, candados: Set<Cand
     actual && candados.has('tipografia')
       ? [actual.titulos, actual.texto]
       : alAzar(e.fuentes, actual?.estilo === estilo ? e.fuentes.find((f) => f[0] === actual.titulos && f[1] === actual.texto) : undefined);
+  // Las plantillas de autor salen seguido en la muestra, y siempre con la receta con la que se diseñaron.
+  const autor = candados.size === 0 && Math.random() < 0.3 ? alAzar(LISTA_LAYOUTS.filter(esAutor), actual?.layout) : null;
+  if (autor) return { layout: autor, ...RECETAS_AUTOR[autor]! };
   // Las composiciones con fondo siempre llevan uno; el resto, a veces (para mostrar la variedad).
   const fondo: FondoId | 'ninguno' = LAYOUTS_CON_FONDO.includes(layout) || Math.random() < 0.35 ? alAzar(LISTA_FONDOS, actual?.fondo as FondoId | undefined) : 'ninguno';
   return { estilo, layout, paleta, titulos, texto, fondo };
