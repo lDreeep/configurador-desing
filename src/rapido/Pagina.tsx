@@ -187,6 +187,68 @@ function Fragmento({ i }: { i: number }) {
 
 const ICONOS_CARD = ['M4 12l5 5L20 6', 'M12 3v18M3 12h18', 'M4 6h16M4 12h10M4 18h7', 'M12 21s-7-4.5-9-9a5 5 0 0 1 9-3 5 5 0 0 1 9 3c-2 4.5-9 9-9 9z'];
 
+/**
+ * Recorrido: cuatro pasos de texto y, al costado, un visual fijo que cambia con cada paso a
+ * medida que bajás (CSS scroll-driven animations). Sin soporte o con movimiento reducido, queda
+ * el primer visual quieto y los pasos se leen igual.
+ */
+function Recorrido({ c, k, f = 0 }: { c: Config; k: Contenido; f?: number }) {
+  const pasos = k.items.slice(0, 4);
+  while (pasos.length < 4) pasos.push(k.items[pasos.length % k.items.length]);
+  return (
+    <section className="pg-rc" aria-label="Cómo funciona">
+      <div className="pg-rc-pasos">
+        <h2 className="pg-rc-intro">Cómo funciona, paso a paso</h2>
+        {pasos.map((p, i) => (
+          <div key={i} className="pg-rc-paso">
+            <span className="pg-rc-num">Paso {i + 1}</span>
+            <h3>{p.titulo}</h3>
+            {p.texto && <p>{p.texto}</p>}
+          </div>
+        ))}
+      </div>
+      <div className="pg-rc-visual" aria-hidden="true">
+        <div className={`pg-rc-capa pg-media fa-${FONDOS_AUTO[f % FONDOS_AUTO.length]}`}>
+          <Escena k={k} />
+        </div>
+        <div className={`pg-rc-capa pg-media fa-${FONDOS_AUTO[(f + 1) % FONDOS_AUTO.length]}`}>
+          <div className="pg-rc-tarjeta">
+            <b>{pasos[1].titulo}</b>
+            {pasos.slice(0, 3).map((p, i) => (
+              <span key={i} className="pg-rc-fila">
+                {p.titulo}
+                <b>{['Hoy', 'Mañana', 'Viernes'][i]}</b>
+              </span>
+            ))}
+          </div>
+        </div>
+        <div className={`pg-rc-capa pg-media fa-${FONDOS_AUTO[(f + 2) % FONDOS_AUTO.length]}`}>
+          <div className="pg-rc-tarjeta">
+            <span className="pg-rc-numero">+24%</span>
+            <span>{pasos[2].titulo}</span>
+            <Fragmento i={0} />
+          </div>
+        </div>
+        <div className={`pg-rc-capa pg-media fa-${FONDOS_AUTO[(f + 3) % FONDOS_AUTO.length]}`}>
+          <div className="pg-rc-tarjeta" style={{ alignItems: 'center', textAlign: 'center' }}>
+            <span className="pg-rc-check">✓</span>
+            <b>{pasos[3].titulo}</b>
+            <BotonPrincipal config={c} clase="pg-boton" onClick={k.onPrincipal}>
+              {k.cta}
+            </BotonPrincipal>
+          </div>
+        </div>
+        <div className="pg-rc-barra">
+          <i />
+          <i />
+          <i />
+          <i />
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function Layout({ c, k }: { c: Config; k: Contenido }) {
   const caja = paramsDe(c);
   const cc = caja ? clasesDeCaja(caja) : '';
@@ -204,6 +266,7 @@ function Layout({ c, k }: { c: Config; k: Contenido }) {
             </div>
             <Media escena={k} />
           </section>
+          <Recorrido c={c} k={k} f={1} />
           <section className="pg-fila">{cards}</section>
         </>
       );
@@ -251,6 +314,7 @@ function Layout({ c, k }: { c: Config; k: Contenido }) {
               <Botones c={c} k={k} />
             </div>
           </section>
+          <Recorrido c={c} k={k} f={5} />
         </>
       );
     case 'cinta': {
@@ -403,6 +467,7 @@ function Layout({ c, k }: { c: Config; k: Contenido }) {
               ▶
             </span>
           </section>
+          <Recorrido c={c} k={k} f={4} />
           <section className="pg-fila">{cards}</section>
         </>
       );
@@ -488,6 +553,7 @@ function Layout({ c, k }: { c: Config; k: Contenido }) {
     }
     case 'fondo_protagonista':
       return (
+        <>
         <section className="pg-fp">
           <div className="pg-fondo-area" aria-hidden="true" />
           <div className="pg-fp-velo" aria-hidden="true" />
@@ -511,6 +577,8 @@ function Layout({ c, k }: { c: Config; k: Contenido }) {
             </BotonPrincipal>
           </div>
         </section>
+        <Recorrido c={c} k={k} f={6} />
+        </>
       );
     case 'tarjeta_sobre_fondo':
       return (
@@ -548,6 +616,7 @@ function Layout({ c, k }: { c: Config; k: Contenido }) {
               </div>
             </div>
           </section>
+          <Recorrido c={c} k={k} f={2} />
           <section className="pg-fila">{cards}</section>
         </>
       );
@@ -603,11 +672,11 @@ function Layout({ c, k }: { c: Config; k: Contenido }) {
         <>
           <Nav k={k} simple />
           <section className="pg-hero pg-minimo">
-            <span className="pg-etiqueta">{k.marca}</span>
             <Titulo k={k} />
             <Bajada k={k} />
             <Botones c={c} k={k} />
           </section>
+          <Recorrido c={c} k={k} f={3} />
         </>
       );
     case 'app_lateral':
@@ -647,6 +716,7 @@ function Layout({ c, k }: { c: Config; k: Contenido }) {
             <Bajada k={k} />
             <Botones c={c} k={k} />
           </section>
+          <div className="pg-hz-pin">
           <section className="pg-horizontal" tabIndex={0} aria-label="Paneles de ejemplo">
             {k.items.map((it, i) => (
               <Card key={i} i={i} item={it} cc={cc}>
@@ -654,6 +724,7 @@ function Layout({ c, k }: { c: Config; k: Contenido }) {
               </Card>
             ))}
           </section>
+          </div>
         </>
       );
   }

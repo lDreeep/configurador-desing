@@ -1,6 +1,6 @@
 # DESIGN.md: especificación del formato
 
-> **Versión del formato:** 0.8.3 (borrador)
+> **Versión del formato:** 0.8.4 (borrador)
 > **Última actualización:** 2026-11-06
 > **Estado:** configurador en v0.2 (10 pasos + export): 8 direcciones, 13 paletas + personalizada, 23 fuentes, botones y movimiento detallados. Falta la primera ronda de pruebas con IA (§9).
 
@@ -134,7 +134,7 @@ Todo archivo exportado empieza con este bloque, que permite saber con qué versi
 
 ```yaml
 formato: design-md
-version_formato: 0.8.3
+version_formato: 0.8.4
 generado_por: configurador-diseno
 fecha: 2026-11-06
 idioma: es
@@ -1202,6 +1202,7 @@ Formato: fecha · decisión · por qué · alternativas descartadas.
 | D69 | 2026-11-08 | Se suma la skill `design-taste-frontend` (taste-skill 2.5.1, MIT) en `.claude/skills/`, a pedido; `.claude` va en `.vercelignore` para no subir sus 40 MB al deploy | La persona la eligió para mejorar el diseño de las páginas | — |
 | D70 | 2026-11-08 | Las 21 páginas de muestra siguen la skill `design-taste-frontend`: contenido de muestra por tipo de proyecto (`src/rapido/contenido-tipo.ts`; título que dice qué es y para quién, un dato concreto, botones verbo + objeto, sin eslóganes), visuales que nunca quedan vacíos (escena del producto en el hero, fondos con textura en fotos de producto, artículos, personas y mosaico), un fragmento de interfaz en cada tarjeta, sin etiquetas de relleno sobre los títulos, sin numeración que no es secuencia, una sola entrada animada (el hero) y un cierre con pie en fondo invertido en todas | Las páginas se veían planas y con recursos típicos de las generadas por IA | Copiar los scripts de la skill (están hechos para sitios terminados con fotos reales) |
 | D71 | 2026-11-08 | Se suman las skills `impeccable`, `web-design-guidelines`, `web-design-engineer` y `shadcn` en `.claude/skills/` (además de `frontend-design` y `design-taste-frontend`, ya instaladas) | La persona las eligió para mejorar y auditar el diseño | — |
+| D72 | 2026-11-08 | Scroll interactivo en las páginas de muestra, con CSS scroll-driven animations (sin librerías): sección «Recorrido» (4 pasos y un visual fijo que cambia con cada uno) en Hero partido, Afiche tipográfico, Portada con video, Mínimo, Fondo protagonista y Editorial con fondo; galería horizontal que avanza al bajar en Paneles horizontales; el visual del hero se aleja al salir. Todo dentro de @supports y prefers-reduced-motion. La raíz de la página pasa de overflow hidden a clip y la portada deja de ser un contenedor de scroll, para que sticky y las líneas de tiempo funcionen. Pulido de Vercel: text-wrap balance/pretty y números tabulares | Pedido de la persona; la skill impeccable lo recomienda solo cuando el scroll cuenta algo (acá, los pasos de cómo funciona) | Librerías como GSAP ScrollTrigger: suman peso y no se exportan como CSS |
 | D43 | 2026-11-06 | Si la persona no describe un proyecto, el archivo se exporta como sistema de diseño (`modo: sistema_de_diseno`): sirve para mejorar una app existente o para construir lo que se explique junto con el archivo; la pantalla final ofrece un mensaje para copiar para cada caso | El modo rápido no pide detalles del proyecto; tratar las pantallas de ejemplo como obligatorias llevaba a la IA a construir una app genérica | Obligar a completar el proyecto antes de exportar |
 
 | D67 | 2026-11-07 | Se amplían las categorías existentes con 12 composiciones propias para formularios, navegación y productos; las muestras permiten validar, adjuntar y probar una compra simulada | Mejorar la calidad y la variedad visible conservando el recorrido actual | Agregar un panel de decisiones transversales |
@@ -1306,6 +1307,7 @@ Lo que todavía no tiene lugar en §5. Se mueve allá cuando se decide hacerlo.
 
 | Versión | Fecha | Cambios |
 |---|---|---|
+| 0.8.4 | 2026-11-08 | §19: `layout_estructura` de 7 layouts describe su sección con scroll interactivo (recorrido con visual fijo que cambia por paso, o galería horizontal que avanza al bajar), cómo hacerla con CSS scroll-driven animations y su versión quieta. |
 | 0.8.3 | 2026-11-08 | §19 suma `fondo` (uno de 21 fondos con textura, o `ninguno`), `fondo_descripcion`, `fondo_uso`, `fondo_texto_encima` y un bloque `css` con el fondo aplicado a `.fondo-capa`. 4 layouts nuevos pensados para el fondo: `fondo_protagonista`, `tarjeta_sobre_fondo`, `editorial_fondo`, `widgets_fondo`. |
 | 0.8.2 | 2026-11-07 | Sin nuevas secciones ni campos de configuración: 12 diseños en §21, estructuras de formulario/producto con estados e instrucciones de interacción y CSS correspondiente. Comparación opcional en la galería. Los exports anteriores siguen siendo válidos. |
 | 0.1.0 | 2026-11-06 | Primera versión del formato: 19 secciones, reglas generales, prioridades, plan del configurador, ejemplo completo y registros. |

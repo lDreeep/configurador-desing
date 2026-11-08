@@ -312,7 +312,7 @@ button:disabled { cursor: not-allowed; opacity: 0.4; }
 
 /* ---------- Modo rápido: inicio a pantalla completa ---------- */
 .inicio { position: relative; height: 100%; }
-.inicio-escena { display: grid; height: 100%; overflow-y: auto; overflow-x: hidden; touch-action: pan-y; }
+.inicio-escena { display: grid; min-height: 100%; overflow-x: clip; touch-action: pan-y; }
 .inicio-capa { grid-area: 1 / 1; min-height: 100%; display: flex; flex-direction: column; }
 .inicio-capa > .pg { flex: 1 0 auto; min-height: 100vh; min-height: 100dvh; }
 .inicio-capa[aria-hidden='true'] { pointer-events: none; }

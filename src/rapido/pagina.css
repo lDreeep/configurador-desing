@@ -2,7 +2,7 @@
 .pg.pgp {
   display: flex; flex-direction: column;
   container-type: inline-size;
-  position: relative; min-height: 100%; overflow: hidden;
+  position: relative; min-height: 100%; overflow: clip; /* clip, no hidden: deja funcionar sticky y el scroll interactivo */
   background: var(--color-fondo); color: var(--color-texto);
   font-family: var(--fuente-texto); font-size: var(--texto-cuerpo); line-height: 1.5;
 }
@@ -312,3 +312,76 @@
 .pgp .pg-cierre-legal { margin-left: auto; }
 /* En el cierre (fondo invertido) el botón va sólido y claro, sea cual sea su diseño, para que siempre se vea. */
 .pg.pgp .pg-cierre .pv-boton { background: var(--color-fondo) !important; background-image: none !important; color: var(--color-texto) !important; border-color: var(--color-fondo) !important; -webkit-text-fill-color: var(--color-texto); }
+
+
+/* ---------- Pulido (reglas de interfaz de Vercel y skill impeccable) ---------- */
+.pgp .pg-titulo, .pgp .pg-card-titulo, .pgp .pg-cierre-texto, .pgp .pg-rc-paso h3 { text-wrap: balance; }
+.pgp .pg-bajada, .pgp .pg-card-texto, .pgp .pg-rc-paso p { text-wrap: pretty; }
+.pgp .pg-precio, .pgp .pg-plan-precio, .pgp .pg-wf-numero, .pgp .pg-esc-dato, .pgp .pg-rc-numero { font-variant-numeric: tabular-nums; }
+.pgp button, .pgp a { touch-action: manipulation; }
+
+/* ---------- Recorrido: bajás y el visual fijo cambia con cada paso ---------- */
+.pgp .pg-rc { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: clamp(24px, 5cqw, 72px); timeline-scope: --rc-0, --rc-1, --rc-2, --rc-3; }
+.pgp .pg-rc-pasos { display: flex; flex-direction: column; }
+.pgp .pg-rc-intro { margin: 0 0 8px; font-family: var(--fuente-titulos); font-weight: var(--titulos-peso); font-size: clamp(26px, 3.4cqw, 44px); line-height: 1.08; letter-spacing: var(--titulos-espaciado); max-width: 18ch; }
+.pgp .pg-rc-paso { display: flex; flex-direction: column; justify-content: center; gap: 10px; min-height: min(70vh, 560px); padding: 24px 0; border-top: 1px solid color-mix(in srgb, var(--color-texto) 14%, transparent); }
+.pgp .pg-rc-paso:nth-child(2) { view-timeline-name: --rc-0; }
+.pgp .pg-rc-paso:nth-child(3) { view-timeline-name: --rc-1; }
+.pgp .pg-rc-paso:nth-child(4) { view-timeline-name: --rc-2; }
+.pgp .pg-rc-paso:nth-child(5) { view-timeline-name: --rc-3; }
+.pgp .pg-rc-num { font: 700 13px var(--fuente-texto); color: var(--color-acento-texto); }
+.pgp .pg-rc-paso h3 { margin: 0; font-family: var(--fuente-titulos); font-weight: var(--titulos-peso); font-size: clamp(22px, 2.6cqw, 32px); line-height: 1.15; max-width: 20ch; }
+.pgp .pg-rc-paso p { margin: 0; max-width: 42ch; color: var(--color-texto-suave); }
+.pgp .pg-rc-visual { position: sticky; top: max(24px, calc(50vh - 260px)); align-self: start; height: min(520px, 72vh); border-radius: var(--radio-grande); overflow: hidden; isolation: isolate; }
+.pgp .pg-rc-capa { position: absolute; inset: 0; display: grid; place-items: center; padding: clamp(18px, 6%, 40px); }
+.pgp .pg-rc-capa:not(:first-child) { opacity: 0; }
+.pgp .pg-rc-barra { position: absolute; z-index: 5; left: 18px; right: 18px; bottom: 16px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+.pgp .pg-rc-barra i { height: 4px; border-radius: 2px; background: color-mix(in srgb, #FFFFFF 45%, transparent); }
+.pgp .pg-rc-barra i:first-child { background: #FFFFFF; }
+/* contenidos de cada capa */
+.pgp .pg-rc-tarjeta { width: min(100%, 340px); padding: 20px; border-radius: var(--radio-grande); background: var(--color-fondo); color: var(--color-texto); box-shadow: 0 30px 60px -24px rgba(0,0,0,.5); display: flex; flex-direction: column; gap: 10px; }
+.pgp .pg-rc-fila { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 8px 0; border-top: 1px solid color-mix(in srgb, var(--color-texto) 10%, transparent); font-size: 14px; }
+.pgp .pg-rc-fila b { font-weight: 700; }
+.pgp .pg-rc-check { display: grid; place-items: center; width: 64px; height: 64px; border-radius: 50%; background: color-mix(in srgb, var(--color-exito) 85%, var(--color-texto)); color: #FFFFFF; font-size: 30px; }
+.pgp .pg-rc-numero { font-family: var(--fuente-titulos); font-weight: var(--titulos-peso); font-size: clamp(56px, 7cqw, 96px); line-height: .95; letter-spacing: -0.03em; }
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .pgp .pg-rc-paso { animation: pg-rc-texto linear both; animation-timeline: view(); animation-range: entry 10% exit 90%; }
+    .pgp .pg-rc-capa { animation: pg-rc-capa linear both; animation-range: entry 50% exit 50%; }
+    .pgp .pg-rc-capa:nth-child(1) { animation-timeline: --rc-0; animation-name: pg-rc-capa-primera; }
+    .pgp .pg-rc-capa:nth-child(2) { animation-timeline: --rc-1; }
+    .pgp .pg-rc-capa:nth-child(3) { animation-timeline: --rc-2; }
+    .pgp .pg-rc-capa:nth-child(4) { animation-timeline: --rc-3; animation-name: pg-rc-capa-ultima; }
+    .pgp .pg-rc-barra i { animation: pg-rc-marca linear both; animation-range: entry 45% exit 55%; }
+    .pgp .pg-rc-barra i:nth-child(1) { animation-timeline: --rc-0; }
+    .pgp .pg-rc-barra i:nth-child(2) { animation-timeline: --rc-1; }
+    .pgp .pg-rc-barra i:nth-child(3) { animation-timeline: --rc-2; }
+    .pgp .pg-rc-barra i:nth-child(4) { animation-timeline: --rc-3; }
+    /* El visual del hero se aleja un poco al salir de la pantalla */
+    .pgp .pg-media.con-escena .pg-escena { animation: pg-hero-sale linear both; animation-timeline: view(); animation-range: exit 0% exit 100%; }
+  }
+}
+@keyframes pg-rc-texto { 0%, 100% { opacity: .3; } 35%, 65% { opacity: 1; } }
+@keyframes pg-rc-capa { 0%, 8% { opacity: 0; transform: scale(1.04); } 18%, 82% { opacity: 1; transform: none; } 92%, 100% { opacity: 0; transform: scale(.97); } }
+@keyframes pg-rc-capa-primera { 0%, 82% { opacity: 1; transform: none; } 92%, 100% { opacity: 0; transform: scale(.97); } }
+@keyframes pg-rc-capa-ultima { 0%, 8% { opacity: 0; transform: scale(1.04); } 18%, 100% { opacity: 1; transform: none; } }
+@keyframes pg-rc-marca { 0%, 100% { background: color-mix(in srgb, #FFFFFF 45%, transparent); } 20%, 80% { background: #FFFFFF; } }
+@keyframes pg-hero-sale { to { transform: translateY(-36px) scale(.95); opacity: .55; } }
+
+/* Celular: el visual arriba, fijo, y los pasos pasan por debajo */
+@container (max-width: 760px) {
+  .pgp .pg-rc { grid-template-columns: minmax(0, 1fr); }
+  .pgp .pg-rc-visual { grid-row: 1; top: 12px; height: 46vh; z-index: 2; }
+  .pgp .pg-rc-paso { min-height: 52vh; }
+}
+
+/* ---------- Galería horizontal que avanza con el scroll ---------- */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .pgp .pg-hz-pin { height: 300vh; view-timeline-name: --hz; }
+    .pgp .pg-hz-pin > .pg-horizontal { position: sticky; top: max(16px, calc(50vh - 240px)); overflow: visible; scroll-snap-type: none; margin-right: 0; animation: pg-hz linear both; animation-timeline: --hz; animation-range: contain 0% contain 100%; }
+    .pgp .pg-hz-pin > .pg-horizontal > * { flex: 0 0 min(62cqw, 520px); }
+  }
+}
+@keyframes pg-hz { to { transform: translateX(calc(-4 * min(62cqw, 520px) - 48px + 100cqw - 2 * clamp(16px, 5cqw, 72px))); } }
