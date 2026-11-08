@@ -26,7 +26,7 @@ try {
   assert.equal(await page.getByRole('navigation', { name: 'Pasos', exact: true }).count(), 0);
   await page.getByRole('button', { name: 'Editar', exact: true }).click();
   const principal = page.locator('.proto-contenido').getByRole('button', { name: 'Explorar modelos', exact: true });
-  const otro = page.locator('.proto-contenido').getByRole('button', { name: 'Consultar un modelo', exact: true });
+  const otro = page.locator('.proto-contenido .au-mot-prueba').getByRole('button', { name: 'Consultar una prueba', exact: true });
   const claseOriginal = await principal.getAttribute('class');
   const claseOtro = await otro.getAttribute('class');
   await principal.click();
