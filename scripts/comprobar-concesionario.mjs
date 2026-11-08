@@ -20,7 +20,7 @@ try {
   const page = await context.newPage();
   const errors = [];
   page.on('pageerror', error => errors.push(error.message));
-  await page.goto('http://127.0.0.1:4173');
+  await page.goto('http://127.0.0.1:4173/?recorrido=detallado');
   await page.getByRole('button', { name: 'Comenzar', exact: true }).click();
   await page.getByRole('button', { name: 'Ver todos los layouts', exact: true }).click();
   await page.getByRole('button', { name: /De autor: motos y UTV/ }).click();

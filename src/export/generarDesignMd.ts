@@ -15,7 +15,9 @@ import { cssDeFondo, FONDOS, type FondoId } from '../fondos';
 
 import { CSS_CONCESIONARIO as cssConcesionario } from '../rapido/concesionario-estilos';
 
-export const VERSION_FORMATO = '0.8.6';
+import { resolverElemento } from '../rapido/edicion';
+
+export const VERSION_FORMATO = '0.9.0';
 
 const q = (s: string) => JSON.stringify(s);
 const valor = (s: string) => (s.trim() ? q(s.trim()) : 'sin_definir');
@@ -565,6 +567,37 @@ ajustado_a_mano: ${ids(ajustadas)}`),
         elegidos.map((id) => `/* ${CATEGORIAS[id].nombre} */\n${cssBaseDe(CATEGORIAS[id])}\n${cssDisenoDe(CATEGORIAS[id], c.componentes[id]!)}`).join('\n\n') +
         '\n```',
     );
+    secciones.push(partes.join('\n\n'));
+  }
+
+
+  const excepciones = Object.entries(c.elementos ?? {});
+  if (excepciones.length) {
+    const partes = ['## 22. Ajustes por elemento',
+      'Estos ajustes se aplican solo al elemento o bloque identificado. Los demás heredan el diseño de su grupo. Conservá el atributo data-elemento-id en la implementación. Los identificadores empiezan con la pantalla, luego la categoría y una clave semántica del elemento. Si el contenido real es distinto, vinculá cada ajuste al elemento equivalente; no lo apliques a todo el grupo.'];
+    for (const [id, ajuste] of excepciones) {
+      const local = resolverElemento(c, id);
+      const selector = '[data-elemento-id=' + q(id) + ']';
+      let css = selector + ' {\n' + Object.entries(sistemaDeDiseno(local).tokens).map(([k, v]) => '  ' + k + ': ' + v + ';').join('\n') + '\n}';
+      let clases = '';
+      if (ajuste.botones && local.botones.diseno !== 'ninguno') {
+        clases = clasesDeBoton(local.botones.diseno, local.botones.efecto);
+        css += '\n' + cssDeBoton(local.botones.diseno, selector);
+      }
+      if (ajuste.cajas) {
+        const params = paramsDe(local);
+        if (params) { clases = clasesDeCaja(params); css += '\n' + CSS_CAJA.replace(/&/g, selector + ' .caja'); }
+      }
+      for (const cat of Object.keys(ajuste.componentes ?? {}) as CategoriaId[]) {
+        const diseno = ajuste.componentes?.[cat];
+        if (diseno && CATEGORIAS[cat]?.disenos[diseno]) {
+          clases = 'cm-' + cat + ' cm-' + cat + '-' + diseno;
+          css += '\n' + cssBaseDe(CATEGORIAS[cat], selector + ' .cm-' + cat) + '\n' + cssDisenoDe(CATEGORIAS[cat], diseno, selector + ' .cm-' + cat);
+        }
+      }
+      partes.push(yaml('elemento_id: ' + q(id) + '\ncategoria: ' + q(ajuste.categoria) + '\nclases: ' + q(clases) + '\nconfiguracion: ' + JSON.stringify(ajuste)));
+      partes.push('```css\n' + css + '\n```');
+    }
     secciones.push(partes.join('\n\n'));
   }
 

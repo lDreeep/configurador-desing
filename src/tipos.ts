@@ -334,7 +334,16 @@ export interface PaletaPersonalizada {
   manual: Partial<Record<RolColor, string>>;
 }
 
+export interface AjusteElemento {
+  categoria: string;
+  botones?: Config['botones'];
+  cajas?: Config['cajas'];
+  componentes?: Config['componentes'];
+}
+
 export interface Config {
+  /** Excepciones visuales por elemento o bloque del prototipo; el resto hereda del grupo. */
+  elementos?: Record<string, AjusteElemento>;
   proyecto: {
     nombre: string;
     tipo: TipoProyecto;

@@ -1,7 +1,7 @@
 # DESIGN.md: especificación del formato
 
-> **Versión del formato:** 0.8.6 (borrador)
-> **Última actualización:** 2026-11-06
+> **Versión del formato:** 0.9.0 (borrador)
+> **Última actualización:** 2026-11-08
 > **Estado:** configurador en v0.2 (10 pasos + export): 8 direcciones, 13 paletas + personalizada, 23 fuentes, botones y movimiento detallados. Falta la primera ronda de pruebas con IA (§9).
 
 Este documento define **qué archivo exporta el configurador** y **cómo lo tiene que leer una IA** para construir una web o una app. Es también el documento vivo del proyecto: acá se registran las decisiones, lo que aprendemos en las pruebas y lo que falta hacer.
@@ -134,7 +134,7 @@ Todo archivo exportado empieza con este bloque, que permite saber con qué versi
 
 ```yaml
 formato: design-md
-version_formato: 0.8.6
+version_formato: 0.9.0
 generado_por: configurador-diseno
 fecha: 2026-11-06
 idioma: es
@@ -814,6 +814,10 @@ Los gráficos siguen la guía de visualización del proyecto: una serie por colo
 
 ---
 
+### Ajustes por elemento (sección 22, opcional desde 0.9.0)
+
+El prototipo puede guardar excepciones en Config.elementos, por identificador semántico de pantalla, categoría y elemento. La sección 22 exporta, por cada excepción, elemento_id, categoria, clases, configuracion y el CSS con tokens locales. La excepción gana solo en ese elemento o bloque; los demás heredan del grupo. Las acciones principales de la portada se identifican por su texto; las apariciones de una misma acción comparten la excepción. Los componentes compuestos se seleccionan como bloque. Una IA debe conservar data-elemento-id o vincular el identificador al elemento equivalente de su implementación. Sin excepciones la sección no aparece.
+
 ## 4. Prioridades y resolución de conflictos
 
 Cuando dos cosas se contradicen, la IA sigue este orden (gana la de arriba):
@@ -1216,6 +1220,8 @@ Formato: fecha · decisión · por qué · alternativas descartadas.
 
 Decisión 2026-11-08: plantilla «Tracción» aprobada a partir de una maqueta visual. Se suma autor_concesionario con receta azul eléctrico, Archivo y Work Sans, selector de vehículos, ficha y consulta simulada. Se conserva el orden de los layouts existentes para mantener los códigos compartidos. Las imágenes son ilustraciones generadas con IA, identificadas como tales.
 
+Decisión 2026-11-08: ensayo de recorrido simplificado en una rama de vista previa. Inicio con 12 combinaciones completas, acceso directo al prototipo, edición opcional con alcance elemento o grupo, catálogo recorrible con flechas, deshacer y restaurar. El recorrido paso a paso y el modo avanzado siguen disponibles. No se reemplaza producción hasta revisar la vista previa.
+
 ## 9. Registro de pruebas
 
 Cada vez que pasamos un export por una IA, se anota acá. Es lo que valida (o corrige) el formato.
@@ -1313,6 +1319,7 @@ Lo que todavía no tiene lugar en §5. Se mueve allá cuando se decide hacerlo.
 
 | Versión | Fecha | Cambios |
 |---|---|---|
+| 0.9.0 | 2026-11-08 | Sección 22 opcional para excepciones visuales por elemento, con identificador, clases, configuración y CSS local. Los exports sin excepciones mantienen el comportamiento anterior. |
 | 0.8.6 | 2026-11-08 | §19 admite autor_concesionario e incluye el CSS real de su composición. Sin campos obligatorios nuevos. |
 | 0.8.5 | 2026-11-08 | §19 acepta los layouts de autor `autor_panaderia`, `autor_finanzas` y `autor_portfolio`, con su estructura detallada (composición, contenido real, tratamiento de imagen). |
 | 0.8.4 | 2026-11-08 | §19: `layout_estructura` de 7 layouts describe su sección con scroll interactivo (recorrido con visual fijo que cambia por paso, o galería horizontal que avanza al bajar), cómo hacerla con CSS scroll-driven animations y su versión quieta. |
