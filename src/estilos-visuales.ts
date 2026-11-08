@@ -560,6 +560,7 @@ export const LAYOUTS: Record<LayoutId, Layout> = {
   autor_cafeteria: { nombre: 'De autor: cafetería', descripcion: 'Foto del espresso, la pizarra de precios y el origen del mes', estructura: 'Plantilla de autor para una cafetería. Hero partido: foto real del oficio a sangre (el espresso saliendo) y el texto con horario y un dato concreto. La carta como pizarra oscura en dos columnas con letra mono, nombre y precio con línea punteada. El café del mes con su origen, notas y precio de la bolsa, y tres fotos del tueste en una grilla de tamaños distintos.' },
   autor_floreria: { nombre: 'De autor: florería', descripcion: 'Collage de fotos superpuestas y un selector de plan que cambia el precio', estructura: 'Plantilla de autor para una suscripción. Hero en dos columnas: título, bajada con cuándo compran y entregan, un botón; al lado un collage de tres fotos superpuestas con sombra suave. Una franja con «¿Cada cuánto?», un selector de frecuencia en píldora que cambia el precio grande, y qué trae el ramo de esta semana.' },
   autor_refugio: { nombre: 'De autor: refugio de montaña', descripcion: 'El paisaje a sangre con la barra de reserva y las habitaciones por su vista', estructura: 'Plantilla de autor para un alojamiento. Hero con el paisaje a sangre y un velo arriba y abajo; el título en blanco abajo a la izquierda; apoyada sobre la foto, una barra de reserva (llegada, salida, huéspedes y botón). Las habitaciones en tres columnas (la primera más ancha) con foto vertical, nombre, para quiénes y precio por noche. Cómo llegar: foto del camino y la distancia en tipografía grande.' },
+  autor_concesionario: { nombre: 'De autor: motos y UTV', descripcion: 'Vehículo protagonista, selector de categorías y ficha técnica desplegable', estructura: "Plantilla de autor para una concesionaria de motos y UTV. Hero en dos columnas: título condensado y botón Explorar modelos a la izquierda; vehículo recortado grande sobre letras UTV de contorno a la derecha. Selector UTV, Adventure y Enduro con botones aria-pressed que cambia imagen, título y ficha (plazas, tracción y uso); detalle desplegable nativo. Franja de acento con consulta de prueba simulada que aclara que no envía datos ni reserva. Imágenes ilustrativas generadas con IA, nunca presentadas como stock real. En celular las columnas se apilan. Paleta, tipografía y botones dependen de los tokens." },
 };
 
 /** CSS de un estilo con `&` reemplazado por el selector de raíz dado. */
@@ -577,6 +578,7 @@ export const RECETAS_AUTOR: Partial<Record<LayoutId, { estilo: EstiloId; paleta:
   autor_correr: { estilo: 'minimal_tecnico', paleta: 'azul_electrico', titulos: 'space_grotesk', texto: 'inter', fondo: 'ninguno' },
   autor_cafeteria: { estilo: 'editorial', paleta: 'arena', titulos: 'dm_serif', texto: 'work_sans', fondo: 'ninguno' },
   autor_floreria: { estilo: 'japones', paleta: 'menta', titulos: 'cormorant', texto: 'work_sans', fondo: 'ninguno' },
+  autor_concesionario: { estilo: 'minimal_tecnico', paleta: 'azul_electrico', titulos: 'archivo', texto: 'work_sans', fondo: 'ninguno' },
   autor_refugio: { estilo: 'lujo', paleta: 'noche_dorada', titulos: 'cormorant', texto: 'manrope', fondo: 'ninguno' },
 };
 export const esAutor = (l: LayoutId) => l.startsWith('autor_');
@@ -584,5 +586,5 @@ export const esAutor = (l: LayoutId) => l.startsWith('autor_');
 /** La marca de ejemplo de cada plantilla de autor (se usa si la persona no escribió el nombre de su proyecto). */
 export const MARCAS_AUTOR: Partial<Record<LayoutId, string>> = {
   autor_panaderia: 'Horno Thames', autor_finanzas: 'Moneda', autor_portfolio: 'Estudio Ferro', autor_festival: 'Infrarrojo',
-  autor_correr: 'Ruta', autor_cafeteria: 'Tueste', autor_floreria: 'Flores de Estación', autor_refugio: 'Refugio Lenga',
+  autor_concesionario: 'Tracción', autor_correr: 'Ruta', autor_cafeteria: 'Tueste', autor_floreria: 'Flores de Estación', autor_refugio: 'Refugio Lenga',
 };

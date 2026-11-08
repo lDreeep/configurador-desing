@@ -1,6 +1,6 @@
 # DESIGN.md: especificación del formato
 
-> **Versión del formato:** 0.8.5 (borrador)
+> **Versión del formato:** 0.8.6 (borrador)
 > **Última actualización:** 2026-11-06
 > **Estado:** configurador en v0.2 (10 pasos + export): 8 direcciones, 13 paletas + personalizada, 23 fuentes, botones y movimiento detallados. Falta la primera ronda de pruebas con IA (§9).
 
@@ -134,7 +134,7 @@ Todo archivo exportado empieza con este bloque, que permite saber con qué versi
 
 ```yaml
 formato: design-md
-version_formato: 0.8.5
+version_formato: 0.8.6
 generado_por: configurador-diseno
 fecha: 2026-11-06
 idioma: es
@@ -719,6 +719,8 @@ preguntas_sugeridas:
 ```yaml
 layout: bento                     # hero_partido | bento | revista | tipografico | cinta | apiladas | indice | panel_fijo | mosaico | minimo | app_lateral | horizontal
 layout_estructura: "Grilla de 4 columnas: el bloque principal ocupa 3×2…"   # descripción para reproducirlo
+# También admite autor_concesionario: vehículo recortado, selector UTV/Adventure/Enduro,
+# ficha desplegable y consulta simulada; incluye el CSS real de la composición.
 estilo: bauhaus                   # clasico | suizo | bauhaus | memphis | neobrutalismo | vidrio | clay | retro_os | terminal | editorial | art_deco | y2k | organico
 estilo_palabras_clave: [geométrico, constructivo, primario]
 estilo_reglas:
@@ -1212,6 +1214,8 @@ Formato: fecha · decisión · por qué · alternativas descartadas.
 
 ---
 
+Decisión 2026-11-08: plantilla «Tracción» aprobada a partir de una maqueta visual. Se suma autor_concesionario con receta azul eléctrico, Archivo y Work Sans, selector de vehículos, ficha y consulta simulada. Se conserva el orden de los layouts existentes para mantener los códigos compartidos. Las imágenes son ilustraciones generadas con IA, identificadas como tales.
+
 ## 9. Registro de pruebas
 
 Cada vez que pasamos un export por una IA, se anota acá. Es lo que valida (o corrige) el formato.
@@ -1309,6 +1313,7 @@ Lo que todavía no tiene lugar en §5. Se mueve allá cuando se decide hacerlo.
 
 | Versión | Fecha | Cambios |
 |---|---|---|
+| 0.8.6 | 2026-11-08 | §19 admite autor_concesionario e incluye el CSS real de su composición. Sin campos obligatorios nuevos. |
 | 0.8.5 | 2026-11-08 | §19 acepta los layouts de autor `autor_panaderia`, `autor_finanzas` y `autor_portfolio`, con su estructura detallada (composición, contenido real, tratamiento de imagen). |
 | 0.8.4 | 2026-11-08 | §19: `layout_estructura` de 7 layouts describe su sección con scroll interactivo (recorrido con visual fijo que cambia por paso, o galería horizontal que avanza al bajar), cómo hacerla con CSS scroll-driven animations y su versión quieta. |
 | 0.8.3 | 2026-11-08 | §19 suma `fondo` (uno de 21 fondos con textura, o `ninguno`), `fondo_descripcion`, `fondo_uso`, `fondo_texto_encima` y un bloque `css` con el fondo aplicado a `.fondo-capa`. 4 layouts nuevos pensados para el fondo: `fondo_protagonista`, `tarjeta_sobre_fondo`, `editorial_fondo`, `widgets_fondo`. |

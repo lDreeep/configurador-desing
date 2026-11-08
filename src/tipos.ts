@@ -148,7 +148,8 @@ export type LayoutId =
   | 'autor_correr'
   | 'autor_cafeteria'
   | 'autor_floreria'
-  | 'autor_refugio';
+  | 'autor_refugio'
+  | 'autor_concesionario';
 
 export type EscalaId = 'sutil' | 'medio' | 'dramatico' | 'extremo';
 export type EspaciadoTitulos = 'apretado' | 'normal' | 'amplio';

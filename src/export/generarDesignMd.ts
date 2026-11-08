@@ -13,7 +13,9 @@ import { cssBaseDe, cssDisenoDe } from '../galeria/base';
 import { paletaActiva, sistemaDeDiseno, tokensCss } from './sistema';
 import { cssDeFondo, FONDOS, type FondoId } from '../fondos';
 
-export const VERSION_FORMATO = '0.8.5';
+import cssConcesionario from '../rapido/concesionario.css?raw';
+
+export const VERSION_FORMATO = '0.8.6';
 
 const q = (s: string) => JSON.stringify(s);
 const valor = (s: string) => (s.trim() ? q(s.trim()) : 'sin_definir');
@@ -500,6 +502,9 @@ estilo_palabras_clave: [${estV.palabrasClave.join(', ')}]
 estilo_reglas:${lista(estV.reglas)}`
           : ''
       }`),
+      v.layout === 'autor_concesionario'
+        ? '```css\n/* Composición Tracción: misma hoja que usa la vista previa. */\n' + cssConcesionario + '\n```'
+        : '',
       fondoV
         ? '```css\n/* Fondo «' + fondoV.nombre + '»: se aplica a la capa de fondo. Todo es CSS (gradientes y SVG), sin imágenes externas. */\n' +
           cssDeFondo(v.fondo as FondoId, '.fondo-capa') +
