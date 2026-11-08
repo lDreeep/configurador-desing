@@ -9,6 +9,7 @@ import { clasesDeCaja, CSS_CAJA, paramsDe } from '../cajas';
 import { cssDeEstilo, ESTILOS } from '../estilos-visuales';
 import { cssDeFondo, FONDOS, type FondoId, SELECTOR_FONDO } from '../fondos';
 import { sistemaDeDiseno } from '../export/sistema';
+import { CONTENIDO_TIPO } from './contenido-tipo';
 import type { BotonDisenoId, Config, EstiloId } from '../tipos';
 
 /** Hoja con el CSS de todos los estilos, cada uno limitado a su clase. Se monta una sola vez. */
@@ -21,37 +22,28 @@ export function EstilosVisualesGlobales() {
   // Las cajas van al final y con más especificidad: lo que se elige en su panel gana sobre el estilo.
   const cajas = CSS_CAJA.replace(/&/g, '.caja.caja.caja.caja');
   // Los fondos van después de los estilos: si se elige uno, gana sobre el visual del estilo.
+  const auto = FONDOS_AUTO.map((id) => cssDeFondo(id, `.pg.pg .pg-media.fa-${id}`));
   const fondos = (Object.keys(FONDOS) as FondoId[]).map((id) => cssDeFondo(id, SELECTOR_FONDO(id)));
-  return <style>{[...estilos, ...fondos, ...botones, cajas].join('\n')}</style>;
+  return <style>{[...estilos, ...auto, ...fondos, ...botones, cajas].join('\n')}</style>;
 }
 
 export function contenido(c: Config) {
   const p = c.proyecto;
+  const base = CONTENIDO_TIPO[p.tipo] ?? CONTENIDO_TIPO.landing;
   const pantallas = c.estructura.pantallas;
-  const marca = p.nombre.trim() || 'Tu marca';
-  const titular = p.objetivo.trim() || p.descripcion.trim() || 'Tu idea, dicha en grande';
-  const bajada =
-    p.objetivo.trim() && p.descripcion.trim()
-      ? p.descripcion.trim()
-      : 'Acá va una frase que cuenta qué hacés y para quién. Se completa en el paso «Proyecto».';
-  const fallback = [
-    { titulo: 'Rápido', texto: 'Lo importante, sin vueltas.' },
-    { titulo: 'Claro', texto: 'Cada cosa en su lugar.' },
-    { titulo: 'A tu medida', texto: 'Hecho para tu forma de trabajar.' },
-    { titulo: 'Siempre a mano', texto: 'En la compu y en el celular.' },
-  ];
-  const desdeAcciones = c.funciones.acciones.map((a, i) => ({ titulo: a, texto: pantallas[i]?.proposito || '' }));
-  const desdePantallas = pantallas.map((x) => ({ titulo: x.nombre, texto: x.proposito }));
-  const items = (desdeAcciones.length >= 3 ? desdeAcciones : desdePantallas.length >= 3 ? desdePantallas : fallback).slice(0, 4);
-  while (items.length < 3) items.push(fallback[items.length]);
+  const propios = c.funciones.acciones.map((a, i) => ({ titulo: a, texto: pantallas[i]?.proposito || '' }));
+  // Lo que la persona escribió gana; si no escribió nada, el contenido de muestra de su tipo de proyecto.
+  const items = (propios.length >= 3 ? propios : base.items).slice(0, 4);
+  while (items.length < 3) items.push(base.items[items.length]);
   return {
-    marca,
-    titular,
-    bajada,
+    marca: p.nombre.trim() || base.marca,
+    titular: p.objetivo.trim() || p.descripcion.trim() || base.titular,
+    bajada: p.objetivo.trim() && p.descripcion.trim() ? p.descripcion.trim() : base.bajada,
     items,
-    nav: pantallas.slice(0, 4).map((x) => x.nombre),
-    cta: pantallas[0]?.accionPrincipal.trim() || 'Empezar',
-    ctaSecundario: 'Ver más',
+    nav: base.nav,
+    cta: base.cta,
+    ctaSecundario: base.ctaSecundario,
+    cierre: base.cierre,
     onPrincipal: undefined as undefined | (() => void),
     onSecundario: undefined as undefined | (() => void),
   };
@@ -99,14 +91,17 @@ const Card = ({ i, item, cc = '', children }: { i: number; item: { titulo: strin
     </span>
     <span className="pg-card-titulo">{item.titulo}</span>
     {item.texto && <span className="pg-card-texto">{item.texto}</span>}
+    <Fragmento i={i} />
     {children}
   </div>
 );
 
 const Titulo = ({ k }: { k: Contenido }) => <h2 className="pg-titulo">{k.titular}</h2>;
 const Bajada = ({ k }: { k: Contenido }) => <p className="pg-bajada">{k.bajada}</p>;
-const Media = ({ clase = '', escena }: { clase?: string; escena?: Contenido }) => (
-  <div className={`pg-media ${clase} ${escena ? 'con-escena' : ''}`} aria-hidden="true">
+/** Fondos que usan los visuales cuando la persona no eligió uno: nunca queda un bloque de color vacío. */
+export const FONDOS_AUTO: FondoId[] = ['paisaje', 'desenfocado', 'curvas_nivel', 'grano', 'semitono', 'punteado', 'pixeles', 'vidrio_acanalado'];
+const Media = ({ clase = '', escena, f }: { clase?: string; escena?: Contenido; f?: number }) => (
+  <div className={`pg-media ${clase} ${escena ? 'con-escena' : ''} ${f !== undefined ? `fa-${FONDOS_AUTO[f % FONDOS_AUTO.length]}` : ''}`} aria-hidden="true">
     {escena && <Escena k={escena} />}
   </div>
 );
@@ -154,6 +149,42 @@ function Escena({ k }: { k: Contenido }) {
   );
 }
 
+/** Un pedacito de interfaz en cada tarjeta: le da algo para mirar además del texto. */
+function Fragmento({ i }: { i: number }) {
+  switch (i % 4) {
+    case 0:
+      return (
+        <span className="pg-frag pg-frag-barras" aria-hidden="true">
+          {[40, 62, 48, 80, 66].map((h, j) => (
+            <i key={j} style={{ height: `${h}%` }} />
+          ))}
+        </span>
+      );
+    case 1:
+      return (
+        <span className="pg-frag pg-frag-switch" aria-hidden="true">
+          <i />
+          <b />
+        </span>
+      );
+    case 2:
+      return (
+        <span className="pg-frag pg-frag-avatares" aria-hidden="true">
+          <i>A</i>
+          <i>M</i>
+          <i>J</i>
+          <b>+12</b>
+        </span>
+      );
+    default:
+      return (
+        <span className="pg-frag pg-frag-avance" aria-hidden="true">
+          <i />
+        </span>
+      );
+  }
+}
+
 const ICONOS_CARD = ['M4 12l5 5L20 6', 'M12 3v18M3 12h18', 'M4 6h16M4 12h10M4 18h7', 'M12 21s-7-4.5-9-9a5 5 0 0 1 9-3 5 5 0 0 1 9 3c-2 4.5-9 9-9 9z'];
 
 function Layout({ c, k }: { c: Config; k: Contenido }) {
@@ -196,9 +227,8 @@ function Layout({ c, k }: { c: Config; k: Contenido }) {
         <>
           <Nav k={k} />
           <section className="pg-hero pg-revista">
-            <div className="pg-numero" aria-hidden="true">01</div>
+            <div className="pg-numero" aria-hidden="true">{k.marca.slice(0, 1)}</div>
             <div className="pg-revista-texto">
-              <span className="pg-etiqueta">Edición de hoy</span>
               <Titulo k={k} />
             </div>
             <div className="pg-revista-col">
@@ -301,7 +331,6 @@ function Layout({ c, k }: { c: Config; k: Contenido }) {
           <Nav k={k} />
           <section className="pg-hero pg-galeria-cabeza">
             <div>
-              <span className="pg-etiqueta">Novedades</span>
               <Titulo k={k} />
             </div>
             <Botones c={c} k={k} />
@@ -309,7 +338,7 @@ function Layout({ c, k }: { c: Config; k: Contenido }) {
           <section className="pg-galeria">
             {productos.map((it, i) => (
               <div key={i} className={`pg-card pg-producto ${cc}`} style={{ animationDelay: `${i * 50}ms` }}>
-                <Media clase="pg-producto-foto" />
+                <Media clase="pg-producto-foto" f={i} />
                 <span className="pg-card-titulo">{it.titulo}</span>
                 <span className="pg-precio">{precios[i]}</span>
               </div>
@@ -382,7 +411,6 @@ function Layout({ c, k }: { c: Config; k: Contenido }) {
         <>
           <Nav k={k} />
           <section className="pg-hero pg-blog-cabeza">
-            <span className="pg-etiqueta">Blog</span>
             <Titulo k={k} />
             <Bajada k={k} />
           </section>
@@ -390,7 +418,7 @@ function Layout({ c, k }: { c: Config; k: Contenido }) {
             <div className="pg-blog-lista">
               {k.items.slice(0, 3).map((it, i) => (
                 <article key={i} className="pg-articulo" style={{ animationDelay: `${i * 70}ms` }}>
-                  <Media clase="pg-articulo-foto" />
+                  <Media clase="pg-articulo-foto" f={i + 2} />
                   <div className="pg-articulo-texto">
                     <span className="pg-etiqueta">{['Novedades', 'Guías', 'Historias'][i]}</span>
                     <span className="pg-card-titulo">{it.titulo}</span>
@@ -429,14 +457,13 @@ function Layout({ c, k }: { c: Config; k: Contenido }) {
         <>
           <Nav k={k} />
           <section className="pg-hero pg-centro">
-            <span className="pg-etiqueta">Quiénes somos</span>
             <Titulo k={k} />
             <Bajada k={k} />
           </section>
           <section className="pg-equipo">
-            {personas.map(([n, r]) => (
+            {personas.map(([n, r], i) => (
               <div key={n} className="pg-persona">
-                <Media clase="pg-persona-foto" />
+                <Media clase="pg-persona-foto" f={i + 1} />
                 <span className="pg-card-titulo">{n}</span>
                 <span className="pg-card-texto">{r}</span>
               </div>
@@ -468,12 +495,11 @@ function Layout({ c, k }: { c: Config; k: Contenido }) {
             <Nav k={k} />
           </div>
           <div className="pg-fp-texto">
-            <span className="pg-etiqueta">Temporada 2027</span>
             <Titulo k={k} />
             <Bajada k={k} />
           </div>
           <div className="pg-card pg-fp-tarjeta">
-            <span className="pg-etiqueta">Próximas fechas</span>
+            <span className="pg-card-titulo">Próximas fechas</span>
             {k.items.slice(0, 3).map((it, i) => (
               <span key={i} className="pg-fp-fila">
                 <span>{it.titulo}</span>
@@ -509,7 +535,6 @@ function Layout({ c, k }: { c: Config; k: Contenido }) {
           <Nav k={k} />
           <section className="pg-hero pg-ef">
             <div className="pg-ef-texto">
-              <span className="pg-etiqueta">Edición de otoño</span>
               <Titulo k={k} />
               <Bajada k={k} />
               <Botones c={c} k={k} />
@@ -517,7 +542,7 @@ function Layout({ c, k }: { c: Config; k: Contenido }) {
             <div className="pg-ef-lamina">
               <div className="pg-fondo-area" aria-hidden="true" />
               <div className="pg-card pg-ef-ficha">
-                <span className="pg-etiqueta">Salidas</span>
+                
                 <span className="pg-card-titulo">14 al 21 de marzo</span>
                 <span className="pg-card-texto">Quedan 6 lugares</span>
               </div>
@@ -564,11 +589,11 @@ function Layout({ c, k }: { c: Config; k: Contenido }) {
             <Botones c={c} k={k} />
           </section>
           <section className="pg-mosaico">
-            <Media clase="alto" />
+            <Media clase="alto" f={0} />
             {cards[0]}
             <Media escena={k} />
             {cards[1]}
-            <Media clase="alto" />
+            <Media clase="alto" f={3} />
             {cards[2]}
           </section>
         </>
@@ -609,7 +634,7 @@ function Layout({ c, k }: { c: Config; k: Contenido }) {
                 </div>
               ))}
             </div>
-            <Media clase="pg-grafico" />
+            <Media clase="pg-grafico" escena={k} />
           </div>
         </div>
       );
@@ -625,13 +650,36 @@ function Layout({ c, k }: { c: Config; k: Contenido }) {
           <section className="pg-horizontal" tabIndex={0} aria-label="Paneles de ejemplo">
             {k.items.map((it, i) => (
               <Card key={i} i={i} item={it} cc={cc}>
-                <Media escena={k} />
+                {i === 0 ? <Media escena={k} /> : <Media f={i + 1} />}
               </Card>
             ))}
           </section>
         </>
       );
   }
+}
+
+/** El cierre y el pie en una sola franja, con un cambio de fondo que separa del resto de la página. */
+function Cierre({ c, k }: { c: Config; k: Contenido }) {
+  return (
+    <footer className="pg-cierre">
+      <div className="pg-cierre-fila">
+        <p className="pg-cierre-texto">{k.cierre}</p>
+        <BotonPrincipal config={c} clase="pg-boton" onClick={k.onPrincipal}>
+          {k.cta}
+        </BotonPrincipal>
+      </div>
+      <div className="pg-cierre-pie">
+        <span className="pg-marca">{k.marca}</span>
+        <span className="pg-cierre-links">
+          {k.nav.map((n) => (
+            <span key={n}>{n}</span>
+          ))}
+        </span>
+        <span className="pg-cierre-legal">© 2026 {k.marca}</span>
+      </div>
+    </footer>
+  );
 }
 
 export function Pagina({ config, contenido: propio }: { config: Config; contenido?: Contenido }) {
@@ -658,6 +706,7 @@ export function Pagina({ config, contenido: propio }: { config: Config; contenid
       <div className="pg-contenido">
         <Layout c={config} k={k} />
       </div>
+      <Cierre c={config} k={k} />
     </div>
   );
 }

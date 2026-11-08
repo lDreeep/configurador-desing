@@ -281,3 +281,34 @@
 .pgp .pg-esc-chip.dos { right: -5%; top: 8%; transform: rotate(3deg); background: var(--color-acento); color: var(--color-sobre-acento); }
 .pgp .pg-esc-ok { display: grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; background: color-mix(in srgb, var(--color-exito) 85%, var(--color-texto)); color: #FFFFFF; font-size: 12px; }
 @container (max-width: 300px) { .pgp .pg-esc-chip.dos { display: none; } .pgp .pg-esc-chip.uno { left: 0; } }
+
+/* Fragmentos de interfaz en las tarjetas (skill design-taste-frontend: algo real para mirar) */
+.pgp .pg-frag { display: flex; align-items: flex-end; gap: 5px; height: 40px; margin-top: auto; padding-top: 10px; }
+.pgp .pg-frag-barras i { flex: 1; max-width: 16px; border-radius: 3px 3px 1px 1px; background: color-mix(in srgb, var(--color-acento) 35%, transparent); }
+.pgp .pg-frag-barras i:nth-child(4) { background: var(--color-acento); }
+.pgp .pg-frag-switch { align-items: center; gap: 10px; }
+.pgp .pg-frag-switch i { position: relative; width: 38px; height: 22px; border-radius: 999px; background: var(--color-acento); }
+.pgp .pg-frag-switch i::after { content: ''; position: absolute; top: 3px; right: 3px; width: 16px; height: 16px; border-radius: 50%; background: var(--color-sobre-acento); }
+.pgp .pg-frag-switch b { flex: 1; height: 8px; border-radius: 4px; background: color-mix(in srgb, var(--color-texto) 14%, transparent); }
+.pgp .pg-frag-avatares { align-items: center; gap: 0; }
+.pgp .pg-frag-avatares i, .pgp .pg-frag-avatares b { display: grid; place-items: center; width: 30px; height: 30px; margin-left: -6px; border-radius: 50%; border: 2px solid var(--color-superficie, var(--color-fondo)); background: color-mix(in srgb, var(--color-acento) 30%, var(--color-fondo)); color: var(--color-texto); font: 700 11px var(--fuente-texto); font-style: normal; }
+.pgp .pg-frag-avatares i:first-child { margin-left: 0; }
+.pgp .pg-frag-avatares b { width: auto; padding: 0 8px; border-radius: 999px; background: var(--color-texto); color: var(--color-fondo); }
+.pgp .pg-frag-avance { align-items: center; }
+.pgp .pg-frag-avance i { flex: 1; height: 8px; border-radius: 4px; background: linear-gradient(90deg, var(--color-acento) 68%, color-mix(in srgb, var(--color-texto) 12%, transparent) 68%); }
+.pgp .pg-card { display: flex; flex-direction: column; }
+
+/* Una sola entrada al cargar: el hero (skill: un momento orquestado, no animaciones sueltas) */
+@keyframes pg-entra-hero { from { opacity: 0; transform: translateY(14px); } }
+.pgp .pg-hero > :first-child, .pgp .pg-fp-texto, .pgp .pg-tsf-tarjeta, .pgp .pg-ef-texto, .pgp .pg-wf-grande { animation: pg-entra-hero 700ms var(--curva-entrada) both; }
+
+/* Cierre y pie: una franja con el fondo invertido */
+.pgp .pg-cierre { display: flex; flex-direction: column; gap: clamp(28px, 4cqw, 48px); margin-top: clamp(40px, 7cqw, 96px); position: relative; z-index: 1; padding: clamp(32px, 6cqw, 80px) clamp(16px, 5cqw, 72px) 28px; background: var(--color-texto); color: var(--color-fondo); }
+.pgp .pg-cierre-fila { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 20px 40px; }
+.pgp .pg-cierre-texto { margin: 0; max-width: 22ch; font-family: var(--fuente-titulos); font-weight: var(--titulos-peso); font-size: clamp(26px, 3.6cqw, 48px); line-height: 1.08; letter-spacing: var(--titulos-espaciado); }
+.pgp .pg-cierre-pie { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 28px; padding-top: 18px; border-top: 1px solid color-mix(in srgb, var(--color-fondo) 22%, transparent); font-size: 13px; }
+.pgp .pg-cierre-pie .pg-marca { color: var(--color-fondo); }
+.pgp .pg-cierre-links { display: flex; gap: 18px; flex: 1; }
+.pgp .pg-cierre-legal { margin-left: auto; }
+/* En el cierre (fondo invertido) el botón va sólido y claro, sea cual sea su diseño, para que siempre se vea. */
+.pg.pgp .pg-cierre .pv-boton { background: var(--color-fondo) !important; background-image: none !important; color: var(--color-texto) !important; border-color: var(--color-fondo) !important; -webkit-text-fill-color: var(--color-texto); }

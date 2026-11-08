@@ -153,18 +153,18 @@ export function Inicio(props: { config: Config; onElegir: (k: Combinacion) => vo
   const textos = (): Contenido => ({
     ...contenidoDe(props.config),
     marca: 'Armá tu página',
-    titular: 'Tu página, diseñada a tu medida',
-    bajada:
-      'Elegí cómo se ve tocando y deslizando: estilos, botones, cajas, colores y animaciones. Al final te llevás un archivo listo para que cualquier IA la construya tal cual.',
+    titular: 'Diseñá tu web o tu app y llevate el archivo para tu IA',
+    bajada: `Elegís entre ${Object.keys(ESTILOS).length} estilos y más de 500 piezas tocándolas. Al terminar descargás un DESIGN.md con el CSS de cada una.`,
     items: [
-      { titulo: 'Elegí viendo, no leyendo', texto: 'Cada opción se ve y se toca antes de elegirla.' },
-      { titulo: `${Object.keys(ESTILOS).length} estilos que combinan`, texto: 'Del suizo al Y2K, con reglas para que nada desentone.' },
-      { titulo: 'Botones y cajas que responden', texto: 'Formas, texturas, transparencias y animaciones para probar en vivo.' },
-      { titulo: 'Un archivo para cualquier IA', texto: 'Con el CSS real: la IA copia en vez de adivinar.' },
+      { titulo: 'Probás cada pieza antes de elegirla', texto: 'Los botones se tocan, los menús se abren y los formularios se escriben.' },
+      { titulo: `${Object.keys(ESTILOS).length} estilos con sus reglas`, texto: 'Cada estilo trae sus colores, sus letras y lo que no puede faltar.' },
+      { titulo: 'Un prototipo con todo junto', texto: 'Antes de descargar ves tu app armada, en computadora y en celular.' },
+      { titulo: 'Un archivo para cualquier IA', texto: 'Claude, v0 o Lovable leen el CSS real en lugar de adivinarlo.' },
     ],
-    nav: ['Cómo funciona', 'Estilos', 'Botones'],
-    cta: 'Empezar ahora',
-    ctaSecundario: 'Ver más',
+    nav: ['Cómo funciona', 'Estilos', 'Ejemplos'],
+    cta: 'Elegir un diseño',
+    ctaSecundario: 'Ver cómo funciona',
+    cierre: 'Gratis y sin cuenta. Lo que elegís queda guardado en tu navegador.',
   });
 
   return (
