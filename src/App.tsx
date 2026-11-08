@@ -4,6 +4,7 @@ import { useConfig } from './estado';
 import { BarraPasos, PasoContexto } from './rapido/BarraPasos';
 import { aplicarCombinacion } from './rapido/combinar';
 import { Inicio } from './rapido/Inicio';
+import { InicioSimple } from './rapido/InicioSimple';
 import { EstilosVisualesGlobales } from './rapido/Pagina';
 
 // La portada carga sola; el resto se descarga aparte (y en segundo plano mientras se mira la portada).
@@ -51,6 +52,7 @@ function leerModo(): Modo {
 export function App() {
   const { config, setConfig, reiniciar } = useConfig();
   const [modo, setModoEstado] = useState<Modo>(leerModo);
+  const [detallado, setDetallado] = useState(() => new URLSearchParams(window.location.search).get('recorrido') === 'detallado');
   const [pasoAvanzado, setPasoAvanzado] = useState('proyecto');
   const [pasoRapido, setPasoRapido] = useState<PasoRapido>('inicio');
 
@@ -104,14 +106,15 @@ export function App() {
     const n = orden.indexOf(pasoRapido);
     const etiqueta = pasoRapido === 'listo' ? `Último paso · ${n + 1} de ${orden.length}` : `Paso ${n + 1} de ${orden.length} · ${NOMBRES[pasoRapido]}`;
     return (
-      <PasoContexto.Provider value={etiqueta}>
+      <PasoContexto.Provider value={detallado ? etiqueta : pasoRapido === 'listo' ? 'Descargá tu diseño' : 'Tu combinación, lista para probar'}>
       <div className={`rapido ${pasoRapido === 'prototipo' ? 'rapido-alto-fijo' : ''}`}>
         <EstilosVisualesGlobales />
-        {pasoRapido !== 'inicio' && <BarraPasos config={config} pasos={pasos} actual={pasoRapido} onIr={(p) => irRapido(p, orden.indexOf(p) < n)} />}
+        {detallado && pasoRapido !== 'inicio' && <BarraPasos config={config} pasos={pasos} actual={pasoRapido} onIr={(p) => irRapido(p, orden.indexOf(p) < n)} />}
         <main className="rapido-main">
         <Suspense fallback={<Cargando />}>
         {pasoRapido !== 'inicio' && <EstilosGaleria />}
-        {pasoRapido === 'inicio' && (
+        {pasoRapido === 'inicio' && !detallado && <InicioSimple config={config} onAvanzado={() => setModo('avanzado')} onDetallado={() => { setDetallado(true); irRapido('inicio'); }} onElegir={(elegida) => { setConfig(() => elegida); irRapido('prototipo'); }} />}
+        {pasoRapido === 'inicio' && detallado && (
           <Inicio
             config={config}
             onAvanzado={() => setModo('avanzado')}
@@ -196,7 +199,7 @@ export function App() {
           <PanelMovimiento {...comun} onAtras={() => irRapido(esDatos ? 'elementos' : 'datos', true)} onSeguir={() => irRapido('prototipo')} />
         )}
         {pasoRapido === 'prototipo' && (
-          <Prototipo {...comun} onAtras={() => irRapido('movimiento', true)} onListo={() => irRapido('listo')} />
+          <Prototipo {...comun} onAtras={() => irRapido(detallado ? 'movimiento' : 'inicio', true)} onListo={() => irRapido('listo')} onAvanzado={() => alAvanzado('proyecto')} onDetallado={() => { setDetallado(true); irRapido('tipo'); }} />
         )}
         {pasoRapido === 'listo' && (
           <PanelListo config={config} onAtras={() => irRapido('prototipo', true)} onAvanzado={() => alAvanzado('exportar')} onInicio={() => irRapido('inicio')} />

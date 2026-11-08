@@ -1,0 +1,78 @@
+/* Interfaz del configurador: un catálogo, un prototipo y edición opcional. */
+.simple-inicio { color: var(--ui-texto, #181818); background: var(--ui-fondo, #fff); font-family: Manrope, system-ui, sans-serif; }
+.simple-cabecera { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 24px; padding: 32px; }
+.simple-marca { font-size: 14px; font-weight: 600; }
+.simple-cabecera h1 { margin: 12px 0; font-size: 30px; line-height: 36px; font-weight: 600; text-wrap: balance; }
+.simple-cabecera p, .simple-selector p { margin: 8px 0 0; max-width: 65ch; color: var(--ui-texto-suave, #5b6474); line-height: 24px; }
+.simple-acciones { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
+.simple-inicio button, .proto-simple-acciones button, .proto-alcance button, .proto-recorrer button { min-height: 44px; padding: 8px 12px; font: inherit; font-size: 14px; border: 1px solid var(--ui-borde, #c9d0de); border-radius: 8px; background: var(--ui-superficie, #fff); color: var(--ui-texto, #181818); cursor: pointer; }
+.simple-inicio button:hover, .proto-recorrer button:hover { background: var(--ui-superficie-alta, #f2f4f8); }
+.simple-inicio button:active { transform: scale(.98); }
+.simple-inicio button:focus-visible, .proto-recorrer button:focus-visible { outline: 3px solid var(--ui-acento, #315bdb); outline-offset: 2px; }
+.simple-inicio .simple-principal { background: var(--ui-acento, #315bdb); color: var(--ui-sobre-acento, #fff); font-weight: 600; }
+.simple-selector { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 24px; padding: 24px 32px; border-block: 1px solid var(--ui-borde, #c9d0de); }
+.simple-selector h2 { margin: 4px 0 0; font-size: 24px; line-height: 32px; font-weight: 600; }
+.simple-selector > div > span { font-size: 12px; }
+.simple-preview { margin: 24px 32px 32px; border: 1px solid var(--ui-borde, #c9d0de); border-radius: 16px; overflow: clip; }
+.simple-preview > .pg { min-height: 640px; }
+.simple-presets { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 16px; padding: 24px 32px; }
+.simple-presets button { display: flex; flex-direction: column; align-items: stretch; gap: 12px; text-align: left; padding: 16px; }
+.simple-presets button[aria-pressed="true"] { outline: 2px solid var(--ui-acento, #315bdb); }
+.simple-presets svg { width: 100%; max-height: 128px; }
+.simple-presets strong { font-size: 16px; }
+.simple-presets span { font-size: 14px; line-height: 20px; }
+.simple-saltar { position: absolute; top: 0; left: 16px; transform: translateY(-150%); }
+.simple-saltar:focus { transform: none; z-index: 10; background: var(--ui-superficie, #fff); padding: 12px; }
+.proto-simple-acciones { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.proto-simple-acciones button:disabled { opacity: .45; cursor: default; }
+.proto-proyecto { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; font-size: 14px; }
+.proto-proyecto select { max-width: 100%; padding: 8px 12px; min-height: 44px; border-radius: 8px; border: 1px solid var(--ui-borde, #c9d0de); }
+.proto-recorrer { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 16px 0; }
+.proto-recorrer p { grid-column: 1 / -1; margin: 0; font-size: 14px; }
+.proto-recorrer strong { display: block; margin-top: 8px; }
+.proto-alcance { display: flex; flex-wrap: wrap; gap: 8px; padding: 16px; border-bottom: 1px solid var(--ui-borde, #c9d0de); }
+.proto-alcance p { flex-basis: 100%; margin: 0; font-size: 14px; line-height: 20px; }
+.proto-alcance button[aria-pressed="true"] { background: var(--ui-texto, #181818); color: var(--ui-fondo, #fff); }
+.proto-zona.editando { cursor: crosshair; }
+.proto-elemento-seleccionado { outline: 3px solid var(--color-acento-texto); outline-offset: 4px; }
+.proto-opciones.plegada { display: none; }
+.proto-editor-todos { min-height: 44px; padding: 8px 12px; font: inherit; cursor: pointer; }
+@media (max-width: 760px) {
+  .simple-cabecera, .simple-selector { padding: 24px 16px; }
+  .simple-cabecera h1 { font-size: 24px; line-height: 32px; }
+  .simple-preview { margin: 16px; }
+  .simple-selector .simple-acciones { width: 100%; }
+  .simple-selector .simple-principal { flex-basis: 100%; }
+  .simple-presets { padding: 16px; }
+  .proto-barra .proto-ayuda, .proto-barra .proto-modos { display: none; }
+  .proto-simple-acciones { width: 100%; }
+  .proto-simple-acciones button { flex: 1; }
+  .proto-editor { max-width: 100%; }
+}
+@media (prefers-reduced-motion: reduce) { .simple-inicio * { transition: none !important; } }
+
+.proto { font-family: Manrope, system-ui, sans-serif; background: #181818; }
+.proto-barra { gap: 12px 16px; padding: 16px; }
+.proto-barra-titulo h1 { font-family: inherit; font-size: 24px; line-height: 32px; font-weight: 600; }
+.proto-paso { display: none; }
+.proto-editor { background: #1f1f1f; border-color: #313131; }
+.proto-editor select { background: #181818; }
+.proto-mas { position: relative; }
+.proto-mas summary { min-height: 44px; padding: 8px 12px; cursor: pointer; }
+.proto-mas > div { position: absolute; top: 100%; right: 0; z-index: 40; display: grid; gap: 8px; padding: 16px; width: min(280px, 80vw); border: 1px solid #313131; border-radius: 8px; background: #1f1f1f; }
+.proto-alcance p, .proto-recorrer p { color: #e5e5e5; }
+.proto-alcance button, .proto-recorrer button { background: #272727; color: #fff; border-color: #313131; }
+.proto-alcance button[aria-pressed="true"] { background: #fff; color: #181818; }
+.proto-recorrer button:hover { background: #313131; }
+.proto-editar { min-height: 44px; border-radius: 8px; }
+.proto-simple-acciones button { background: #272727; color: #fff; border-color: #313131; }
+@media (max-width: 760px) {
+  .proto-barra { flex-wrap: wrap; gap: 8px; }
+  .proto-barra-titulo { flex-basis: 100%; }
+  .proto-barra-titulo h1 { white-space: normal; font-size: 20px; line-height: 28px; }
+  .proto-proyecto { flex: 1; min-width: 0; }
+  .proto-proyecto select { width: 100%; }
+  .proto-simple-acciones { width: auto; }
+  .proto-area { min-width: 0; }
+  .proto-editor { bottom: 64px; }
+}

@@ -2,7 +2,7 @@
 // Cada elemento se puede cambiar ahí mismo (modo edición) antes de descargar el archivo.
 
 import { usePaso } from './BarraPasos';
-import { createContext, useContext, useEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode } from 'react';
+import { Children, cloneElement, isValidElement, createContext, useContext, useEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode } from 'react';
 import { BOTONES } from '../botones-disenos';
 import { CAJAS, clasesDeCaja, paramsDe } from '../cajas';
 import { APARICIONES, CAMBIOS, COMBINACIONES, MOVIMIENTOS, FUENTES, PALETAS } from '../catalogo';
@@ -13,7 +13,9 @@ import { CATEGORIAS, type CategoriaId, DISENO_INICIAL } from '../galeria';
 import { claseDe, GaleriaContexto, reanimar } from '../galeria/base';
 import { Grafico } from '../galeria/datos';
 import { Icono } from '../galeria/iconos';
-import { aplicarMovimiento } from '../estado';
+import { aplicarMovimiento, aplicarTipo } from '../estado';
+import { EdicionContexto, claveElemento, resolverElemento, guardarAjuste } from './edicion';
+import './simple.css';
 import { FONDOS, type FondoId } from '../fondos';
 import type { AparicionId, BotonDisenoId, CajaPresetId, CambioId, MovimientoId, Config, EstiloId, PaletaId } from '../tipos';
 import { aplicarCombinacion } from './combinar';
@@ -65,22 +67,57 @@ interface Proto {
   cl: (cat: CategoriaId) => string;
   editando: boolean;
   abierto: Editable | null;
-  editar: (e: Editable) => void;
+  editar: (e: Editable, id?: string) => void;
 }
 const ProtoContexto = createContext<Proto | null>(null);
 const useProto = () => useContext(ProtoContexto)!;
 
 /** Envuelve un elemento: en modo edición muestra un lápiz para cambiarlo. */
+/** Reemplaza las props del componente dentro de un bloque con excepción local. */
+function contenidoLocal(children: ReactNode, e: Editable, config: Config): ReactNode {
+  return Children.map(children, child => {
+    if (!isValidElement<Record<string, unknown>>(child)) return child;
+    const props = child.props;
+    const cambios: Record<string, unknown> = {};
+    const cat = e in CATEGORIAS ? e as CategoriaId : null;
+    const diseno = cat ? config.componentes[cat] ?? DISENO_INICIAL[cat] : '';
+    for (const nombre of ['className', 'clase'] as const) {
+      const clase = props[nombre];
+      if (typeof clase !== 'string') continue;
+      if (cat && clase.split(' ').includes('cm-' + cat)) {
+        cambios[nombre] = clase.split(' ').filter(x => x !== 'cm-' + cat && !x.startsWith('cm-' + cat + '-')).concat(claseDe(cat, diseno)).join(' ');
+        if ('id' in props && typeof child.type !== 'string') cambios.id = diseno;
+      }
+      if (e === 'caja' && (clase.includes('caja ') || clase.includes('proto-caja-base'))) {
+        const params = paramsDe(config);
+        if (params) cambios[nombre] = clasesDeCaja(params);
+      }
+    }
+    if (e === 'boton' && 'config' in props) cambios.config = config;
+    return cloneElement(child, cambios, props.children === undefined ? undefined : contenidoLocal(props.children as ReactNode, e, config));
+  });
+}
 function Zona({ e, children, clase = '' }: { e: Editable; children: ReactNode; clase?: string }) {
-  const { editando, abierto, editar } = useProto();
+  const { editando, editar } = useProto();
+  const edicion = useContext(EdicionContexto);
+  const id = claveElemento(edicion?.pantalla ?? 'portada', e, clase || 'principal');
+  const local = edicion ? resolverElemento(edicion.config, id) : null;
+  const tieneAjuste = !!edicion?.config.elementos?.[id];
   return (
-    <div className={`proto-zona ${editando ? 'editando' : ''} ${abierto === e ? 'marcada' : ''} ${clase}`}>
-      {editando && (
-        <button type="button" className="proto-lapiz" onClick={() => editar(e)} aria-label={`Cambiar ${nombreDe(e).toLowerCase()}`}>
-          ✎ {nombreDe(e)}
-        </button>
-      )}
-      {children}
+    <div data-elemento-id={id} data-editor-categoria={e}
+      className={`proto-zona ${editando ? 'editando' : ''} ${edicion?.seleccionado === id ? 'marcada' : ''} ${clase}`}
+      style={tieneAjuste && local ? sistemaDeDiseno(local).tokens as CSSProperties : undefined}
+      onClickCapture={ev => {
+        if (!editando) return;
+        const target = ev.target as HTMLElement;
+        if (target.closest('[data-editor-categoria="boton"]') || target.closest('.proto-lapiz')) return;
+        if (target.closest('.proto-zona') !== ev.currentTarget) return;
+        ev.preventDefault(); ev.stopPropagation(); editar(e, id);
+      }}>
+      {editando && <button type="button" className="proto-lapiz" onClick={() => editar(e, id)} aria-label={`Cambiar ${nombreDe(e).toLowerCase()}`}>
+        ✎ {nombreDe(e)}
+      </button>}
+      {tieneAjuste && local ? contenidoLocal(children, e, local) : children}
     </div>
   );
 }
@@ -143,8 +180,16 @@ function Metrica({ etq, valor, cambio, meta }: { etq: string; valor: string; cam
   );
 }
 
-export function Prototipo(props: { config: Config; setConfig: (fn: (c: Config) => Config) => void; onAtras: () => void; onListo: () => void }) {
+export function Prototipo(props: { config: Config; setConfig: (fn: (c: Config) => Config) => void; onAtras: () => void; onListo: () => void; onAvanzado?: () => void; onDetallado?: () => void }) {
   const real = props.config;
+  const original = useRef(real);
+  const [historial, setHistorial] = useState<Config[]>([]);
+  const actualizar = (fn: (c: Config) => Config) => {
+    setHistorial(h => [...h.slice(-29), real]);
+    props.setConfig(fn);
+  };
+  const [elemento, setElemento] = useState<string | null>(null);
+  const [alcance, setAlcance] = useState<'elemento' | 'grupo'>('grupo');
   // Ver el modo opuesto (claro ↔ oscuro) sin tocar la paleta elegida.
   const [verAlterno, setVerAlterno] = useState(false);
   const c = useMemo(() => (verAlterno ? conPaletaAlterna(real) : real), [real, verAlterno]);
@@ -208,10 +253,22 @@ export function Prototipo(props: { config: Config; setConfig: (fn: (c: Config) =
     }, 1300);
   };
 
-  const editar = (e: Editable) => {
+  const editar = (e: Editable, id?: string) => {
     setAbierto(e);
+    setElemento(id ?? null);
+    setAlcance(id && (e === 'boton' || e === 'caja' || e in CATEGORIAS) ? 'elemento' : 'grupo');
     setEditando(true);
   };
+  const configEditor = elemento && alcance === 'elemento' ? resolverElemento(real, elemento) : real;
+  const cambiarEditor = (fn: (c: Config) => Config) => actualizar(base => {
+    if (!abierto) return fn(base);
+    if (alcance === 'grupo') {
+      const siguiente = fn(base);
+      return { ...siguiente, elementos: Object.fromEntries(Object.entries(siguiente.elementos ?? {}).filter(([, ajuste]) => ajuste.categoria !== abierto)) };
+    }
+    if (!elemento) return fn(base);
+    return guardarAjuste(base, elemento, abierto, fn(resolverElemento(base, elemento)));
+  });
 
   // ---------- Navegación ----------
 
@@ -602,14 +659,26 @@ export function Prototipo(props: { config: Config; setConfig: (fn: (c: Config) =
   );
 
   return (
+    <EdicionContexto.Provider value={{ config: c, editando, pantalla, seleccionado: elemento, seleccionar: (e, id) => editar(e as Editable, id) }}>
     <GaleriaContexto.Provider value={c}>
       <ProtoContexto.Provider value={{ c, cl, editando, abierto, editar }}>
       <div className="proto">
         <header className="proto-barra">
           <div className="proto-barra-titulo">
             <span className="proto-paso">{usePaso()}</span>
-            <h1>Tu prototipo</h1>
+            <h1>Probá tu combinación</h1>
           </div>
+          <div className="proto-simple-acciones">
+            <button type="button" disabled={!historial.length} onClick={() => { const anterior = historial[historial.length - 1]; if (anterior) { props.setConfig(() => anterior); setHistorial(h => h.slice(0, -1)); } }}>Deshacer</button>
+            <details className="proto-mas"><summary>Más opciones</summary><div>
+            <button type="button" onClick={() => actualizar(() => original.current)}>Restaurar combinación</button>
+            <button type="button" onClick={props.onDetallado}>Elegir paso a paso</button>
+            <button type="button" onClick={props.onAvanzado}>Configuración avanzada</button>
+            </div></details>
+          </div>
+          <label className="proto-proyecto">Proyecto <select aria-label="Tipo de proyecto" value={real.proyecto.tipo} onChange={ev => actualizar(x => aplicarTipo(x, ev.target.value as Config['proyecto']['tipo']))}>
+            {(['landing', 'sitio', 'tienda', 'app_web', 'app_movil', 'dashboard', 'portfolio', 'blog'] as const).map((tipo, i) => <option key={tipo} value={tipo}>{['Página', 'Sitio', 'Tienda', 'App web', 'App para celular', 'Dashboard', 'Portfolio', 'Blog'][i]}</option>)}
+          </select></label>
           <p className="proto-ayuda">Usalo como si fuera tu app: navegá, escribí, tocá. Si algo no te convence, activá «Editar» y cambialo ahí mismo.</p>
           <div className="segmentado proto-seg" role="group" aria-label="Dispositivo">
             {(['computadora', 'celular'] as const).map((x) => (
@@ -630,13 +699,13 @@ export function Prototipo(props: { config: Config; setConfig: (fn: (c: Config) =
               <input
                 type="checkbox"
                 checked={real.visual.ambosModos}
-                onChange={(e) => props.setConfig((x) => ({ ...x, visual: { ...x.visual, ambosModos: e.target.checked } }))}
+                onChange={(e) => actualizar((x) => ({ ...x, visual: { ...x.visual, ambosModos: e.target.checked } }))}
               />
               Incluir el modo {modoOtro} en el archivo
             </label>
           </div>
           <button type="button" className={`proto-editar ${editando ? 'activo' : ''}`} aria-pressed={editando} onClick={() => { setEditando(!editando); if (editando) setAbierto(null); }}>
-            {editando ? 'Listo' : '✎ Editar'}
+            {editando ? 'Terminar edición' : 'Editar'}
           </button>
         </header>
 
@@ -678,23 +747,30 @@ export function Prototipo(props: { config: Config; setConfig: (fn: (c: Config) =
 
           {editando && (
             <aside className="proto-editor" aria-label="Cambiar elementos">
-              <Editor config={real} setConfig={props.setConfig} abierto={abierto} setAbierto={setAbierto} />
+              <div className="proto-alcance" role="group" aria-label="Alcance del cambio">
+                <p>{elemento ? 'Elegí dónde aplicar el cambio.' : 'Elegí un elemento del prototipo o una categoría.'}</p>
+                <button type="button" disabled={!elemento || !(abierto === 'boton' || abierto === 'caja' || (abierto && abierto in CATEGORIAS))} aria-pressed={alcance === 'elemento'} onClick={() => setAlcance('elemento')}>Este elemento</button>
+                <button type="button" aria-pressed={alcance === 'grupo'} onClick={() => setAlcance('grupo')}>Todo el grupo</button>
+                {elemento && real.elementos?.[elemento] && <button type="button" onClick={() => actualizar(x => { const elementos = { ...x.elementos }; delete elementos[elemento]; return { ...x, elementos }; })}>Volver al diseño del grupo</button>}
+              </div>
+              <Editor config={configEditor} setConfig={cambiarEditor} abierto={abierto} setAbierto={e => { setAbierto(e); setElemento(null); setAlcance('grupo'); }} />
             </aside>
           )}
         </div>
 
         <footer className="proto-pie">
           <button type="button" className="pb-pie-atras proto-btn-claro" onClick={props.onAtras}>
-            Volver
+            Ver otras combinaciones
           </button>
           <span className="proto-pie-texto">¿Te convence cómo funciona todo junto?</span>
           <button type="button" className="proto-btn-final" onClick={props.onListo}>
-            Me convence: descargar
+            Descargar diseño
           </button>
         </footer>
       </div>
       </ProtoContexto.Provider>
     </GaleriaContexto.Provider>
+    </EdicionContexto.Provider>
   );
 }
 
@@ -713,6 +789,7 @@ const GRUPOS: { nombre: string; items: Editable[] }[] = [
 function Editor(props: { config: Config; setConfig: (fn: (c: Config) => Config) => void; abierto: Editable | null; setAbierto: (e: Editable | null) => void }) {
   const c = props.config;
   const set = props.setConfig;
+  const [verTodas, setVerTodas] = useState(false);
   const e = props.abierto;
 
   let opciones: { id: string; nombre: string; descripcion?: string; muestras?: string[] }[] = [];
@@ -776,6 +853,12 @@ function Editor(props: { config: Config; setConfig: (fn: (c: Config) => Config) 
     elegir = (id) => set((x) => ({ ...x, componentes: { ...x.componentes, [e]: id } }));
   }
 
+  const indice = opciones.findIndex(o => o.id === actual);
+  const recorrer = (paso: number) => {
+    if (!opciones.length) return;
+    const siguiente = indice < 0 ? (paso > 0 ? 0 : opciones.length - 1) : (indice + paso + opciones.length) % opciones.length;
+    elegir(opciones[siguiente].id);
+  };
   return (
     <div className="proto-editor-dentro">
       <label className="proto-editor-etq" htmlFor="proto-que">
@@ -795,7 +878,13 @@ function Editor(props: { config: Config; setConfig: (fn: (c: Config) => Config) 
       </select>
       {!e && <p className="proto-editor-ayuda">También podés tocar los lápices que aparecen sobre cada elemento del prototipo.</p>}
       {e === 'paleta' && <TusColores config={c} setConfig={set} />}
-      {e && (
+      {e && opciones.length > 0 && <div className="proto-recorrer">
+        <p aria-live="polite" aria-atomic="true">{indice < 0 ? 'Diseño actual personalizado' : `Opción ${indice + 1} de ${opciones.length}`}<strong>{opciones[indice]?.nombre ?? 'Personalizado'}</strong>{opciones[indice]?.descripcion}</p>
+        <button type="button" onClick={() => recorrer(-1)}>Opción anterior</button>
+        <button type="button" onClick={() => recorrer(1)}>Opción siguiente</button>
+      </div>}
+      {e && <button type="button" className="proto-editor-todos" aria-expanded={verTodas} onClick={() => setVerTodas(!verTodas)}>{verTodas ? 'Ocultar opciones' : 'Ver todas las opciones'}</button>}
+      {e && verTodas && (
         <ul className="proto-opciones">
           {opciones.map((o) => (
             <li key={o.id}>
