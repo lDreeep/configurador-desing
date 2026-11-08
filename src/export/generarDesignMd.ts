@@ -13,7 +13,7 @@ import { cssBaseDe, cssDisenoDe } from '../galeria/base';
 import { paletaActiva, sistemaDeDiseno, tokensCss } from './sistema';
 import { cssDeFondo, FONDOS, type FondoId } from '../fondos';
 
-import cssConcesionario from '../rapido/concesionario.css?raw';
+import { CSS_CONCESIONARIO as cssConcesionario } from '../rapido/concesionario-estilos';
 
 export const VERSION_FORMATO = '0.8.6';
 

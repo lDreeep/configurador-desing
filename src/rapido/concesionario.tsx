@@ -3,7 +3,7 @@
 import { useId, useRef, useState, type CSSProperties } from 'react';
 import { BotonPrincipal } from '../componentes/BotonPrincipal';
 import type { Config } from '../tipos';
-import './concesionario.css';
+import { CSS_CONCESIONARIO } from './concesionario-estilos';
 
 export const MODELOS_CONCESIONARIO = [
   { id: 'utv', nombre: 'UTV', titulo: 'Dos plazas para salir acompañado', descripcion: 'Techo, jaula y espacio para llevar tu equipo.', plazas: '2', traccion: '4 × 4', uso: 'Recreativo', detalle: 'Cabina abierta de dos plazas, volante y neumáticos para terreno irregular.', alt: 'UTV azul de dos plazas con techo y jaula, ilustración generada con IA' },
@@ -33,6 +33,7 @@ export function Concesionario({ c, marca }: { c: Config; marca?: string }) {
   });
   const elegir = (indice: number) => { setSeleccion(indice); ir(catalogo.current); };
   return <div className="au au-mot">
+    <style>{CSS_CONCESIONARIO}</style>
     <header className="au-nav au-mot-nav">
       <span className="au-marca">{m}</span>
       <nav aria-label="Secciones de la concesionaria de ejemplo">

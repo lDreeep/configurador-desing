@@ -1,4 +1,5 @@
-/* Tracción: composición aprobada. Color, letra, forma y botones dependen de los tokens. */
+// Hoja compartida por la vista previa y el export; no depende del procesamiento CSS del entorno.
+export const CSS_CONCESIONARIO = `/* Tracción: composición aprobada. Color, letra, forma y botones dependen de los tokens. */
 .au-mot { background: var(--color-fondo); }
 .au-mot button, .au-mot summary { min-height: 44px; }
 .au-mot-nav { flex-wrap: wrap; border-bottom: 1px solid var(--color-borde); }
@@ -62,3 +63,4 @@
 .au-mot .au-pie-creditos { flex-basis: 100%; font-size: 12px; }
 @container (max-width: 760px) { .au-mot .au-nav nav { display: none; } }
 @media (prefers-reduced-motion: reduce) { .au-mot *, .au-mot *::before, .au-mot *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; } }
+`;
