@@ -66,7 +66,11 @@ Antes de dar una tarea por terminada: `npm run typecheck && npm test`.
 Antes de crear o rehacer un layout, una composición o un estilo, cargá la skill `frontend-design`
 (`.claude/skills/`): pide una idea propia para cada caso y evita los recursos genéricos (cards
 numeradas 01/02/03, etiquetas en mayúsculas sobre todo, la misma sombra en todas las cajas,
-animaciones de entrada en cada sección). Para datos concretos (combinaciones de letras, paletas por
+animaciones de entrada en cada sección). Para revisar si una página se ve genérica o «hecha por IA», `design-taste-frontend` (taste-skill, MIT)
+tiene listas de errores típicos y referencias de heroes, secciones, fondos y tarjetas
+(`references/`). Ojo: sus reglas de fotos reales y «una sección por pantalla» son para sitios
+de empresas terminados, no para las muestras del configurador; tomá sus criterios, no sus scripts.
+Para datos concretos (combinaciones de letras, paletas por
 rubro, reglas de UX) consultá `ui-ux-pro-max`:
 `python3 .claude/skills/ui-ux-pro-max/scripts/search.py "consulta" --domain typography`.
 
