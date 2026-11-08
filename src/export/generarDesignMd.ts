@@ -1,5 +1,3 @@
-import { DECISIONES_UI, IDS_DECISIONES, alternativaUI, normalizarDecisiones } from '../decisiones';
-import { clasesDecisiones, CSS_DECISIONES } from './decisiones';
 // Genera el DESIGN.md exportado según la especificación (DESIGN.md §3, versión del formato abajo).
 // Si cambiás la salida, actualizá la especificación y su historial de cambios.
 
@@ -14,7 +12,7 @@ import { CATEGORIAS, type CategoriaId } from '../galeria';
 import { cssBaseDe, cssDisenoDe } from '../galeria/base';
 import { paletaActiva, sistemaDeDiseno, tokensCss } from './sistema';
 
-export const VERSION_FORMATO = '0.9.0';
+export const VERSION_FORMATO = '0.8.1';
 
 const q = (s: string) => JSON.stringify(s);
 const valor = (s: string) => (s.trim() ? q(s.trim()) : 'sin_definir');
@@ -80,10 +78,7 @@ ${
 11. Si hay sección 20, todas las cards, paneles y bloques usan esa caja
    (su CSS y sus tokens --caja-*), aunque el estilo de la 19 diga otra cosa.
 12. La sección 21 trae campos, controles y navegación: respetá su estructura
-   HTML y su CSS (incluidas las animaciones al escribir y al cambiar).
-13. La sección 22 completa las decisiones de composición, lectura, formularios,
-   datos, respuesta e imágenes. Sus ajustes explícitos ganan sobre el estilo
-   y las variantes base; conservá los mínimos de accesibilidad de §14.`;
+   HTML y su CSS (incluidas las animaciones al escribir y al cambiar).`;
 
 /** Instrucciones cuando la persona describió su proyecto: construirlo. */
 export const INSTRUCCIONES_IA = `Este archivo describe una web o app que tenés que construir. Fue generado
@@ -170,7 +165,6 @@ export function calcularPendientes(c: Config): { sinDefinir: Pendiente[]; pregun
 
 export function generarDesignMd(c: Config, fecha = new Date().toISOString().slice(0, 10)): string {
   const s = sistemaDeDiseno(c);
-  const decisiones = normalizarDecisiones(c.decisiones);
   const p = c.proyecto;
   const e = c.estructura;
   const f = c.funciones;
@@ -324,7 +318,7 @@ peso_titulos: ${s.pesoTitulos}
 espaciado_titulos: ${c.visual.espaciadoTitulos}   # ${s.espaciadoTitulos}
 contraste_tamanos: ${c.visual.escala}
 proporcion_escala: ${s.proporcion}
-largo_de_linea_max: ${s.tokens['--texto-linea']}${nota(c, 'tipografia')}`,
+largo_de_linea_max: 70ch${nota(c, 'tipografia')}`,
   );
 
   add(
@@ -334,14 +328,13 @@ largo_de_linea_max: ${s.tokens['--texto-linea']}${nota(c, 'tipografia')}`,
     `
 unidad_base: 4px
 escala: [${s.espacios.join(', ')}]
-densidad: ${s.densidad}
+densidad: ${s.dir.densidad}
 padding_componente: ${Math.round(16 * s.factor)}px
-ancho_maximo_contenido: ${s.tokens['--contenido-ancho']}
+ancho_maximo_contenido: 1200px
 grilla:
   columnas: 12
-  separacion: ${s.tokens['--grilla-separacion']}
-  margen_lateral: { movil: ${s.tokens['--margen-movil']}, escritorio: 32px }
-espacio_entre_secciones: ${s.tokens['--seccion-separacion']}`,
+  separacion: 24px
+  margen_lateral: { movil: 16px, escritorio: 32px }`,
   );
 
   add(
@@ -393,11 +386,11 @@ botones:
   icono: ${b.icono}
   estados: [normal, hover, presionado, foco, deshabilitado, cargando]
   regla: "un solo botón primario visible por pantalla"
-inputs: { estilo: borde_completo, etiqueta: ${decisiones.etiquetas}, ayuda: ${decisiones.ayuda}, error: junto_al_campo, validacion: ${decisiones.validacion} }
+inputs: { estilo: borde_completo, etiqueta: arriba, ayuda_y_error: debajo }
 cards: { fondo: superficie, borde: ${q(s.bordeBloque)}, sombra: "--sombra-1" }
 estados_especiales:
   vacio: "texto + acción"
-  cargando: ${decisiones.carga}
+  cargando: esqueleto
   error: "mensaje claro + cómo resolverlo + reintentar"${nota(c, 'botones')}`,
   );
 
@@ -451,8 +444,7 @@ cortes:
   ancho: 1440px
 comportamientos:
   navegacion_en_movil: ${e.patronMovil}
-  tablas_en_movil: ${decisiones.tablaMovil === 'tarjetas' ? 'cards' : 'scroll_horizontal'}
-  botones_en_movil: ${decisiones.botonesMovil}`,
+  tablas_en_movil: cards`,
   );
 
   secciones.push(
@@ -555,11 +547,6 @@ ajustado_a_mano: ${ids(ajustadas)}`),
     );
     secciones.push(partes.join('\n\n'));
   }
-
-  add(22, 'Decisiones de interfaz',
-    'Las decisiones explícitas de esta sección tienen prioridad sobre la composición del estilo de §19. «heredar» conserva la opción del estilo. Aplicá los comportamientos a los componentes correspondientes de §21; su HTML es una referencia, no reemplaza estas decisiones. La accesibilidad de §14 siempre tiene prioridad.',
-    `clases: ${q(clasesDecisiones(decisiones))}\ncontenedor_responsive: "container: decisiones / inline-size; en un ancestro de .diseno-ui"\ndecisiones:\n${IDS_DECISIONES.map(id => `  ${id.replace(/[A-Z]/g, letra => '_' + letra.toLowerCase())}:\n    valor: ${decisiones[id]}\n    nombre: ${q(DECISIONES_UI[id].nombre)}\n    instruccion: ${q(alternativaUI(decisiones, id).descripcion)}`).join('\n')}${nota(c, 'sistema')}`);
-  secciones.push('```css\n/* Decisiones compartidas. Aplicar las clases de §22 a la raíz; usar du-* en los componentes correspondientes. */\n' + CSS_DECISIONES + '\n```');
 
   const encabezado = yaml(`
 formato: design-md

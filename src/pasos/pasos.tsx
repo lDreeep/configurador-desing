@@ -1,4 +1,3 @@
-import { PasoSistema } from './PasoSistema';
 // Registro de pasos del configurador. Para sumar un paso: escribí su componente,
 // agregalo a PASOS y hacé que generarDesignMd lo exporte (ver DESIGN.md §5).
 
@@ -313,6 +312,5 @@ export const PASOS: DefPaso[] = [
     componente: PasoMovimiento,
     placeholderNota: 'Ej.: "nada que rebote en formularios"',
   },
-  { id: 'sistema', nombre: 'Sistema UI', resumen: () => 'Layout, lectura, formularios y estados', componente: PasoSistema, placeholderNota: 'Ej.: Formularios compactos, pero botones fáciles de tocar.' },
   { id: 'exportar', nombre: 'Exportar', resumen: () => 'Tu DESIGN.md', componente: PasoExportar },
 ];

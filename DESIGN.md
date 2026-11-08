@@ -1,8 +1,8 @@
 # DESIGN.md: especificación del formato
 
-> **Versión del formato:** 0.9.0 (borrador)
-> **Última actualización:** 2026-11-07
-> **Estado:** 13 pasos en modo rápido y 11 en avanzado. Sistema UI con 23 decisiones en seis grupos, 20 estilos, 17 layouts, 32 paletas y 33 fuentes. Falta la primera ronda de pruebas con IA (§9).
+> **Versión del formato:** 0.8.1 (borrador)
+> **Última actualización:** 2026-11-06
+> **Estado:** configurador en v0.2 (10 pasos + export): 8 direcciones, 13 paletas + personalizada, 23 fuentes, botones y movimiento detallados. Falta la primera ronda de pruebas con IA (§9).
 
 Este documento define **qué archivo exporta el configurador** y **cómo lo tiene que leer una IA** para construir una web o una app. Es también el documento vivo del proyecto: acá se registran las decisiones, lo que aprendemos en las pruebas y lo que falta hacer.
 
@@ -134,7 +134,7 @@ Todo archivo exportado empieza con este bloque, que permite saber con qué versi
 
 ```yaml
 formato: design-md
-version_formato: 0.9.0
+version_formato: 0.8.1
 generado_por: configurador-diseno
 fecha: 2026-11-06
 idioma: es
@@ -170,7 +170,6 @@ Orden fijo. Las marcadas **(obligatoria)** siempre aparecen, aunque sea con valo
 | 19 | Estilo visual y layout | Estructura de la página y textura del estilo, con su CSS | obligatoria (desde 0.3.0) |
 | 20 | Cajas y contenedores | Cómo son todas las cards, paneles y bloques, con su CSS | solo si se eligió una caja |
 | 21 | Componentes de interfaz | Campos, controles y navegación, con estructura HTML y CSS | solo si se eligió alguno |
-| 22 | Decisiones de interfaz | Composición, lectura, formularios, datos, respuesta e imágenes | obligatoria (desde 0.9.0) |
 
 ---
 
@@ -789,70 +788,13 @@ Los gráficos siguen la guía de visualización del proyecto: una serie por colo
 
 ---
 
-### §22. Decisiones de interfaz
-
-Desde 0.9.0, el panel «Sistema UI» agrega 23 decisiones transversales. El catálogo
-canónico es `src/decisiones.ts`: cada decisión declara grupo, nombre, explicación,
-valor inicial y alternativas. Los identificadores se preservan al agregar variantes.
-
-| Grupo | Decisiones |
-|---|---|
-| Composición | ancho, densidad, separacion, secciones, margen, alineacion |
-| Lectura | cuerpo, interlineado, linea |
-| Formularios | etiquetas, ayuda, validacion, errores, botones_movil |
-| Datos | filas, bandas, tabla_movil, seleccion |
-| Respuesta | feedback, carga, foco |
-| Imágenes | proporcion, encuadre |
-
-El estado interno usa camelCase; las claves YAML de §22 usan snake_case
-(`botones_movil`, `tabla_movil`) sin tildes. Las clases CSS conservan el identificador
-interno. La conversión es determinista para permitir futura reimportación.
-
-```yaml
-clases: "diseno-ui du-densidad-compacta du-etiquetas-arriba"
-contenedor_responsive: "container: decisiones / inline-size; en un ancestro de .diseno-ui"
-decisiones:
-  densidad:
-    valor: compacta
-    nombre: "Densidad de la interfaz"
-    instruccion: "Más información a la vista."
-```
-
-- Se exportan todas las decisiones, incluidas las que dicen `heredar`. Ese valor
-  conserva la composición del estilo; no es una preferencia explícita.
-- Las elecciones explícitas de §22 ganan sobre §19 y las variantes base de §21,
-  siempre subordinadas a §14 y a las notas de la persona. La regla 13 de §1 lo aclara.
-- El CSS de `src/export/decisiones.ts` se comparte con la muestra interactiva y se
-  incluye después del YAML de §22. Se aplican las clases exportadas a la raíz,
-  y las clases `du-*` a las piezas correspondientes; el contenedor nombrado va
-  en un ancestro para que las reglas respondan al espacio disponible.
-- Los comportamientos (validación, selección y confirmación) requieren lógica:
-  la IA debe implementarlos siguiendo el YAML, no esperar que CSS los resuelva.
-- §7 refleja tamaño, interlineado y largo de línea; §8 refleja densidad, ancho,
-  separación y margen; §10 refleja etiquetas, ayuda, validación y carga; §15
-  refleja tabla y botones en móvil. No deben contradecir §22.
-- Nuevos tokens en §16: `--contenido-ancho`, `--grilla-separacion`,
-  `--seccion-separacion`, `--margen-movil`, `--texto-interlineado`, `--texto-linea`,
-  `--fila-alto`, `--foco-grosor`, `--imagen-proporcion`, `--imagen-ajuste`.
-  `--ancho-max` y `--texto-cuerpo` reflejan las elecciones del panel.
-- Las áreas táctiles no bajan de 44px, el cuerpo no baja de 16px, el foco nunca
-  se oculta y las etiquetas permanecen visibles. La carga de la muestra es una
-  simulación local; la barra solo representa progreso conocido.
-- Al entrar al prototipo o a la descarga del modo rápido, las categorías sin
-  elegir se materializan con los mismos defaults que usa el prototipo. §21
-  incluye esos componentes aunque se hayan saltado pasos; no se pierde lo elegido.
-- Los archivos anteriores a 0.9.0 son compatibles: al abrirlos se agregan los
-  valores iniciales. Los valores desconocidos del nuevo catálogo vuelven al inicial.
-
----
-
 ## 4. Prioridades y resolución de conflictos
 
 Cuando dos cosas se contradicen, la IA sigue este orden (gana la de arriba):
 
 1. **§14 Accesibilidad.**
 2. **Notas de la persona** (`nota:` / `notas:`), empezando por la del mismo bloque.
-3. **Valores explícitos** en los bloques YAML. Los ajustes transversales de §22 ganan sobre los presets de §19 y §21.
+3. **Valores explícitos** en los bloques YAML.
 4. **Valores precargados por la dirección visual** (§5) que la persona no tocó.
 5. **Valores `por_defecto`** del formato.
 6. **Criterio de la IA**, solo donde dice `libre` o no hay nada. Y lo informa.
@@ -875,7 +817,7 @@ Este es el plan de construcción. Estados: `[MVP]` primera versión · `[v0.2]` 
 | 6. Tipografía | §7 | `[v0.2]` hecho | 23 fuentes con filtro por categoría, 10 combinaciones, peso y espaciado de títulos, contraste de tamaños (4 niveles) |
 | 7. Forma | §9 | `[v0.2]` hecho | 4 radios, 4 sombras (incluida la dura), 3 bordes, con mini vista previa |
 | 7b. Botones | §10 (botones) | `[v0.2]` hecho | 5 estilos, 3 tamaños, mayúsculas, icono; cada opción con su botón de muestra |
-| 8. Sistema UI | §7, §8, §10, §15, §16, §22 | `[v0.9]` hecho | 23 decisiones en seis grupos, buscador, herencia, restablecer por grupo y muestra interactiva en escritorio y celular |
+| 8. Espaciado | §8 | `[v0.2]` | Densidad con vista previa |
 | 9. Componentes | §10 | `[v0.3]` | Estilo de inputs, cards, indicador de navegación · `[futuro]` estados especiales con vista previa |
 | 10. Movimiento | §12 | `[v0.2]` hecho | 4 niveles + hover (7), al presionar (2), aparición (5) y cambio de pantalla (5), cada uno por separado; «Repetir animación» en la vista previa |
 | 11. Iconos e imágenes | §11 | `[v0.2]` | Librerías con muestra |
@@ -1232,8 +1174,6 @@ Formato: fecha · decisión · por qué · alternativas descartadas.
 | D65 | 2026-11-07 | El formulario completo cambia de contenido según el tipo de proyecto (checkout en tienda, registro en app de celular, alta de cliente en dashboard, presupuesto en web, propuesta en blog); 6 diseños más de formulario (20 en total) e «Inicio de sesión» (10 diseños) como segunda pestaña de Formularios | Ver la pantalla con datos de su propio proyecto ayuda a elegir; el login es una pantalla que casi toda app necesita | — |
 | D66 | 2026-11-07 | Formularios en pasos (8 diseños) y reserva de turnos (8) en el paso Formularios; 15 cajas más (44 en total); 8 diseños más de navegación | Registros largos y turnos son de lo más pedido; más variedad en cards y barras | — |
 | D43 | 2026-11-06 | Si la persona no describe un proyecto, el archivo se exporta como sistema de diseño (`modo: sistema_de_diseno`): sirve para mejorar una app existente o para construir lo que se explique junto con el archivo; la pantalla final ofrece un mensaje para copiar para cada caso | El modo rápido no pide detalles del proyecto; tratar las pantallas de ejemplo como obligatorias llevaba a la IA a construir una app genérica | Obligar a completar el proyecto antes de exportar |
-| D67 | 2026-11-07 | Panel Sistema UI compartido por ambos modos, 23 decisiones con catálogo de alternativas, herencia del estilo y muestra interactiva; sección 22 con decisiones y CSS | Ampliar el control de la interfaz antes de sumar variantes aisladas; el recorrido no obliga a responder cada decisión | Un paso obligatorio por cada decisión |
-| D68 | 2026-11-07 | Al entrar al prototipo o descargar desde el modo rápido, materializar los componentes que el prototipo ya muestra por defecto | Saltar pasos dejaba fuera del export componentes visibles | Seguir exportando solo las selecciones explícitas |
 
 ---
 
@@ -1246,12 +1186,6 @@ Cada vez que pasamos un export por una IA, se anota acá. Es lo que valida (o co
 | P1 | | 0.2.0 | Barbería (app web, calmo) | | | | |
 | P2 | | 0.2.0 | Landing de producto (audaz) | | | | |
 | P3 | | 0.2.0 | Dashboard interno (técnico) | | | | |
-
-Validación técnica 2026-11-07 (formato 0.9.0): TypeScript, 43 tests de Vitest
-(incluidas todas las alternativas del nuevo catálogo), build y recorrido automatizado
-con Chromium. Se comprueban elecciones, validación de email, confirmación simulada,
-selección de filas, muestra móvil, búsqueda, descarga, persistencia y modo avanzado.
-Esto no reemplaza las pruebas con IA de P1–P3 ni una auditoría WCAG completa.
 
 **Qué mirar en cada prueba:**
 - ¿Usó los tokens o metió colores y medidas sueltos?
@@ -1334,7 +1268,6 @@ Lo que todavía no tiene lugar en §5. Se mueve allá cuando se decide hacerlo.
 
 | Versión | Fecha | Cambios |
 |---|---|---|
-| 0.9.0 | 2026-11-07 | §22 nueva con 23 decisiones transversales y su CSS; tokens nuevos y valores efectivos en §7, §8, §10 y §15; regla 13 de §1. Compatibilidad con configuraciones anteriores. Prototipo y descarga del modo rápido comparten defaults de componentes (D67–D68). |
 | 0.1.0 | 2026-11-06 | Primera versión del formato: 19 secciones, reglas generales, prioridades, plan del configurador, ejemplo completo y registros. |
 | 0.1.0 | 2026-11-06 | Sin cambios de formato. Primer configurador implementado (D10 a D13); el export cumple §3 según D12. |
 | 0.2.0 | 2026-11-06 | Cambios que no rompen nada: §6 suma `paleta: personalizada`, el bloque `personalizada` y el rol `acento_suave`; un contraste que no pasa se anota en §18 en vez de bloquear (D15). §7 suma `peso_titulos`, `espaciado_titulos` y `contraste_tamanos` (4 niveles). §9 suma `elevacion: dura` y `bordes.componente`. §10 suma `botones.estilo`, `tamano`, `alto`, `padding_horizontal`, `texto`, `mayusculas` e `icono`. §12 suma el nivel `rapido`, `al_presionar` y más valores en `hover_botones`, `aparicion_listas` y `cambio_de_pantalla`. §5 pasa de 4 a 8 direcciones. Tokens nuevos en §16: `--color-acento-suave`, `--titulos-peso`, `--subtitulos-peso`, `--titulos-espaciado`, `--borde-componente`, `--boton-*`. |

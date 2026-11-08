@@ -303,7 +303,6 @@ export type PasoId =
   | 'forma'
   | 'botones'
   | 'movimiento'
-  | 'sistema'
   | 'exportar';
 
 export interface Pantalla {
@@ -323,7 +322,6 @@ export interface PaletaPersonalizada {
 }
 
 export interface Config {
-  decisiones: import('./decisiones').DecisionesUI;
   proyecto: {
     nombre: string;
     tipo: TipoProyecto;

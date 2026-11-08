@@ -73,8 +73,3 @@ export function cssGaleria(): string {
 }
 
 export type { Categoria, CategoriaId };
-
-/** Materializa los mismos defaults que muestra el prototipo al saltar pasos. */
-export function completarComponentes(c: import('../tipos').Config): import('../tipos').Config {
-  return { ...c, componentes: Object.fromEntries((Object.keys(CATEGORIAS) as CategoriaId[]).map(id => [id, c.componentes[id] && CATEGORIAS[id].disenos[c.componentes[id]!] ? c.componentes[id] : DISENO_INICIAL[id]])) };
-}
