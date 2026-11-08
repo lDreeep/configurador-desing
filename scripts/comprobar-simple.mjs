@@ -18,6 +18,8 @@ try {
   const errores = [];
   page.on('pageerror', error => errores.push(error.message));
   await page.goto('http://127.0.0.1:4174');
+  await mkdir('screenshots/concesionario', { recursive: true });
+  await page.screenshot({ path: 'screenshots/concesionario/inicio-simple.png', fullPage: true });
   assert.equal(await page.getByRole('heading', { name: 'Elegí una combinación. Hacela tuya.' }).count(), 1);
   await page.getByRole('button', { name: 'Combinación siguiente' }).click();
   await page.getByRole('button', { name: 'Combinación anterior' }).click();

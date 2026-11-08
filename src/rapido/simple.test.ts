@@ -32,7 +32,7 @@ describe('recorrido simplificado', () => {
     expect(md).toContain('## 22. Ajustes por elemento');
     expect(md).toContain(id);
     expect(md).toContain('data-elemento-id');
-    expect(md).toContain('.bt-texto');
+    expect(md).toContain('[data-elemento-id="portada:boton:explorar_modelos"]');
     for (const match of md.matchAll(/\x60\x60\x60yaml\n([\s\S]*?)\n\x60\x60\x60/g)) expect(() => parse(match[1])).not.toThrow();
     expect(generarDesignMd(base)).not.toContain('## 22.');
   });

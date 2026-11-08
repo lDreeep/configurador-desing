@@ -76,3 +76,5 @@
   .proto-area { min-width: 0; }
   .proto-editor { bottom: 64px; }
 }
+
+.proto [data-editor-categoria="boton"][data-seleccionado="true"] { outline: 3px solid var(--color-acento-texto); outline-offset: 4px; }

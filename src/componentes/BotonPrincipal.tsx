@@ -32,6 +32,7 @@ export function BotonPrincipal(props: {
       style={edicion && idElemento && edicion.config.elementos?.[idElemento] ? sistemaDeDiseno(config).tokens as CSSProperties : undefined}
       data-elemento-id={idElemento}
       data-editor-categoria="boton"
+      data-seleccionado={edicion?.editando && edicion.seleccionado === idElemento}
       className={`${claseBotonPrincipal(config, props.diseno)} ${props.clase ?? ''}`}
       aria-pressed={props.presionado}
       aria-label={props.etiqueta}
