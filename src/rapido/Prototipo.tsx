@@ -14,6 +14,7 @@ import { claseDe, GaleriaContexto, reanimar } from '../galeria/base';
 import { Grafico } from '../galeria/datos';
 import { Icono } from '../galeria/iconos';
 import { aplicarMovimiento } from '../estado';
+import { type EfectoToque, NOMBRE_EFECTO } from '../botones-disenos';
 import { FONDOS, type FondoId } from '../fondos';
 import type { AparicionId, BotonDisenoId, CajaPresetId, CambioId, MovimientoId, Config, EstiloId, PaletaId } from '../tipos';
 import { aplicarCombinacion } from './combinar';
@@ -66,18 +67,31 @@ interface Proto {
   editando: boolean;
   abierto: Editable | null;
   editar: (e: Editable) => void;
+  foco: Editable | null;
+  cambiar: (paso: number) => void;
 }
 const ProtoContexto = createContext<Proto | null>(null);
 const useProto = () => useContext(ProtoContexto)!;
 
 /** Envuelve un elemento: en modo edición muestra un lápiz para cambiarlo. */
 function Zona({ e, children, clase = '' }: { e: Editable; children: ReactNode; clase?: string }) {
-  const { editando, abierto, editar } = useProto();
+  const { editando, abierto, editar, foco, cambiar } = useProto();
+  const enfocada = foco === e;
   return (
-    <div className={`proto-zona ${editando ? 'editando' : ''} ${abierto === e ? 'marcada' : ''} ${clase}`}>
-      {editando && (
-        <button type="button" className="proto-lapiz" onClick={() => editar(e)} aria-label={`Cambiar ${nombreDe(e).toLowerCase()}`}>
-          ✎ {nombreDe(e)}
+    <div className={`proto-zona ${editando ? 'editando' : ''} ${abierto === e ? 'marcada' : ''} ${enfocada ? 'enfocada' : ''} ${clase}`}>
+      {enfocada && (
+        <>
+          <button type="button" className="proto-foco-flecha izq" aria-label={`${nombreDe(e)} anterior`} onClick={() => cambiar(-1)}>
+            ‹
+          </button>
+          <button type="button" className="proto-foco-flecha der" aria-label={`${nombreDe(e)} siguiente`} onClick={() => cambiar(1)}>
+            ›
+          </button>
+        </>
+      )}
+      {editando && !foco && (
+        <button type="button" className="proto-tocable" onClick={() => editar(e)} aria-label={`Cambiar ${nombreDe(e).toLowerCase()}`}>
+          <span className="proto-lapiz">✎ {nombreDe(e)}</span>
         </button>
       )}
       {children}
@@ -158,6 +172,9 @@ export function Prototipo(props: { config: Config; setConfig: (fn: (c: Config) =
   const [pantalla, setPantalla] = useState<Pantalla>('portada');
   const [editando, setEditando] = useState(false);
   const [abierto, setAbierto] = useState<Editable | null>(null);
+  // Edición enfocada: la pieza tocada queda nítida, el resto se desenfoca y aparecen flechas.
+  const [foco, setFoco] = useState<Editable | null>(null);
+  const respaldo = useRef<Config | null>(null);
   const [aviso, setAviso] = useState(false);
   const [guardando, setGuardando] = useState(false);
   const [modal, setModal] = useState(false);
@@ -209,9 +226,48 @@ export function Prototipo(props: { config: Config; setConfig: (fn: (c: Config) =
   };
 
   const editar = (e: Editable) => {
-    setAbierto(e);
+    respaldo.current = props.config;
+    setFoco(e);
+    setAbierto(null);
     setEditando(true);
   };
+  const opFoco = opcionesDe(foco, real, props.setConfig);
+  const idxFoco = opFoco.opciones.findIndex((o) => o.id === opFoco.actual);
+  const cambiar = (paso: number) => {
+    const n = opFoco.opciones.length;
+    if (!n) return;
+    opFoco.elegir(opFoco.opciones[(Math.max(idxFoco, 0) + paso + n) % n].id);
+  };
+  // Segunda perilla: la animación. En los botones, la de al tocar; en el resto, cómo aparece el contenido.
+  const anim = foco === 'boton' || foco === 'boton_sec' || foco === 'boton_icono' ? ('toque' as const) : ('aparicion' as const);
+  const animaciones: [string, string][] = anim === 'toque' ? [['del_diseno', 'La de cada diseño'], ...(Object.keys(NOMBRE_EFECTO) as EfectoToque[]).filter((x) => x !== 'propio').map((x) => [x, NOMBRE_EFECTO[x]] as [string, string])] : (Object.keys(APARICIONES) as AparicionId[]).map((x) => [x, APARICIONES[x].nombre]);
+  const animActual = anim === 'toque' ? real.botones.efecto ?? 'del_diseno' : real.visual.aparicion;
+  const cambiarAnim = (paso: number) => {
+    const i = Math.max(0, animaciones.findIndex(([id]) => id === animActual));
+    const id = animaciones[(i + paso + animaciones.length) % animaciones.length][0];
+    props.setConfig((x) => (anim === 'toque' ? { ...x, botones: { ...x.botones, efecto: id as EfectoToque | 'del_diseno' } } : { ...x, visual: { ...x.visual, aparicion: id as AparicionId } }));
+  };
+  const confirmarFoco = () => {
+    respaldo.current = null;
+    setFoco(null);
+  };
+  const cancelarFoco = () => {
+    const r = respaldo.current;
+    if (r) props.setConfig(() => r);
+    respaldo.current = null;
+    setFoco(null);
+  };
+  useEffect(() => {
+    if (!foco) return;
+    const tecla = (ev: KeyboardEvent) => {
+      if (ev.key === 'Escape') cancelarFoco();
+      if (ev.key === 'ArrowRight') cambiar(1);
+      if (ev.key === 'ArrowLeft') cambiar(-1);
+    };
+    window.addEventListener('keydown', tecla);
+    return () => window.removeEventListener('keydown', tecla);
+  });
+
 
   // ---------- Navegación ----------
 
@@ -603,7 +659,7 @@ export function Prototipo(props: { config: Config; setConfig: (fn: (c: Config) =
 
   return (
     <GaleriaContexto.Provider value={c}>
-      <ProtoContexto.Provider value={{ c, cl, editando, abierto, editar }}>
+      <ProtoContexto.Provider value={{ c, cl, editando, abierto, editar, foco, cambiar }}>
       <div className="proto">
         <header className="proto-barra">
           <div className="proto-barra-titulo">
@@ -635,7 +691,7 @@ export function Prototipo(props: { config: Config; setConfig: (fn: (c: Config) =
               Incluir el modo {modoOtro} en el archivo
             </label>
           </div>
-          <button type="button" className={`proto-editar ${editando ? 'activo' : ''}`} aria-pressed={editando} onClick={() => { setEditando(!editando); if (editando) setAbierto(null); }}>
+          <button type="button" className={`proto-editar ${editando ? 'activo' : ''}`} aria-pressed={editando} onClick={() => { if (foco) confirmarFoco(); setEditando(!editando); if (editando) setAbierto(null); }}>
             {editando ? 'Listo' : '✎ Editar'}
           </button>
         </header>
@@ -647,7 +703,7 @@ export function Prototipo(props: { config: Config; setConfig: (fn: (c: Config) =
               style={dispositivo === 'celular' && !pantallaChica ? { width: TEL_ANCHO * escala, height: TEL_ALTO * escala } : undefined}
             >
             <div
-              className={`proto-marco proto-${dispositivo} pg ${estilo} ${dispositivo === 'computadora' && lateral ? 'con-lateral' : ''} ${pantallaChica ? 'en-telefono' : ''}`}
+              className={`proto-marco ${foco ? 'con-foco' : ''} proto-${dispositivo} pg ${estilo} ${dispositivo === 'computadora' && lateral ? 'con-lateral' : ''} ${pantallaChica ? 'en-telefono' : ''}`}
               data-dispositivo={dispositivo}
               style={{ ...(s.tokens as CSSProperties), ...(dispositivo === 'celular' && !pantallaChica ? { transform: `scale(${escala})` } : {}) }}
             >
@@ -676,7 +732,28 @@ export function Prototipo(props: { config: Config; setConfig: (fn: (c: Config) =
             </div>
           </div>
 
-          {editando && (
+          {foco && (
+            <div className="proto-barra-foco" role="group" aria-label={`Editar ${nombreDe(foco).toLowerCase()}`}>
+              <span className="proto-bf-que">{nombreDe(foco)}</span>
+              <div className="proto-bf-fila">
+                <span className="proto-bf-etq">Diseño</span>
+                <button type="button" onClick={() => cambiar(-1)} aria-label="Diseño anterior">‹</button>
+                <span className="proto-bf-valor" aria-live="polite">{opFoco.opciones[idxFoco]?.nombre ?? '—'} <small>{idxFoco + 1}/{opFoco.opciones.length}</small></span>
+                <button type="button" onClick={() => cambiar(1)} aria-label="Diseño siguiente">›</button>
+              </div>
+              <div className="proto-bf-fila">
+                <span className="proto-bf-etq">{anim === 'toque' ? 'Al tocar' : 'Animación'}</span>
+                <button type="button" onClick={() => cambiarAnim(-1)} aria-label="Animación anterior">‹</button>
+                <span className="proto-bf-valor" aria-live="polite">{animaciones.find(([id]) => id === animActual)?.[1] ?? '—'}</span>
+                <button type="button" onClick={() => cambiarAnim(1)} aria-label="Animación siguiente">›</button>
+              </div>
+              <div className="proto-bf-acciones">
+                <button type="button" className="proto-bf-cancelar" onClick={cancelarFoco}>Cancelar</button>
+                <button type="button" className="proto-bf-ok" onClick={confirmarFoco}>Confirmar</button>
+              </div>
+            </div>
+          )}
+          {editando && !foco && (
             <aside className="proto-editor" aria-label="Cambiar elementos">
               <Editor config={real} setConfig={props.setConfig} abierto={abierto} setAbierto={setAbierto} />
             </aside>
@@ -710,12 +787,11 @@ const GRUPOS: { nombre: string; items: Editable[] }[] = [
   { nombre: 'Detalles', items: ['etiqueta', 'aviso', 'cargando', 'progreso', 'acordeon', 'avatar', 'tooltip', 'modal', 'vacio', 'carrusel', 'producto'] },
 ];
 
-function Editor(props: { config: Config; setConfig: (fn: (c: Config) => Config) => void; abierto: Editable | null; setAbierto: (e: Editable | null) => void }) {
-  const c = props.config;
-  const set = props.setConfig;
-  const e = props.abierto;
+type Opcion = { id: string; nombre: string; descripcion?: string; muestras?: string[] };
 
-  let opciones: { id: string; nombre: string; descripcion?: string; muestras?: string[] }[] = [];
+/** Las opciones de un elemento editable, cuál está puesta y cómo elegir otra. */
+function opcionesDe(e: Editable | null, c: Config, set: (fn: (c: Config) => Config) => void): { opciones: Opcion[]; actual: string; elegir: (id: string) => void } {
+  let opciones: Opcion[] = [];
   let actual = '';
   let elegir: (id: string) => void = () => {};
   if (e === 'boton') {
@@ -776,6 +852,15 @@ function Editor(props: { config: Config; setConfig: (fn: (c: Config) => Config) 
     elegir = (id) => set((x) => ({ ...x, componentes: { ...x.componentes, [e]: id } }));
   }
 
+  return { opciones, actual, elegir };
+}
+
+function Editor(props: { config: Config; setConfig: (fn: (c: Config) => Config) => void; abierto: Editable | null; setAbierto: (e: Editable | null) => void }) {
+  const c = props.config;
+  const set = props.setConfig;
+  const e = props.abierto;
+  const { opciones, actual, elegir } = opcionesDe(e, c, set);
+
   return (
     <div className="proto-editor-dentro">
       <label className="proto-editor-etq" htmlFor="proto-que">
@@ -793,7 +878,7 @@ function Editor(props: { config: Config; setConfig: (fn: (c: Config) => Config) 
           </optgroup>
         ))}
       </select>
-      {!e && <p className="proto-editor-ayuda">También podés tocar los lápices que aparecen sobre cada elemento del prototipo.</p>}
+      {!e && <p className="proto-editor-ayuda">O tocá directamente cualquier parte del prototipo: se resalta y la cambiás con las flechas.</p>}
       {e === 'paleta' && <TusColores config={c} setConfig={set} />}
       {e && (
         <ul className="proto-opciones">

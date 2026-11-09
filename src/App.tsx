@@ -14,6 +14,7 @@ const cargar = {
   galeria: () => import('./rapido/PanelGaleria'),
   movimiento: () => import('./rapido/PanelMovimiento'),
   prototipo: () => import('./rapido/Prototipo'),
+  paquete: () => import('./rapido/PanelPaquete'),
   listo: () => import('./rapido/PanelListo'),
   estilosGaleria: () => import('./galeria/EstilosGaleria'),
   avanzado: () => import('./ModoAvanzado'),
@@ -23,6 +24,7 @@ const PanelBotones = lazy(() => cargar.botones().then((m) => ({ default: m.Panel
 const PanelCajas = lazy(() => cargar.cajas().then((m) => ({ default: m.PanelCajas })));
 const PanelGaleria = lazy(() => cargar.galeria().then((m) => ({ default: m.PanelGaleria })));
 const PanelMovimiento = lazy(() => cargar.movimiento().then((m) => ({ default: m.PanelMovimiento })));
+const PanelPaquete = lazy(() => cargar.paquete().then((m) => ({ default: m.PanelPaquete })));
 const Prototipo = lazy(() => cargar.prototipo().then((m) => ({ default: m.Prototipo })));
 const PanelListo = lazy(() => cargar.listo().then((m) => ({ default: m.PanelListo })));
 const EstilosGaleria = lazy(cargar.estilosGaleria);
@@ -37,7 +39,7 @@ function Cargando() {
 }
 
 type Modo = 'rapido' | 'avanzado';
-type PasoRapido = 'inicio' | 'tipo' | 'botones' | 'botones_mas' | 'cajas' | 'formularios' | 'navegacion' | 'elementos' | 'datos' | 'movimiento' | 'prototipo' | 'listo';
+type PasoRapido = 'inicio' | 'tipo' | 'botones' | 'botones_mas' | 'cajas' | 'formularios' | 'navegacion' | 'elementos' | 'datos' | 'movimiento' | 'paquete' | 'prototipo' | 'listo';
 const CLAVE_MODO = 'configurador-diseno:modo';
 
 function leerModo(): Modo {
@@ -53,6 +55,8 @@ export function App() {
   const [modo, setModoEstado] = useState<Modo>(leerModo);
   const [pasoAvanzado, setPasoAvanzado] = useState('proyecto');
   const [pasoRapido, setPasoRapido] = useState<PasoRapido>('inicio');
+  // Recorrido simple (diseño → proyecto → tu UI → prototipo) o detallado (pieza por pieza).
+  const [detallado, setDetallado] = useState(false);
 
   const setModo = (m: Modo) => {
     setModoEstado(m);
@@ -79,7 +83,7 @@ export function App() {
   // Mientras se mira la portada, se bajan en segundo plano los pasos siguientes.
   useEffect(() => {
     const t = window.setTimeout(() => {
-      for (const k of ['tipo', 'botones', 'cajas', 'galeria', 'estilosGaleria', 'movimiento', 'prototipo', 'listo'] as const) void cargar[k]();
+      for (const k of ['tipo', 'paquete', 'botones', 'cajas', 'galeria', 'estilosGaleria', 'movimiento', 'prototipo', 'listo'] as const) void cargar[k]();
     }, 2500);
     return () => window.clearTimeout(t);
   }, []);
@@ -93,9 +97,9 @@ export function App() {
     const NOMBRES: Record<PasoRapido, string> = {
       inicio: 'Diseño', tipo: 'Proyecto', botones: 'Botón principal', botones_mas: 'Más botones', cajas: 'Cajas',
       formularios: 'Formularios', navegacion: 'Navegación', elementos: 'Detalles', datos: 'Datos',
-      movimiento: 'Movimiento', prototipo: 'Prototipo', listo: 'Descargar',
+      movimiento: 'Movimiento', paquete: 'Tu UI', prototipo: 'Prototipo', listo: 'Descargar',
     };
-    const orden: PasoRapido[] = [
+    const orden: PasoRapido[] = !detallado ? ['inicio', 'tipo', 'paquete', 'prototipo', 'listo'] : [
       'inicio', 'tipo', 'botones', 'botones_mas', 'cajas',
       ...(esDatos ? (['datos', 'formularios', 'navegacion', 'elementos'] as const) : (['formularios', 'navegacion', 'elementos', 'datos'] as const)),
       'movimiento', 'prototipo', 'listo',
@@ -125,7 +129,18 @@ export function App() {
             }}
           />
         )}
-        {pasoRapido === 'tipo' && <PanelTipo {...comun} onAtras={() => irRapido('inicio', true)} onSeguir={() => irRapido('botones')} />}
+        {pasoRapido === 'tipo' && <PanelTipo {...comun} onAtras={() => irRapido('inicio', true)} onSeguir={() => irRapido(detallado ? 'botones' : 'paquete')} />}
+        {pasoRapido === 'paquete' && (
+          <PanelPaquete
+            {...comun}
+            onAtras={() => irRapido('tipo', true)}
+            onSeguir={() => irRapido('prototipo')}
+            onDetallado={() => {
+              setDetallado(true);
+              irRapido('botones');
+            }}
+          />
+        )}
         {pasoRapido === 'botones' && <PanelBotones {...comun} onAtras={() => irRapido('tipo', true)} onSeguir={() => irRapido('botones_mas')} />}
         {pasoRapido === 'botones_mas' && (
           <PanelGaleria
@@ -196,7 +211,7 @@ export function App() {
           <PanelMovimiento {...comun} onAtras={() => irRapido(esDatos ? 'elementos' : 'datos', true)} onSeguir={() => irRapido('prototipo')} />
         )}
         {pasoRapido === 'prototipo' && (
-          <Prototipo {...comun} onAtras={() => irRapido('movimiento', true)} onListo={() => irRapido('listo')} />
+          <Prototipo {...comun} onAtras={() => irRapido(detallado ? 'movimiento' : 'paquete', true)} onListo={() => irRapido('listo')} />
         )}
         {pasoRapido === 'listo' && (
           <PanelListo config={config} onAtras={() => irRapido('prototipo', true)} onAvanzado={() => alAvanzado('exportar')} onInicio={() => irRapido('inicio')} />

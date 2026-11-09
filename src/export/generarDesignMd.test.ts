@@ -472,3 +472,33 @@ describe('fondos con textura', () => {
     expect(decodificar(codigo(sinFondo))).toEqual(sinFondo);
   });
 });
+
+describe('paquetes de UI', () => {
+  it('todo paquete usa diseños que existen y genera un export válido', async () => {
+    const { paqueteN, aplicarPaquete, FAMILIAS } = await import('../familias');
+    const { ESTILOS } = await import('../estilos-visuales');
+    const { CATEGORIAS } = await import('../galeria');
+    const { BOTONES } = await import('../botones-disenos');
+    const { CAJAS } = await import('../cajas');
+    for (const e of [...Object.keys(ESTILOS), 'clasico'] as (keyof typeof ESTILOS | 'clasico')[]) {
+      for (let n = 0; n < 12; n++) {
+        const p = paqueteN(e, n);
+        expect(FAMILIAS[p.familia]).toBeDefined();
+        expect(BOTONES[p.boton], `${e} ${n} botón`).toBeDefined();
+        expect(CAJAS[p.caja], `${e} ${n} caja`).toBeDefined();
+        for (const [cat, id] of Object.entries(p.componentes)) expect(CATEGORIAS[cat as keyof typeof CATEGORIAS].disenos[id!], `${e} ${n} ${cat}`).toBeDefined();
+      }
+    }
+    const md = generarDesignMd(aplicarPaquete(configCompleta(), paqueteN('vidrio', 0)));
+    for (const b of bloquesYaml(md)) expect(() => parse(b)).not.toThrow();
+  });
+
+  it('los ids de cada familia existen (los que no, avisan)', async () => {
+    const { FAMILIAS } = await import('../familias');
+    const { CATEGORIAS } = await import('../galeria');
+    const faltan: string[] = [];
+    for (const [fid, f] of Object.entries(FAMILIAS))
+      for (const [cat, ids] of Object.entries(f.piezas)) for (const id of ids!) if (!(id in CATEGORIAS[cat as keyof typeof CATEGORIAS].disenos)) faltan.push(`${fid}.${cat}.${id}`);
+    expect(faltan).toEqual([]);
+  });
+});
