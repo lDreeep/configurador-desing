@@ -80,6 +80,7 @@ Otras skills de diseño instaladas en `.claude/skills/`:
 - `web-design-guidelines` (Vercel): auditoría contra más de 100 reglas de interfaz; lee las reglas actualizadas de internet y deja una copia en `guias-copia-local.md`.
 - `web-design-engineer` (ConardLi, MIT): recetas para páginas, dashboards y prototipos en HTML/CSS/React.
 - `landing-page-design` (Elaya, MIT): estructura, textos de conversión y reglas visuales para landing pages. Sus valores fijos (escala de letra, radios, fondos) son para una landing terminada: en el configurador mandan los tokens que elige la persona; tomá su criterio de estructura y textos.
+- `stageshow` (Benji Taylor, MIT): interfaces de producto simuladas (ventanas, celulares, paneles, cursor animado) para los «hero» y tarjetas de las plantillas de muestra, y para mostrar el configurador en acción en la portada. Su kit es React + CSS como el nuestro; si se usa, copiar solo las piezas necesarias a `src/` (no los íconos de apps reales de `assets/`, que no son MIT) y respetar los tokens del configurador.
 - `figma-designer` (Elaya, MIT): solo para trabajar dentro de Figma con el MCP de Figma; este proyecto no lo usa.
 - `shadcn` (shadcn/ui, MIT): solo aplica a proyectos con shadcn/ui; este configurador no lo usa, sirve como referencia de componentes.
 
