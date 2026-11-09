@@ -2,7 +2,7 @@
 // como un paquete coherente (una familia). Con un clic cambia todo a otra combinación que también
 // combina. Se puede tocar todo: botones, formularios, selectores, menús.
 
-import { useEffect, useMemo, useState, type CSSProperties } from 'react';
+import { useEffect, useLayoutEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode } from 'react';
 import { CAJAS, clasesDeCaja, tokensDeCaja } from '../cajas';
 import { BotonPrincipal } from '../componentes/BotonPrincipal';
 import { sistemaDeDiseno } from '../export/sistema';
@@ -12,15 +12,49 @@ import { claseDe, GaleriaContexto } from '../galeria/base';
 import type { Config } from '../tipos';
 import { usePaso } from './BarraPasos';
 
+/** Piezas chicas: en el celular van de a dos por fila. */
+const CHICAS: CategoriaId[] = ['boton_icono', 'interruptor', 'casilla', 'avatar', 'etiqueta', 'tooltip', 'cargando', 'progreso', 'deslizador', 'metrica'];
 const ANCHOS: CategoriaId[] = ['nav_web', 'pie', 'tabla', 'formulario', 'acceso', 'wizard', 'reserva'];
 
+// El orden de las piezas en el mosaico: lo principal primero, después por familia.
 const SECCIONES: { titulo: string; ayuda: string; cats: CategoriaId[] }[] = [
   { titulo: 'Botones', ayuda: 'Tocalos: cada uno responde a su manera.', cats: ['boton_sec', 'boton_icono'] },
   { titulo: 'Formularios', ayuda: 'Escribí, deslizá y elegí: todo funciona.', cats: ['formulario', 'acceso', 'campo', 'selector', 'desplegable', 'buscador', 'interruptor', 'casilla', 'deslizador', 'calendario', 'subir', 'wizard', 'reserva'] },
   { titulo: 'Navegación', ayuda: 'Las barras para la compu y para el celular, y todo lo que ayuda a moverse.', cats: ['nav_web', 'nav_movil', 'migas', 'paginacion', 'pasos', 'notificaciones', 'usuario', 'pie'] },
-  { titulo: 'Contenido', ayuda: 'Tarjetas, avisos, ventanas y los detalles chicos.', cats: ['producto', 'carrusel', 'acordeon', 'etiqueta', 'avatar', 'tooltip', 'aviso', 'modal', 'cargando', 'progreso', 'vacio'] },
   { titulo: 'Datos', ayuda: 'Para paneles y estadísticas.', cats: ['metrica', 'grafico', 'tabla'] },
+  { titulo: 'Contenido', ayuda: 'Tarjetas, avisos, ventanas y los detalles chicos.', cats: ['producto', 'carrusel', 'acordeon', 'etiqueta', 'avatar', 'tooltip', 'aviso', 'modal', 'cargando', 'progreso', 'vacio'] },
 ];
+
+/** Alto de cada fila del mosaico y espacio entre piezas, en px (iguales a los del CSS). */
+const FILA = 4;
+const HUECO = 12;
+
+/**
+ * Mosaico que encastra: cada pieza mide su alto real y ocupa justo esas filas de una grilla de 4px,
+ * con `grid-auto-flow: dense`, así las piezas chicas rellenan el lugar al lado de las grandes y no
+ * quedan huecos. Si una pieza cambia de alto (un acordeón que se abre), se vuelve a medir.
+ */
+function Mosaico({ children }: { children: ReactNode }) {
+  const ref = useRef<HTMLDivElement>(null);
+  useLayoutEffect(() => {
+    const g = ref.current;
+    if (!g) return;
+    const ajustar = (el: HTMLElement) => {
+      const h = el.getBoundingClientRect().height;
+      el.style.gridRowEnd = `span ${Math.max(1, Math.ceil((h + HUECO) / (FILA + HUECO)))}`;
+    };
+    const items = Array.from(g.children) as HTMLElement[];
+    items.forEach(ajustar);
+    const ro = new ResizeObserver((entradas) => entradas.forEach((e) => ajustar(e.target as HTMLElement)));
+    items.forEach((el) => ro.observe(el));
+    return () => ro.disconnect();
+  });
+  return (
+    <div className="pq-grilla pq-mosaico" ref={ref}>
+      {children}
+    </div>
+  );
+}
 
 export function PanelPaquete(props: { config: Config; setConfig: (fn: (c: Config) => Config) => void; onAtras: () => void; onSeguir: () => void; onDetallado: () => void }) {
   const paso = usePaso();
@@ -57,57 +91,43 @@ export function PanelPaquete(props: { config: Config; setConfig: (fn: (c: Config
           </header>
 
           <div className="pq-cuerpo" key={n}>
-            <section className="pq-seccion pq-destacada">
-              <div className="pq-sec-cabeza">
-                <h2 className="pq-h2">Lo principal</h2>
-                <p>El botón y las cajas que van a estar en toda tu app.</p>
-              </div>
-              <div className="pq-grilla">
-                <div className="pq-item">
-                  <span className="pq-etq">Botón principal</span>
-                  <div className="pq-muestra pq-botones">
-                    <BotonPrincipal config={c}>Empezar ahora</BotonPrincipal>
-                    <BotonPrincipal config={c}>Guardar</BotonPrincipal>
-                  </div>
+            <h2 className="au-oculto">Todas las piezas</h2>
+            <Mosaico>
+              <div className="pq-item">
+                <span className="pq-etq">Botón principal</span>
+                <div className="pq-muestra pq-botones">
+                  <BotonPrincipal config={c}>Empezar ahora</BotonPrincipal>
+                  <BotonPrincipal config={c}>Guardar</BotonPrincipal>
                 </div>
-                <div className="pq-item pq-ancho-2">
-                  <span className="pq-etq">Cajas · {caja.nombre}</span>
-                  <div className="pq-muestra pq-cajas">
-                    {['Plan Pro', 'Plan Equipo'].map((t) => (
-                      <span key={t} className={clasesDeCaja(caja.params)} style={tokensDeCaja(caja.params, s.paleta, s.radio.medio) as CSSProperties}>
-                        <span className="pc-tit">{t}</span>
-                        <span className="pc-txt">Todo lo que necesitás para empezar, en un solo lugar.</span>
+              </div>
+              <div className="pq-item pq-ancho-2">
+                <span className="pq-etq">Cajas · {caja.nombre}</span>
+                <div className="pq-muestra pq-cajas">
+                  {['Plan Pro', 'Plan Equipo'].map((t) => (
+                    <span key={t} className={clasesDeCaja(caja.params)} style={tokensDeCaja(caja.params, s.paleta, s.radio.medio) as CSSProperties}>
+                      <span className="pc-tit">{t}</span>
+                      <span className="pc-txt">Todo lo que necesitás para empezar, en un solo lugar.</span>
+                    </span>
+                  ))}
+                </div>
+              </div>
+              {SECCIONES.flatMap((sec) =>
+                sec.cats.map((cat) => {
+                  const C = CATEGORIAS[cat];
+                  const id = pq.componentes[cat]!;
+                  return (
+                    <div key={cat} className={`pq-item ${C.anchoCelda >= 440 || ANCHOS.includes(cat) ? 'pq-ancho-2' : ''} ${CHICAS.includes(cat) ? 'pq-chica' : ''}`} style={{ '--w': `${C.anchoCelda}px` } as CSSProperties}>
+                      <span className="pq-etq">
+                        {C.nombre} · {C.disenos[id].nombre}
                       </span>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </section>
-
-            {SECCIONES.map((sec) => (
-              <section key={sec.titulo} className="pq-seccion">
-                <div className="pq-sec-cabeza">
-                  <h2 className="pq-h2">{sec.titulo}</h2>
-                  <p>{sec.ayuda}</p>
-                </div>
-                <div className="pq-grilla">
-                  {sec.cats.map((cat) => {
-                    const C = CATEGORIAS[cat];
-                    const id = pq.componentes[cat]!;
-                    return (
-                      <div key={cat} className={`pq-item ${C.anchoCelda >= 440 || ANCHOS.includes(cat) ? 'pq-ancho-2' : ''}`} style={{ '--w': `${C.anchoCelda}px` } as CSSProperties}>
-                        <span className="pq-etq">
-                          {C.nombre} · {C.disenos[id].nombre}
-                        </span>
-                        <div className="pg-muestra pq-muestra">
-                          <C.Muestra clase={claseDe(cat, id)} id={id} />
-                        </div>
+                      <div className="pg-muestra pq-muestra">
+                        <C.Muestra clase={claseDe(cat, id)} id={id} />
                       </div>
-                    );
-                  })}
-                </div>
-              </section>
-            ))}
+                    </div>
+                  );
+                }),
+              )}
+            </Mosaico>
 
             <p className="pq-detallado">
               ¿Preferís elegir cada pieza por separado?{' '}

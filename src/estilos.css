@@ -1029,19 +1029,26 @@ button:disabled { cursor: not-allowed; opacity: 0.4; }
 .proto-zona-portada .au-ref-hero { padding-top: 24px; }
 
 /* ---------- Paso «Tu UI»: todas las piezas a la vez ---------- */
-.pq-cuerpo { display: flex; flex-direction: column; gap: clamp(36px, 5vw, 64px); animation: pq-entra 420ms var(--curva-entrada) both; }
+.pq-cuerpo { display: flex; flex-direction: column; gap: clamp(22px, 3vw, 34px); animation: pq-entra 420ms var(--curva-entrada) both; }
 @keyframes pq-entra { from { opacity: 0; transform: translateY(10px); } }
-.pq-seccion { display: flex; flex-direction: column; gap: 18px; }
-.pq-sec-cabeza { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 16px; padding-bottom: 10px; border-bottom: 1px solid var(--color-borde); }
-.pq-h2 { margin: 0; font-family: var(--fuente-titulos); font-weight: var(--titulos-peso); font-size: clamp(24px, 3vw, 36px); letter-spacing: var(--titulos-espaciado); }
-.pq-sec-cabeza p { margin: 0; color: var(--color-texto-suave); }
-.pq-grilla { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); gap: 16px; align-items: start; }
-.pq-item { display: flex; flex-direction: column; gap: 10px; min-width: 0; padding: 14px; border-radius: var(--radio-grande); background: var(--color-superficie); }
+.pq-seccion { display: flex; flex-direction: column; gap: 12px; }
+.pq-sec-cabeza { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 14px; padding-bottom: 8px; border-bottom: 1px solid var(--color-borde); }
+.pq-h2 { margin: 0; font-family: var(--fuente-titulos); font-weight: var(--titulos-peso); font-size: clamp(20px, 2.2vw, 26px); letter-spacing: var(--titulos-espaciado); }
+.pq-sec-cabeza p { margin: 0; font-size: 14px; color: var(--color-texto-suave); }
+.pq-grilla { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 250px), 1fr)); gap: 12px; align-items: start; }
+.pq-mosaico { grid-auto-rows: 4px; grid-auto-flow: row dense; row-gap: 12px; }
+.pq-mosaico > .pq-item { align-self: start; }
+.pq-item { display: flex; flex-direction: column; gap: 4px; min-width: 0; padding: 10px 12px 12px; border-radius: var(--radio-grande); background: var(--color-superficie); }
 .pq-ancho-2 { grid-column: span 2; }
-.pq-etq { font-size: 12.5px; font-weight: 700; color: var(--color-texto-suave); }
-.pq-muestra { min-height: 0; padding: 12px 4px; }
+.pq-etq { font-size: 12px; font-weight: 700; color: var(--color-texto-suave); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pq-muestra { min-height: 0; padding: 8px 0 2px; }
+.pq-item .pg-muestra { min-height: 0; padding: 8px 0 2px; }
+.panel-paquete .pb-contenido { gap: 18px; padding-top: clamp(18px, 3vw, 32px); }
+.panel-paquete .pb-cabecera { gap: 6px; }
+.panel-paquete .pb-cabecera .pg-titulo { font-size: clamp(26px, 3.2vw, 40px); }
+.panel-paquete .pb-cabecera .pg-bajada { max-width: 80ch; font-size: 15px; }
 .pq-botones { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: center; }
-.pq-cajas { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; padding: 12px; border-radius: var(--radio-medio); background: radial-gradient(circle at 20% 30%, color-mix(in srgb, var(--color-acento) 30%, transparent), transparent 60%), var(--color-fondo); }
+.pq-cajas { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; padding: 10px; border-radius: var(--radio-medio); background: radial-gradient(circle at 20% 30%, color-mix(in srgb, var(--color-acento) 30%, transparent), transparent 60%), var(--color-fondo); }
 .pq-cajas .caja { display: flex; flex-direction: column; gap: 6px; }
 .pq-detallado { margin: 0; text-align: center; color: var(--color-texto-suave); }
 .pq-detallado button { min-height: 44px; border: none; background: none; color: var(--color-acento-texto); font: inherit; font-weight: 700; text-decoration: underline; cursor: pointer; }
@@ -1057,6 +1064,10 @@ button:disabled { cursor: not-allowed; opacity: 0.4; }
 .pq-flecha:focus-visible, .pq-otra:focus-visible, .pq-detallado button:focus-visible { outline: 2px solid var(--color-acento); outline-offset: 2px; }
 @media (max-width: 760px) {
   .pq-ancho-2 { grid-column: auto; }
+  .pq-mosaico { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 10px; }
+  .pq-mosaico > .pq-item { grid-column: 1 / -1; }
+  .pq-mosaico > .pq-item.pq-chica { grid-column: auto; padding: 8px 10px 10px; }
+  .pq-mosaico > .pq-chica .pq-etq { white-space: normal; }
   .pq-cajas { grid-template-columns: minmax(0, 1fr); }
   .pq-pie { flex-wrap: wrap; }
   .pq-control { order: -1; flex-basis: 100%; }
