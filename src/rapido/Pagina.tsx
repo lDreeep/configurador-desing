@@ -14,6 +14,7 @@ import { Finanzas, Panaderia, Portfolio } from './autor';
 import { Cafeteria, Correr, Festival, Floreria, Refugio } from './autor2';
 import { Curso, Gimnasio, Restaurante, Turnos } from './autor3';
 import { Concesionario } from './concesionario';
+import { Cursor, FraseRevelada, Preguntas, useGuion, type Beat } from './demo';
 import type { BotonDisenoId, Config, EstiloId } from '../tipos';
 
 /** Hoja con el CSS de todos los estilos, cada uno limitado a su clase. Se monta una sola vez. */
@@ -48,6 +49,10 @@ export function contenido(c: Config) {
     cta: base.cta,
     ctaSecundario: base.ctaSecundario,
     cierre: base.cierre,
+    prueba: base.prueba,
+    frase: base.frase,
+    testimonio: base.testimonio,
+    preguntas: base.preguntas,
     onPrincipal: undefined as undefined | (() => void),
     onSecundario: undefined as undefined | (() => void),
   };
@@ -55,7 +60,7 @@ export function contenido(c: Config) {
 
 export type Contenido = ReturnType<typeof contenido>;
 
-function Botones({ c, k }: { c: Config; k: Contenido }) {
+function Botones({ c, k, prueba = true }: { c: Config; k: Contenido; prueba?: boolean }) {
   return (
     <div className="pg-acciones">
       <BotonPrincipal config={c} clase="pg-boton" onClick={k.onPrincipal}>
@@ -67,6 +72,7 @@ function Botones({ c, k }: { c: Config; k: Contenido }) {
         }}>
         {k.ctaSecundario}
       </button>
+      {prueba && k.prueba && <p className="pg-prueba">{k.prueba}</p>}
     </div>
   );
 }
@@ -111,44 +117,61 @@ const Media = ({ clase = '', escena, f }: { clase?: string; escena?: Contenido; 
 );
 
 /**
- * El visual del hero: en vez de un bloque de color vacío, una ventana del producto con datos
- * reales del proyecto y dos avisos flotantes. Le da profundidad a la página y usa solo tokens.
+ * El visual del hero (skill stageshow): la ventana del producto con datos del proyecto, y una
+ * historia corta con cursor: toca la segunda fila, la acción queda hecha, la barra del día sube y
+ * el aviso asoma sobre el borde. La causa del reinicio es cambiar de período. Corre solo a la
+ * vista; con movimiento reducido queda en el resultado.
  */
+const GUION_ESCENA: Beat[] = [
+  { objetivo: 'fila', dura: 1100 },
+  { objetivo: 'fila', clic: true, dura: 3400 },
+  { objetivo: 'periodo', dura: 900 },
+  { objetivo: 'periodo', clic: true, dura: 800 },
+];
+
 function Escena({ k }: { k: Contenido }) {
-  const alturas = [38, 54, 46, 72, 60, 88, 70];
+  const { ref, paso, vuelta, activo, beat } = useGuion(GUION_ESCENA, 1);
+  const hecho = paso === 1 || paso === 2;
+  const mes = vuelta % 2 === 1;
+  const alturas = mes ? [52, 40, 66, 58, 74, 62, 70] : [38, 54, 46, 72, 60, 64, 70];
+  const datos = mes ? ['$ 48.700', '$ 31.250', '$ 86.900'] : ['$ 12.400', '$ 8.900', '$ 21.300'];
   return (
-    <div className="pg-escena">
+    <div className="pg-escena" ref={ref}>
       <div className="pg-esc-ventana">
         <div className="pg-esc-barra">
           <i />
           <i />
           <i />
           <span>{k.marca}</span>
+          <em className="pg-esc-periodo" data-objetivo="periodo" key={vuelta}>
+            {mes ? 'Este mes' : 'Esta semana'}
+          </em>
         </div>
-        <div className="pg-esc-cuerpo">
+        <div className={`pg-esc-cuerpo ${paso === 3 ? 'se-va' : ''}`} key={vuelta}>
           <span className="pg-esc-tit">{k.items[0]?.titulo}</span>
           <div className="pg-esc-grafico">
             {alturas.map((h, i) => (
-              <span key={i} style={{ height: `${h}%` }} className={i === 5 ? 'dest' : ''} />
+              <span key={i} style={{ height: `${i === 5 && hecho ? 88 : h}%` }} className={i === 5 ? 'dest' : ''} />
             ))}
           </div>
           <div className="pg-esc-filas">
             {k.items.slice(0, 3).map((it, i) => (
-              <span key={i} className="pg-esc-fila">
-                <b className="pg-esc-av">{it.titulo.slice(0, 1)}</b>
+              <span key={i} className={`pg-esc-fila ${i === 1 && hecho ? 'hecha' : ''}`} data-objetivo={i === 1 ? 'fila' : undefined}>
+                <b className="pg-esc-av">{i === 1 && hecho ? '✓' : it.titulo.slice(0, 1)}</b>
                 <span className="pg-esc-linea">{it.titulo}</span>
-                <span className="pg-esc-dato">{['$ 12.400', '$ 8.900', '$ 21.300'][i]}</span>
+                <span className="pg-esc-dato">{datos[i]}</span>
               </span>
             ))}
           </div>
         </div>
       </div>
-      <div className="pg-esc-chip uno">
+      <div className={`pg-esc-chip uno ${hecho ? 'ver' : ''}`}>
         <span className="pg-esc-ok">✓</span> {k.cta}: listo
       </div>
       <div className="pg-esc-chip dos">
-        <b>+24%</b> este mes
+        <b key={String(hecho)} className="pg-esc-rueda">{hecho ? '+24%' : '+21%'}</b> {mes ? 'este mes' : 'esta semana'}
       </div>
+      <Cursor escena={ref} beat={beat} paso={paso} activo={activo} />
     </div>
   );
 }
@@ -211,7 +234,7 @@ function Recorrido({ c, k, f = 0 }: { c: Config; k: Contenido; f?: number }) {
           </div>
         ))}
       </div>
-      <div className="pg-rc-visual" aria-hidden="true">
+      <div className="pg-rc-visual" aria-hidden="true" ref={(el) => el?.setAttribute('inert', '')}>
         <div className={`pg-rc-capa pg-media fa-${FONDOS_AUTO[f % FONDOS_AUTO.length]}`}>
           <Escena k={k} />
         </div>
@@ -528,7 +551,7 @@ function Layout({ c, k }: { c: Config; k: Contenido }) {
               <div className={`pg-card ${cc}`}>
                 <span className="pg-card-titulo">Sobre {k.marca}</span>
                 <span className="pg-card-texto">Notas, guías y novedades, una vez por semana.</span>
-                <Botones c={c} k={k} />
+                <Botones c={c} k={k} prueba={false} />
               </div>
               <div className="pg-chips">
                 {['Diseño', 'Producto', 'Equipo', 'Clientes', 'Tutoriales'].map((t) => (
@@ -724,7 +747,7 @@ function Layout({ c, k }: { c: Config; k: Contenido }) {
           <div className="pg-app-contenido">
             <div className="pg-app-cabecera">
               <h2 className="pg-titulo">{k.nav[0] ?? 'Inicio'}</h2>
-              <Botones c={c} k={k} />
+              <Botones c={c} k={k} prueba={false} />
             </div>
             <div className="pg-kpis">
               {k.items.slice(0, 3).map((it, i) => (
@@ -759,6 +782,39 @@ function Layout({ c, k }: { c: Config; k: Contenido }) {
         </>
       );
   }
+}
+
+/**
+ * El argumento de la landing (skill landing-page-design), después de la composición de cada layout:
+ * la frase grande que se enciende al bajar, la prueba con nombre junto a la promesa y las objeciones
+ * respondidas. Va en todos los layouts de página; el estilo elegido le da la forma.
+ */
+function Argumento({ k }: { k: Contenido }) {
+  return (
+    <section className="pg-arg" aria-label="Por qué elegirnos">
+      {k.frase && <FraseRevelada texto={k.frase} clase="pg-arg-frase" />}
+      <div className="pg-arg-fila">
+        {k.testimonio && (
+          <figure className="pg-card pg-arg-testimonio">
+            <blockquote>{k.testimonio.texto}</blockquote>
+            <figcaption>
+              <span className="pg-arg-av" aria-hidden="true">
+                {k.testimonio.nombre
+                  .split(' ')
+                  .map((p) => p[0])
+                  .join('')}
+              </span>
+              <span>
+                <b>{k.testimonio.nombre}</b>
+                {k.testimonio.rol}
+              </span>
+            </figcaption>
+          </figure>
+        )}
+        {k.preguntas?.length > 0 && <Preguntas items={k.preguntas} clase="pg-arg-faq" />}
+      </div>
+    </section>
+  );
 }
 
 /** El cierre y el pie en una sola franja, con un cambio de fondo que separa del resto de la página. */
@@ -809,6 +865,7 @@ export function Pagina({ config, contenido: propio }: { config: Config; contenid
       <div className="pg-contenido">
         <Layout c={config} k={k} />
       </div>
+      {!v.layout.startsWith('autor_') && v.layout !== 'app_lateral' && <Argumento k={k} />}
       <Cierre c={config} k={k} />
     </div>
   );

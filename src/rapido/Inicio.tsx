@@ -165,6 +165,15 @@ export function Inicio(props: { config: Config; onElegir: (k: Combinacion) => vo
     cta: 'Elegir un diseño',
     ctaSecundario: 'Ver cómo funciona',
     cierre: 'Gratis y sin cuenta. Lo que elegís queda guardado en tu navegador.',
+    prueba: 'Más de 500 piezas para tocar · el archivo sirve para Claude, v0 y Lovable',
+    frase: 'La IA arma mejor tu app cuando sabe exactamente cómo tiene que verse.',
+    testimonio: undefined,
+    preguntas: [
+      ['¿Tengo que saber diseñar?', 'No. Elegís tocando: cada opción se ve y se prueba antes de quedártela.'],
+      ['¿Es gratis?', 'Sí, y no hace falta crear una cuenta.'],
+      ['¿Con qué IA funciona el archivo?', 'Con cualquiera que lea texto: Claude, ChatGPT, v0, Lovable o Cursor.'],
+      ['¿Puedo cambiar algo después?', 'Sí. Lo que elegís queda guardado y podés volver a cualquier paso.'],
+    ],
   });
 
   return (

@@ -8,146 +8,15 @@
 //   en el resto; el cuadro de reposo (poster) muestra el resultado; con movimiento reducido queda quieto.
 // Todo por tokens: paleta, letra, botones y cajas de la persona se aplican encima.
 
-import { useEffect, useLayoutEffect, useRef, useState, type RefObject } from 'react';
+import { useState } from 'react';
 import { BotonPrincipal } from '../componentes/BotonPrincipal';
 import type { Config } from '../tipos';
 import { Img, Pie, Secundario } from './autor';
+import { Cursor, FraseRevelada, Preguntas, useGuion, type Beat } from './demo';
 
 // ---------------------------------------------------------------------------------------------
 // Piezas compartidas
 // ---------------------------------------------------------------------------------------------
-
-const quieto = () => typeof window !== 'undefined' && !!window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
-
-type Beat = { objetivo: string; clic?: boolean; dura: number };
-
-/** Corre un guion en bucle mientras la escena está a la vista. Con movimiento reducido (o fuera de
- *  pantalla) muestra el cuadro de reposo, que es el que cuenta la historia solo. */
-function useGuion(beats: Beat[], poster: number) {
-  const ref = useRef<HTMLDivElement>(null);
-  const [paso, setPaso] = useState(poster);
-  const [vuelta, setVuelta] = useState(0);
-  const [activo, setActivo] = useState(false);
-  useEffect(() => {
-    const el = ref.current;
-    if (!el || quieto() || typeof IntersectionObserver === 'undefined') return;
-    const io = new IntersectionObserver(([e]) => setActivo(e.isIntersecting), { threshold: 0.35 });
-    io.observe(el);
-    return () => io.disconnect();
-  }, []);
-  useEffect(() => {
-    if (activo) setPaso(0);
-    else setPaso(poster);
-  }, [activo, poster]);
-  useEffect(() => {
-    if (!activo) return;
-    const t = window.setTimeout(() => {
-      setPaso((p) => {
-        if (p + 1 >= beats.length) setVuelta((v) => v + 1);
-        return (p + 1) % beats.length;
-      });
-    }, beats[paso].dura);
-    return () => window.clearTimeout(t);
-  }, [activo, paso, beats]);
-  return { ref, paso, vuelta, activo, beat: beats[paso] };
-}
-
-/** El puntero: mide el objetivo (data-objetivo) dentro de la escena; nunca posiciones a mano. */
-function Cursor({ escena, beat, paso, dedo = false, activo }: { escena: RefObject<HTMLElement>; beat: Beat; paso: number; dedo?: boolean; activo: boolean }) {
-  const [pos, setPos] = useState<{ x: number; y: number } | null>(null);
-  useLayoutEffect(() => {
-    const raiz = escena.current;
-    if (!raiz) return;
-    const medir = () => {
-      const t = raiz.querySelector<HTMLElement>(`[data-objetivo="${beat.objetivo}"]`);
-      if (!t) return;
-      const r = raiz.getBoundingClientRect();
-      const o = t.getBoundingClientRect();
-      const sx = raiz.offsetWidth ? r.width / raiz.offsetWidth : 1;
-      setPos({ x: (o.left - r.left + o.width * 0.55) / sx, y: (o.top - r.top + o.height * 0.6) / sx });
-    };
-    medir();
-    const ro = new ResizeObserver(medir);
-    ro.observe(raiz);
-    return () => ro.disconnect();
-  }, [escena, beat.objetivo, paso]);
-  if (!pos || !activo) return null;
-  return (
-    <span className={`au3-cursor ${dedo ? 'es-dedo' : ''}`} style={{ transform: `translate(${pos.x}px, ${pos.y}px)` }} aria-hidden="true">
-      {beat.clic && <i key={paso} className="au3-onda" />}
-      {dedo ? (
-        <b className={beat.clic ? `au3-toca t${paso % 2}` : ''} />
-      ) : (
-        <svg className={beat.clic ? `au3-pulsa p${paso % 2}` : ''} width="18" height="22" viewBox="0 0 18 22">
-          <path d="M1.5 1.5v16.2l4.1-3.9 2.8 6.4 3-1.3-2.8-6.3h5.8z" fill="#111" stroke="#fff" strokeWidth="1.5" strokeLinejoin="round" />
-        </svg>
-      )}
-    </span>
-  );
-}
-
-/** Frase grande que se enciende palabra por palabra al bajar (una sola vez). */
-function FraseRevelada({ texto, clase = '' }: { texto: string; clase?: string }) {
-  const ref = useRef<HTMLParagraphElement>(null);
-  const palabras = texto.split(' ');
-  const [n, setN] = useState(0);
-  useEffect(() => {
-    if (quieto()) {
-      setN(palabras.length);
-      return;
-    }
-    let raf = 0;
-    const calc = () => {
-      raf = 0;
-      const el = ref.current;
-      if (!el) return;
-      const r = el.getBoundingClientRect();
-      const vh = window.innerHeight || 800;
-      const p = (vh * 0.85 - r.top) / (r.height + vh * 0.35);
-      const v = Math.max(0, Math.min(palabras.length, Math.round(p * palabras.length * 1.2)));
-      setN((x) => Math.max(x, v));
-    };
-    const on = () => {
-      if (!raf) raf = requestAnimationFrame(calc);
-    };
-    document.addEventListener('scroll', on, { capture: true, passive: true });
-    window.addEventListener('resize', on);
-    calc();
-    return () => {
-      document.removeEventListener('scroll', on, { capture: true });
-      window.removeEventListener('resize', on);
-      if (raf) cancelAnimationFrame(raf);
-    };
-  }, [palabras.length]);
-  return (
-    <p ref={ref} className={`au3-frase ${clase}`}>
-      <span className="au-oculto">{texto}</span>
-      <span aria-hidden="true">
-        {palabras.map((w, i) => (
-          <span key={i} className={i < n ? 'on' : ''}>
-            {w}{' '}
-          </span>
-        ))}
-      </span>
-    </p>
-  );
-}
-
-function Preguntas({ titulo = 'Preguntas frecuentes', items }: { titulo?: string; items: [string, string][] }) {
-  return (
-    <section className="au3-faq" aria-label={titulo}>
-      <h3 className="au-h2">{titulo}</h3>
-      <div>
-        {items.map(([q, a]) => (
-          <details key={q}>
-            <summary>{q}</summary>
-            <p>{a}</p>
-          </details>
-        ))}
-      </div>
-    </section>
-  );
-}
 
 function Nav({ marca, links, c, accion }: { marca: string; links: string[]; c: Config; accion: string }) {
   return (
@@ -173,7 +42,7 @@ const Tilde = () => (
 
 const Barra = ({ w }: { w: number }) => <i className="au3-bar" style={{ width: `${w}%` }} />;
 
-function Cierre({ c, titulo, texto, accion, nota }: { c: Config; titulo: string; texto: string; accion: string; nota: string }) {
+export function Cierre({ c, titulo, texto, accion, nota }: { c: Config; titulo: string; texto: string; accion: string; nota: string }) {
   return (
     <section className="au3-cierre">
       <h3 className="au-h2">{titulo}</h3>

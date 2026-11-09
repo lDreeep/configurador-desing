@@ -15,7 +15,11 @@ import { cssDeFondo, FONDOS, type FondoId } from '../fondos';
 
 import { CSS_CONCESIONARIO as cssConcesionario } from '../rapido/concesionario-estilos';
 
-export const VERSION_FORMATO = '0.8.7';
+export const VERSION_FORMATO = '0.8.8';
+
+/** Lo que agregan todas las páginas que no son de autor ni app (D77): el argumento de una landing. */
+export const ARGUMENTO_LANDING =
+  'Debajo de los botones del hero, una línea de prueba (un dato, un puntaje o quiénes lo usan). El visual del hero es el producto en acción: una ventana con datos reales y una historia corta con cursor (toca una fila, la acción queda hecha, sube una barra y asoma un aviso sobre el borde), que corre solo a la vista y queda quieta en el resultado con movimiento reducido. Después de la composición, antes del cierre: una frase grande (beneficio en dos líneas o más) cuyas palabras pasan de color suave a pleno una por una al bajar; un testimonio con nombre, rol y resultado concreto (nunca inventado en un producto real); y 4 a 6 preguntas frecuentes desplegables con <details>. El cierre repite la misma acción del hero.';
 
 const q = (s: string) => JSON.stringify(s);
 const valor = (s: string) => (s.trim() ? q(s.trim()) : 'sin_definir');
@@ -486,7 +490,12 @@ preguntas_sugeridas:${lista(preguntas)}`,
         : `Layout «${lay.nombre}», sin estilo visual especial (solo la dirección de la sección 5).`,
       yaml(`
 layout: ${v.layout}
-layout_estructura: ${q(lay.estructura)}
+layout_estructura: ${q(lay.estructura)}${
+        !v.layout.startsWith('autor_') && v.layout !== 'app_lateral'
+          ? `
+layout_argumento: ${q(ARGUMENTO_LANDING)}`
+          : ''
+      }
 fondo: ${v.fondo ?? 'ninguno'}${
         fondoV
           ? `

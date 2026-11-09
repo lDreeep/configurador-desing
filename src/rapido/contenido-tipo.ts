@@ -15,6 +15,14 @@ export interface ContenidoTipo {
   ctaSecundario: string;
   /** Una línea para el cierre de la página. */
   cierre: string;
+  /** Prueba junto a la promesa (landing-page-design): un dato, un puntaje o quiénes lo usan. */
+  prueba: string;
+  /** La frase grande que se enciende al bajar: el beneficio en dos líneas o más. */
+  frase: string;
+  /** Opcional: nunca se inventa en la página de un producto real. */
+  testimonio?: { texto: string; nombre: string; rol: string };
+  /** Las objeciones típicas, respondidas. */
+  preguntas: [string, string][];
 }
 
 export const CONTENIDO_TIPO: Record<TipoProyecto, ContenidoTipo> = {
@@ -32,6 +40,15 @@ export const CONTENIDO_TIPO: Record<TipoProyecto, ContenidoTipo> = {
     cta: 'Pedir presupuesto',
     ctaSecundario: 'Ver trabajos',
     cierre: 'Contanos qué vendés y te mandamos un presupuesto en el día.',
+    prueba: '4,9 en Google · 212 negocios de barrio con marca nueva',
+    frase: 'Un negocio que se ve bien en la vidriera, en la carta y en el celular vende más.',
+    testimonio: { texto: '«En tres semanas teníamos logo, carta y las plantillas de Instagram. Las ventas del mostrador subieron un 18%.»', nombre: 'Marina Costa', rol: 'Dueña de Panadería Costa, Caballito' },
+    preguntas: [
+      ['¿Cuánto cuesta?', 'Te pasamos un precio cerrado el primer día. No hay extras por rondas de cambios dentro de lo acordado.'],
+      ['¿Cuánto tarda?', 'Tres semanas desde que nos mandás la información de tu negocio.'],
+      ['¿Me quedo con los archivos?', 'Sí. Te entregamos todo en archivos abiertos y sin licencias que pagar.'],
+      ['¿Y si no me gusta ninguna propuesta?', 'Hacemos una tercera sin cargo. Si tampoco te convence, te devolvemos la seña.'],
+    ],
   },
   sitio: {
     marca: 'Fundación Río',
@@ -47,6 +64,15 @@ export const CONTENIDO_TIPO: Record<TipoProyecto, ContenidoTipo> = {
     cta: 'Inscribirme a un taller',
     ctaSecundario: 'Ver horarios',
     cierre: 'Las inscripciones de agosto abren el lunes 3.',
+    prueba: '1.480 egresados desde 2014 · el 63% consiguió trabajo en el oficio',
+    frase: 'Aprender un oficio cambia lo que una familia puede proyectar para el año que viene.',
+    testimonio: { texto: '«Terminé electricidad en diciembre y en febrero ya tenía clientes en el barrio.»', nombre: 'Diego Ramírez', rol: 'Egresado 2025, taller de electricidad' },
+    preguntas: [
+      ['¿Hay que pagar algo?', 'No. Los talleres y los materiales son gratis.'],
+      ['¿Qué necesito para inscribirme?', 'Tener 16 años o más y tu DNI. No hace falta experiencia.'],
+      ['¿Entregan certificado?', 'Sí, con el aval del Ministerio de Trabajo de la provincia.'],
+      ['¿Cómo puedo ayudar?', 'Donando herramientas, materiales o algunas horas para dar clases.'],
+    ],
   },
   tienda: {
     marca: 'Lana Sur',
@@ -62,6 +88,15 @@ export const CONTENIDO_TIPO: Record<TipoProyecto, ContenidoTipo> = {
     cta: 'Ver los colores',
     ctaSecundario: 'Armar un kit',
     cierre: 'Si el color no es el que esperabas, lo cambiás sin cargo.',
+    prueba: '4,8 de 5 en 1.317 opiniones · envíos a todo el país en 72 horas',
+    frase: 'Cada ovillo se tiñe a mano en tandas chicas. Ningún color sale igual dos veces.',
+    testimonio: { texto: '«Pedí el kit de gorro sin haber tejido nunca. El patrón se entiende y la lana es una caricia.»', nombre: 'Julieta Moreno', rol: 'Compró en octubre, Neuquén' },
+    preguntas: [
+      ['¿Cuánto tarda el envío?', 'Entre 2 y 4 días hábiles. Desde $ 50.000 es gratis.'],
+      ['¿Puedo cambiar un color?', 'Sí, sin cargo y dentro de los 30 días.'],
+      ['¿La lana pica?', 'No. Es merino de fibra fina: se puede usar sobre la piel.'],
+      ['¿Cómo la lavo?', 'A mano, con agua fría y jabón neutro. Se seca en plano.'],
+    ],
   },
   app_web: {
     marca: 'Turnero',
@@ -77,6 +112,15 @@ export const CONTENIDO_TIPO: Record<TipoProyecto, ContenidoTipo> = {
     cta: 'Probar un mes',
     ctaSecundario: 'Ver precios',
     cierre: 'Configurarlo lleva una tarde. Si te trabás, te ayudamos por chat.',
+    prueba: 'Lo usan 1.243 consultorios · 31% menos ausencias en promedio',
+    frase: 'Menos llamadas, menos huecos en la agenda y más tiempo para tus pacientes.',
+    testimonio: { texto: '«Pasé de 11 ausencias por mes a 3. La recepción dejó de vivir en el teléfono.»', nombre: 'Paula Ferreyra', rol: 'Kinesióloga, Rosario' },
+    preguntas: [
+      ['¿Mis pacientes tienen que bajar una app?', 'No. Reservan desde un link que se abre en cualquier navegador o desde WhatsApp.'],
+      ['¿Necesito tarjeta para probar?', 'No. El primer mes es gratis y no pedimos tarjeta.'],
+      ['¿Puedo bloquear días?', 'Sí. Vacaciones y feriados desaparecen del link al instante.'],
+      ['¿Puedo cancelar cuando quiera?', 'Sí, desde tu cuenta, y te llevás tu agenda en Excel.'],
+    ],
   },
   app_movil: {
     marca: 'Ruta',
@@ -92,6 +136,15 @@ export const CONTENIDO_TIPO: Record<TipoProyecto, ContenidoTipo> = {
     cta: 'Descargar la app',
     ctaSecundario: 'Ver rutas',
     cierre: 'Gratis para iPhone y Android.',
+    prueba: '4,7 en App Store · 86.400 corredores en Buenos Aires',
+    frase: 'Salir a correr es más fácil cuando ya sabés por dónde ir y dónde cargar agua.',
+    testimonio: { texto: '«Me mudé a Palermo y en una semana ya tenía tres recorridos favoritos.»', nombre: 'Tomás Herrera', rol: 'Corre 25 km por semana' },
+    preguntas: [
+      ['¿Es gratis?', 'Sí. La versión paga suma planes de entrenamiento, pero las rutas son gratis.'],
+      ['¿Funciona sin datos?', 'Sí. Descargás la ruta antes de salir y la seguís sin conexión.'],
+      ['¿Sirve para caminar?', 'Sí. Podés filtrar por recorridos llanos y cortos.'],
+      ['¿Se conecta con mi reloj?', 'Con Garmin, Apple Watch y la mayoría de los relojes con GPS.'],
+    ],
   },
   dashboard: {
     marca: 'Panel',
@@ -107,6 +160,15 @@ export const CONTENIDO_TIPO: Record<TipoProyecto, ContenidoTipo> = {
     cta: 'Conectar mi facturador',
     ctaSecundario: 'Ver un ejemplo',
     cierre: 'Tus datos quedan en tu cuenta; podés exportarlos cuando quieras.',
+    prueba: 'Conectado a 9 facturadores · 2.380 comercios lo miran cada mañana',
+    frase: 'Saber qué vendiste ayer, qué falta reponer y quién te debe, antes de abrir la persiana.',
+    testimonio: { texto: '«Dejé de armar planillas los domingos. Mi contador recibe el reporte solo.»', nombre: 'Andrés Villalba', rol: 'Ferretería Villalba, Mar del Plata' },
+    preguntas: [
+      ['¿Con qué facturadores funciona?', 'Con los nueve más usados en Argentina, incluido el de AFIP.'],
+      ['¿Mis datos están seguros?', 'Se guardan cifrados y nunca se comparten. Los podés exportar cuando quieras.'],
+      ['¿Cuánto tarda en configurarse?', 'Unos diez minutos. Conectás el facturador y el panel se arma solo.'],
+      ['¿Lo puedo ver desde el celular?', 'Sí, el panel se adapta a cualquier pantalla.'],
+    ],
   },
   portfolio: {
     marca: 'Inés Paz',
@@ -122,6 +184,15 @@ export const CONTENIDO_TIPO: Record<TipoProyecto, ContenidoTipo> = {
     cta: 'Pedir una sesión',
     ctaSecundario: 'Ver trabajos',
     cierre: 'Tomo dos marcas por mes. Escribime para ver fechas.',
+    prueba: '47 marcas fotografiadas desde 2021 · entregas en 7 días',
+    frase: 'Una buena foto de producto responde lo que el cliente no puede tocar.',
+    testimonio: { texto: '«Con las fotos nuevas la tienda online vendió el doble en el lanzamiento de otoño.»', nombre: 'Carolina Ibáñez', rol: 'Cerámica Barro' },
+    preguntas: [
+      ['¿Cuánto cuesta una sesión?', 'Depende de la cantidad de productos. Te paso un precio cerrado antes de empezar.'],
+      ['¿Tengo que estar en la sesión?', 'No hace falta. Me mandás los productos y te muestro las pruebas en vivo.'],
+      ['¿Puedo usar las fotos en publicidad?', 'Sí, la licencia incluye redes, web y anuncios.'],
+      ['¿Hacés retoque?', 'Sí, el retoque de las 20 fotos está incluido.'],
+    ],
   },
   blog: {
     marca: 'Cuaderno',
@@ -137,5 +208,14 @@ export const CONTENIDO_TIPO: Record<TipoProyecto, ContenidoTipo> = {
     cta: 'Recibir la receta del jueves',
     ctaSecundario: 'Ver recetas',
     cierre: 'Un email por semana. Te das de baja con un clic.',
+    prueba: '18.900 personas reciben la receta cada jueves',
+    frase: 'Cocinar con lo que hay en la verdulería es más barato, más rico y más fácil de lo que parece.',
+    testimonio: { texto: '«Es el único mail que abro apenas llega. Ya cocinamos la mitad de las recetas.»', nombre: 'Silvina Ortiz', rol: 'Suscriptora desde 2024' },
+    preguntas: [
+      ['¿Cuántos mails mandan?', 'Uno por semana, los jueves a la mañana.'],
+      ['¿Es gratis?', 'Sí, las recetas son gratis para siempre.'],
+      ['¿Las recetas sirven para principiantes?', 'Sí. Cada una dice el tiempo y qué tan difícil es.'],
+      ['¿Cómo me doy de baja?', 'Con un clic al pie de cualquier mail.'],
+    ],
   },
 };

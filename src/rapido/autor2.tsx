@@ -6,6 +6,8 @@ import { useState } from 'react';
 import { BotonPrincipal } from '../componentes/BotonPrincipal';
 import type { Config } from '../tipos';
 import { Img, Pie, Secundario } from './autor';
+import { Cierre } from './autor3';
+import { FraseRevelada, Preguntas, useGuion, type Beat } from './demo';
 
 const Nav = ({ marca, links, accion }: { marca: string; links: string[]; accion?: string }) => (
   <header className="au-nav">
@@ -50,6 +52,7 @@ export function Festival({ c, marca }: { c: Config; marca?: string }) {
           <BotonPrincipal config={c}>Comprar entradas</BotonPrincipal>
           <Secundario c={c}>Ver horarios</Secundario>
         </div>
+        <p className="au3-prueba">La preventa 1 se agotó en 9 horas · quedan 1.240 entradas generales</p>
       </section>
       <section className="au-fes-cartel" aria-labelledby="au-fes-cartel">
         <h3 id="au-fes-cartel" className="au-oculto">
@@ -106,6 +109,46 @@ const RUTAS: [string, string, string, string][] = [
   ['Parque Centenario', '3,1 km', '6 m', 'M40 20 C70 0 120 10 120 40 S70 80 40 60 S10 30 40 20'],
 ];
 
+// El mapa cuenta una sola cosa (stageshow): la ruta se dibuja desde tu puerta, aparece la meta
+// y los datos de la vuelta. Una vez al entrar en pantalla; con movimiento reducido, ya dibujada.
+const GUION_RUN: Beat[] = [
+  { objetivo: '', dura: 2600 },
+  { objetivo: '', dura: 1000 },
+];
+
+function MapaCorrer() {
+  const { ref, paso, activo } = useGuion(GUION_RUN, 1, false);
+  // Antes de entrar en pantalla la ruta espera sin dibujar; al entrar se dibuja una vez.
+  const dibujando = paso === 0;
+  const listo = paso >= 1;
+  const espera = dibujando && !activo;
+  return (
+    <div className={`au-run-mapa ${dibujando ? 'dibuja' : ''} ${espera ? 'espera' : ''} ${listo ? 'listo' : ''}`} role="img" aria-label="Mapa de ejemplo con una ruta de 10,4 kilómetros" ref={ref}>
+      <svg viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+        {Array.from({ length: 14 }, (_, i) => (
+          <ellipse key={i} cx={260} cy={120} rx={20 + i * 22} ry={12 + i * 15} className="au-run-curva" transform={`rotate(${-14 + i * 2} 260 120)`} />
+        ))}
+        <path d="M60 250 C90 200 70 170 120 150 S200 170 230 120 S300 60 340 70" className="au-run-ruta au-run-trazo" pathLength={1} />
+        <circle cx="60" cy="250" r="7" className="au-run-pin" />
+        <circle cx="340" cy="70" r="7" className="au-run-pin fin" />
+        <circle cx="180" cy="152" r="5" className="au-run-agua" />
+        <circle cx="290" cy="82" r="5" className="au-run-agua dos" />
+      </svg>
+      <div className="au-run-datos">
+        <span>
+          <b>10,4</b> km
+        </span>
+        <span>
+          <b>42</b> m de desnivel
+        </span>
+        <span>
+          <b>2</b> canillas
+        </span>
+      </div>
+    </div>
+  );
+}
+
 export function Correr({ c, marca }: { c: Config; marca?: string }) {
   const m = marca || 'Ruta';
   const km = [6.2, 0, 10.4, 5.1, 0, 14.8, 3.1];
@@ -120,30 +163,9 @@ export function Correr({ c, marca }: { c: Config; marca?: string }) {
             <BotonPrincipal config={c}>Descargar la app</BotonPrincipal>
             <Secundario c={c}>Ver rutas</Secundario>
           </div>
+          <p className="au3-prueba">4,7 en App Store · 86.400 corredores en Buenos Aires</p>
         </div>
-        <div className="au-run-mapa" role="img" aria-label="Mapa de ejemplo con una ruta de 10,4 kilómetros">
-          <svg viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-            {Array.from({ length: 14 }, (_, i) => (
-              <ellipse key={i} cx={260} cy={120} rx={20 + i * 22} ry={12 + i * 15} className="au-run-curva" transform={`rotate(${-14 + i * 2} 260 120)`} />
-            ))}
-            <path d="M60 250 C90 200 70 170 120 150 S200 170 230 120 S300 60 340 70" className="au-run-ruta" />
-            <circle cx="60" cy="250" r="7" className="au-run-pin" />
-            <circle cx="340" cy="70" r="7" className="au-run-pin fin" />
-            <circle cx="180" cy="152" r="5" className="au-run-agua" />
-            <circle cx="290" cy="82" r="5" className="au-run-agua" />
-          </svg>
-          <div className="au-run-datos">
-            <span>
-              <b>10,4</b> km
-            </span>
-            <span>
-              <b>42</b> m de desnivel
-            </span>
-            <span>
-              <b>2</b> canillas
-            </span>
-          </div>
-        </div>
+        <MapaCorrer />
       </section>
       <section className="au-run-semana" aria-labelledby="au-run-semana">
         <div>
@@ -165,6 +187,8 @@ export function Correr({ c, marca }: { c: Config; marca?: string }) {
           ))}
         </div>
       </section>
+      <FraseRevelada texto="Salir a correr es más fácil cuando ya sabés por dónde ir y dónde cargar agua." />
+
       <section className="au-run-rutas" aria-labelledby="au-run-rutas">
         <h3 id="au-run-rutas" className="au-h2">
           Cerca tuyo
@@ -218,6 +242,7 @@ export function Cafeteria({ c, marca }: { c: Config; marca?: string }) {
             <BotonPrincipal config={c}>Comprar café en grano</BotonPrincipal>
             <Secundario c={c}>Ver la carta</Secundario>
           </div>
+          <p className="au3-prueba">Tostamos 42 kg por semana · 4,8 en Google</p>
         </div>
       </section>
       <section className="au-caf-pizarra" aria-labelledby="au-caf-pizarra">
@@ -234,6 +259,8 @@ export function Cafeteria({ c, marca }: { c: Config; marca?: string }) {
         </dl>
         <p className="au-caf-leche">Leche de almendras o de avena sin cargo.</p>
       </section>
+      <FraseRevelada texto="El café que tomás en la barra es el mismo que te llevás en bolsa, tostado el martes." />
+
       <section className="au-caf-origen" aria-labelledby="au-caf-origen">
         <Img id="tueste" clase="au-caf-o1" />
         <div className="au-caf-origen-texto">
@@ -274,6 +301,7 @@ export function Floreria({ c, marca }: { c: Config; marca?: string }) {
           <h2 className="pg-titulo au-flo-h1">Un ramo de flores de estación en tu casa, cada semana</h2>
           <p className="au-lead">Compramos en el Mercado de Flores los lunes a la madrugada y entregamos el martes en CABA. Pausás o cancelás cuando quieras.</p>
           <BotonPrincipal config={c}>Elegir mi plan</BotonPrincipal>
+          <p className="au3-prueba">1.146 casas reciben flores cada martes</p>
         </div>
         <div className="au-flo-collage">
           <Img id="ramo" clase="au-flo-c1" prioridad />
@@ -300,6 +328,16 @@ export function Floreria({ c, marca }: { c: Config; marca?: string }) {
           <span>Leucadendron, eucalipto baby blue, rosas de jardín y ruscus.</span>
         </div>
       </section>
+      <FraseRevelada texto="Flores que duran una semana entera porque llegan a tu mesa un día después del mercado." />
+      <Preguntas
+        items={[
+          ['¿Puedo pausar la suscripción?', 'Sí, desde tu cuenta y hasta el domingo anterior a la entrega.'],
+          ['¿A qué zonas entregan?', 'A toda la Ciudad de Buenos Aires, los martes entre las 9 y las 14.'],
+          ['¿Y si no estoy en casa?', 'Lo dejamos en portería o con quien nos indiques. Si no hay nadie, volvemos a la tarde.'],
+          ['¿Cuánto duran las flores?', 'Entre 7 y 10 días si cambiás el agua cada dos días.'],
+        ]}
+      />
+      <Cierre c={c} titulo="El martes puede llegar el primero" texto="Elegí cada cuánto y te avisamos qué trae el ramo de esta semana." accion="Elegir mi plan" nota="Pausás o cancelás cuando quieras." />
       <Pie marca={m} fotos={['ramo', 'brotes', 'florista']} links={['Ramos', 'Suscripción', 'Eventos', 'Preguntas']} />
     </div>
   );
@@ -328,6 +366,7 @@ export function Refugio({ c, marca }: { c: Config; marca?: string }) {
         <Nav marca={m} links={['Habitaciones', 'Excursiones', 'Cómo llegar']} />
         <div className="au-ref-texto">
           <h2 className="pg-titulo au-ref-h1">Un refugio de seis habitaciones frente al lago, en la Comarca Andina</h2>
+          <p className="au3-prueba au-ref-prueba">9,6 en Booking · 438 opiniones</p>
         </div>
         <form className="au-ref-reserva" onSubmit={(e) => e.preventDefault()} aria-label="Buscar disponibilidad">
           <label>
@@ -367,6 +406,8 @@ export function Refugio({ c, marca }: { c: Config; marca?: string }) {
           ))}
         </ul>
       </section>
+      <FraseRevelada texto="Despertarte con el lago quieto y no tener que ir a ningún lado." />
+
       <section className="au-ref-llegar" aria-labelledby="au-ref-llegar">
         <Img id="camino" clase="au-ref-llegar-img" />
         <div>
@@ -377,6 +418,15 @@ export function Refugio({ c, marca }: { c: Config; marca?: string }) {
           <Secundario c={c}>Cómo llegar</Secundario>
         </div>
       </section>
+      <Preguntas
+        items={[
+          ['¿Qué incluye la tarifa?', 'Desayuno casero, ropa de cama y leña para la salamandra.'],
+          ['¿Se puede cancelar?', 'Sin cargo hasta 15 días antes. Después, la seña queda para otra fecha.'],
+          ['¿Aceptan mascotas?', 'Sí, en la Cabaña del bosque, con aviso previo.'],
+          ['¿Hay señal de celular?', 'Hay wifi en el salón. En las habitaciones, a propósito, no.'],
+        ]}
+      />
+      <Cierre c={c} titulo="Seis habitaciones, y enero se llena en octubre" texto="Mirá las fechas libres y reservá con una seña del 30%." accion="Ver disponibilidad" nota="Cancelás sin cargo hasta 15 días antes." />
       <Pie marca={m} fotos={['reflejo', 'valle', 'rayos', 'camino']} links={['Habitaciones', 'Excursiones', 'Cómo llegar']} />
     </div>
   );

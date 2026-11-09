@@ -1,6 +1,6 @@
 # DESIGN.md: especificación del formato
 
-> **Versión del formato:** 0.8.7 (borrador)
+> **Versión del formato:** 0.8.8 (borrador)
 > **Última actualización:** 2026-11-06
 > **Estado:** configurador en v0.2 (10 pasos + export): 8 direcciones, 13 paletas + personalizada, 23 fuentes, botones y movimiento detallados. Falta la primera ronda de pruebas con IA (§9).
 
@@ -134,7 +134,7 @@ Todo archivo exportado empieza con este bloque, que permite saber con qué versi
 
 ```yaml
 formato: design-md
-version_formato: 0.8.7
+version_formato: 0.8.8
 generado_por: configurador-diseno
 fecha: 2026-11-06
 idioma: es
@@ -1209,6 +1209,7 @@ Formato: fecha · decisión · por qué · alternativas descartadas.
 | D74 | 2026-11-08 | 5 plantillas de autor más (8 en total): festival (nombre gigante sobre manchas de calor y cartel de artistas), app para correr (mapa con la ruta sobre curvas de nivel), cafetería (foto del espresso y pizarra de precios), florería (collage y selector de plan que cambia el precio) y refugio de montaña (paisaje a sangre con barra de reserva), en `src/rapido/autor2.tsx` | Más variedad de páginas con personalidad, a pedido | — |
 | D75 | 2026-11-09 | Recorrido simple por defecto en 5 pasos: Diseño → Proyecto → **Tu UI** → Prototipo → Descargar. «Tu UI» (`src/rapido/PanelPaquete.tsx`) muestra todas las piezas a la vez, funcionando, armadas como un paquete coherente de una familia (`src/familias.ts`: clásica, suave, líneas finas, editorial, tonal, neobrutal, vidrio, oscura, neón, retro; cada estilo tiene sus 3 familias preferidas); «Otra combinación ›» cambia todo a la vez. Los 12 pasos de siempre quedan como **modo detallado** (link «Usar el modo detallado»). En el prototipo, «Editar» vuelve tocable cada pieza: al tocarla el resto se desenfoca, aparecen flechas a los costados y una barra con Diseño ‹ › y Animación ‹ ›, Cancelar y Confirmar. El archivo exportado no cambia | Elegir de a una pieza en 12 pasos era demasiado; la persona quiere la variedad con la facilidad de elegir combinaciones enteras y retocar al final | Esconder opciones o quitar el modo pieza por pieza |
 | D76 | 2026-11-09 | 4 plantillas de autor «landing que convierte» (13 en total), en `src/rapido/autor3.tsx` y `autor3.css`: turnos online para consultorios, curso online, restaurante y estudio de entrenamiento. Aplican las skills `landing-page-design` (una sola acción repetida arriba y al final, titular con resultado, prueba al lado de la promesa, frase grande que se enciende palabra por palabra al bajar, tres pasos, precios con reversión de riesgo, preguntas desplegables) y `stageshow` (el producto como protagonista en una demo animada con cursor o dedo donde pasa una sola cosa con causa visible: guardar un turno, terminar una clase, reservar mesa, reservar cupo; ventana recortada contra el borde y un satélite sobre el borde; palabras reales solo donde mira el ojo y barras en el resto; la demo corre solo a la vista y con movimiento reducido queda quieta en el resultado). Extras interactivos: selector mensual/anual, comparador antes y después, selector de frecuencia que cambia el precio | Pedido de más opciones de landing con mejor visual usando las dos skills nuevas | Copiar el kit entero de stageshow (se escribió una versión chica con los tokens del configurador) |
+| D77 | 2026-11-09 | Mejora de todas las páginas con las skills `landing-page-design` y `stageshow`. Estructuras genéricas (todas menos app con menú lateral): línea de prueba bajo los botones del hero; la ventana del hero pasa a ser una demo con cursor (toca una fila, la acción queda hecha, sube la barra, asoma el aviso; el reinicio lo causa cambiar de período); antes del cierre, sección «argumento» con frase que se enciende palabra por palabra, testimonio con nombre (con la letra y la tarjeta del estilo elegido) y preguntas frecuentes. Cada tipo de proyecto tiene su prueba, frase, testimonio y preguntas en `contenido-tipo.ts`; la portada del configurador no lleva testimonio porque es un producto real. Plantillas de autor anteriores: prueba en el hero de todas (menos Tracción), frase que se enciende en panadería, finanzas, portfolio, correr, cafetería, florería y refugio; preguntas y cierre con la misma acción en florería y refugio; el celular de finanzas cuenta solo cómo llega un pago y sube el ahorro, y la ruta de correr se dibuja al entrar en pantalla (una sola vez; con movimiento reducido quedan en el resultado). Las piezas animadas están en `src/rapido/demo.tsx`. Arreglado de paso: el visual del recorrido tenía un botón enfocable dentro de un bloque oculto para lectores de pantalla (ahora `inert`) | Las páginas terminaban enseguida y el producto se mostraba quieto; las skills piden prueba junto a la promesa, objeciones respondidas y el producto en acción | Rehacer cada layout por separado |
 | D43 | 2026-11-06 | Si la persona no describe un proyecto, el archivo se exporta como sistema de diseño (`modo: sistema_de_diseno`): sirve para mejorar una app existente o para construir lo que se explique junto con el archivo; la pantalla final ofrece un mensaje para copiar para cada caso | El modo rápido no pide detalles del proyecto; tratar las pantallas de ejemplo como obligatorias llevaba a la IA a construir una app genérica | Obligar a completar el proyecto antes de exportar |
 
 | D67 | 2026-11-07 | Se amplían las categorías existentes con 12 composiciones propias para formularios, navegación y productos; las muestras permiten validar, adjuntar y probar una compra simulada | Mejorar la calidad y la variedad visible conservando el recorrido actual | Agregar un panel de decisiones transversales |
@@ -1315,6 +1316,7 @@ Lo que todavía no tiene lugar en §5. Se mueve allá cuando se decide hacerlo.
 
 | Versión | Fecha | Cambios |
 |---|---|---|
+| 0.8.8 | 2026-11-09 | §19 suma `layout_argumento` (opcional) en los layouts de página que no son de autor: prueba bajo los botones, hero con el producto en acción, frase que se enciende al bajar, testimonio y preguntas frecuentes. Compatible. |
 | 0.8.7 | 2026-11-09 | §19 acepta 4 layouts de autor más: `autor_turnos`, `autor_curso`, `autor_restaurante` y `autor_gimnasio` (landings con demo animada del producto). Sin campos nuevos. |
 | 0.8.6 | 2026-11-08 | §19 admite autor_concesionario e incluye el CSS real de su composición. Sin campos obligatorios nuevos. |
 | 0.8.5 | 2026-11-08 | §19 acepta los layouts de autor `autor_panaderia`, `autor_finanzas` y `autor_portfolio`, con su estructura detallada (composición, contenido real, tratamiento de imagen). |

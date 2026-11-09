@@ -5,6 +5,7 @@
 // design-taste-frontend: un protagonista por página, texto concreto, sin plantilla genérica.
 
 import type { CSSProperties, ReactNode } from 'react';
+import { FraseRevelada, useGuion, type Beat } from './demo';
 import { BotonPrincipal } from '../componentes/BotonPrincipal';
 import { animarToque } from '../componentes/ui';
 import type { Config } from '../tipos';
@@ -85,6 +86,7 @@ export function Panaderia({ c, marca }: { c: Config; marca?: string }) {
             <BotonPrincipal config={c}>Encargar pan</BotonPrincipal>
             <Secundario c={c}>Ver la carta</Secundario>
           </div>
+          <p className="au3-prueba">4,9 en Google · 1.862 reseñas de vecinos</p>
         </div>
         <Img id="horno" clase="au-pan-hero-img" prioridad />
       </section>
@@ -105,6 +107,8 @@ export function Panaderia({ c, marca }: { c: Config; marca?: string }) {
           ))}
         </ul>
       </section>
+
+      <FraseRevelada texto="Harina, agua, sal y dos días de paciencia. Nada más entra en nuestro pan." />
 
       <section className="au-pan-proceso" aria-labelledby="au-pan-proceso">
         <div className="au-pan-proceso-texto">
@@ -152,6 +156,67 @@ const MOVS = [
   ['Alquiler', 'Lunes', '- $ 380.000', ''],
 ];
 
+// El celular cuenta una historia sola (stageshow, sin cursor): llega un pago, el aviso baja, el
+// movimiento entra arriba de la lista corriendo a los demás, y el ahorro sube. Se ve una vez al
+// entrar en pantalla y queda en el resultado.
+const GUION_FIN: Beat[] = [
+  { objetivo: '', dura: 1300 },
+  { objetivo: '', dura: 1700 },
+  { objetivo: '', dura: 3000 },
+];
+
+function TelefonoFinanzas() {
+  const { ref, paso } = useGuion(GUION_FIN, 2, false);
+  const llego = paso >= 2;
+  const movs = llego ? [['Café Tito', 'Recién', '- $ 3.840', '+ $ 160'], ...MOVS.slice(0, 4)] : MOVS;
+  return (
+    <div className="au-fin-tel" aria-label="Pantalla de ejemplo de la app" role="img" ref={ref}>
+      <div className="au-fin-pantalla">
+        <div className={`au-fin-banner ${paso === 1 || paso === 2 ? 'ver' : ''}`}>
+          <b>Pagaste $ 3.840 en Café Tito</b>
+          <span>Redondeamos a $ 4.000: $ 160 a tu ahorro.</span>
+        </div>
+        <span className="au-fin-hola">Hola, Ana</span>
+        <span className="au-fin-saldo-etq">Saldo disponible</span>
+        <span className="au-fin-saldo">
+          <span key={String(llego)} className="au3-entra">{llego ? '$ 478.310' : '$ 482.310'}</span>
+          <small>,17</small>
+        </span>
+        <div className="au-fin-botones">
+          {['Pagar', 'Transferir', 'Ingresar', 'Más'].map((b) => (
+            <span key={b}>
+              <i />
+              {b}
+            </span>
+          ))}
+        </div>
+        <div className="au-fin-ahorro">
+          <span>Ahorrado con vueltos</span>
+          <b key={String(llego)} className="au3-entra">{llego ? '$ 19.100' : '$ 18.940'}</b>
+          <span className="au-fin-barra">
+            <i style={{ width: llego ? '64%' : '62%' }} />
+          </span>
+        </div>
+        <ul className="au-fin-movs">
+          {movs.map(([n, h, v, r], i) => (
+            <li key={n} className={llego && i === 0 ? 'au-fin-nuevo' : ''}>
+              <span className="au-fin-av">{n[0]}</span>
+              <span className="au-fin-mov">
+                {n}
+                <small>{h}</small>
+              </span>
+              <span className="au-fin-monto">
+                {v}
+                {r && <small>{r} al ahorro</small>}
+              </span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  );
+}
+
 export function Finanzas({ c, marca }: { c: Config; marca?: string }) {
   const m = marca || 'Moneda';
   return (
@@ -174,46 +239,9 @@ export function Finanzas({ c, marca }: { c: Config; marca?: string }) {
             <BotonPrincipal config={c}>Abrir mi cuenta</BotonPrincipal>
             <Secundario c={c}>Ver los costos</Secundario>
           </div>
+          <p className="au3-prueba">214.300 cuentas abiertas · sin costo de mantenimiento</p>
         </div>
-        <div className="au-fin-tel" aria-label="Pantalla de ejemplo de la app" role="img">
-          <div className="au-fin-pantalla">
-            <span className="au-fin-hola">Hola, Ana</span>
-            <span className="au-fin-saldo-etq">Saldo disponible</span>
-            <span className="au-fin-saldo">
-              $ 482.310<small>,17</small>
-            </span>
-            <div className="au-fin-botones">
-              {['Pagar', 'Transferir', 'Ingresar', 'Más'].map((b) => (
-                <span key={b}>
-                  <i />
-                  {b}
-                </span>
-              ))}
-            </div>
-            <div className="au-fin-ahorro">
-              <span>Ahorrado con vueltos</span>
-              <b>$ 18.940</b>
-              <span className="au-fin-barra">
-                <i />
-              </span>
-            </div>
-            <ul className="au-fin-movs">
-              {MOVS.map(([n, h, v, r]) => (
-                <li key={n}>
-                  <span className="au-fin-av">{n[0]}</span>
-                  <span className="au-fin-mov">
-                    {n}
-                    <small>{h}</small>
-                  </span>
-                  <span className="au-fin-monto">
-                    {v}
-                    {r && <small>{r} al ahorro</small>}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
+        <TelefonoFinanzas />
       </section>
 
       <section className="au-fin-partes" aria-labelledby="au-fin-partes">
@@ -251,6 +279,8 @@ export function Finanzas({ c, marca }: { c: Config; marca?: string }) {
           </div>
         </div>
       </section>
+
+      <FraseRevelada texto="Los vueltos que antes se perdían en la billetera ahora son tus vacaciones de julio." />
 
       <section className="au-fin-costos" aria-labelledby="au-fin-costos">
         <h3 id="au-fin-costos" className="au-h2">Lo que cuesta</h3>
@@ -320,6 +350,8 @@ export function Portfolio({ c, marca }: { c: Config; marca?: string }) {
           ))}
         </ol>
       </section>
+
+      <FraseRevelada texto="Un oficio bien mostrado se vende solo. Nuestro trabajo es que se vea como se hace." />
 
       <section className="au-por-galeria" aria-label="Fotos de los trabajos">
         <Img id="fragua" clase="au-por-g1" />

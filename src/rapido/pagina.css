@@ -277,8 +277,17 @@
 .pgp .pg-esc-linea { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
 .pgp .pg-esc-dato { font-weight: 700; font-variant-numeric: tabular-nums; }
 .pgp .pg-esc-chip { position: absolute; z-index: 2; display: inline-flex; align-items: center; gap: 8px; padding: 10px 14px; border-radius: 999px; background: var(--color-fondo); color: var(--color-texto); font: 600 12.5px var(--fuente-texto); white-space: nowrap; box-shadow: 0 14px 30px -8px rgba(0,0,0,.35); }
-.pgp .pg-esc-chip.uno { left: -6%; bottom: -14px; transform: rotate(-4deg); }
-.pgp .pg-esc-chip.dos { right: -5%; top: 8%; transform: rotate(3deg); background: var(--color-acento); color: var(--color-sobre-acento); }
+.pgp .pg-esc-chip.uno { left: -6%; bottom: -34px; transform: rotate(-4deg) translateY(10px); opacity: 0; transition: opacity .5s cubic-bezier(.22,1,.36,1), transform .6s cubic-bezier(.22,1,.36,1); }
+.pgp .pg-esc-chip.uno.ver { opacity: 1; transform: rotate(-4deg); }
+.pgp .pg-esc-periodo { margin-left: auto; padding: 3px 10px; border-radius: 999px; background: color-mix(in srgb, var(--color-texto) 8%, transparent); font-style: normal; font-weight: 600; animation: au3-entra .45s cubic-bezier(.22,1,.36,1) both; }
+.pgp .pg-esc-cuerpo { transition: opacity .35s cubic-bezier(.22,1,.36,1), transform .45s cubic-bezier(.22,1,.36,1); }
+.pgp .pg-esc-cuerpo.se-va { opacity: 0; transform: translateX(-16px); }
+.pgp .pg-esc-grafico span { transition: height .7s cubic-bezier(.22,1,.36,1); }
+.pgp .pg-esc-fila { margin: 0 -6px; padding: 4px 6px; border-radius: 8px; transition: background .35s cubic-bezier(.22,1,.36,1); }
+.pgp .pg-esc-fila.hecha { background: color-mix(in srgb, var(--color-acento) 12%, transparent); }
+.pgp .pg-esc-fila.hecha .pg-esc-av { background: var(--color-acento); color: var(--color-sobre-acento); }
+.pgp .pg-esc-rueda { display: inline-block; animation: au3-entra .5s cubic-bezier(.22,1,.36,1) both; }
+.pgp .pg-esc-chip.dos { right: -6%; top: 36%; transform: rotate(3deg); background: var(--color-acento); color: var(--color-sobre-acento); }
 .pgp .pg-esc-ok { display: grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; background: color-mix(in srgb, var(--color-exito) 85%, var(--color-texto)); color: #FFFFFF; font-size: 12px; }
 @container (max-width: 300px) { .pgp .pg-esc-chip.dos { display: none; } .pgp .pg-esc-chip.uno { left: 0; } }
 
@@ -385,3 +394,20 @@
   }
 }
 @keyframes pg-hz { to { transform: translateX(calc(-4 * min(62cqw, 520px) - 48px + 100cqw - 2 * clamp(16px, 5cqw, 72px))); } }
+
+/* ---------- Prueba y argumento de landing (skill landing-page-design) ---------- */
+.pgp .pg-prueba { flex-basis: 100%; margin: 6px 0 0; font-size: 14px; line-height: 1.4; color: var(--color-texto-suave); text-wrap: pretty; }
+.pgp .pg-centro .pg-prueba, .pgp .pg-minimo .pg-prueba { text-align: center; }
+.pgp .pg-arg { --au-borde: clamp(16px, 5cqw, 72px); position: relative; z-index: 1; display: flex; flex-direction: column; padding-bottom: clamp(8px, 2cqw, 24px); }
+.pgp .pg-arg-frase { padding-top: clamp(40px, 7cqw, 112px); padding-bottom: clamp(40px, 7cqw, 112px); }
+.pgp .pg-arg-fila { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); gap: clamp(24px, 5cqw, 72px); align-items: start; padding: 0 var(--au-borde); }
+.pg.pgp .pg-card.pg-arg-testimonio { margin: 0; gap: 24px; padding: clamp(24px, 3.4cqw, 40px); }
+.pgp .pg-arg-testimonio blockquote { margin: 0; font-family: var(--fuente-titulos); font-weight: var(--titulos-peso); letter-spacing: var(--titulos-espaciado); font-size: clamp(22px, 2.6cqw, 34px); line-height: 1.2; text-wrap: pretty; }
+.pgp .pg-arg-testimonio figcaption { display: flex; align-items: center; gap: 12px; font-size: 14px; color: var(--color-texto-suave); }
+.pgp .pg-arg-testimonio figcaption > span:last-child { display: flex; flex-direction: column; }
+.pgp .pg-arg-testimonio figcaption b { color: var(--color-texto); font-size: 16px; }
+.pgp .pg-arg-av { display: grid; place-items: center; flex: none; width: 44px; height: 44px; border-radius: 50%; background: var(--color-acento); color: var(--color-sobre-acento); font-weight: 700; font-size: 15px; }
+.pgp .pg-arg .au3-faq { display: flex; flex-direction: column; gap: 8px; padding: 0; border: 0; }
+.pgp .pg-arg .au3-faq .au-h2 { margin: 0 0 4px; font-family: var(--fuente-titulos); font-weight: var(--titulos-peso); letter-spacing: var(--titulos-espaciado); font-size: clamp(24px, 2.6cqw, 34px); line-height: 1.1; }
+.pgp .pg-arg .au3-faq summary { font-size: 16px; }
+.pgp .pg-arg .au3-faq details p { font-size: 15px; }

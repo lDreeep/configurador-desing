@@ -270,3 +270,20 @@
   .au-ref-reserva { grid-template-columns: 1fr 1fr; }
   .au-ref-reserva .pv-boton { grid-column: 1 / -1; justify-content: center; }
 }
+
+/* ---------- Mejoras con stageshow y landing-page-design (D77) ---------- */
+.au-fin-pantalla { position: relative; }
+.au-fin-banner { position: absolute; z-index: 2; left: 10px; right: 10px; top: 30px; display: flex; flex-direction: column; gap: 2px; padding: 10px 12px; border-radius: 16px; background: color-mix(in srgb, var(--color-fondo) 82%, transparent); backdrop-filter: blur(14px); box-shadow: 0 12px 30px -12px rgba(0,0,0,.6); border: 1px solid color-mix(in srgb, var(--color-texto) 12%, transparent); font-size: 11.5px; opacity: 0; transform: translateY(-24px); transition: opacity .45s cubic-bezier(.22,1,.36,1), transform .55s cubic-bezier(.22,1,.36,1); }
+.au-fin-banner.ver { opacity: 1; transform: none; }
+.au-fin-banner span { color: var(--color-texto-suave); }
+.au-fin-barra i { transition: width .8s cubic-bezier(.22,1,.36,1); }
+.au-fin-nuevo { animation: au-fin-entra .6s cubic-bezier(.22,1,.36,1) both; }
+@keyframes au-fin-entra { from { opacity: 0; transform: translateY(-10px); background: color-mix(in srgb, var(--color-acento) 25%, transparent); } }
+.au-run-mapa.dibuja .au-run-trazo { stroke-dasharray: 1; stroke-dashoffset: 1; animation: au-run-dibuja 2.4s cubic-bezier(.45,0,.25,1) forwards; }
+.au-run-mapa.listo .au-run-trazo { stroke-dasharray: none; animation: none; }
+@keyframes au-run-dibuja { to { stroke-dashoffset: 0; } }
+.au-run-mapa.espera .au-run-trazo { animation: none; }
+.au-run-mapa .au-run-pin.fin, .au-run-mapa .au-run-agua, .au-run-mapa .au-run-datos { transition: opacity .5s cubic-bezier(.22,1,.36,1), transform .6s cubic-bezier(.22,1,.36,1); }
+.au-run-mapa.dibuja:not(.listo) .au-run-pin.fin, .au-run-mapa.dibuja:not(.listo) .au-run-agua, .au-run-mapa.dibuja:not(.listo) .au-run-datos { opacity: 0; }
+.au-run-mapa.dibuja:not(.listo) .au-run-datos { transform: translateY(10px); }
+.au-ref-prueba { color: rgba(255,255,255,.88) !important; }
