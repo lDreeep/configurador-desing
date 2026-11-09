@@ -79,6 +79,8 @@ Otras skills de diseño instaladas en `.claude/skills/`:
 - `impeccable` (pbakaus, Apache 2.0): critica, audita y pule UI («audit», «polish», «bolder», «typeset»…). Su lanzador baja un programa desde GitHub la primera vez que se usa.
 - `web-design-guidelines` (Vercel): auditoría contra más de 100 reglas de interfaz; lee las reglas actualizadas de internet y deja una copia en `guias-copia-local.md`.
 - `web-design-engineer` (ConardLi, MIT): recetas para páginas, dashboards y prototipos en HTML/CSS/React.
+- `landing-page-design` (Elaya, MIT): estructura, textos de conversión y reglas visuales para landing pages. Sus valores fijos (escala de letra, radios, fondos) son para una landing terminada: en el configurador mandan los tokens que elige la persona; tomá su criterio de estructura y textos.
+- `figma-designer` (Elaya, MIT): solo para trabajar dentro de Figma con el MCP de Figma; este proyecto no lo usa.
 - `shadcn` (shadcn/ui, MIT): solo aplica a proyectos con shadcn/ui; este configurador no lo usa, sirve como referencia de componentes.
 
 ## Sumar diseños a la base
