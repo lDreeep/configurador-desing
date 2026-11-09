@@ -5,6 +5,7 @@ import { urlGoogleFonts } from './catalogo';
 import './estilos.css';
 import './rapido/pagina.css';
 import './rapido/autor.css';
+import './rapido/autor3.css';
 
 // Carga todas las fuentes del catálogo para que cada opción se vea con su forma real.
 const fuentes = document.createElement('link');

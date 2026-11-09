@@ -64,7 +64,7 @@ export const RECOMENDADOS: Record<TipoProyecto, Recomendados> = {
   landing: {
     para: 'página web',
     porque: 'Una página que presenta algo vive del primer impacto: título grande, un botón que se note y secciones claras.',
-    layouts: ['autor_concesionario', 'autor_festival', 'autor_panaderia', 'autor_refugio', 'fondo_protagonista', 'hero_partido', 'tarjeta_sobre_fondo', 'portada_video', 'precios', 'equipo', 'cinta', 'bento'],
+    layouts: ['autor_turnos', 'autor_curso', 'autor_gimnasio', 'autor_concesionario', 'autor_festival', 'autor_panaderia', 'autor_refugio', 'fondo_protagonista', 'hero_partido', 'tarjeta_sobre_fondo', 'portada_video', 'precios', 'equipo', 'cinta', 'bento'],
     estilos: ['producto_amable', 'neobrutalismo', 'suizo', 'vidrio', 'minimal_tecnico'],
     botones: ['flecha', 'pildora', 'degradado', 'brillo_barrido', 'sombra_dura', 'circulo_flecha'],
     cajas: ['elevada', 'contorno', 'acento', 'degradado', 'sombra_color'],
@@ -79,7 +79,7 @@ export const RECOMENDADOS: Record<TipoProyecto, Recomendados> = {
   sitio: {
     para: 'sitio institucional',
     porque: 'Un sitio con varias secciones necesita orden: navegación clara, textos que se lean bien y botones sobrios.',
-    layouts: ['autor_concesionario', 'autor_refugio', 'autor_cafeteria', 'hero_partido', 'equipo', 'revista', 'indice', 'precios', 'apiladas'],
+    layouts: ['autor_restaurante', 'autor_gimnasio', 'autor_concesionario', 'autor_refugio', 'autor_cafeteria', 'hero_partido', 'equipo', 'revista', 'indice', 'precios', 'apiladas'],
     estilos: ['editorial', 'suizo', 'organico', 'minimal_tecnico'],
     botones: ['solido', 'contorno', 'flecha', 'subrayado', 'link_flecha', 'tonal'],
     cajas: ['contorno', 'superficie', 'editorial', 'cabecera', 'barra'],
@@ -119,7 +119,7 @@ export const RECOMENDADOS: Record<TipoProyecto, Recomendados> = {
   app_web: {
     para: 'app web',
     porque: 'Una herramienta se usa todos los días: tiene que ser clara y rápida, con formularios cómodos y estados bien marcados.',
-    layouts: ['autor_finanzas', 'app_lateral', 'panel_fijo', 'bento', 'indice'],
+    layouts: ['autor_turnos', 'autor_finanzas', 'app_lateral', 'panel_fijo', 'bento', 'indice'],
     estilos: ['minimal_tecnico', 'oscuro_precision', 'vidrio', 'producto_amable'],
     botones: ['solido', 'tonal', 'contorno', 'teclado', 'plano_cuadrado', 'flecha'],
     cajas: ['contorno', 'superficie', 'cabecera', 'elevada', 'hundida'],

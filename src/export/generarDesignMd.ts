@@ -15,7 +15,7 @@ import { cssDeFondo, FONDOS, type FondoId } from '../fondos';
 
 import { CSS_CONCESIONARIO as cssConcesionario } from '../rapido/concesionario-estilos';
 
-export const VERSION_FORMATO = '0.8.6';
+export const VERSION_FORMATO = '0.8.7';
 
 const q = (s: string) => JSON.stringify(s);
 const valor = (s: string) => (s.trim() ? q(s.trim()) : 'sin_definir');

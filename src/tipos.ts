@@ -149,7 +149,11 @@ export type LayoutId =
   | 'autor_cafeteria'
   | 'autor_floreria'
   | 'autor_refugio'
-  | 'autor_concesionario';
+  | 'autor_concesionario'
+  | 'autor_turnos'
+  | 'autor_curso'
+  | 'autor_restaurante'
+  | 'autor_gimnasio';
 
 export type EscalaId = 'sutil' | 'medio' | 'dramatico' | 'extremo';
 export type EspaciadoTitulos = 'apretado' | 'normal' | 'amplio';

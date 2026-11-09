@@ -12,6 +12,7 @@ import { sistemaDeDiseno } from '../export/sistema';
 import { CONTENIDO_TIPO } from './contenido-tipo';
 import { Finanzas, Panaderia, Portfolio } from './autor';
 import { Cafeteria, Correr, Festival, Floreria, Refugio } from './autor2';
+import { Curso, Gimnasio, Restaurante, Turnos } from './autor3';
 import { Concesionario } from './concesionario';
 import type { BotonDisenoId, Config, EstiloId } from '../tipos';
 
@@ -260,6 +261,14 @@ function Layout({ c, k }: { c: Config; k: Contenido }) {
   switch (c.visual.layout) {
     case 'autor_concesionario':
       return <Concesionario c={c} marca={marcaPropia} />;
+    case 'autor_turnos':
+      return <Turnos c={c} marca={marcaPropia} />;
+    case 'autor_curso':
+      return <Curso c={c} marca={marcaPropia} />;
+    case 'autor_restaurante':
+      return <Restaurante c={c} marca={marcaPropia} />;
+    case 'autor_gimnasio':
+      return <Gimnasio c={c} marca={marcaPropia} />;
     case 'autor_panaderia':
       return <Panaderia c={c} marca={marcaPropia} />;
     case 'autor_finanzas':
