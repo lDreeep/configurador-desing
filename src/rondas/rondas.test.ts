@@ -6,7 +6,8 @@ import { configInicial } from '../estado';
 import { ESTILOS, LAYOUTS } from '../estilos-visuales';
 import { CATEGORIAS } from '../galeria';
 import type { Config, EstiloId, TipoProyecto } from '../tipos';
-import { COLOR, ESTILO, LETRA, PIEZAS, PROYECTO } from './comunes';
+import { generarDesignMd } from '../export/generarDesignMd';
+import { COLOR, DENSIDAD, ENTRADA, ESTILO, ICONOS_RONDA, LETRA, PIEZAS, PROYECTO, RUBRO, TONO } from './comunes';
 import { COMUNES, faltanObligatorias, RAMAS, rondasDe, rondasPendientes, type ClaveRonda } from './index';
 
 const TIPOS = Object.keys(TIPOS_PROYECTO) as TipoProyecto[];
@@ -148,5 +149,52 @@ describe('rondas de Molde (C1)', () => {
   it('las combinaciones válidas de iconos y tono (catalogo.ts, las que usa normalizar) coinciden con las opciones', () => {
     expect([...ICONOS_VALIDOS].sort()).toEqual([...new Set(Object.values(ICONOS).map((o) => `${o.libreria}/${o.estilo}`))].sort());
     expect([...TONOS_VALIDOS].sort()).toEqual([...new Set(Object.values(TONOS).map((o) => `${o.voz}/${o.tratamiento}/${o.largo}`))].sort());
+  });
+
+  describe('valores por defecto de lo que ya no se pregunta (I2)', () => {
+    const ninguna = { elegidas: new Set<ClaveRonda>() };
+    const primera = (r: typeof PIEZAS, c: Config) => r.elegida(c) === r.opciones(c)[0].id;
+
+    it('elegir estilo llena piezas, entrada, iconos, tono y densidad con la primera recomendada', () => {
+      for (const tipo of TIPOS) {
+        const base = conTipo(tipo);
+        const c = ESTILO.aplicar(base, ESTILO.opciones(base)[0].id, ninguna);
+        for (const r of [PIEZAS, ENTRADA, ICONOS_RONDA, TONO, DENSIDAD]) expect(primera(r, c), `${tipo}/${r.clave}`).toBe(true);
+        expect(c.iconos && c.tono).toBeTruthy();
+      }
+    });
+
+    it('elegir tipo o rubro también los llena', () => {
+      const c = PROYECTO.aplicar(configInicial(), 'tienda', ninguna);
+      expect(primera(TONO, c) && primera(ICONOS_RONDA, c)).toBe(true);
+      const r = RUBRO.aplicar(c, RUBRO.opciones(c)[0].id, ninguna);
+      expect(primera(PIEZAS, r)).toBe(true);
+    });
+
+    it('no pisa lo que la persona eligió a mano', () => {
+      const base = conTipo('landing');
+      const elegidas = new Set<ClaveRonda>(['letra', 'piezas', 'iconos', 'tono', 'entrada', 'densidad']);
+      const rec = ICONOS_RONDA.opciones(base).slice(-1)[0].id;
+      const mano = { ...ICONOS_RONDA.aplicar(base, rec), visual: { ...base.visual, densidad: 'compacta' as const, aparicion: 'giro' as const } };
+      const c = ESTILO.aplicar(mano, ESTILO.opciones(mano)[0].id, { elegidas });
+      expect(c.iconos).toEqual(mano.iconos);
+      expect(c.visual.densidad).toBe('compacta');
+      expect(c.visual.aparicion).toBe('giro');
+      expect(c.tono).toEqual(mano.tono);
+    });
+
+    it('un recorrido de 4 pasos exporta un DESIGN.md sin secciones vacías', () => {
+      for (const tipo of TIPOS) {
+        let c = PROYECTO.aplicar(configInicial(), tipo, ninguna);
+        const e = new Set<ClaveRonda>(['proyecto']);
+        for (const r of [RUBRO, COLOR, ESTILO]) {
+          c = r.aplicar(c, r.opciones(c)[0].id, { elegidas: e });
+          e.add(r.clave);
+        }
+        const md = generarDesignMd(c, '2026-01-01');
+        expect(md, tipo).not.toMatch(/undefined|\[object Object\]|\bnull\b/);
+        for (const trozo of md.split(/^## /m).slice(1)) expect(trozo.split('\n').slice(1).join('').trim().length, `${tipo}: ${trozo.slice(0, 30)}`).toBeGreaterThan(0);
+      }
+    });
   });
 });

@@ -11,7 +11,7 @@ import { ESTILOS, LAYOUTS } from '../estilos-visuales';
 import { aplicarPaquete, FAMILIAS, familiasPara, paqueteN } from '../familias';
 import { conRubro, recomendadosDeRubro, RECOMENDADOS, RECOMENDADOS_D11 } from '../recomendados';
 import type { AparicionId, Config, Densidad, EstiloId, FuenteId, LayoutId, LecturaId, PaletaId, TipoProyecto } from '../tipos';
-import { primeroRecomendados, type Ronda } from './ronda';
+import { primeroRecomendados, type ContextoRonda, type Ronda } from './ronda';
 
 const LISTA_PALETAS = Object.keys(PALETAS) as PaletaId[];
 const LISTA_LAYOUTS = Object.keys(LAYOUTS) as LayoutId[];
@@ -22,6 +22,20 @@ const muestrasDe = (p: PaletaId) => {
   return [r.fondo, r.superficie, r.acento, r.texto];
 };
 
+/**
+ * I2: lo que el recorrido corto ya no pregunta (piezas, entrada, iconos, tono y densidad) se llena con la primera
+ * opción recomendada para el estilo, el tipo y el rubro de la config. No pisa las rondas que la persona ya eligió
+ * (`ctx.elegidas`) ni las marca como elegidas. La letra la resuelve el estilo (`ESTILO.aplicar`).
+ */
+export function conValoresPorDefecto(c: Config, ctx?: ContextoRonda): Config {
+  if (!ctx) return c;
+  return [PIEZAS, ENTRADA, ICONOS_RONDA, TONO, DENSIDAD].reduce((acc, r) => {
+    if (ctx.elegidas.has(r.clave)) return acc;
+    const primera = r.opciones(acc)[0];
+    return primera ? r.aplicar(acc, primera.id, ctx) : acc;
+  }, c);
+}
+
 export const PROYECTO: Ronda = {
   clave: 'proyecto',
   ficha: 'Proyecto',
@@ -29,14 +43,14 @@ export const PROYECTO: Ronda = {
   obligatoria: true,
   opciones: () => LISTA_TIPOS.map((id) => ({ id, nombre: TIPOS_PROYECTO[id].nombre, descripcion: TIPOS_PROYECTO[id].descripcion, recomendada: false })),
   // aplicarTipo cambia el proyecto y sus pantallas; el color, el estilo, las piezas y la letra quedan.
-  aplicar: (c, id) => aplicarTipo(c, id as TipoProyecto),
+  aplicar: (c, id, ctx) => conValoresPorDefecto(aplicarTipo(c, id as TipoProyecto), ctx),
   elegida: (c) => c.proyecto.tipo,
 };
 
 export const RUBRO: Ronda = {
   clave: 'rubro', ficha: 'Rubro', pregunta: '¿Para qué es?', obligatoria: true,
   opciones: (c) => rubrosDe(c.proyecto.tipo).map((r) => ({ id: r.id, nombre: r.nombre, recomendada: false })),
-  aplicar: (c, id) => rubroPorId(id)?.tipo === c.proyecto.tipo ? { ...c, proyecto: { ...c.proyecto, rubro: id } } : c,
+  aplicar: (c, id, ctx) => rubroPorId(id)?.tipo === c.proyecto.tipo ? conValoresPorDefecto({ ...c, proyecto: { ...c.proyecto, rubro: id } }, ctx) : c,
   elegida: (c) => c.proyecto.rubro ?? null,
 };
 const recRubro = (c: Config) => recomendadosDeRubro(c.proyecto.rubro);
@@ -109,7 +123,7 @@ export const ESTILO: Ronda = {
     const m = MOVIMIENTOS[e.movimiento];
     const letraElegida = ctx?.elegidas.has('letra');
     const piezasElegidas = ctx?.elegidas.has('piezas');
-    return {
+    return conValoresPorDefecto({
       ...c,
       visual: {
         ...c.visual,
@@ -126,7 +140,7 @@ export const ESTILO: Ronda = {
         presionar: m.presionar === 'nada' && e.movimiento !== 'minimo' ? 'hundir' : m.presionar,
       },
       botones: { ...c.botones, estilo: e.boton, diseno: piezasElegidas ? c.botones.diseno : DISENO_POR_ESTILO[id as EstiloId] },
-    };
+    }, ctx);
   },
   elegida: (c) => (c.visual.estilo === 'clasico' ? null : c.visual.estilo),
 };
