@@ -285,6 +285,10 @@ function RondaAbierta(props: {
   const [abiertas, setAbiertas] = useState(false);
   const arrastre = useRef<Arrastre | null>(null);
   const recienArrastrada = useRef(false);
+  // Cómo se tocó por última vez: con el dedo un toque muestra y «Usar» confirma; con mouse o teclado se elige directo.
+  const ultimo = useRef<'mouse' | 'toque' | 'teclado'>('mouse');
+  const [tocada, setTocada] = useState<OpcionRonda | null>(null);
+  const confirmando = tocada !== null && vista?.id === tocada.id;
 
   // Explosión: cada idea mide su ancho y se acomoda sin salirse de la pantalla; dos cuadros después sale del centro.
   useLayoutEffect(() => {
@@ -340,7 +344,16 @@ function RondaAbierta(props: {
     else mover(a.el, a.ox, a.oy);
   };
 
-  const cambiarHoja = (d: number) => setHoja((h) => (h + d + hojas) % hojas);
+  const cambiarHoja = (d: number) => {
+    setTocada(null);
+    setHoja((h) => (h + d + hojas) % hojas);
+  };
+  const verOtras = () => {
+    if (!tocada) return;
+    props.onDejar(tocada);
+    setTocada(null);
+    if (hojas > 1) setHoja((h) => (h + 1) % hojas);
+  };
 
   return (
     <>
@@ -359,12 +372,23 @@ function RondaAbierta(props: {
               onPointerEnter={(e) => e.pointerType === 'mouse' && !arrastre.current && props.onVer(op)}
               onPointerLeave={(e) => e.pointerType === 'mouse' && !arrastre.current && props.onDejar(op)}
               onFocus={() => props.onVer(op)}
-              onBlur={() => props.onDejar(op)}
+              onBlur={() => !(ultimo.current === 'toque' && tocada) && props.onDejar(op)}
               onKeyDown={(e) => {
+                ultimo.current = 'teclado';
                 if (e.key === 'Escape') props.onDejar(op);
               }}
-              onClick={() => !recienArrastrada.current && props.onElegir(op)}
-              onPointerDown={(e) => alApoyar(e, op, k)}
+              onClick={(e) => {
+                if (recienArrastrada.current) return;
+                // Con el dedo (un clic real, no el de Enter): el toque muestra la idea y «Usar» la elige.
+                if (e.detail > 0 && ultimo.current === 'toque') {
+                  setTocada(op);
+                  props.onVer(op);
+                } else props.onElegir(op);
+              }}
+              onPointerDown={(e) => {
+                ultimo.current = e.pointerType === 'mouse' ? 'mouse' : 'toque';
+                alApoyar(e, op, k);
+              }}
               onPointerMove={(e) => alMover(e, op)}
               onPointerUp={(e) => alSoltar(e, op)}
               onPointerCancel={() => (arrastre.current = null)}
@@ -374,6 +398,16 @@ function RondaAbierta(props: {
           );
         })}
       </div>
+      {confirmando && tocada && (
+        <div className="molde-confirmar" role="group" aria-label={`${tocada.nombre}: ¿la usás?`}>
+          <button type="button" className="molde-btn molde-btn-2" onClick={verOtras}>
+            Ver otras
+          </button>
+          <button type="button" className="molde-btn molde-btn-1" onClick={() => props.onElegir(tocada)}>
+            Usar
+          </button>
+        </div>
+      )}
       {hojas > 1 && (
         <div className="molde-paginas">
           <button type="button" className="molde-flecha" aria-label="Ideas anteriores" onClick={() => cambiarHoja(-1)}>

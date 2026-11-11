@@ -1,0 +1,79 @@
+// Recorrido táctil de Molde (PLAN.md C3): a 390 px, con toques, las rondas obligatorias
+// Proyecto → Color → Layout → Estilo, con y sin `prefers-reduced-motion`.
+// Uso: `npm run test:e2e` (levanta vite solo). Pide Playwright instalado (viene en el entorno de Claude Code).
+import { spawn } from 'node:child_process';
+import { createRequire } from 'node:module';
+import assert from 'node:assert/strict';
+
+const { chromium } = createRequire(import.meta.url)('playwright');
+const PUERTO = 5199;
+const URL_BASE = `http://localhost:${PUERTO}/`;
+
+const servidor = spawn('npx', ['vite', '--port', String(PUERTO), '--strictPort'], { stdio: 'ignore' });
+const cerrar = () => servidor.kill();
+process.on('exit', cerrar);
+
+async function esperarServidor() {
+  for (let i = 0; i < 100; i++) {
+    try {
+      if ((await fetch(URL_BASE)).ok) return;
+    } catch {}
+    await new Promise((r) => setTimeout(r, 300));
+  }
+  throw new Error('vite no arrancó');
+}
+
+async function recorrer(browser, reducedMotion) {
+  const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true, deviceScaleFactor: 2, reducedMotion: reducedMotion ? 'reduce' : 'no-preference' });
+  const page = await ctx.newPage();
+  const errores = [];
+  page.on('pageerror', (e) => errores.push(e.message));
+  await page.goto(URL_BASE + '#/molde/inicio');
+  await page.getByRole('button', { name: 'Empezar', exact: true }).tap();
+
+  for (const ronda of ['proyecto', 'color', 'layout', 'estilo']) {
+    await page.waitForFunction((r) => location.hash.endsWith('/' + r), ronda);
+    const ideas = page.locator('.molde-idea');
+    await ideas.first().waitFor();
+    // Esperar a que terminen de salir (con movimiento reducido es inmediato).
+    await page.waitForFunction(() => document.querySelector('.molde-ideas.abiertas'));
+    await page.waitForTimeout(reducedMotion ? 50 : 900);
+
+    // Áreas táctiles de al menos 44 px.
+    for (const caja of await page.locator('.molde button:visible').evaluateAll((bs) => bs.map((b) => [b.textContent.trim().slice(0, 20), b.getBoundingClientRect().height, b.getBoundingClientRect().width]))) {
+      assert.ok(caja[1] >= 44 && caja[2] >= 44 || caja[0] === '', `botón chico en ${ronda}: ${caja}`);
+    }
+
+    // Un toque muestra la idea y aparecen «Usar» y «Ver otras»; todavía no se eligió.
+    await ideas.first().tap();
+    await page.getByRole('button', { name: 'Usar', exact: true }).waitFor();
+    await page.getByRole('button', { name: 'Ver otras', exact: true }).waitFor();
+    assert.ok(await page.locator('.molde-prev .pg').count(), `sin vista previa en ${ronda}`);
+    assert.ok(page.url().endsWith('/' + ronda), `el toque no tiene que elegir (${ronda})`);
+
+    // «Ver otras» descarta la vista y deja ver más ideas; se vuelve a tocar y se usa.
+    await page.getByRole('button', { name: 'Ver otras', exact: true }).tap();
+    assert.equal(await page.getByRole('button', { name: 'Usar', exact: true }).count(), 0);
+    await page.waitForTimeout(reducedMotion ? 50 : 900);
+    await page.locator('.molde-idea').first().tap();
+    await page.getByRole('button', { name: 'Usar', exact: true }).tap();
+  }
+  await page.waitForFunction(() => location.hash.endsWith('/piezas') || location.hash.endsWith('/listo'));
+  assert.equal(await page.locator('.molde-ficha').count(), 4);
+  await page.getByRole('button', { name: 'Terminar', exact: true }).tap();
+  await page.getByRole('button', { name: 'Descargar DESIGN.md' }).waitFor();
+  assert.deepEqual(errores, []);
+  await ctx.close();
+}
+
+try {
+  await esperarServidor();
+  const browser = await chromium.launch();
+  await recorrer(browser, false);
+  console.log('ok: recorrido táctil a 390 px');
+  await recorrer(browser, true);
+  console.log('ok: recorrido táctil a 390 px con movimiento reducido');
+  await browser.close();
+} finally {
+  cerrar();
+}

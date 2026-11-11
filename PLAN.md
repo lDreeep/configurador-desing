@@ -141,9 +141,10 @@ Estado: `[ ]` pendiente · `[x]` hecha. Marcala al terminar.
   - Listo cuando: se puede recorrer Proyecto → Color → Layout → Estilo con mouse y con teclado, y lo elegido sobrevive a recargar.
   - Hecho en `src/molde/` (`Molde.tsx`, `recorrido.ts`, `molde.css`), en `#/molde/<ronda>` mientras convive con el modo rápido (C5 lo pasa a la raíz). La ronda abierta va en la URL (Atrás vuelve a la anterior) y las rondas elegidas en `localStorage` (`molde:elegidas`); la config, como siempre, en `estado.ts`. Al terminar baja el `DESIGN.md` real; el HTML queda para F2. Quedan para otras tareas: la portada animada (E2), «Usar» y «Ver otras» en pantallas táctiles (C3), los ajustes finos de cada ficha (C4) y «Sorprendeme» (§7.9). Las rondas de galería muestran la idea en la ficha pero `Pagina` todavía no dibuja esos componentes.
 
-- [ ] **C3 · Versión táctil y sin movimiento** — Sonnet 5.5 · depende de C2
+- [x] **C3 · Versión táctil y sin movimiento** — Sonnet 5.5 · depende de C2
   - En pantallas táctiles: un toque muestra, aparecen «Usar» y «Ver otras». Áreas táctiles de 44 px. Con `prefers-reduced-motion`, todo aparece sin animación y sigue funcionando.
   - Listo cuando: un test de Playwright recorre las rondas obligatorias a 390 px con toques.
+  - Hecho en `src/molde/Molde.tsx` (toque → vista previa + «Usar» y «Ver otras»; con mouse o Enter se elige directo) y `molde.css`. Con `prefers-reduced-motion` ya no había animaciones que frenar: se verificó que todo aparece y funciona. Test: `npm run test:e2e` (`e2e/molde-tactil.e2e.mjs`, levanta vite solo; recorre las 4 rondas a 390 px con toques, con y sin movimiento reducido, y revisa áreas de 44 px). G1 lo puede mover al CI.
 
 - [ ] **C4 · Fichas con ajustes finos (el modo avanzado fundido)** — Opus 5.5 · depende de C2
   - Tocar una ficha reabre su ronda y muestra «Ajustes finos»: los controles que hoy están en el modo avanzado para ese tema (`src/pasos/pasos.tsx`, `src/pasos/visual.tsx`), por ejemplo paleta personalizada en Color o peso y espaciado en Letra.
