@@ -1,8 +1,8 @@
 // Revisa cuánto JS baja la primera visita (PLAN.md B2): el que pide dist/index.html, más lo que
 // ese archivo importa sin `import()`. Correr después de `npm run build`. Falla si pasa el límite.
 import { readFileSync } from 'node:fs';
-import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { join } from 'node:path';
 
 const LIMITE = 250_000;
 const dist = fileURLToPath(new URL('../dist/', import.meta.url));

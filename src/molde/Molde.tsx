@@ -170,6 +170,27 @@ export function Molde({ config, setConfig, reiniciar, paso: pasoUrl, ir }: Props
     setAviso('Descargado. Pasáselo a tu IA junto con lo que querés que construya.');
   };
 
+  const descargarHtml = async () => {
+    const pagina = raiz.current?.querySelector<HTMLElement>('.molde-base .pg');
+    if (!pagina || pagina.querySelector('[aria-busy="true"]')) {
+      setAviso('La página se está cargando. Probá de nuevo en un momento.');
+      return;
+    }
+    try {
+      const { generarPreviewHtml } = await import('../export/generarPreviewHtml');
+      const html = await generarPreviewHtml(pagina, config.proyecto.nombre);
+      const url = URL.createObjectURL(new Blob([html], { type: 'text/html;charset=utf-8' }));
+      const enlace = document.createElement('a');
+      enlace.href = url;
+      enlace.download = 'preview.html';
+      enlace.click();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+      setAviso('Descargaste preview.html. Abrilo en tu navegador.');
+    } catch {
+      setAviso('No se pudo preparar la página completa. Volvé a intentar la descarga.');
+    }
+  };
+
   const fichas = rondas.filter((r) => elegidas.has(r.clave));
   // En la ronda de scroll la página se baja sola, para que se vea qué hace cada efecto.
   const bajaSola = ronda?.clave === 'scroll';
@@ -282,6 +303,7 @@ export function Molde({ config, setConfig, reiniciar, paso: pasoUrl, ir }: Props
                   Más ideas
                 </button>
               )}
+              <button type="button" className="molde-btn molde-btn-2" onClick={descargarHtml}>Descargar HTML</button>
               <button type="button" className="molde-btn molde-btn-1" onClick={descargar}>
                 Descargar DESIGN.md
               </button>

@@ -916,7 +916,7 @@ Este es el plan de construcción. Estados: `[MVP]` primera versión · `[v0.2]` 
 | Guardar el progreso en el navegador | `[MVP]` hecho |
 | **Importar un `DESIGN.md` para seguir editándolo** | `[v0.2]`. Clave para iterar: el archivo es a la vez salida y entrada. |
 | Verificación automática de contraste | `[v0.2]` hecho (en vivo en el paso de color y anotada en §18) |
-| Exportar `preview.html` con la vista previa del estilo | `[v0.2]` |
+| Exportar `preview.html` con la página del lienzo y las fotos incorporadas | Hecho en Molde |
 | Exportar tokens como Tailwind y JSON | `[v0.2]` |
 | Opción "que decida la IA" (`libre`) en cada paso | `[v0.2]` |
 | Proponer dirección a partir de una descripción (con IA, necesita API key) | `[futuro]` |
