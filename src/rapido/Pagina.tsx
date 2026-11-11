@@ -1,35 +1,36 @@
 // Renderiza una página completa con el layout y el estilo de la config.
 // Usa solo los tokens de sistemaDeDiseno y el CSS de cada estilo: lo que se ve es lo que se exporta.
 
-import type { CSSProperties, ReactNode } from 'react';
+import { Suspense, type CSSProperties, type ReactNode } from 'react';
 import { animarToque, IconoFlecha } from '../componentes/ui';
-import { BOTONES, CSS_BASE_BOTON } from '../botones-disenos';
+import { EstilosBotones } from '../botones-carga';
 import { BotonPrincipal } from '../componentes/BotonPrincipal';
 import { clasesDeCaja, CSS_CAJA, paramsDe } from '../cajas';
 import { cssDeEstilo, ESTILOS } from '../estilos-visuales';
 import { cssDeFondo, FONDOS, type FondoId, SELECTOR_FONDO } from '../fondos';
 import { sistemaDeDiseno } from '../export/sistema';
+import { useFuentes } from '../fuentes';
 import { CONTENIDO_TIPO } from './contenido-tipo';
-import { Finanzas, Panaderia, Portfolio } from './autor';
-import { Cafeteria, Correr, Festival, Floreria, Refugio } from './autor2';
-import { Curso, Gimnasio, Restaurante, Turnos } from './autor3';
-import { Concesionario } from './concesionario';
+import { PlantillaAutor, PLANTILLAS_AUTOR } from './autores';
 import { Cursor, FraseRevelada, Preguntas, useGuion, type Beat } from './demo';
-import type { BotonDisenoId, Config, EstiloId } from '../tipos';
+import type { Config, EstiloId } from '../tipos';
 
 /** Hoja con el CSS de todos los estilos, cada uno limitado a su clase. Se monta una sola vez. */
 export function EstilosVisualesGlobales() {
   const estilos = (Object.keys(ESTILOS) as EstiloId[]).map((id) => cssDeEstilo(id, `.pg.estilo-${id}`));
-  const botones = [
-    CSS_BASE_BOTON.replace(/&/g, '.bt'),
-    ...(Object.keys(BOTONES) as BotonDisenoId[]).map((id) => BOTONES[id].css.replace(/&/g, `.bt.bt-${id}`)),
-  ];
   // Las cajas van al final y con más especificidad: lo que se elige en su panel gana sobre el estilo.
   const cajas = CSS_CAJA.replace(/&/g, '.caja.caja.caja.caja');
   // Los fondos van después de los estilos: si se elige uno, gana sobre el visual del estilo.
   const auto = FONDOS_AUTO.map((id) => cssDeFondo(id, `.pg.pg .pg-media.fa-${id}`));
   const fondos = (Object.keys(FONDOS) as FondoId[]).map((id) => cssDeFondo(id, SELECTOR_FONDO(id)));
-  return <style>{[...estilos, ...auto, ...fondos, ...botones, cajas].join('\n')}</style>;
+  // Los diseños de botón llegan aparte (botones-carga.tsx) y van antes que las cajas, como siempre.
+  return (
+    <>
+      <style>{[...estilos, ...auto, ...fondos].join('\n')}</style>
+      <EstilosBotones />
+      <style>{cajas}</style>
+    </>
+  );
 }
 
 export function contenido(c: Config) {
@@ -281,33 +282,15 @@ function Layout({ c, k }: { c: Config; k: Contenido }) {
   const cc = caja ? clasesDeCaja(caja) : '';
   const cards = k.items.map((it, i) => <Card key={i} i={i} item={it} cc={cc} />);
   const marcaPropia = c.proyecto.nombre.trim() || undefined;
+  // Las plantillas de autor bajan aparte (autores.tsx); mientras llegan, un espacio vacío del alto de la página.
+  if (PLANTILLAS_AUTOR[c.visual.layout]) {
+    return (
+      <Suspense fallback={<div className="pg-autor-cargando" aria-busy="true" />}>
+        <PlantillaAutor layout={c.visual.layout} c={c} marca={marcaPropia} />
+      </Suspense>
+    );
+  }
   switch (c.visual.layout) {
-    case 'autor_concesionario':
-      return <Concesionario c={c} marca={marcaPropia} />;
-    case 'autor_turnos':
-      return <Turnos c={c} marca={marcaPropia} />;
-    case 'autor_curso':
-      return <Curso c={c} marca={marcaPropia} />;
-    case 'autor_restaurante':
-      return <Restaurante c={c} marca={marcaPropia} />;
-    case 'autor_gimnasio':
-      return <Gimnasio c={c} marca={marcaPropia} />;
-    case 'autor_panaderia':
-      return <Panaderia c={c} marca={marcaPropia} />;
-    case 'autor_finanzas':
-      return <Finanzas c={c} marca={marcaPropia} />;
-    case 'autor_portfolio':
-      return <Portfolio c={c} marca={marcaPropia} />;
-    case 'autor_festival':
-      return <Festival c={c} marca={marcaPropia} />;
-    case 'autor_correr':
-      return <Correr c={c} marca={marcaPropia} />;
-    case 'autor_cafeteria':
-      return <Cafeteria c={c} marca={marcaPropia} />;
-    case 'autor_floreria':
-      return <Floreria c={c} marca={marcaPropia} />;
-    case 'autor_refugio':
-      return <Refugio c={c} marca={marcaPropia} />;
     case 'hero_partido':
       return (
         <>
@@ -843,6 +826,7 @@ function Cierre({ c, k }: { c: Config; k: Contenido }) {
 export function Pagina({ config, contenido: propio }: { config: Config; contenido?: Contenido }) {
   const s = sistemaDeDiseno(config);
   const v = config.visual;
+  useFuentes([v.fuenteTitulos, v.fuenteTexto]);
   const k = propio ?? contenido(config);
   const conDiseno = config.botones.diseno !== 'ninguno';
   const clases = [

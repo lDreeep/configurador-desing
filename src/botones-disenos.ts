@@ -3,7 +3,7 @@
 // En el CSS, `&` es el botón. Usa solo tokens: --boton-color, --boton-sobre, --color-*, --radio-boton,
 // --boton-alto, --boton-padding, --boton-texto, --fuente-texto, --duracion-*, --curva-*.
 
-import type { BotonDisenoId, EstiloId } from './tipos';
+import type { BotonDisenoId } from './tipos';
 
 export type EfectoToque = 'onda' | 'hundir' | 'gelatina' | 'rebote' | 'pulso' | 'aplastar' | 'brillo' | 'temblor' | 'latido' | 'estallido' | 'propio';
 export type CategoriaBoton = 'solidos' | 'contornos' | 'volumen' | 'texturas' | 'efectos' | 'retro';
@@ -502,29 +502,8 @@ export const BOTONES: Record<BotonDisenoId, BotonDiseno> = {
   },
 };
 
-/** Diseño de botón que se propone para cada estilo visual (después se cambia en el panel). */
-export const DISENO_POR_ESTILO: Record<EstiloId, BotonDisenoId> = {
-  suizo: 'solido',
-  bauhaus: 'empujable',
-  memphis: 'sticker',
-  neobrutalismo: 'sombra_dura',
-  vidrio: 'vidrio',
-  clay: 'clay',
-  retro_os: 'bisel',
-  terminal: 'terminal',
-  editorial: 'subrayado',
-  art_deco: 'doble',
-  y2k: 'cromo',
-  organico: 'pildora',
-  minimal_tecnico: 'solido',
-  oscuro_precision: 'brillo_borde',
-  producto_amable: 'pildora',
-  periodico: 'subrayado',
-  japones: 'contorno',
-  dopamina: 'almohada',
-  lujo: 'doble',
-  cyber: 'neon',
-};
+// El diseño que se propone para cada estilo vive aparte (botones-por-estilo.ts) porque lo usa la portada.
+export { DISENO_POR_ESTILO } from './botones-por-estilo';
 
 /** CSS base de todos los botones del panel y de las animaciones al tocar. */
 export const CSS_BASE_BOTON = `& {

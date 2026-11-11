@@ -1,0 +1,40 @@
+/* Estilos que usa solo PanelPaquete.tsx: bajan con el panel (salieron de estilos.css). */
+
+.pq-cuerpo { display: flex; flex-direction: column; gap: clamp(22px, 3vw, 34px); animation: pq-entra 420ms var(--curva-entrada) both; }
+.pq-grilla { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 250px), 1fr)); gap: 12px; align-items: start; }
+.pq-mosaico { grid-auto-rows: 4px; grid-auto-flow: row dense; row-gap: 12px; }
+.pq-mosaico > .pq-item { align-self: start; }
+.pq-item { display: flex; flex-direction: column; gap: 4px; min-width: 0; padding: 10px 12px 12px; border-radius: var(--radio-grande); background: var(--color-superficie); }
+.pq-ancho-2 { grid-column: span 2; }
+.pq-etq { font-size: 12px; font-weight: 700; color: var(--color-texto-suave); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pq-muestra { min-height: 0; padding: 8px 0 2px; }
+.panel-paquete .pb-contenido { gap: 18px; padding-top: clamp(18px, 3vw, 32px); }
+.panel-paquete .pb-cabecera { gap: 6px; }
+.pq-botones { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: center; }
+.pq-cajas { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; padding: 10px; border-radius: var(--radio-medio); background: radial-gradient(circle at 20% 30%, color-mix(in srgb, var(--color-acento) 30%, transparent), transparent 60%), var(--color-fondo); }
+.pq-detallado { margin: 0; text-align: center; color: var(--color-texto-suave); }
+.pq-detallado button { min-height: 44px; border: none; background: none; color: var(--color-acento-texto); font: inherit; font-weight: 700; text-decoration: underline; cursor: pointer; }
+.pq-pie { gap: 12px 20px; }
+.pq-control { flex: 1; display: flex; align-items: center; justify-content: center; gap: 12px; min-width: 0; }
+.pq-flecha { width: 44px; height: 44px; flex: none; border-radius: 999px; border: 1px solid var(--color-borde); background: var(--color-fondo); color: var(--color-texto); font-size: 22px; cursor: pointer; }
+.pq-flecha:disabled { opacity: .35; cursor: default; }
+.pq-nombre { display: flex; flex-direction: column; min-width: 0; max-width: 360px; text-align: center; }
+.pq-nombre b { font-family: var(--fuente-titulos); font-size: 17px; }
+.pq-nombre small { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; color: var(--color-texto-suave); font-size: 12.5px; }
+.pq-otra { min-height: 44px; padding: 0 18px; border-radius: 999px; border: 2px solid var(--color-texto); background: var(--color-fondo); color: var(--color-texto); font: inherit; font-weight: 800; cursor: pointer; }
+.pq-otra:hover { background: var(--color-texto); color: var(--color-fondo); }
+.pq-flecha:focus-visible, .pq-otra:focus-visible, .pq-detallado button:focus-visible { outline: 2px solid var(--color-acento); outline-offset: 2px; }
+@media (max-width: 760px) {
+  .pq-ancho-2 { grid-column: auto; }
+  .pq-mosaico { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 10px; }
+  .pq-mosaico > .pq-item { grid-column: 1 / -1; }
+  .pq-mosaico > .pq-item.pq-chica { grid-column: auto; padding: 8px 10px 10px; }
+  .pq-mosaico > .pq-chica .pq-etq { white-space: normal; }
+  .pq-cajas { grid-template-columns: minmax(0, 1fr); }
+  .pq-pie { flex-wrap: wrap; }
+  .pq-control { order: -1; flex-basis: 100%; }
+  .pq-nombre small { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pq-cuerpo { animation: none; }
+}

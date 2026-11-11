@@ -5,6 +5,7 @@ import { ESTILOS_BOTON, INTEGRACIONES, PATRONES_NAV, TAMANOS_BOTON } from '../ca
 import type { BotonEstiloId } from '../tipos';
 import type { Config } from '../tipos';
 import { paresDeContraste } from '../color';
+import { ESTRUCTURA_LAYOUT } from './estructuras-layout';
 import { BOTONES, clasesDeBoton, cssDeBoton, EFECTOS_TOQUE, efectoDe } from '../botones-disenos';
 import { CAJAS, clasesDeCaja, CSS_CAJA, paramsDe } from '../cajas';
 import { cssDeEstilo, ESTILOS, LAYOUTS } from '../estilos-visuales';
@@ -490,7 +491,7 @@ preguntas_sugeridas:${lista(preguntas)}`,
         : `Layout «${lay.nombre}», sin estilo visual especial (solo la dirección de la sección 5).`,
       yaml(`
 layout: ${v.layout}
-layout_estructura: ${q(lay.estructura)}${
+layout_estructura: ${q(ESTRUCTURA_LAYOUT[v.layout])}${
         !v.layout.startsWith('autor_') && v.layout !== 'app_lateral'
           ? `
 layout_argumento: ${q(ARGUMENTO_LANDING)}`

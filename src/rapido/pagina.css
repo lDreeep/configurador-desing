@@ -411,3 +411,4 @@
 .pgp .pg-arg .au3-faq .au-h2 { margin: 0 0 4px; font-family: var(--fuente-titulos); font-weight: var(--titulos-peso); letter-spacing: var(--titulos-espaciado); font-size: clamp(24px, 2.6cqw, 34px); line-height: 1.1; }
 .pgp .pg-arg .au3-faq summary { font-size: 16px; }
 .pgp .pg-arg .au3-faq details p { font-size: 15px; }
+.pgp .pg-autor-cargando { min-height: 100vh; }

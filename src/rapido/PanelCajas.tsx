@@ -9,6 +9,7 @@ import type { CajaPresetId, Config } from '../tipos';
 import { Segmentado } from './PanelBotones';
 import { ordenar, RECOMENDADOS } from '../recomendados';
 import { SelloRecomendado, TituloRecomendados, TituloResto } from './Recomendados';
+import './panel-cajas.css';
 
 function Contenido({ titulo = 'Plan Pro' }: { titulo?: string }) {
   return (

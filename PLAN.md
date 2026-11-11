@@ -111,7 +111,7 @@ Estado: `[ ]` pendiente · `[x]` hecha. Marcala al terminar.
   - No tocar §3 ni la versión del formato: todavía no cambia la salida.
   - Listo cuando: §8 tiene las filas nuevas numeradas a continuación de D78.
 
-- [ ] **A3 · Auditoría de paleta × estilo** — Opus 5.5 · sin dependencias
+- [x] **A3 · Auditoría de paleta × estilo** — Opus 5.5 · sin dependencias
   - Hoy cada estilo declara sus paletas compatibles (`ESTILOS[id].paletas`). El recorrido nuevo elige color **antes** que estilo, así que hay que saber qué pasa con cualquier par.
   - Escribir un test que arme el sistema de diseño (`src/export/sistema.ts`) para cada par paleta × estilo y verifique contraste AA en texto, texto secundario y botón principal.
   - Entregar: el test, y una función `estilosPara(paleta)` que ordene los estilos (compatibles primero) y excluya los que no pasan.
@@ -119,18 +119,20 @@ Estado: `[ ]` pendiente · `[x]` hecha. Marcala al terminar.
 
 ### Tanda 2: base técnica y motor (en este orden)
 
-- [ ] **B1 · Paso en la URL y guardado** — Opus 5.5 · sin dependencias
+- [x] **B1 · Paso en la URL y guardado** — Opus 5.5 · sin dependencias
   - El paso actual vive solo en memoria (`src/App.tsx`): Atrás del navegador saca del sitio y recargar vuelve al inicio. Llevarlo a `location.hash` y a `localStorage`.
   - Listo cuando: Atrás y Adelante del navegador mueven entre pasos, y recargar deja a la persona donde estaba. Con test.
 
 - [ ] **B2 · Partir la carga inicial** — Opus 5.5 · depende de B1
   - La primera visita baja unos 1,9 MB. Cargar con `lazy` las plantillas de autor (`src/rapido/Pagina.tsx` las importa todas), separar el CSS por panel y pedir cada fuente recién cuando se muestra (`urlGoogleFonts` en `src/catalogo.ts` las pide todas juntas).
   - Listo cuando: el JS inicial pesa menos de 250 KB sin comprimir y la portada no parpadea al cargar.
+  - **Parcial (2026-11-11):** JS inicial de 442 a 302 KB (94 KB comprimido); CSS inicial de 166 a 89 KB; hojas de fuentes de la portada de 212 a 42 KB; el título de la portada ya no cambia de alto al cargar. Plantillas de autor (`rapido/autores.tsx`), diseños de botón (`botones-carga.tsx`), esquemas, estructuras de layout (`export/estructuras-layout.ts`) y el CSS del prototipo y de tres paneles bajan aparte; las fuentes se piden de a una (`fuentes.ts`). Falta: React ocupa ~140 KB y el resto es lo que la portada muestra (CSS de los 20 estilos, paletas, fondos, layouts genéricos, cajas). Bajar de 250 KB pide separar el CSS de los estilos o las cajas de sus datos; queda abierto.
 
-- [ ] **C1 · Modelo de rondas y ramas** — Opus 5.5 · depende de A3
+- [x] **C1 · Modelo de rondas y ramas** — Opus 5.5 · depende de A3
   - Crear `src/rondas/`: el tipo `Ronda` (clave, nombre de ficha, pregunta, opciones según la config, cómo se aplica a `Config`, si es obligatoria), `rondasDe(config)` y `ramas.ts` con las rondas propias de cada tipo de proyecto (tabla de la sección 7.1). Es **datos**, sin UI.
   - Reutilizar `src/recomendados.ts` para ordenar opciones y `src/familias.ts` para las piezas.
   - Listo cuando: hay tests que verifican que cada tipo devuelve sus rondas, que cada opción existe en el catálogo y que cambiar de tipo conserva color, estilo, piezas y letra.
+  - Hecho en `src/rondas/` (`ronda.ts`, `comunes.ts`, `ramas.ts`, `index.ts`). Las rondas que piden catálogo nuevo (Rubro → D1, fondo animado → D6, scroll → D7, secciones → D12, densidad y lectura → D11) quedan en `rondasPendientes()` y `rondasDe()` no las devuelve hasta que existan. Estilo usa `estilosPara` (A3).
 
 - [ ] **C2 · Lienzo y explosión de ideas** — Opus 5.5 · depende de C1
   - Portar la interacción de `maqueta/molde-2.html` a React en `src/molde/`: lienzo con capa base y capa de vista previa, explosión desde el botón, de a 6 con flechas, vista previa al pasar el mouse con la opción translúcida, elegir con clic o arrastrando al centro, fichas abajo.
@@ -191,6 +193,7 @@ Estado: `[ ]` pendiente · `[x]` hecha. Marcala al terminar.
 - [ ] **D9 · Rondas de rama con catálogo existente** — Sonnet 5.5
   - Conectar a `src/rondas/ramas.ts` las categorías de la galería que le tocan a cada tipo (sección 7.1): tarjetas de producto para tienda, gráficos y tablas para dashboard, barra inferior para app de celular, etc.
   - Listo cuando: cada tipo tiene sus rondas propias funcionando con datos reales.
+  - Ya hecho en C1: `rondaDeGaleria` arma la ronda de cualquier categoría de la galería con sus recomendados, y `RAMAS` conecta las de §7.1. Queda revisar los textos de cada pregunta y que las recomendadas de `recomendados.ts` alcancen para 6 por ronda.
 
 - [ ] **D10 · Recomendaciones por rubro** — Sonnet 5.5 · depende de D1 y D2
   - Extender `src/recomendados.ts`: para cada rubro, qué paletas, layouts, estilos y familias aparecen primero. Las primeras 6 de cada ronda salen de acá.

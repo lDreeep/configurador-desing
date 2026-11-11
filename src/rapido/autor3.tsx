@@ -9,6 +9,7 @@
 // Todo por tokens: paleta, letra, botones y cajas de la persona se aplican encima.
 
 import { useState } from 'react';
+import './autor3.css';
 import { BotonPrincipal } from '../componentes/BotonPrincipal';
 import type { Config } from '../tipos';
 import { Img, Pie, Secundario } from './autor';
