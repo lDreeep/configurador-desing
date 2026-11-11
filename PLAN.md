@@ -102,16 +102,16 @@ Estado: `[ ]` pendiente · `[x]` hecha. Marcala al terminar.
 
 ### Tanda 1: preparación
 
-- [ ] **A1 · `AGENTS.md` para otros agentes** — Haiku 5.5 · apta para Codex · sin dependencias
+- [x] **A1 · `AGENTS.md` para otros agentes** — Haiku 5.5 · apta para Codex · sin dependencias
   - Crear `AGENTS.md` en la raíz: tres líneas que manden a leer `CLAUDE.md`, `DESIGN.md` y `PLAN.md`, más los comandos de `CLAUDE.md`.
   - Listo cuando: el archivo existe y no duplica contenido de `CLAUDE.md`.
 
-- [ ] **A2 · Anotar las decisiones en `DESIGN.md`** — Sonnet 5.5 · sin dependencias
+- [x] **A2 · Anotar las decisiones en `DESIGN.md`** — Sonnet 5.5 · sin dependencias
   - Pasar las 10 decisiones de la sección 4 a `DESIGN.md` §8 (una fila cada una, con el formato de la tabla), y a §10 un resumen de este plan con link a `PLAN.md`.
   - No tocar §3 ni la versión del formato: todavía no cambia la salida.
   - Listo cuando: §8 tiene las filas nuevas numeradas a continuación de D78.
 
-- [ ] **A3 · Auditoría de paleta × estilo** — Opus 5.5 · sin dependencias
+- [x] **A3 · Auditoría de paleta × estilo** — Opus 5.5 · sin dependencias
   - Hoy cada estilo declara sus paletas compatibles (`ESTILOS[id].paletas`). El recorrido nuevo elige color **antes** que estilo, así que hay que saber qué pasa con cualquier par.
   - Escribir un test que arme el sistema de diseño (`src/export/sistema.ts`) para cada par paleta × estilo y verifique contraste AA en texto, texto secundario y botón principal.
   - Entregar: el test, y una función `estilosPara(paleta)` que ordene los estilos (compatibles primero) y excluya los que no pasan.
@@ -119,18 +119,20 @@ Estado: `[ ]` pendiente · `[x]` hecha. Marcala al terminar.
 
 ### Tanda 2: base técnica y motor (en este orden)
 
-- [ ] **B1 · Paso en la URL y guardado** — Opus 5.5 · sin dependencias
+- [x] **B1 · Paso en la URL y guardado** — Opus 5.5 · sin dependencias
   - El paso actual vive solo en memoria (`src/App.tsx`): Atrás del navegador saca del sitio y recargar vuelve al inicio. Llevarlo a `location.hash` y a `localStorage`.
   - Listo cuando: Atrás y Adelante del navegador mueven entre pasos, y recargar deja a la persona donde estaba. Con test.
 
 - [ ] **B2 · Partir la carga inicial** — Opus 5.5 · depende de B1
   - La primera visita baja unos 1,9 MB. Cargar con `lazy` las plantillas de autor (`src/rapido/Pagina.tsx` las importa todas), separar el CSS por panel y pedir cada fuente recién cuando se muestra (`urlGoogleFonts` en `src/catalogo.ts` las pide todas juntas).
   - Listo cuando: el JS inicial pesa menos de 250 KB sin comprimir y la portada no parpadea al cargar.
+  - **Parcial (2026-11-11):** JS inicial de 442 a 302 KB (94 KB comprimido); CSS inicial de 166 a 89 KB; hojas de fuentes de la portada de 212 a 42 KB; el título de la portada ya no cambia de alto al cargar. Plantillas de autor (`rapido/autores.tsx`), diseños de botón (`botones-carga.tsx`), esquemas, estructuras de layout (`export/estructuras-layout.ts`) y el CSS del prototipo y de tres paneles bajan aparte; las fuentes se piden de a una (`fuentes.ts`). Falta: React ocupa ~140 KB y el resto es lo que la portada muestra (CSS de los 20 estilos, paletas, fondos, layouts genéricos, cajas). Bajar de 250 KB pide separar el CSS de los estilos o las cajas de sus datos; queda abierto.
 
-- [ ] **C1 · Modelo de rondas y ramas** — Opus 5.5 · depende de A3
+- [x] **C1 · Modelo de rondas y ramas** — Opus 5.5 · depende de A3
   - Crear `src/rondas/`: el tipo `Ronda` (clave, nombre de ficha, pregunta, opciones según la config, cómo se aplica a `Config`, si es obligatoria), `rondasDe(config)` y `ramas.ts` con las rondas propias de cada tipo de proyecto (tabla de la sección 7.1). Es **datos**, sin UI.
   - Reutilizar `src/recomendados.ts` para ordenar opciones y `src/familias.ts` para las piezas.
   - Listo cuando: hay tests que verifican que cada tipo devuelve sus rondas, que cada opción existe en el catálogo y que cambiar de tipo conserva color, estilo, piezas y letra.
+  - Hecho en `src/rondas/` (`ronda.ts`, `comunes.ts`, `ramas.ts`, `index.ts`). Las rondas que piden catálogo nuevo (Rubro → D1, fondo animado → D6, scroll → D7, secciones → D12, densidad y lectura → D11) quedan en `rondasPendientes()` y `rondasDe()` no las devuelve hasta que existan. Estilo usa `estilosPara` (A3).
 
 - [ ] **C2 · Lienzo y explosión de ideas** — Opus 5.5 · depende de C1
   - Portar la interacción de `maqueta/molde-2.html` a React en `src/molde/`: lienzo con capa base y capa de vista previa, explosión desde el botón, de a 6 con flechas, vista previa al pasar el mouse con la opción translúcida, elegir con clic o arrastrando al centro, fichas abajo.
@@ -191,6 +193,7 @@ Estado: `[ ]` pendiente · `[x]` hecha. Marcala al terminar.
 - [ ] **D9 · Rondas de rama con catálogo existente** — Sonnet 5.5
   - Conectar a `src/rondas/ramas.ts` las categorías de la galería que le tocan a cada tipo (sección 7.1): tarjetas de producto para tienda, gráficos y tablas para dashboard, barra inferior para app de celular, etc.
   - Listo cuando: cada tipo tiene sus rondas propias funcionando con datos reales.
+  - Ya hecho en C1: `rondaDeGaleria` arma la ronda de cualquier categoría de la galería con sus recomendados, y `RAMAS` conecta las de §7.1. Queda revisar los textos de cada pregunta y que las recomendadas de `recomendados.ts` alcancen para 6 por ronda.
 
 - [ ] **D10 · Recomendaciones por rubro** — Sonnet 5.5 · depende de D1 y D2
   - Extender `src/recomendados.ts`: para cada rubro, qué paletas, layouts, estilos y familias aparecen primero. Las primeras 6 de cada ronda salen de acá.
@@ -209,6 +212,7 @@ Estado: `[ ]` pendiente · `[x]` hecha. Marcala al terminar.
 - [ ] **E1 · Portada: más vida y scroll fluido (en la maqueta)** — Fable 5.2 · sin dependencias
   - Rehacer la portada de `maqueta/molde-2.html` según la sección 8. Se aprueba en la maqueta antes de portarla.
   - Listo cuando: quien dirige el proyecto la aprueba.
+  - Estado: hecha en la maqueta (scroll cuadro a cuadro, 15 capas armadas una sola vez, piezas que vuelan al lienzo, título que cambia, botón que se acerca al mouse y cierre con el botón latiendo). Falta la aprobación.
 
 - [ ] **E2 · Portar la portada** — Opus 5.5 · depende de E1 y C2
   - Llevar la portada aprobada a `src/molde/`, con páginas reales del catálogo.
@@ -233,7 +237,7 @@ Estado: `[ ]` pendiente · `[x]` hecha. Marcala al terminar.
   - Playwright: una landing y un dashboard de punta a punta, en escritorio y celular, más axe en cada ronda. Sumarlo a `.github/workflows/`.
 - [ ] **G2 · Accesibilidad y celular** — Sonnet 5.5 · depende de C5
   - Pasada con la skill `impeccable` («audit»): 44 px, foco visible, un solo `h1`, un solo `main`, contraste del marco en claro y oscuro.
-- [ ] **G3 · Red de seguridad** — Sonnet 5.5 · apta para Codex · sin dependencias
+- [x] **G3 · Red de seguridad** — Sonnet 5.5 · apta para Codex · sin dependencias
   - `ErrorBoundary` en la raíz, ESLint con la configuración recomendada de React y TypeScript, y arreglar el error de consola `ERR_INVALID_URL` que aparece después de elegir el tipo de proyecto.
 - [ ] **G4 · Documentación al día** — Haiku 5.5 · apta para Codex · depende de C5
   - `README.md` (habla de «9 pasos»), `CLAUDE.md` (estructura nueva y cantidades reales), orden cronológico de `DESIGN.md` §12, favicon y metadatos en `index.html`, y pasar `public/fotos/traccion-vehiculos.png` (1,8 MB) a webp.
@@ -351,6 +355,6 @@ se despliega desde el botón.
 4. **Tres páginas distintas en un recorrido corto** (unas cuatro pantallas de alto), y al final el lienzo queda en blanco de nuevo con el botón latiendo.
 5. **El primer pantallazo tiene que tener gracia sin bajar:** el título cambia una palabra sola («tu tienda», «tu landing», «tu sistema»), las piezas se apartan del cursor, y el botón se acerca un poco cuando el mouse está cerca.
 6. **«Empezar» sube y queda fijo** apenas se empieza a bajar, como ahora.
-7. **Con `prefers-reduced-motion`:** una sola página armada, sin recorrido.
+7. **Con `prefers-reduced-motion`:** la portada queda quieta, sin recorrido ni piezas en movimiento.
 
 **Listo cuando:** bajar despacio y bajar rápido se sienten igual de continuos, y en celular funciona con el dedo.

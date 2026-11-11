@@ -2,12 +2,15 @@
 // «Comenzar» está siempre en el centro, fijo. Al tocarlo, esa misma página se despliega:
 // aparecen las flechas para pasar de a una y el botón central pasa a ser «Elegir este diseño».
 
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { esAutor, ESTILOS, LAYOUTS, RECETAS_AUTOR } from '../estilos-visuales';
 import type { Config } from '../tipos';
 import { aplicarCombinacion, codigo, type Combinacion, combinacionAlAzar, decodificar, LISTA_FONDOS } from './combinar';
 import { type Contenido, contenido as contenidoDe, Pagina } from './Pagina';
-import { Esquema } from './esquemas';
+// Los esquemas solo se ven al abrir «Ver layouts»: bajan aparte.
+const Esquema = lazy(() => import('./esquemas').then((m) => ({ default: m.Esquema })));
+import { autorListo, precargarAutor, precargarAutores } from './autores';
+import { pedirFuentes } from '../fuentes';
 import { FONDOS, type FondoId } from '../fondos';
 import type { EstiloId, LayoutId } from '../tipos';
 
@@ -30,6 +33,19 @@ function codigoDeLaUrl(): Combinacion | null {
   }
 }
 
+/** La primera muestra: si sale una plantilla de autor que todavía no bajó, se elige otra (no hay «cargando» al entrar). */
+function primeraMuestra(): Combinacion {
+  let k = combinacionAlAzar(null, new Set());
+  for (let i = 0; i < 30 && esAutor(k.layout) && !autorListo(k.layout); i++) k = combinacionAlAzar(null, new Set());
+  return k;
+}
+
+/** Pide de antemano lo que una combinación necesita para verse bien: sus fuentes y, si es de autor, su archivo. */
+function preparar(k: Combinacion) {
+  pedirFuentes([k.titulos, k.texto]);
+  void precargarAutor(k.layout);
+}
+
 interface Capa {
   id: number;
   k: Combinacion;
@@ -46,7 +62,7 @@ export function Inicio(props: { config: Config; onElegir: (k: Combinacion) => vo
   const desdeUrl = useMemo(codigoDeLaUrl, []);
   // 'muestra': el diseño cambia solo y la página es fondo. 'eleccion': se pasa a mano y se elige.
   const [modo, setModo] = useState<'muestra' | 'eleccion'>(desdeUrl ? 'eleccion' : 'muestra');
-  const [historial, setHistorial] = useState<Combinacion[]>(() => [desdeUrl ?? combinacionAlAzar(null, new Set())]);
+  const [historial, setHistorial] = useState<Combinacion[]>(() => [desdeUrl ?? primeraMuestra()]);
   const [pos, setPos] = useState(0);
   const [capas, setCapas] = useState<Capa[]>(() => [{ id: 0, k: historial[0], sentido: 'adelante' }]);
   const [pausado, setPausado] = useState(reducido());
@@ -62,13 +78,27 @@ export function Inicio(props: { config: Config; onElegir: (k: Combinacion) => vo
     });
   }, []);
 
+  // La combinación que viene se elige antes de tiempo, para que sus fuentes y su plantilla ya estén al mostrarla.
+  const proxima = useRef<Combinacion | null>(null);
+  useEffect(() => {
+    if (pos !== historial.length - 1 || proxima.current) return;
+    proxima.current = combinacionAlAzar(historial[historial.length - 1], new Set());
+    preparar(proxima.current);
+  }, [pos, historial]);
+  // Las plantillas de autor bajan en segundo plano apenas se ve la portada.
+  useEffect(() => {
+    const t = window.setTimeout(() => void precargarAutores(), 800);
+    return () => window.clearTimeout(t);
+  }, []);
+
   const siguiente = useCallback(() => {
     if (pos < historial.length - 1) {
       mostrar(historial[pos + 1], 'adelante');
       setPos(pos + 1);
       return;
     }
-    const k = combinacionAlAzar(historial[historial.length - 1], new Set());
+    const k = proxima.current ?? combinacionAlAzar(historial[historial.length - 1], new Set());
+    proxima.current = null;
     setHistorial((h) => [...h, k]);
     setPos(pos + 1);
     mostrar(k, 'adelante');
@@ -77,6 +107,8 @@ export function Inicio(props: { config: Config; onElegir: (k: Combinacion) => vo
   /** Muestra una combinación nueva a partir de la actual (descarta lo que había "adelante" en el historial). */
   const irA = useCallback(
     (k: Combinacion, sentido: Capa['sentido'] = 'adelante') => {
+      preparar(k);
+      proxima.current = null;
       setHistorial((h) => [...h.slice(0, pos + 1), k]);
       setPos(pos + 1);
       mostrar(k, sentido);
@@ -295,7 +327,7 @@ export function Inicio(props: { config: Config; onElegir: (k: Combinacion) => vo
                   setVerLayouts(false);
                 }}
               >
-                <Esquema id={id} />
+                <Suspense fallback={<span className="inicio-esquema-cargando" />}><Esquema id={id} /></Suspense>
                 <span className="inicio-layout-nombre">{LAYOUTS[id].nombre}</span>
                 <span className="inicio-layout-desc">{LAYOUTS[id].descripcion}</span>
               </button>
@@ -314,7 +346,7 @@ export function Inicio(props: { config: Config; onElegir: (k: Combinacion) => vo
                   setVerLayouts(false);
                 }}
               >
-                <Esquema id={id} />
+                <Suspense fallback={<span className="inicio-esquema-cargando" />}><Esquema id={id} /></Suspense>
                 <span className="inicio-layout-nombre">{LAYOUTS[id].nombre}</span>
                 <span className="inicio-layout-desc">{LAYOUTS[id].descripcion}</span>
               </button>

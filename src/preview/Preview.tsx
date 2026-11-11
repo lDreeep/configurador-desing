@@ -1,5 +1,6 @@
 import { useMemo, useState, type CSSProperties } from 'react';
 import { sistemaDeDiseno } from '../export/sistema';
+import { useFuentes } from '../fuentes';
 import type { Config } from '../tipos';
 import { animarToque } from '../componentes/ui';
 import { BotonPrincipal } from '../componentes/BotonPrincipal';
@@ -13,6 +14,7 @@ const humanizar = (s: string) => {
 /** Vista previa en vivo. Usa los mismos tokens que el export. */
 export function Preview({ config }: { config: Config }) {
   const s = useMemo(() => sistemaDeDiseno(config), [config]);
+  useFuentes([config.visual.fuenteTitulos, config.visual.fuenteTexto]);
   const [dispositivo, setDispositivo] = useState<'escritorio' | 'celular'>('escritorio');
   const [activa, setActiva] = useState(0);
   const [menuAbierto, setMenuAbierto] = useState(false);

@@ -1,6 +1,6 @@
 // Modo avanzado: todos los pasos con su vista previa al costado. Se carga solo si se usa.
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { NotaPaso } from './componentes/ui';
 import EstilosGaleria from './galeria/EstilosGaleria';
 import { PASOS } from './pasos/pasos';
@@ -12,11 +12,13 @@ export default function ModoAvanzado(props: {
   config: Config;
   setConfig: (fn: (c: Config) => Config) => void;
   reiniciar: () => void;
-  pasoInicial: string;
+  /** Id del paso actual (viene de la URL). */
+  paso: string;
+  onPaso: (id: string) => void;
   onRapido: () => void;
 }) {
   const { config, setConfig, reiniciar } = props;
-  const [indice, setIndice] = useState(() => Math.max(0, PASOS.findIndex((p) => p.id === props.pasoInicial)));
+  const indice = Math.max(0, PASOS.findIndex((p) => p.id === props.paso));
   const panel = useRef<HTMLElement>(null);
   const paso = PASOS[indice];
   const Componente = paso.componente;
@@ -25,7 +27,7 @@ export default function ModoAvanzado(props: {
     panel.current?.scrollTo({ top: 0 });
   }, [indice]);
 
-  const ir = (i: number) => setIndice(Math.max(0, Math.min(PASOS.length - 1, i)));
+  const ir = (i: number) => props.onPaso(PASOS[Math.max(0, Math.min(PASOS.length - 1, i))].id);
   const progreso = Math.round(((indice + 1) / PASOS.length) * 100);
 
   return (
@@ -63,7 +65,7 @@ export default function ModoAvanzado(props: {
             onClick={() => {
               if (window.confirm('¿Empezar de cero? Se borra todo lo que elegiste.')) {
                 reiniciar();
-                setIndice(0);
+                ir(0);
               }
             }}
           >

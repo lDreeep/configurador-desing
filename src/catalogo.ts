@@ -239,13 +239,6 @@ export const FUENTES: Record<FuenteId, Fuente> = {
 };
 
 /** URL de Google Fonts que carga todo el catálogo (para mostrar cada fuente con su forma real). */
-export const urlGoogleFonts = () =>
-  'https://fonts.googleapis.com/css2?' +
-  Object.values(FUENTES)
-    .map((x) => `family=${x.nombre.replace(/ /g, '+')}:wght@${x.pesos.join(';')}`)
-    .join('&') +
-  '&display=swap';
-
 export const COMBINACIONES: { nombre: string; titulos: FuenteId; texto: FuenteId }[] = [
   { nombre: 'Neutra', titulos: 'inter', texto: 'inter' },
   { nombre: 'Tech', titulos: 'space_grotesk', texto: 'inter' },

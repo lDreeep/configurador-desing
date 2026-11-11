@@ -1,4 +1,5 @@
 import { useId, useState, type ReactNode } from 'react';
+import { fuenteDePila, useFuentes } from '../fuentes';
 
 export interface Opcion<T extends string> {
   id: T;
@@ -19,6 +20,7 @@ export function Opciones<T extends string>(props: {
   onElegir: (id: T) => void;
   columnas?: number;
 }) {
+  useFuentes(props.opciones.map((o) => fuenteDePila(o.fuente)));
   return (
     <fieldset className="grupo">
       <legend className="grupo-titulo">{props.etiqueta}</legend>
