@@ -119,7 +119,7 @@ button:disabled { cursor: not-allowed; opacity: 0.4; }
 
 .opcion-extra { display: flex; align-items: center; justify-content: flex-end; flex-shrink: 0; }
 .filtros { display: flex; flex-wrap: wrap; gap: 6px; }
-.chip { min-height: 36px; padding: 0 14px; border-radius: 999px; border: 1px solid var(--ui-borde-fuerte); background: #fff; font-size: 13px; font-weight: 600; color: var(--ui-suave); }
+.chip { min-height: 44px; padding: 0 14px; border-radius: 999px; border: 1px solid var(--ui-borde-fuerte); background: #fff; font-size: 13px; font-weight: 600; color: var(--ui-suave); }
 .chip:hover { border-color: #9aa9e8; }
 .chip[aria-pressed='true'] { background: var(--ui-oscuro); border-color: var(--ui-oscuro); color: #fff; }
 .caja { border: 1px solid var(--ui-borde); border-radius: 14px; padding: 16px; background: #fafbfc; }
