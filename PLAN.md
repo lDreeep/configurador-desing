@@ -421,3 +421,129 @@ se despliega desde el botón.
 7. **Con `prefers-reduced-motion`:** la portada queda quieta, sin recorrido ni piezas en movimiento.
 
 **Listo cuando:** bajar despacio y bajar rápido se sienten igual de continuos, y en celular funciona con el dedo.
+
+---
+
+## 9. Después del plan (tanda H)
+
+Con G5 mergeada, el plan de Molde queda cerrado. La tanda H es lo que sigue: ordenar, publicar,
+probar con personas y recién después sumar cosas. Cada tarea trae el pedido listo para pegar
+(igual que en la sección 1: una sesión nueva por tarea, desde `main` actualizado).
+
+**Al final de todo pedido sumá esto** (es lo que evitó que se rompieran el peso y los e2e):
+
+> Arrancá desde `main` actualizado. Antes de terminar corré `npm run typecheck`, `npm test`,
+> `npm run lint`, `npm run peso` y `npm run test:e2e`. Marcá la tarea en `PLAN.md`, subí la rama y
+> pasame el link del PR.
+
+| Orden | Tarea | Claude | ChatGPT | Depende de |
+|---|---|---|---|---|
+| 1 | H1 · Limpiar ramas | Haiku 5.5 | Terra | G5 |
+| 2 | H2 · Publicar el sitio | Sonnet 5.5 | Sol | G5 |
+| 3 | H3 · Probar en celulares reales | quien dirige (+ Sonnet para arreglos) | Sol para arreglos | H2 |
+| 4 | H4 · Pruebas con personas | quien dirige (+ Opus para la síntesis) | Astra para la síntesis | H2 |
+| 5 | H5 · Probar el `DESIGN.md` con otras IA | Sonnet 5.5 | Sol | H2 |
+| 6 | H6 · Plan nuevo con lo aprendido | Opus 5.5 | Astra | H3, H4 y H5 |
+| — | H7 a H12 · Backlog (opcionales) | ver cada una | ver cada una | H6 decide cuáles |
+
+- [ ] **H1 · Limpiar ramas** — Haiku 5.5 · ChatGPT: Terra
+  - Borrar las ramas ya mergeadas y decidir qué hacer con `codex/plantilla-traccion` y `codex/recorrido-simple` (anteriores a C5).
+  - Pedido:
+    > Leé `CLAUDE.md` y `PLAN.md`. Hacé H1: listá las ramas remotas y separalas en (a) ya mergeadas en `main`
+    > y (b) sin mergear. Para cada una de (b), contame en dos líneas qué cambia y si sigue teniendo sentido
+    > después de C5 (que retiró el recorrido viejo). **No borres nada**: pasame la lista con tu recomendación
+    > y esperá mi OK.
+
+- [ ] **H2 · Publicar el sitio** — Sonnet 5.5 · ChatGPT: Sol
+  - Molde online con una URL fija, que se actualice sola con cada merge a `main`. `vite.config.ts` ya usa `base: './'`.
+  - Pedido:
+    > Leé `CLAUDE.md` y `PLAN.md`. Hacé H2: sumá un workflow en `.github/workflows/` que, en cada push a
+    > `main` y solo si pasa `validar.yml`, haga `npm run build` y publique `dist/` en GitHub Pages. Revisá que
+    > las fotos de `public/fotos/`, las fuentes y las rutas `#/…` funcionen bajo la subcarpeta del repositorio.
+    > Explicame qué tengo que activar yo en Settings → Pages. Anotá la URL en `README.md`.
+
+- [ ] **H3 · Probar en celulares reales** — quien dirige · arreglos con Sonnet 5.5 / Sol
+  - Abrir la URL de H2 en tu celular y en uno viejo o barato si podés: Android y iPhone. Anotá todo: lento, se traba, no se lee, el toque no responde, las fuentes tardan.
+  - Pedido para los arreglos (pegando tu lista):
+    > Leé `CLAUDE.md` y `PLAN.md`. Hacé H3: abajo va la lista de problemas que vi en celulares reales
+    > (modelo, navegador y qué pasó). Reproducí cada uno con Playwright emulando el equipo, corregilo y
+    > sumá una comprobación al e2e cuando se pueda. Lo que no puedas reproducir, decímelo.
+    > [tu lista]
+
+- [ ] **H4 · Pruebas con personas** — quien dirige · síntesis con Opus 5.5 / Astra
+  - 3 a 5 personas que nunca lo vieron, cada una con una idea de proyecto propia. Mirá sin ayudar y anotá: dónde dudan, qué no entienden, qué eligen sin pensar, si llegan a descargar, y qué opinan del resultado.
+  - Pedido para la síntesis (pegando tus notas):
+    > Leé `CLAUDE.md`, `DESIGN.md` y `PLAN.md`. Hacé H4: abajo van mis notas de pruebas con personas.
+    > Ordená los problemas por cuántas personas los tuvieron y cuánto les costó. Para cada uno proponé un
+    > arreglo concreto y qué tan grande es. Anotá las pruebas en `DESIGN.md` §9 y las preguntas que queden en §11.
+    > No cambies código.
+    > [tus notas]
+
+- [ ] **H5 · Probar el `DESIGN.md` con otras IA** — Sonnet 5.5 · ChatGPT: Sol
+  - El producto es el archivo: hay que ver si una IA construye bien la app con él.
+  - Pedido:
+    > Leé `CLAUDE.md`, `DESIGN.md` y `PLAN.md`. Hacé H5: generá tres `DESIGN.md` con Molde (una landing, un
+    > dashboard y una tienda) usando `generarDesignMd` con configs variadas. Para cada uno, escribí el pedido
+    > que le daría una persona a otra IA para construir la app. Después revisá el archivo como si fueras esa
+    > IA: qué datos faltan, qué es ambiguo, qué se contradice. Proponé los cambios al formato y anotá todo en
+    > `DESIGN.md` §9 (prueba) y §10 (cambios propuestos). No cambies el formato todavía.
+  - Mejor todavía: probalo vos con dos IA distintas (Claude y ChatGPT) y pegá lo que construyeron junto con el pedido.
+
+- [ ] **H6 · Plan nuevo con lo aprendido** — Opus 5.5 · ChatGPT: Astra
+  - Pedido:
+    > Leé `CLAUDE.md`, `DESIGN.md` (sobre todo §9, §10 y §11) y `PLAN.md`. Hacé H6: con los resultados de
+    > H3, H4 y H5, armá el plan siguiente en `PLAN.md` §10, con el mismo formato que la sección 5 (código,
+    > modelo de Claude, modelo de ChatGPT, «Listo cuando», dependencias y pedido listo para pegar).
+    > Priorizá lo que trabó a las personas por encima de las ideas nuevas. Justificá en una línea por qué
+    > entra o no cada idea del backlog (H7 a H12).
+
+### Backlog (opcionales: H6 decide cuáles van y en qué orden)
+
+- [ ] **H7 · Probar los otros fondos de la portada** — Claude Fable 5.2 (u Opus 5.5) · ChatGPT: no (es criterio visual)
+  - Pedido:
+    > Leé `CLAUDE.md`, `PLAN.md` y la entrada «Fondos interactivos para la portada de Molde» de `DESIGN.md`
+    > §10. Cargá la skill `frontend-design`. Hacé H7: armá `maqueta/fondos.html` con la portada actual y un
+    > selector para cambiar entre la linterna (la de hoy), la retícula que se curva, el campo de letras y el
+    > muestrario de colores. Cumplí las reglas de esa entrada (celular, movimiento reducido, velo, 60 cuadros
+    > por segundo) y medí cada uno. No toques `src/`: elijo yo mirándolos.
+
+- [ ] **H8 · Reordenar las secciones arrastrando** — Sonnet 5.5 · ChatGPT: Sol
+  - Pedido:
+    > Leé `CLAUDE.md`, `DESIGN.md` y `PLAN.md`. Hacé H8: en la ronda Secciones (`src/rondas/ramas.ts`,
+    > `src/molde/Molde.tsx`) permití cambiar el orden de las secciones elegidas sin sacarlas, arrastrando las
+    > fichas y también con teclado (botones «subir» y «bajar», 44 px, con `aria-label`). El orden sale en §22
+    > del export como hoy. Test de `combinarSecciones` y del orden en el export.
+
+- [ ] **H9 · Más diseños por sección** — Claude Fable 5.2 · ChatGPT: no
+  - Pedido:
+    > Leé `CLAUDE.md`, `DESIGN.md` y `PLAN.md`. Cargá la skill `frontend-design`. Hacé H9: sumá un tercer
+    > diseño a cada una de las 8 secciones de `src/secciones.ts`, cada uno con una idea propia (nada de
+    > cards numeradas 01/02/03 ni la misma sombra en todo), dibujado en `src/rapido/secciones.tsx` +
+    > `secciones.css` solo con tokens. Revisalos con al menos 6 estilos a 1440 y 390 px. Seguí la regla de
+    > `CLAUDE.md` para cambios en el export (§22, versión y §12).
+
+- [ ] **H10 · Guardar favoritos y comparar dos** — Opus 5.5 · ChatGPT: Astra
+  - Pedido:
+    > Leé `CLAUDE.md`, `DESIGN.md` y `PLAN.md`. Hacé H10: en la pantalla final de Molde, «Guardar» guarda la
+    > config actual con un nombre en `localStorage` (hasta 10). Una lista permite abrir, borrar y elegir dos
+    > para ver lado a lado (dos `Pagina` con su config, en celular una arriba de la otra). Cuidá el peso: todo
+    > esto baja aparte. Tests de guardar, abrir y borrar, y una prueba e2e de comparar.
+
+- [ ] **H11 · Importar un `DESIGN.md` para seguir editándolo** — Opus 5.5 · ChatGPT: Astra
+  - Está como pendiente en `DESIGN.md` §5.
+  - Pedido:
+    > Leé `CLAUDE.md`, `DESIGN.md` y `PLAN.md`. Hacé H11: en la portada, «Abrir un DESIGN.md» lee un archivo
+    > exportado por Molde y reconstruye la `Config` (lo que no se pueda leer queda con el valor inicial y se
+    > avisa). Tiene que aceptar desde la versión 0.8.8 hasta la actual. Test de ida y vuelta: para muchas
+    > configs, exportar → importar → exportar da el mismo archivo. Actualizá §5 y §12 de `DESIGN.md`.
+
+- [ ] **H12 · Efecto al pasar el mouse por las tarjetas y cursor propio** — Sonnet 5.5 · ChatGPT: Sol
+  - Las dos ideas de §7.9 que quedaron sin hacer.
+  - Pedido:
+    > Leé `CLAUDE.md`, `DESIGN.md` y `PLAN.md` (§7.9). Hacé H12: sumá dos rondas opcionales para landing,
+    > tienda y portfolio: «Al pasar el mouse» (con los 7 hover que ya existen, aplicados a las tarjetas) y
+    > «Cursor» (4 opciones en CSS, con versión normal en pantallas táctiles y con movimiento reducido).
+    > Cada una llena su lugar en el export, con su CSS. Seguí la regla de `CLAUDE.md` para cambios en el export.
+
+**Arreglo chico pendiente** (cualquiera, de paso): el aviso de lint en `src/rapido/demo.tsx:32`
+(`useEffect` sin la dependencia `bucle`).
