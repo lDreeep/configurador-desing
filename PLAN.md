@@ -200,9 +200,10 @@ Estado: `[ ]` pendiente · `[x]` hecha. Marcala al terminar.
   - Listo cuando: cada tipo tiene sus rondas propias funcionando con datos reales.
   - Ya hecho en C1: `rondaDeGaleria` arma la ronda de cualquier categoría de la galería con sus recomendados, y `RAMAS` conecta las de §7.1. D9: `recomendados.ts` suma las recomendadas que faltaban para que cada ronda de galería de cada rama tenga al menos 6 (test en `rondas.test.ts`); las preguntas de `ramas.ts` se revisaron y quedan como están.
 
-- [ ] **D10 · Recomendaciones por rubro** — Sonnet 5.5 · depende de D1 y D2
+- [x] **D10 · Recomendaciones por rubro** — Sonnet 5.5 · depende de D1 y D2
   - Extender `src/recomendados.ts`: para cada rubro, qué paletas, layouts, estilos y familias aparecen primero. Las primeras 6 de cada ronda salen de acá.
   - Listo cuando: un test verifica que cada rubro tiene al menos 6 recomendados por ronda y que todos existen.
+  - Hecha: `RECOMENDADOS_RUBRO` (6 paletas, 6 layouts, 6 estilos y 6 familias por rubro), `recomendadosDeRubro` y `conRubro` al final de `src/recomendados.ts`; tests en `src/rubros.test.ts`. Pendiente (lo cierra la tarea que sume la ronda Rubro): `Config` todavía no guarda el rubro, así que `COLOR`, `LAYOUT`, `ESTILO` y `PIEZAS` en `src/rondas/comunes.ts` aún no leen estas listas; con el rubro en `Config` alcanza con pasar `conRubro(rec.paletas, …)` a `primeroRecomendados`.
 
 - [ ] **D11 · Ideas nuevas como rondas opcionales** — Sonnet 5.5 · depende de C4
   - Sumar las rondas de la sección 7.9 que ya tienen formato definido en `DESIGN.md` §3 y nunca se implementaron: iconos (§11), tono de los textos (§13) y densidad (§8).

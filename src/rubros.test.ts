@@ -52,3 +52,37 @@ describe('rubros', () => {
     }
   });
 });
+
+describe('recomendados por rubro', () => {
+  it('cada rubro tiene recomendados y no sobra ninguno', async () => {
+    const { RECOMENDADOS_RUBRO } = await import('./recomendados');
+    expect(Object.keys(RECOMENDADOS_RUBRO).sort()).toEqual(RUBROS.map((r) => r.id).sort());
+  });
+
+  it('cada rubro tiene al menos 6 recomendados por ronda, sin repetir, y todos existen', async () => {
+    const { RECOMENDADOS_RUBRO } = await import('./recomendados');
+    const { PALETAS } = await import('./catalogo');
+    const { ESTILOS, LAYOUTS } = await import('./estilos-visuales');
+    const { FAMILIAS } = await import('./familias');
+    for (const r of RUBROS) {
+      const rec = RECOMENDADOS_RUBRO[r.id];
+      const rondas = [
+        ['paletas', rec.paletas, PALETAS],
+        ['layouts', rec.layouts, LAYOUTS],
+        ['estilos', rec.estilos, ESTILOS],
+        ['familias', rec.familias, FAMILIAS],
+      ] as const;
+      for (const [nombre, ids, catalogo] of rondas) {
+        expect(ids.length, `${r.id} ${nombre}`).toBeGreaterThanOrEqual(6);
+        expect(new Set(ids).size, `${r.id} ${nombre} repetidos`).toBe(ids.length);
+        for (const id of ids) expect((catalogo as Record<string, unknown>)[id], `${r.id} ${nombre} ${id}`).toBeDefined();
+      }
+    }
+  });
+
+  it('conRubro pone primero lo del rubro y no repite', async () => {
+    const { conRubro } = await import('./recomendados');
+    expect(conRubro(['b', 'a'], ['a', 'c'])).toEqual(['b', 'a', 'c']);
+    expect(conRubro(undefined, ['a'])).toEqual(['a']);
+  });
+});
