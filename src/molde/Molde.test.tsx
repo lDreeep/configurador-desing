@@ -103,6 +103,29 @@ describe('Molde (C2)', () => {
     expect(conBoton('Descargar DESIGN.md')).toBeTruthy();
   });
 
+  it('con el dedo: un toque muestra la idea, «Usar» la elige y «Ver otras» la descarta', async () => {
+    await montar('proyecto');
+    const tocar = async (el: HTMLElement) => {
+      const d = new MouseEvent('pointerdown', { bubbles: true, cancelable: true, button: 0 });
+      Object.defineProperty(d, 'pointerType', { value: 'touch' });
+      Object.defineProperty(d, 'pointerId', { value: 2 });
+      act(() => void el.dispatchEvent(d));
+      await act(async () => void el.dispatchEvent(new MouseEvent('click', { bubbles: true, detail: 1 })));
+    };
+    await tocar(idea('Tienda'));
+    expect(pasoActual()).toBe('proyecto');
+    expect(vistaPrevia()).not.toBeNull();
+    expect(conBoton('Usar')).toBeTruthy();
+    await clic(conBoton('Ver otras'));
+    expect(vistaPrevia()).toBeNull();
+    expect([...caja.querySelectorAll('button')].some((b) => b.textContent === 'Usar')).toBe(false);
+    // «Ver otras» pasa a la vuelta siguiente: se toca una de esas y se usa.
+    await tocar(ideas()[0]);
+    await clic(conBoton('Usar'));
+    expect(pasoActual()).toBe('color');
+    expect(fichas()).toHaveLength(1);
+  });
+
   it('las flechas muestran las ideas de a 6', async () => {
     await montar('proyecto');
     const antes = ideas().map((b) => b.textContent);
