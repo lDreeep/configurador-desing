@@ -19,23 +19,8 @@
 // `position: absolute; inset: 0` dentro de un contenedor con `position: relative`. La capa es
 // un contenedor (`container-type: size`): las medidas en `cq*` siguen a la capa, no a la ventana.
 
-export type FondoAnimadoId =
-  | 'aurora'
-  | 'puntos_corren'
-  | 'franjas'
-  | 'burbujas'
-  | 'piso_perspectiva'
-  | 'brillo_pasa'
-  | 'grano_vibra'
-  | 'ondas_agua'
-  | 'puntos_unidos'
-  | 'degrade_gira'
-  | 'cuadricula_late'
-  | 'lluvia_lineas'
-  | 'manchas_tinta'
-  | 'cinta_texto'
-  | 'luz_cursor'
-  | 'formas_flotan';
+import type { FondoAnimadoId } from './fondos-animados-base';
+export type { FondoAnimadoId } from './fondos-animados-base';
 
 export interface FondoAnimado {
   nombre: string;

@@ -20,6 +20,8 @@ describe('recorrido de Molde (C2)', () => {
     let s = { config: configInicial(), elegidas: new Set<ClaveRonda>() as ReadonlySet<ClaveRonda>, siguiente: '' };
     expect(siguiente(s.config, s.elegidas)).toBe('proyecto');
     s = paso(s.config, s.elegidas, 'proyecto', 'tienda');
+    expect(s.siguiente).toBe('rubro');
+    s = paso(s.config, s.elegidas, 'rubro');
     expect(s.siguiente).toBe('color');
     s = paso(s.config, s.elegidas, 'color', 'menta');
     expect(s.siguiente).toBe('layout');
@@ -43,7 +45,7 @@ describe('recorrido de Molde (C2)', () => {
     expect([...otro.elegidas].sort()).toEqual(['color', 'estilo', 'layout', 'proyecto']);
     expect(otro.config.visual.paleta).toBe(s.config.visual.paleta);
     expect(otro.config.visual.estilo).toBe(s.config.visual.estilo);
-    expect(otro.siguiente).toBe('piezas');
+    expect(otro.siguiente).toBe('rubro');
   });
 
   it('un paso de la URL que no corresponde se corrige', () => {
@@ -51,11 +53,11 @@ describe('recorrido de Molde (C2)', () => {
     expect(resolverPaso(c, new Set(), 'color').paso).toBe('proyecto');
     expect(resolverPaso(c, new Set(), 'cualquiera').paso).toBe(INICIO_MOLDE);
     expect(resolverPaso(c, new Set(), LISTO_MOLDE).paso).toBe(INICIO_MOLDE);
-    expect(resolverPaso(c, new Set(['proyecto']), INICIO_MOLDE).paso).toBe('color');
-    expect(resolverPaso(c, new Set(['proyecto']), LISTO_MOLDE).paso).toBe('color');
+    expect(resolverPaso(c, new Set(['proyecto']), INICIO_MOLDE).paso).toBe('rubro');
+    expect(resolverPaso(c, new Set(['proyecto']), LISTO_MOLDE).paso).toBe('rubro');
     expect(resolverPaso(c, new Set(['proyecto']), 'letra').ronda?.clave).toBe('letra');
     // Una ronda de otra rama no existe para este tipo.
-    expect(resolverPaso(c, new Set(['proyecto']), 'galeria:producto').paso).toBe('color');
+    expect(resolverPaso(c, new Set(['proyecto']), 'galeria:producto').paso).toBe('rubro');
   });
 
   it('lo elegido se guarda y se vuelve a leer', () => {

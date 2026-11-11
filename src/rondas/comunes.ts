@@ -1,3 +1,4 @@
+import { rubrosDe, rubroPorId } from '../rubros';
 // Las rondas que ve todo proyecto: Proyecto → Rubro → Color → Layout → Estilo (obligatorias)
 // y Piezas · Letra · Entrada (opcionales). Las propias de cada tipo están en ramas.ts.
 
@@ -6,10 +7,10 @@ import { APARICIONES, COMBINACIONES, DENSIDADES, DIRECCIONES, FUENTES, ICONOS, M
 import { estilosPara, LISTA_ESTILOS } from '../compatibilidad';
 import { aplicarTipo } from '../estado';
 import { ESTILOS, LAYOUTS } from '../estilos-visuales';
-import { aplicarPaquete, FAMILIAS, paqueteN } from '../familias';
-import { RECOMENDADOS, RECOMENDADOS_D11 } from '../recomendados';
+import { aplicarPaquete, FAMILIAS, familiasPara, paqueteN } from '../familias';
+import { conRubro, recomendadosDeRubro, RECOMENDADOS, RECOMENDADOS_D11 } from '../recomendados';
 import type { AparicionId, Config, Densidad, EstiloId, FuenteId, LayoutId, PaletaId, TipoProyecto } from '../tipos';
-import { primeroRecomendados, type Ronda, type RondaPendiente } from './ronda';
+import { primeroRecomendados, type Ronda } from './ronda';
 
 const LISTA_PALETAS = Object.keys(PALETAS) as PaletaId[];
 const LISTA_LAYOUTS = Object.keys(LAYOUTS) as LayoutId[];
@@ -31,8 +32,14 @@ export const PROYECTO: Ronda = {
   elegida: (c) => c.proyecto.tipo,
 };
 
-/** Rubro (para qué es): necesita `src/rubros.ts`, que llega con la tarea D1. */
-export const RUBRO_PENDIENTE: RondaPendiente = { clave: 'rubro', ficha: 'Rubro', pregunta: '¿Para qué es?', tarea: 'D1' };
+export const RUBRO: Ronda = {
+  clave: 'rubro', ficha: 'Rubro', pregunta: '¿Para qué es?', obligatoria: true,
+  opciones: (c) => rubrosDe(c.proyecto.tipo).map((r) => ({ id: r.id, nombre: r.nombre, recomendada: false })),
+  aplicar: (c, id) => rubroPorId(id)?.tipo === c.proyecto.tipo ? { ...c, proyecto: { ...c.proyecto, rubro: id } } : c,
+  elegida: (c) => c.proyecto.rubro ?? null,
+};
+const recRubro = (c: Config) => recomendadosDeRubro(c.proyecto.rubro);
+const paqueteDe = (c: Config, n: number) => paqueteN(c.visual.estilo, n, recRubro(c) ? conRubro(recRubro(c)?.familias, familiasPara(c.visual.estilo)) : undefined);
 
 export const COLOR: Ronda = {
   clave: 'color',
@@ -40,10 +47,10 @@ export const COLOR: Ronda = {
   pregunta: '¿Qué colores?',
   obligatoria: true,
   // Se elige antes que el estilo: van primero las paletas que declaran los estilos recomendados para el tipo.
-  // (D10 suma las recomendaciones por rubro.)
+  // D13 antepone las recomendaciones del rubro.
   opciones: (c) => {
     const rec = recs(c).estilos.flatMap((e) => ESTILOS[e].paletas);
-    return primeroRecomendados(LISTA_PALETAS, rec).map(({ id, recomendada }) => ({
+    return primeroRecomendados(LISTA_PALETAS, conRubro(recRubro(c)?.paletas, rec)).map(({ id, recomendada }) => ({
       id,
       nombre: PALETAS[id].nombre,
       descripcion: `Modo ${PALETAS[id].modo}`,
@@ -61,7 +68,7 @@ export const LAYOUT: Ronda = {
   pregunta: '¿Cómo se ordena la página?',
   obligatoria: true,
   opciones: (c) =>
-    primeroRecomendados(LISTA_LAYOUTS, recs(c).layouts).map(({ id, recomendada }) => ({
+    primeroRecomendados(LISTA_LAYOUTS, conRubro(recRubro(c)?.layouts, recs(c).layouts)).map(({ id, recomendada }) => ({
       id,
       nombre: LAYOUTS[id].nombre,
       descripcion: LAYOUTS[id].descripcion,
@@ -78,7 +85,7 @@ function estilosOfrecidos(c: Config): { id: EstiloId; recomendada: boolean }[] {
   const p = c.visual.paleta;
   const usables = p === 'personalizada' ? LISTA_ESTILOS : estilosPara(p);
   const rec = recs(c).estilos.filter((e) => p === 'personalizada' || ESTILOS[e].paletas.includes(p));
-  return primeroRecomendados(usables, rec);
+  return primeroRecomendados(usables, conRubro(recRubro(c)?.estilos, rec));
 }
 
 export const ESTILO: Ronda = {
@@ -134,14 +141,14 @@ export const PIEZAS: Ronda = {
   // Cada opción es un paquete coherente de familias.ts para el estilo elegido: botón, caja y una pieza por categoría.
   opciones: (c) =>
     Array.from({ length: CANTIDAD_PAQUETES }, (_, n) => {
-      const p = paqueteN(c.visual.estilo, n);
+      const p = paqueteDe(c, n);
       const f = FAMILIAS[p.familia];
-      return { id: String(n), nombre: p.variante ? `${f.nombre} ${p.variante + 1}` : f.nombre, descripcion: f.descripcion, recomendada: n < 3 };
+      return { id: String(n), nombre: p.variante ? `${f.nombre} ${p.variante + 1}` : f.nombre, descripcion: f.descripcion, recomendada: n < (recRubro(c) ? 6 : 3) };
     }),
-  aplicar: (c, id) => aplicarPaquete(c, paqueteN(c.visual.estilo, Number(id))),
+  aplicar: (c, id) => aplicarPaquete(c, paqueteDe(c, Number(id))),
   elegida: (c) => {
     for (let n = 0; n < CANTIDAD_PAQUETES; n++) {
-      const p = paqueteN(c.visual.estilo, n);
+      const p = paqueteDe(c, n);
       const iguales = p.boton === c.botones.diseno && p.caja === c.cajas.preset && Object.entries(p.componentes).every(([k, v]) => c.componentes[k as keyof typeof c.componentes] === v);
       if (iguales) return String(n);
     }

@@ -67,8 +67,9 @@ describe('Molde (C2)', () => {
     expect(vistaPrevia()).toBeNull();
 
     await clic(idea('Tienda'));
+    await clic(ideas()[0]);
     expect(pasoActual()).toBe('color');
-    expect(fichas()).toEqual(['ProyectoTienda']);
+    expect(fichas()).toEqual(['ProyectoTienda', 'RubroRopa']);
 
     // Arrastrar una idea hasta el centro también la elige.
     const b = ideas()[1];
@@ -78,7 +79,7 @@ describe('Molde (C2)', () => {
     puntero(b, 'pointerup', { clientX: 500 - ox, clientY: 500 - oy });
     await act(() => new Promise((r) => setTimeout(r, 40)));
     expect(pasoActual()).toBe('layout');
-    expect(fichas()).toHaveLength(2);
+    expect(fichas()).toHaveLength(3);
   });
 
   it('con teclado: las ideas son botones, el foco muestra y Enter (clic del botón) elige', async () => {
@@ -87,6 +88,7 @@ describe('Molde (C2)', () => {
     act(() => idea('Landing').focus());
     expect(vistaPrevia()).not.toBeNull();
     await clic(idea('Landing'));
+    await clic(ideas()[0]);
     expect(pasoActual()).toBe('color');
     // Al cambiar de ronda el foco va a la pregunta, y de ahí Tab llega a las ideas.
     expect(document.activeElement?.classList.contains('molde-pregunta')).toBe(true);
@@ -96,7 +98,7 @@ describe('Molde (C2)', () => {
     expect(pasoActual()).toBe('estilo');
     await clic(ideas()[0]);
     expect(pasoActual()).toBe('piezas');
-    expect(fichas().map((f) => f!.replace(/^(Proyecto|Color|Layout|Estilo).*/, '$1'))).toEqual(['Proyecto', 'Color', 'Layout', 'Estilo']);
+    expect(fichas().map((f) => f!.replace(/^(Proyecto|Rubro|Color|Layout|Estilo).*/, '$1'))).toEqual(['Proyecto', 'Rubro', 'Color', 'Layout', 'Estilo']);
     // Con las cuatro obligatorias se puede terminar.
     await clic(conBoton('Terminar'));
     expect(pasoActual()).toBe('listo');
@@ -122,7 +124,7 @@ describe('Molde (C2)', () => {
     // «Ver otras» pasa a la vuelta siguiente: se toca una de esas y se usa.
     await tocar(ideas()[0]);
     await clic(conBoton('Usar'));
-    expect(pasoActual()).toBe('color');
+    expect(pasoActual()).toBe('rubro');
     expect(fichas()).toHaveLength(1);
   });
 
@@ -138,6 +140,7 @@ describe('Molde (C2)', () => {
   it('lo elegido sobrevive a recargar', async () => {
     await montar('proyecto');
     await clic(idea('Tienda'));
+    await clic(ideas()[0]);
     await clic(ideas()[2]);
     const elegido = fichas();
     desmontar();
@@ -156,6 +159,7 @@ describe('Molde (C2)', () => {
   it('tocar una ficha reabre su ronda con «Ajustes finos», que cambian la página en vivo', async () => {
     await montar('proyecto');
     await clic(idea('Tienda'));
+    await clic(ideas()[0]);
     await clic(ideas()[0]);
     expect(pasoActual()).toBe('layout');
     // En una ronda que todavía no se eligió no hay ajustes finos.
@@ -187,6 +191,7 @@ describe('Molde (C2)', () => {
   it('la ficha Estilo ajusta la sensación sin pisar el color elegido', async () => {
     await montar('proyecto');
     await clic(idea('Landing'));
+    await clic(ideas()[0]);
     await clic(ideas()[0]);
     await clic(ideas()[0]);
     await clic(ideas()[0]);
