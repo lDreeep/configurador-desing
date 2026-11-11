@@ -56,6 +56,16 @@ describe('rondas de Molde (C1)', () => {
     }
   });
 
+  it('cada ronda de rama de la galería tiene al menos 6 recomendadas (D9)', () => {
+    for (const tipo of TIPOS) {
+      const base = conTipo(tipo);
+      for (const r of rondasDe(base).filter((x) => x.clave.startsWith('galeria:'))) {
+        const ops = r.opciones(base);
+        expect(ops.filter((o) => o.recomendada).length, `${tipo}/${r.clave}`).toBeGreaterThanOrEqual(Math.min(6, ops.length));
+      }
+    }
+  });
+
   it('los ids apuntan a cosas reales del catálogo', () => {
     const c = conTipo('dashboard');
     for (const o of COLOR.opciones(c)) expect(o.id in PALETAS).toBe(true);

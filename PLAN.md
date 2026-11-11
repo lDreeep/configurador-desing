@@ -193,10 +193,10 @@ Estado: `[ ]` pendiente · `[x]` hecha. Marcala al terminar.
   - Sumar a la aparición (`AparicionId` en `src/tipos.ts`, opciones en `src/catalogo.ts`) las de la sección 7.8. Se reproducen solo en su ronda y al terminar.
   - Listo cuando: cada entrada tiene su CSS con tokens `--duracion-*` y `--curva-*`.
 
-- [ ] **D9 · Rondas de rama con catálogo existente** — Sonnet 5.5
+- [x] **D9 · Rondas de rama con catálogo existente** — Sonnet 5.5
   - Conectar a `src/rondas/ramas.ts` las categorías de la galería que le tocan a cada tipo (sección 7.1): tarjetas de producto para tienda, gráficos y tablas para dashboard, barra inferior para app de celular, etc.
   - Listo cuando: cada tipo tiene sus rondas propias funcionando con datos reales.
-  - Ya hecho en C1: `rondaDeGaleria` arma la ronda de cualquier categoría de la galería con sus recomendados, y `RAMAS` conecta las de §7.1. Queda revisar los textos de cada pregunta y que las recomendadas de `recomendados.ts` alcancen para 6 por ronda.
+  - Ya hecho en C1: `rondaDeGaleria` arma la ronda de cualquier categoría de la galería con sus recomendados, y `RAMAS` conecta las de §7.1. D9: `recomendados.ts` suma las recomendadas que faltaban para que cada ronda de galería de cada rama tenga al menos 6 (test en `rondas.test.ts`); las preguntas de `ramas.ts` se revisaron y quedan como están.
 
 - [ ] **D10 · Recomendaciones por rubro** — Sonnet 5.5 · depende de D1 y D2
   - Extender `src/recomendados.ts`: para cada rubro, qué paletas, layouts, estilos y familias aparecen primero. Las primeras 6 de cada ronda salen de acá.
