@@ -591,7 +591,7 @@ fichas, como hoy los ajustes finos. No se borra ningún catálogo ni cambia el e
 
 ### Tareas
 
-- [ ] **I1 · Datos: pasos agrupados y filtro por layout** — Opus 5.5 · ChatGPT: Astra
+- [x] **I1 · Datos: pasos agrupados y filtro por layout** — Opus 5.5 · ChatGPT: Astra · hecha 2026-11-11: `src/rondas/pasos.ts` (`pasosDe`, `rondasDeAjustar`, `pasoDeRonda`) y `src/rondas/admite-layout.ts` (fondo, scroll y secciones de los 46 layouts; `fondo` medido sobre la página dibujada). Fondo animado sigue pendiente de D6 en `ramas.ts`, así que hoy «Lo propio» de landing trae solo scroll.
   - `src/rondas/`: un tipo `Paso` que agrupa rondas, y `pasosDe(config)` que devuelve solo los que aplican.
     `Layout` hoy solo tiene nombre y descripción: sumar qué admite cada uno (fondo, scroll, secciones)
     en un archivo aparte que no entre en la carga inicial. Tests: ningún tipo pasa de 5 pasos; un layout
