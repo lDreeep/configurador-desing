@@ -1,31 +1,26 @@
 // Verificación en Chromium dentro de GitHub Actions; no requiere un checkout local.
 import { chromium } from 'playwright';
 import AxeBuilder from '@axe-core/playwright';
-import { spawn } from 'node:child_process';
-import { mkdir } from 'node:fs/promises';
+import { build, preview } from 'vite';
+import { mkdir, mkdtemp, rm } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import assert from 'node:assert/strict';
 
-const server = spawn('npm', ['run', 'preview', '--', '--host', '127.0.0.1', '--port', '4173'], { stdio: 'inherit' });
+const outDir = await mkdtemp(join(tmpdir(), 'concesionario-'));
+let server;
 let browser;
 try {
-  let ready = false;
-  for (let attempt = 0; attempt < 100; attempt++) {
-    try { ready = (await fetch('http://127.0.0.1:4173')).ok; } catch {}
-    if (ready) break;
-    await new Promise(resolve => setTimeout(resolve, 200));
-  }
-  assert(ready, 'El servidor de preview no inició');
+  // El lienzo de Molde es inerte. Probar la misma página fuera del editor permite usar sus controles.
+  await build({ build: { outDir, rollupOptions: { input: 'scripts/concesionario.html' } } });
+  server = await preview({ build: { outDir }, preview: { host: '127.0.0.1', port: 0 } });
   browser = await chromium.launch();
   const context = await browser.newContext({ viewport: { width: 1440, height: 1000 }, reducedMotion: 'reduce' });
   const page = await context.newPage();
   const errors = [];
   page.on('pageerror', error => errors.push(error.message));
-  await page.goto('http://127.0.0.1:4173');
-  await page.getByRole('button', { name: 'Comenzar', exact: true }).click();
-  await page.getByRole('button', { name: 'Ver todos los layouts', exact: true }).click();
-  await page.getByRole('button', { name: /De autor: motos y UTV/ }).click();
-  await page.waitForTimeout(1200);
-  const template = page.locator('.au-mot').last();
+  await page.goto(new URL('scripts/concesionario.html', server.resolvedUrls.local[0]).href);
+  const template = page.locator('.au-mot');
   await template.waitFor();
   await template.getByRole('button', { name: 'Adventure', exact: true }).click();
   assert.equal(await template.getByRole('button', { name: 'Adventure', exact: true }).getAttribute('aria-pressed'), 'true');
@@ -53,5 +48,6 @@ try {
   console.log('PASS: selector, fichas, consulta simulada, imágenes, 5 anchos, axe y consola.');
 } finally {
   await browser?.close();
-  server.kill('SIGTERM');
+  if (server) await new Promise(resolve => server.httpServer.close(resolve));
+  await rm(outDir, { recursive: true, force: true });
 }

@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Prueba de la plantilla Tracción</title>
+  </head>
+  <body>
+    <main id="root"></main>
+    <script type="module">
+      import { createElement } from 'react';
+      import { createRoot } from 'react-dom/client';
+      import { configInicial } from '../src/estado';
+      import { RECETAS_AUTOR } from '../src/estilos-visuales';
+      import { aplicarCombinacion } from '../src/rapido/combinar';
+      import { Pagina } from '../src/rapido/Pagina';
+      import '../src/estilos.css';
+      import '../src/rapido/pagina.css';
+      import '../src/rapido/demo.css';
+
+      const layout = 'autor_concesionario';
+      const config = aplicarCombinacion(configInicial(), { layout, ...RECETAS_AUTOR[layout] });
+      createRoot(document.getElementById('root')).render(createElement(Pagina, { config }));
+    </script>
+  </body>
+</html>
