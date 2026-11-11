@@ -3,7 +3,8 @@
 // combina. Se puede tocar todo: botones, formularios, selectores, menús.
 
 import { useEffect, useLayoutEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode } from 'react';
-import { CAJAS, clasesDeCaja, tokensDeCaja } from '../cajas';
+import { clasesDeCaja, tokensDeCaja } from '../cajas';
+import { CAJAS } from '../cajas-disenos';
 import { BotonPrincipal } from '../componentes/BotonPrincipal';
 import { sistemaDeDiseno } from '../export/sistema';
 import { aplicarPaquete, FAMILIAS, paqueteN } from '../familias';

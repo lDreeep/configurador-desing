@@ -184,10 +184,11 @@ describe('tipografía, botones y movimiento', () => {
 describe('modo rápido: estilos, layouts y códigos', () => {
   it('cada estilo usa paletas y fuentes que existen', async () => {
     const { ESTILOS } = await import('../estilos-visuales');
+    const { CSS_ESTILOS } = await import('../estilos-css');
     for (const [id, e] of Object.entries(ESTILOS)) {
       for (const p of e.paletas) expect(PALETAS[p], `${id} paleta ${p}`).toBeDefined();
       for (const [t, x] of e.fuentes) expect(FUENTES[t] && FUENTES[x], `${id} fuentes ${t}/${x}`).toBeTruthy();
-      expect(e.css).toContain('&');
+      expect(CSS_ESTILOS[id as keyof typeof CSS_ESTILOS], id).toContain('&');
     }
   });
 
@@ -265,7 +266,7 @@ describe('panel de botones', () => {
 
 describe('panel de cajas', () => {
   it('cada diseño de caja genera un export válido con sus tokens y su CSS', async () => {
-    const { CAJAS } = await import('../cajas');
+    const { CAJAS } = await import('../cajas-disenos');
     for (const id of Object.keys(CAJAS) as (keyof typeof CAJAS)[]) {
       const c = configCompleta();
       c.cajas = { preset: id, ajustes: {} };
@@ -355,7 +356,8 @@ describe('límites del código de combinación', () => {
   });
 
   it('el texto de una caja invertida pasa contraste', async () => {
-    const { tokensDeCaja, CAJAS } = await import('../cajas');
+    const { tokensDeCaja } = await import('../cajas');
+    const { CAJAS } = await import('../cajas-disenos');
     for (const p of Object.values(PALETAS)) {
       const t = tokensDeCaja(CAJAS.invertida.params, p, 14);
       expect(contraste(t['--caja-texto'], p.roles.texto)).toBeGreaterThanOrEqual(4.5);
@@ -432,7 +434,7 @@ describe('recomendados por tipo de proyecto', () => {
   it('cada id recomendado existe en su catálogo', async () => {
     const { RECOMENDADOS } = await import('../recomendados');
     const { BOTONES } = await import('../botones-disenos');
-    const { CAJAS } = await import('../cajas');
+    const { CAJAS } = await import('../cajas-disenos');
     const { ESTILOS, LAYOUTS } = await import('../estilos-visuales');
     const { CATEGORIAS } = await import('../galeria');
     for (const [tipo, r] of Object.entries(RECOMENDADOS)) {
@@ -517,7 +519,7 @@ describe('paquetes de UI', () => {
     const { ESTILOS } = await import('../estilos-visuales');
     const { CATEGORIAS } = await import('../galeria');
     const { BOTONES } = await import('../botones-disenos');
-    const { CAJAS } = await import('../cajas');
+    const { CAJAS } = await import('../cajas-disenos');
     for (const e of [...Object.keys(ESTILOS), 'clasico'] as (keyof typeof ESTILOS | 'clasico')[]) {
       for (let n = 0; n < 12; n++) {
         const p = paqueteN(e, n);

@@ -86,7 +86,6 @@ export function App() {
     const comun = { config, setConfig };
     // En dashboards y apps web, los datos van antes que los formularios.
     const esDatos = config.proyecto.tipo === 'dashboard' || config.proyecto.tipo === 'app_web';
-    const navPrimero = config.proyecto.tipo === 'app_movil' ? (['nav_movil', 'nav_web'] as const) : (['nav_web', 'nav_movil'] as const);
     // El orden de los pasos depende del tipo de proyecto; la numeración sale de acá.
     const NOMBRES: Record<PasoRapido, string> = {
       inicio: 'Diseño', tipo: 'Proyecto', botones: 'Botón principal', botones_mas: 'Más botones', cajas: 'Cajas',
@@ -136,11 +135,8 @@ export function App() {
         {pasoRapido === 'botones_mas' && (
           <PanelGaleria
             {...comun}
+            paso="botones_mas"
             alFinal={volviendo}
-            titulo="Combiná tus botones"
-            bajada="Casi nunca hay un solo botón: al lado del principal suele ir uno secundario, y en toda app hay botones de icono. Cada secundario aparece junto a tu principal para que veas cuál combina."
-            categorias={['boton_sec', 'boton_icono']}
-            atras="Volver al botón principal"
             onAtras={() => irRapido('botones', true)}
             onSeguir={() => irRapido('cajas')}
           />
@@ -149,11 +145,8 @@ export function App() {
         {pasoRapido === 'formularios' && (
           <PanelGaleria
             {...comun}
+            paso="formularios"
             alFinal={volviendo}
-            titulo="Elegí tus formularios"
-            bajada="Primero el formulario completo (cómo se ve una pantalla para cargar datos), después cada pieza: campos, selectores, menús, buscadores, calendarios, interruptores, casillas, deslizadores y subida de archivos."
-            categorias={['formulario', 'acceso', 'wizard', 'reserva', 'campo', 'selector', 'desplegable', 'buscador', 'calendario', 'interruptor', 'casilla', 'deslizador', 'subir']}
-            atras={esDatos ? 'Volver a los datos' : 'Volver a las cajas'}
             onAtras={() => irRapido(esDatos ? 'datos' : 'cajas', true)}
             onSeguir={() => irRapido('navegacion')}
           />
@@ -161,15 +154,8 @@ export function App() {
         {pasoRapido === 'navegacion' && (
           <PanelGaleria
             {...comun}
+            paso="navegacion"
             alFinal={volviendo}
-            titulo="Elegí tu navegación"
-            bajada={
-              config.proyecto.tipo === 'app_movil'
-                ? 'Como es una app para celular, arrancamos por las barras inferiores. Tocá las pestañas para ver cómo marcan la activa.'
-                : 'Barras superiores, flotantes y menús laterales, y también las barras inferiores para cuando se vea en el celular.'
-            }
-            categorias={[...navPrimero, 'migas', 'paginacion', 'pasos', 'notificaciones', 'usuario', 'pie']}
-            atras="Volver a los formularios"
             onAtras={() => irRapido('formularios', true)}
             onSeguir={() => irRapido('elementos')}
           />
@@ -177,11 +163,8 @@ export function App() {
         {pasoRapido === 'elementos' && (
           <PanelGaleria
             {...comun}
+            paso="elementos"
             alFinal={volviendo}
-            titulo="Elegí los detalles"
-            bajada="Las piezas chicas que aparecen en toda app: etiquetas, avisos, cargas, progreso, preguntas frecuentes, avatares, ayudas y ventanas."
-            categorias={['etiqueta', 'aviso', 'cargando', 'progreso', 'acordeon', 'avatar', 'tooltip', 'modal', 'vacio', 'carrusel', 'producto']}
-            atras="Volver a la navegación"
             onAtras={() => irRapido('navegacion', true)}
             onSeguir={() => irRapido(esDatos ? 'movimiento' : 'datos')}
           />
@@ -189,11 +172,8 @@ export function App() {
         {pasoRapido === 'datos' && (
           <PanelGaleria
             {...comun}
+            paso="datos"
             alFinal={volviendo}
-            titulo="Elegí cómo mostrar datos"
-            bajada="Tarjetas de métricas, gráficos y tablas para dashboards y estadísticas. Pasá el mouse por los gráficos para ver cada dato."
-            categorias={['metrica', 'grafico', 'tabla']}
-            atras={esDatos ? 'Volver a las cajas' : 'Volver a los detalles'}
             onAtras={() => irRapido(esDatos ? 'cajas' : 'elementos', true)}
             onSeguir={() => irRapido(esDatos ? 'formularios' : 'movimiento')}
           />

@@ -6,7 +6,7 @@
 import type { BotonDisenoId, CajaPresetId, Config, EstiloId } from './tipos';
 import { CATEGORIAS, type CategoriaId, DISENO_INICIAL } from './galeria';
 import { BOTONES } from './botones-disenos';
-import { CAJAS } from './cajas';
+import { CAJAS } from './cajas-disenos';
 
 export type FamiliaId = 'clasica' | 'suave' | 'minimal' | 'editorial' | 'tonal' | 'neobrutal' | 'vidrio' | 'oscura' | 'neon' | 'retro'
   | 'pastel' | 'monocroma' | 'lineas_dobles' | 'recortada' | 'relieve' | 'precio' | 'terminal' | 'papel';

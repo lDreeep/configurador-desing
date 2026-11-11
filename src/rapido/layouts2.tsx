@@ -1,13 +1,14 @@
 // Los 12 layouts genéricos de la tanda D3 (PLAN.md §7.5). Cada uno parte de una idea propia:
 // una línea que termina en el botón, una barra que compara, un mapa que responde a la lista…
 // Usan las mismas piezas y clases que Pagina.tsx (.pg-card, .pg-media, .pg-titulo), así los 20
-// estilos les dan su textura sin reglas nuevas. Su CSS está en layouts2.css (lo carga main.tsx después de pagina.css).
+// estilos les dan su textura sin reglas nuevas. Su CSS está en layouts2.css y baja con este archivo, que se carga a pedido (autores.tsx).
 
 import { useId, useState, type CSSProperties } from 'react';
 import { BotonPrincipal } from '../componentes/BotonPrincipal';
 import { IconoFlecha } from '../componentes/ui';
 import type { Config } from '../tipos';
 import { Bajada, Botones, type Contenido, FONDOS_AUTO, Media, Nav, Titulo } from './Pagina';
+import './layouts2.css';
 
 interface Props {
   c: Config;

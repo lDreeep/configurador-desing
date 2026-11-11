@@ -4,7 +4,8 @@
 import { usePaso } from './BarraPasos';
 import { createContext, useContext, useEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode } from 'react';
 import { BOTONES } from '../botones-disenos';
-import { CAJAS, clasesDeCaja, paramsDe } from '../cajas';
+import { clasesDeCaja, paramsDe } from '../cajas';
+import { CAJAS } from '../cajas-disenos';
 import { APARICIONES, CAMBIOS, COMBINACIONES, MOVIMIENTOS, FUENTES, PALETAS } from '../catalogo';
 import { BotonPrincipal } from '../componentes/BotonPrincipal';
 import { ESTILOS, MARCAS_AUTOR } from '../estilos-visuales';
