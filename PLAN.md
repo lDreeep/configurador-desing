@@ -180,10 +180,11 @@ Estado: `[ ]` pendiente · `[x]` hecha. Marcala al terminar.
   - Listo cuando: no hay pares repetidos y cada par usa pesos que la fuente tiene.
   - Hecha: 10 pares nuevos al final de `COMBINACIONES` (14 → 24), sin fuentes nuevas ni cambios en el export. Test en `src/export/generarDesignMd.test.ts` (sin pares ni nombres repetidos; ambas fuentes tienen peso 400).
 
-- [ ] **D6 · Fondos animados** — Opus 5.5 (motor y 4 fondos) y después Sonnet 5.5 (los otros 12)
+- [x] **D6 · Fondos animados** — Opus 5.5 (motor y 4 fondos) y después Sonnet 5.5 (los otros 12)
   - Crear `src/fondos-animados.ts` con los 16 de la sección 7.7. Solo CSS, salvo «luz que sigue al cursor». Los seis de `maqueta/molde-2.html` sirven de referencia.
   - Reglas: usan los tokens `--color-*`; cada uno tiene versión quieta para `prefers-reduced-motion`; nunca va texto directo sobre el fondo (velo o tarjeta sólida, como en `src/fondos.ts`).
   - Listo cuando: cada fondo corre a 60 cuadros por segundo en una laptop común y tiene su CSS listo para exportar.
+  - Hecho en `src/fondos-animados.ts` (los 16, motor incluido) con `src/fondos-animados.test.ts`. `cssDeFondoAnimado(id, selector)` da la capa, el fondo, sus `@keyframes` y la versión quieta; la clase es `fondo-animado fa-<id>`. Solo se mueven `::before` y `::after` con `transform` y `opacity` (lo verifica el test), y los 16 midieron 60 cuadros por segundo a 1440×900 en Chromium. La luz que sigue al cursor usa `seguirCursor` (y `JS_LUZ_CURSOR` para el export). Todavía no hay campo en `Config` ni ronda: «Fondo animado» sigue en `rondasPendientes()` hasta F1, que suma el campo al export.
 
 - [ ] **D7 · Efectos de scroll combinables** — Opus 5.5 (motor y 4 efectos) y después Sonnet 5.5 (los otros 10)
   - Crear `src/scroll.ts` con los 14 de la sección 7.4, en 4 zonas. Usar CSS scroll-driven animations como ya hace el proyecto (decisión D72), con versión quieta.
