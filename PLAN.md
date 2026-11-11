@@ -447,13 +447,17 @@ probar con personas y recién después sumar cosas. Cada tarea trae el pedido li
 | 6 | H6 · Plan nuevo con lo aprendido | Opus 5.5 | Astra | H3, H4 y H5 |
 | — | H7 a H12 · Backlog (opcionales) | ver cada una | ver cada una | H6 decide cuáles |
 
-- [ ] **H1 · Limpiar ramas** — Haiku 5.5 · ChatGPT: Terra
+- [x] **H1 · Limpiar ramas** — Haiku 5.5 · ChatGPT: Terra
   - Borrar las ramas ya mergeadas y decidir qué hacer con `codex/plantilla-traccion` y `codex/recorrido-simple` (anteriores a C5).
   - Pedido:
     > Leé `CLAUDE.md` y `PLAN.md`. Hacé H1: listá las ramas remotas y separalas en (a) ya mergeadas en `main`
     > y (b) sin mergear. Para cada una de (b), contame en dos líneas qué cambia y si sigue teniendo sentido
     > después de C5 (que retiró el recorrido viejo). **No borres nada**: pasame la lista con tu recomendación
     > y esperá mi OK.
+  - Hecha (2026-11-11), sin borrar nada. Remotas: 36 ya están en `main` (las `ccr-*`, `claude/*` y `codex/*` salvo las dos de abajo). Sin mergear, 4 commits cada una:
+    - `codex/plantilla-traccion`: la plantilla Tracción y su script de concesionario ya están en `main`; la rama vuelve a agregar el PNG de 1,8 MB que G4 pasó a webp. Recomendación: borrar.
+    - `codex/recorrido-simple`: toca `App.tsx`, `Prototipo.tsx` e `InicioSimple.tsx`, que C5 retiró. Recomendación: borrar.
+    - Pendiente el OK para borrar las dos y las 36 mergeadas.
 
 - [ ] **H2 · Publicar el sitio** — Sonnet 5.5 · ChatGPT: Sol
   - Molde online con una URL fija, que se actualice sola con cada merge a `main`. `vite.config.ts` ya usa `base: './'`.
