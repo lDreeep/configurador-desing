@@ -19,10 +19,11 @@
 .molde :focus-visible { outline: 3px solid var(--molde-silicona); outline-offset: 3px; }
 
 .molde-barra { position: absolute; inset: 0 0 auto; height: 64px; display: flex; align-items: center; z-index: 8; padding: 0 max(20px, env(safe-area-inset-right, 0px)) 0 max(20px, env(safe-area-inset-left, 0px)); }
-.molde-marca { display: flex; align-items: center; gap: 9px; font: 700 24px/1 var(--molde-f-marca); letter-spacing: -.02em; }
+/* La marca y el enlace llevan el fondo del marco: cuando la página del lienzo se baja sola, nada claro queda detrás de su texto. */
+.molde-marca { background: var(--molde-yeso); border-radius: 10px; display: flex; align-items: center; gap: 9px; font: 700 24px/1 var(--molde-f-marca); letter-spacing: -.02em; }
 .molde-marca i { width: 19px; height: 19px; border: 4px solid var(--molde-silicona); border-radius: 6px; }
 .molde-hueco { flex: 1; }
-.molde .molde-enlace { min-height: 44px; padding: 0 12px; color: var(--molde-tinta-2); font-weight: 500; text-decoration: underline; text-underline-offset: 4px; }
+.molde .molde-enlace { min-height: 44px; padding: 0 12px; border-radius: 10px; background: var(--molde-yeso); color: var(--molde-tinta-2); font-weight: 500; text-decoration: underline; text-underline-offset: 4px; }
 
 .molde-main { position: absolute; inset: 0; }
 

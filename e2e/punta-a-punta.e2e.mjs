@@ -1,5 +1,6 @@
-// Recorrido completo de Molde para una landing y un dashboard (PLAN.md G1), en escritorio (1440 px, mouse)
-// y celular (390 px, toques). En cada ronda se audita con axe (WCAG 2 A y AA).
+// Recorrido completo de Molde para una landing y un dashboard (PLAN.md G1), en escritorio (1440 px, mouse,
+// tema claro) y celular (390 px, toques, tema oscuro). En cada ronda se audita con axe (WCAG 2 A y AA),
+// se cuenta un solo h1 y un solo main, y (G2) en celular todo control mide 44 px y en escritorio el foco se ve.
 // Uso: `npm run test:e2e` (levanta vite solo). Capturas finales en screenshots/punta-a-punta/.
 import { spawn } from 'node:child_process';
 import { createRequire } from 'node:module';
@@ -24,8 +25,8 @@ const TIPOS = [
   { id: 'dashboard', nombre: 'Dashboard' },
 ];
 const VIEWPORTS = [
-  { nombre: 'escritorio', ancho: 1440, alto: 900, touch: false },
-  { nombre: 'celular', ancho: 390, alto: 844, touch: true },
+  { nombre: 'escritorio', ancho: 1440, alto: 900, touch: false, esquema: 'light' },
+  { nombre: 'celular', ancho: 390, alto: 844, touch: true, esquema: 'dark' },
 ];
 
 async function esperarServidor() {
@@ -38,8 +39,22 @@ async function esperarServidor() {
   throw new Error('vite no arrancó');
 }
 
-// Axe en la pantalla actual. Un fallo indica la ronda y las reglas que no pasan.
+// Espera a que terminen las transiciones y animaciones que tienen fin: axe tiene que medir lo que queda en
+// pantalla, no un fundido a medias. No cuentan las que se repiten siempre (el latido del botón) ni las que
+// van atadas al scroll (ViewTimeline/ScrollTimeline), que no terminan con el tiempo.
+async function esperarQuieto(page) {
+  await page.waitForFunction(() =>
+    document
+      .getAnimations()
+      .every((a) => a.playState !== 'running' || a.effect?.getComputedTiming().iterations === Infinity || !(a.timeline instanceof DocumentTimeline)),
+  );
+}
+
+// Axe en la pantalla actual, más un solo h1 y un solo main (G2). Un fallo indica la ronda y las reglas que no pasan.
 async function auditar(page, etiqueta) {
+  await esperarQuieto(page);
+  const marcas = await page.evaluate(() => ({ h1: document.querySelectorAll('h1').length, main: document.querySelectorAll('main, [role=main]').length }));
+  assert.deepEqual(marcas, { h1: 1, main: 1 }, `h1 y main en «${etiqueta}»`);
   const resultado = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa']).analyze();
   const fallos = resultado.violations.map((v) => ({
     ronda: etiqueta,
@@ -61,21 +76,47 @@ async function elegirPrimeraIdea(page, touch, filtro) {
   }
 }
 
-// En celular, los controles que se tocan tienen que medir al menos 44 px.
+// En celular, todo control de la interfaz que se toca mide al menos 44 px (G2). Los de la página de
+// muestra (.pg) no cuentan: son el diseño que se elige, no la interfaz.
 async function revisarAreasTactiles(page, etiqueta) {
   const chicos = await page
-    .locator('.molde-ideas button, .molde-confirmar button, .molde-paginas button, .molde-final button')
-    .evaluateAll((bs) => bs.filter((b) => b.offsetParent).map((b) => [b.textContent.trim().slice(0, 30), Math.round(b.getBoundingClientRect().width), Math.round(b.getBoundingClientRect().height)]).filter(([, w, h]) => w < 44 || h < 44));
+    .locator('.molde :is(button, a[href], select, textarea, input:not([type=hidden], [type=checkbox], [type=radio]), summary, [role=button])')
+    .evaluateAll((bs) =>
+      bs
+        .filter((b) => b.getClientRects().length && getComputedStyle(b).visibility !== 'hidden' && !b.closest('.pg, [aria-hidden=true], [inert]'))
+        .map((b) => [b.textContent.trim().slice(0, 30) || b.getAttribute('aria-label'), Math.round(b.getBoundingClientRect().width), Math.round(b.getBoundingClientRect().height)])
+        .filter(([, w, h]) => w < 44 || h < 44),
+    );
   assert.deepEqual(chicos, [], `áreas de menos de 44 px en «${etiqueta}»`);
 }
 
+// En escritorio, recorrer con Tab: cada control que recibe el foco lo muestra (contorno o sombra) (G2).
+async function revisarFoco(page, etiqueta) {
+  await page.evaluate(() => document.activeElement instanceof HTMLElement && document.activeElement.blur());
+  const sinFoco = [];
+  for (let i = 0; i < 20; i++) {
+    await page.keyboard.press('Tab');
+    const f = await page.evaluate(() => {
+      const e = document.activeElement;
+      if (!e || e === document.body) return null;
+      const cs = getComputedStyle(e);
+      const visible = (cs.outlineStyle !== 'none' && parseFloat(cs.outlineWidth) > 0) || cs.boxShadow !== 'none';
+      return visible ? '' : `${e.tagName.toLowerCase()} ${(e.textContent || e.getAttribute('aria-label') || '').trim().slice(0, 30)}`;
+    });
+    if (f === null) break;
+    if (f) sinFoco.push(f);
+  }
+  assert.deepEqual(sinFoco, [], `foco invisible en «${etiqueta}»`);
+}
+
 async function recorrer(browser, tipo, vp) {
-  const etiquetaBase = `${tipo.id} · ${vp.nombre}`;
+  const etiquetaBase = `${tipo.id} · ${vp.nombre} · ${vp.esquema === 'dark' ? 'oscuro' : 'claro'}`;
   const ctx = await browser.newContext({
     viewport: { width: vp.ancho, height: vp.alto },
     hasTouch: vp.touch,
     isMobile: vp.touch,
     deviceScaleFactor: vp.touch ? 2 : 1,
+    colorScheme: vp.esquema,
   });
   const page = await ctx.newPage();
   const errores = [];
@@ -85,6 +126,8 @@ async function recorrer(browser, tipo, vp) {
   const empezar = page.getByRole('button', { name: 'Empezar', exact: true });
   await empezar.waitFor();
   await auditar(page, `${etiquetaBase} · inicio`);
+  if (vp.touch) await revisarAreasTactiles(page, `${etiquetaBase} · inicio`);
+  else await revisarFoco(page, `${etiquetaBase} · inicio`);
   if (vp.touch) await empezar.tap();
   else await empezar.click();
 
@@ -112,6 +155,7 @@ async function recorrer(browser, tipo, vp) {
     const etiqueta = `${etiquetaBase} · ${ronda}`;
     await auditar(page, etiqueta);
     if (vp.touch) await revisarAreasTactiles(page, etiqueta);
+    else if (rondas.length === 1) await revisarFoco(page, etiqueta);
 
     await elegirPrimeraIdea(page, vp.touch);
     // Las rondas de elegir varias quedan abiertas y se cierran con «Seguir»; las demás pasan solas a la siguiente.
@@ -129,6 +173,8 @@ async function recorrer(browser, tipo, vp) {
   await page.getByRole('heading', { name: 'Tu molde está listo', exact: true }).waitFor();
   await page.waitForTimeout(900);
   await auditar(page, `${etiquetaBase} · listo`);
+  if (vp.touch) await revisarAreasTactiles(page, `${etiquetaBase} · listo`);
+  else await revisarFoco(page, `${etiquetaBase} · listo`);
 
   // La descarga de DESIGN.md llega completa y la vista previa tiene contenido.
   const [descarga] = await Promise.all([page.waitForEvent('download'), page.getByRole('button', { name: 'Descargar DESIGN.md', exact: true }).click()]);
