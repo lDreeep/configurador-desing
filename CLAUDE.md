@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-Configurador visual de diseño: una web donde la persona elige cómo se ve y qué hace su app,
+Molde: un configurador visual de diseño, una web donde la persona elige cómo se ve y qué hace su app,
 y descarga un `DESIGN.md` que cualquier IA puede usar para construirla.
 
 ## Antes de tocar nada
@@ -34,45 +34,42 @@ Antes de dar una tarea por terminada: `npm run typecheck && npm test`.
 | `src/export/extras.ts` | Salidas extra del paso final: `tokensJson` (W3C Design Tokens), `tokensCss` y `promptCorto`. |
 | `src/export/generarDesignMd.ts` | Arma el `DESIGN.md` exportado. `VERSION_FORMATO` tiene que coincidir con `DESIGN.md`. |
 | `src/pasos/pasos.tsx` | Registro `PASOS`: cada paso del configurador (componente, resumen, placeholder de la nota). |
-| `src/preview/Preview.tsx` | Vista previa en vivo del modo avanzado. Usa solo variables CSS de `sistema.ts`. |
 | `src/estilos-visuales.ts` | Estilos visuales y layouts. El CSS de cada estilo está en `estilos-css.ts` y sus palabras clave y reglas en `estilos-reglas.ts` (bajan aparte); el CSS se exporta tal cual en §19. |
 | `src/botones-disenos.ts` | Los 80 diseños del panel de botones (aspecto, hover y animación al tocar, en CSS), sus familias (`FAMILIAS_BOTON`) y los experimentales. Se exporta tal cual en §10. |
 | `src/cajas.ts` | Parámetros de caja, los tokens `--caja-*` y la regla `.caja`. Los 44 diseños (`CAJAS`) y los nombres de las opciones están en `cajas-disenos.ts`, que al cargarse los registra para `paramsDe`. Se exporta en §20. |
 | `src/galeria/` | Galería de componentes por categoría (37: formularios completos, inicio de sesión, formularios en pasos, reserva de turnos, subir archivos, campos, selectores, desplegables, buscadores, controles, navegación, migas, paginación, pasos, detalles, pantallas vacías, datos…; desplegables a vacías en `nuevos.tsx`, calendarios, carruseles y pies en `nuevos2.tsx`, formularios completos, inicio de sesión y subir archivos en `formularios.tsx`, formularios en pasos y reservas en `formularios2.tsx`, productos, notificaciones y menú de usuario en `nuevos3.tsx`; diseños extra para categorías existentes en `mas-disenos.ts`): estructura fija + diseños en CSS. Se exporta en §21. |
 | `src/fondos.ts` | Los 21 fondos con textura (CSS puro: gradientes y SVG; el CSS está en `fondos-css.ts`). Se aplican a `.pg-media` y `.pg-fondo-area` con la clase `fondo-<id>` en la página; se exportan en §19. Nunca va texto directo sobre un fondo: velo o tarjeta sólida. |
 | `src/componentes/BotonPrincipal.tsx` | El botón principal con el diseño elegido; lo usan todas las vistas. |
-| `src/rapido/` | Modo rápido: `Inicio.tsx` (página entera que cambia de diseño sola; Comenzar fijo en el centro; después se elige a mano, cambiando solo layout o solo estilo), `esquemas.tsx` (esquemas de cada layout), `BarraPasos.tsx` (barra de pasos y `usePaso()` con «Paso N de M»; el orden está en `App.tsx`), `PanelTipo.tsx`, `PanelPaquete.tsx` (paso «Tu UI»: todas las piezas a la vez en un mosaico que encastra (`Mosaico`: cada pieza mide su alto y ocupa esas filas) y «Otra combinación»; el recorrido simple es Diseño → Proyecto → Tu UI → Prototipo → Descargar, y los demás paneles son el modo detallado), `PanelBotones.tsx`, `PanelCajas.tsx`, `PanelGaleria.tsx` (panel genérico de la galería), `PanelMovimiento.tsx` (ritmo, aparición y cambio de pantalla con demos), `Prototipo.tsx` (app de prueba con todo lo elegido, vista claro/oscuro y «Editar»: cada pieza se toca, el resto se desenfoca y se cambia con flechas; `opcionesDe()` da las opciones de cada pieza), `PanelListo.tsx`, `combinar.ts` (combinaciones, candados, códigos), `Pagina.tsx` (la página y los tres layouts genéricos de la carga inicial; los demás genéricos en `layouts1.tsx`; los 12 de la tanda D3 —línea de tiempo, antes y después, mapa con lista, carta, agenda, tablero, muro, documentación, link en bio, compra, buscador y pantalla partida— están en `layouts2.tsx` + `layouts2.css`), `autores.tsx` (carga a pedido de `layouts1`, `layouts2` y las plantillas de autor), `hoja.ts` + `hoja-pagina.ts` (la hoja de la página: CSS de estilos, fondos y scroll, contenido de muestra y diseños de caja, que bajan aparte y `Pagina` espera), `autor.tsx` + `autor.css` (plantillas de autor: una página diseñada para un negocio concreto, con su receta en `RECETAS_AUTOR`; más en `autor2.tsx`, y en `autor3.tsx` + `autor3.css` las landings con demo animada; las piezas animadas compartidas — `useGuion`, `Cursor`, `FraseRevelada`, `Preguntas` — están en `demo.tsx` y las usan también las estructuras genéricas y las plantillas viejas), `fotos.ts` (fotos reales con autor y licencia, en `public/fotos/`), `pagina.css`. |
+| `src/rapido/` | Motor compartido de páginas, conservado bajo su ruta original: `Pagina.tsx`, `pagina.css`, layouts, plantillas de autor y concesionario, `autores.tsx`, `hoja.ts`, `hoja-pagina.ts`, secciones, contenido, fotos, demos y `esquemas.tsx`. `combinar.ts` conserva las combinaciones y códigos usados por ajustes, enlaces anteriores y tests. Los paneles del recorrido viejo fueron retirados en C5. |
 | `src/secciones.ts` | Las 8 secciones de la página (beneficios, cómo funciona, precios, testimonios, preguntas, equipo, números, contacto) con 2 diseños cada una y su `estructura` para el export (§22). Es **datos**. Solo landing, sitio y portfolio. Las dibuja `src/rapido/secciones.tsx` + `secciones.css` con el contenido de `src/rapido/contenido-secciones.ts`; la ronda está en `src/rondas/ramas.ts`. |
-| `src/familias.ts` | Familias de UI (todo neobrutal, todo vidrio, líneas finas…) y `paqueteN(estilo, n)`: el paquete n-ésimo coherente para un estilo, con un diseño por categoría, botón y caja. Lo usa el paso «Tu UI». Un test verifica que todos los ids existan. |
+| `src/familias.ts` | Familias de UI (todo neobrutal, todo vidrio, líneas finas…) y `paqueteN(estilo, n)`: el paquete n-ésimo coherente para un estilo, con un diseño por categoría, botón y caja. Lo usa la ronda Piezas. Un test verifica que todos los ids existan. |
 | `src/rubros.ts` | Los 39 rubros por tipo de proyecto, con su contenido de muestra. Es **datos**; los largos de texto no pasan los de `contenido-tipo.ts` (lo verifica el test). |
-| `src/recomendados.ts` | Qué layouts, estilos, botones, cajas y componentes se recomiendan para cada tipo de proyecto. Es **datos**; los paneles los muestran primero (nunca esconden el resto). `src/rapido/textos-prototipo.ts` tiene los textos del prototipo por tipo. |
-| `src/ModoAvanzado.tsx` | El modo avanzado entero (pasos + vista previa). Se carga aparte con `lazy`, igual que los paneles del modo rápido (ver `cargar` en `App.tsx`); la portada (`Inicio`) es lo único que va en la carga inicial. |
+| `src/recomendados.ts` | Qué layouts, estilos, botones, cajas y componentes se recomiendan para cada tipo de proyecto. Es **datos**; las rondas los muestran primero (nunca esconden el resto). |
 | `src/estilos.css` | Estilos de la interfaz (`--ui-*`) y de la vista previa (`.pv-*`, solo tokens exportados). |
-| `src/molde/` | Molde, el recorrido nuevo: `Molde.tsx` (lienzo, explosión de ideas, toque en pantallas táctiles), `recorrido.ts` (rondas, ajustes finos y su orden), `Ajustes.tsx` (ajustes finos, se carga aparte) y `molde.css`. Vive en `#/molde/<ronda>` mientras convive con el modo rápido; C5 lo pasa a la raíz. |
+| `src/molde/` | Recorrido principal montado por `App.tsx`: `Molde.tsx` (lienzo, ideas, fichas y descargas), `Portada.tsx` + `portada.css` (portada E2, carga aparte), `recorrido.ts` (rondas elegidas y ajustes), `Ajustes.tsx` (controles reutilizados de `PASOS`, carga aparte) y `molde.css`. Rutas `#/inicio`, `#/<ronda>` y `#/listo`. |
 | `src/rondas/` | Rondas de Molde: `ronda.ts` (tipo `Ronda`), `comunes.ts` (las de cualquier proyecto), `ramas.ts` (las de cada tipo de proyecto) e `index.ts` (`rondasDe(config)`). Es **datos**, sin UI. |
 | `src/fondos-animados.ts` | Los 16 fondos animados (CSS, y el JS mínimo de `luz_cursor`). Datos base en `fondos-animados-base.ts`. Se exportan en §19. |
 | `src/scroll.ts` | Los 14 efectos de scroll combinables, uno por zona de la página. Es **datos**; datos base en `scroll-base.ts`. Se exportan en §12. |
-| `src/navegacion.ts` | Dónde está la persona (modo y paso) en la URL (`#/rapido/tipo`, `#/molde/color`…) y en `localStorage`. |
+| `src/navegacion.ts` | Ronda en la URL y localStorage, historial Atrás/Adelante y migración de rutas y ubicaciones anteriores (`rapido`, `detallado`, `avanzado`, `molde`) a `#/<ronda>`. |
 | `src/ErrorBoundary.tsx` | Red de seguridad en la raíz: si una parte se rompe, muestra un aviso en vez de una pantalla en blanco. |
 | `src/rapido/concesionario.tsx` | Plantilla de catálogo «Tracción» (aprobada). Sus modelos y su consulta son muestras locales; la foto está en `public/fotos/traccion-vehiculos.webp`. |
-| `src/rapido/Recomendados.tsx`, `ListaLayouts.tsx` | Encabezados de «Recomendados para tu …» y la lista de todos los layouts de la portada (baja aparte: solo se ve al abrirla). |
-| `src/componentes/toque.tsx` | Piezas chicas que usan el botón principal y la página, y van en la carga inicial. `ui.tsx` tiene el resto, que usan los paneles. |
+| `src/componentes/toque.tsx` | Piezas chicas que usan el botón principal y la página, y van en la carga inicial. `ui.tsx` tiene el resto, que usan los ajustes finos. |
 | `src/botones-carga.tsx`, `src/botones-por-estilo.ts` | Los 80 diseños de botón bajan aparte. `botones-por-estilo.ts` dice qué diseño se propone para cada estilo y es lo único que necesita la portada. |
 | `src/fuentes.ts` | Carga de fuentes a pedido: cada familia se pide a Google Fonts cuando algo la muestra. |
 | `src/color.ts` | Contraste WCAG 2.x, mezcla y derivación de paletas personalizadas. |
 | `src/compatibilidad.ts` | Auditoría paleta × estilo (A3): arma el sistema de diseño real para cualquier par y mide el contraste de los textos. |
-| `src/pasos/visual.tsx`, `src/pasos/PasoExportar.tsx` | Pasos del modo avanzado: dirección, color, tipografía, forma, botones y movimiento (`visual.tsx`), y exportar (`PasoExportar.tsx`). |
+| `src/pasos/visual.tsx`, `src/pasos/PasoExportar.tsx` | Controles reutilizados por los ajustes finos: dirección, color, tipografía, forma, botones y movimiento (`visual.tsx`), y exportar (`PasoExportar.tsx`). |
 | `src/export/estructuras-layout.ts` | Cómo se arma cada layout de `LAYOUTS` para el export (§19). Al sumar un layout, sumar acá su estructura; TypeScript avisa si falta. |
 | `src/export/aparicion.ts` | Reutiliza las reglas y los keyframes de `estilos.css` para la aparición de los elementos en el export. |
 | `e2e/molde-tactil.e2e.mjs`, `scripts/` | Prueba de Molde en celular (`npm run test:e2e`), y `scripts/peso-inicial.mjs` (`npm run peso`) y `scripts/comprobar-concesionario.mjs` (CI). |
 
 ## Carga inicial
 
-La primera visita baja solo React, la portada y lo que ella dibuja (PLAN.md B2). Un módulo entra
+La entrada carga React, estado y navegación; Molde, la portada y los ajustes se cargan aparte (PLAN.md B2). Un módulo entra
 entero en un solo archivo de JS: si la portada usa una función de un archivo grande, se lleva todo
 el archivo. Por eso el CSS de estilos y fondos, las reglas, los diseños de caja, el contenido de
 muestra y la mayoría de los layouts viven en archivos aparte. Antes de sumar datos grandes a un
-archivo que usa la portada (`catalogo.ts`, `estilos-visuales.ts`, `Pagina.tsx`, `Inicio.tsx`,
+archivo que usa la portada (`catalogo.ts`, `estilos-visuales.ts`, `Pagina.tsx`, `Portada.tsx`,
 `App.tsx`), corré `npm run peso`.
 
 ## Reglas
@@ -91,7 +88,7 @@ archivo que usa la portada (`catalogo.ts`, `estilos-visuales.ts`, `Pagina.tsx`, 
 1. Campos nuevos en `Config` (`tipos.ts`) y valor inicial en `configInicial()` (`estado.ts`).
 2. Opciones en `catalogo.ts`.
 3. Componente del paso y entrada en `PASOS` (`pasos.tsx`).
-4. Si afecta lo visual: token en `sistema.ts` y uso en `Preview.tsx` / `.pv-*`.
+4. Si afecta lo visual: token en `sistema.ts` y uso en `Pagina.tsx` y el lienzo de Molde.
 5. Sección en `generarDesignMd.ts` y test en `generarDesignMd.test.ts`.
 6. `DESIGN.md`: §3 (formato), §5 (estado → `[MVP]` hecho), §8 (decisión), §12 (versión).
 

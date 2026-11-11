@@ -14,7 +14,7 @@ try {
     const pagina = await contexto.newPage();
     const errores = [];
     pagina.on('pageerror', (e) => errores.push(e.message));
-    await pagina.goto(servidor.resolvedUrls.local[0] + '#/molde/inicio');
+    await pagina.goto(servidor.resolvedUrls.local[0] + '#/inicio');
     await pagina.locator('.portada-lente .pg:visible').waitFor();
     const scroll = pagina.locator('.portada-scroll');
     const boton = pagina.getByRole('button', { name: 'Empezar', exact: true });
@@ -40,7 +40,7 @@ try {
       await pagina.locator('.molde-portada[data-fase="' + fase + '"]').waitFor();
       if (movil) await boton.tap();
       else await boton.click();
-      await pagina.waitForURL('**/#/molde/proyecto');
+      await pagina.waitForURL('**/#/proyecto');
       await pagina.goBack();
       await scroll.waitFor();
     }
@@ -49,7 +49,7 @@ try {
     assert.equal(await pagina.locator('.portada-lente .pg:visible').count(), 1);
     await boton.focus();
     await pagina.keyboard.press('Enter');
-    await pagina.waitForURL('**/#/molde/proyecto');
+    await pagina.waitForURL('**/#/proyecto');
     assert.deepEqual(errores, []);
     await contexto.close();
   }

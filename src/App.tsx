@@ -1,209 +1,22 @@
-import { lazy, Suspense, useEffect } from 'react';
-import { cargarBotones } from './botones-carga';
-import { DISENO_POR_ESTILO } from './botones-por-estilo';
+import { lazy, Suspense, useEffect, useState } from 'react';
 import { useConfig } from './estado';
-import { BarraPasos, PasoContexto } from './rapido/BarraPasos';
-import { aplicarCombinacion } from './rapido/combinar';
-import { Inicio } from './rapido/Inicio';
-import { EstilosVisualesGlobales } from './rapido/Pagina';
-import { useUbicacion, type PasoRapido } from './navegacion';
-
-// La portada carga sola; el resto se descarga aparte (y en segundo plano mientras se mira la portada).
-const cargar = {
-  tipo: () => import('./rapido/PanelTipo'),
-  botones: () => import('./rapido/PanelBotones'),
-  cajas: () => import('./rapido/PanelCajas'),
-  galeria: () => import('./rapido/PanelGaleria'),
-  movimiento: () => import('./rapido/PanelMovimiento'),
-  prototipo: () => import('./rapido/Prototipo'),
-  paquete: () => import('./rapido/PanelPaquete'),
-  listo: () => import('./rapido/PanelListo'),
-  estilosGaleria: () => import('./galeria/EstilosGaleria'),
-  avanzado: () => import('./ModoAvanzado'),
-  molde: () => import('./molde/Molde'),
-};
-const PanelTipo = lazy(() => cargar.tipo().then((m) => ({ default: m.PanelTipo })));
-const PanelBotones = lazy(() => cargar.botones().then((m) => ({ default: m.PanelBotones })));
-const PanelCajas = lazy(() => cargar.cajas().then((m) => ({ default: m.PanelCajas })));
-const PanelGaleria = lazy(() => cargar.galeria().then((m) => ({ default: m.PanelGaleria })));
-const PanelMovimiento = lazy(() => cargar.movimiento().then((m) => ({ default: m.PanelMovimiento })));
-const PanelPaquete = lazy(() => cargar.paquete().then((m) => ({ default: m.PanelPaquete })));
-const Prototipo = lazy(() => cargar.prototipo().then((m) => ({ default: m.Prototipo })));
-const PanelListo = lazy(() => cargar.listo().then((m) => ({ default: m.PanelListo })));
-const EstilosGaleria = lazy(cargar.estilosGaleria);
-const ModoAvanzado = lazy(cargar.avanzado);
-// Molde (PLAN.md): el recorrido nuevo, en #/molde mientras convive con el modo rápido (C5 lo pasa a la raíz).
-const Molde = lazy(() => cargar.molde().then((m) => ({ default: m.Molde })));
-
-function Cargando() {
-  return (
-    <div className="cargando-panel" role="status">
-      Cargando…
-    </div>
-  );
-}
-
+import { useUbicacion } from './navegacion';
+const Molde = lazy(() => import('./molde/Molde').then((m) => ({ default: m.Molde })));
 export function App() {
   const { config, setConfig, reiniciar } = useConfig();
-  // Modo, paso y recorrido viven en la URL (#/rapido/tipo) y en localStorage: ver navegacion.ts.
-  const { ubicacion, atras: volviendo, ir } = useUbicacion();
-  const modo = ubicacion.modo;
-  const pasoRapido = (modo === 'rapido' ? ubicacion.paso : 'inicio') as PasoRapido;
-  // Recorrido simple (diseño → proyecto → tu UI → prototipo) o detallado (pieza por pieza).
-  const detallado = ubicacion.detallado;
-
-  // Al volver a un paso con pestañas, se entra por la última (la que se vio justo antes).
-  const irRapido = (p: PasoRapido, atras = false, conDetalle = detallado) => {
-    ir({ modo: 'rapido', paso: p, detallado: p === 'inicio' ? false : conDetalle }, atras);
-    window.scrollTo({ top: 0 });
-  };
-  const alAvanzado = (paso: string) => ir({ modo: 'avanzado', paso, detallado: false });
-
-  // Mientras se mira la portada, se bajan en segundo plano los pasos siguientes.
+  const [codigo] = useState(() => window.location.hash.match(/^#c=([+~]?[0-9a-z]+)$/i)?.[1]);
   useEffect(() => {
-    const t = window.setTimeout(() => {
-      for (const k of ['tipo', 'paquete', 'botones', 'cajas', 'galeria', 'estilosGaleria', 'movimiento', 'prototipo', 'listo'] as const) void cargar[k]();
-      void cargarBotones();
-    }, 2500);
-    return () => window.clearTimeout(t);
-  }, []);
-
-  if (modo === 'molde') {
-    return (
-      <Suspense fallback={<Cargando />}>
-        <Molde
-          config={config}
-          setConfig={setConfig}
-          reiniciar={reiniciar}
-          paso={ubicacion.paso}
-          ir={(paso, atras, reemplazar) => ir({ modo: 'molde', paso, detallado: false }, atras, reemplazar)}
-        />
-      </Suspense>
-    );
-  }
-
-  if (modo === 'rapido') {
-    const comun = { config, setConfig };
-    // En dashboards y apps web, los datos van antes que los formularios.
-    const esDatos = config.proyecto.tipo === 'dashboard' || config.proyecto.tipo === 'app_web';
-    // El orden de los pasos depende del tipo de proyecto; la numeración sale de acá.
-    const NOMBRES: Record<PasoRapido, string> = {
-      inicio: 'Diseño', tipo: 'Proyecto', botones: 'Botón principal', botones_mas: 'Más botones', cajas: 'Cajas',
-      formularios: 'Formularios', navegacion: 'Navegación', elementos: 'Detalles', datos: 'Datos',
-      movimiento: 'Movimiento', paquete: 'Tu UI', prototipo: 'Prototipo', listo: 'Descargar',
-    };
-    const orden: PasoRapido[] = !detallado ? ['inicio', 'tipo', 'paquete', 'prototipo', 'listo'] : [
-      'inicio', 'tipo', 'botones', 'botones_mas', 'cajas',
-      ...(esDatos ? (['datos', 'formularios', 'navegacion', 'elementos'] as const) : (['formularios', 'navegacion', 'elementos', 'datos'] as const)),
-      'movimiento', 'prototipo', 'listo',
-    ];
-    const pasos = orden.map((id) => ({ id, nombre: NOMBRES[id] }));
-    const n = orden.indexOf(pasoRapido);
-    const etiqueta = pasoRapido === 'listo' ? `Último paso · ${n + 1} de ${orden.length}` : `Paso ${n + 1} de ${orden.length} · ${NOMBRES[pasoRapido]}`;
-    return (
-      <PasoContexto.Provider value={etiqueta}>
-      <div className={`rapido ${pasoRapido === 'prototipo' ? 'rapido-alto-fijo' : ''}`}>
-        <EstilosVisualesGlobales />
-        {pasoRapido !== 'inicio' && <BarraPasos config={config} pasos={pasos} actual={pasoRapido} onIr={(p) => irRapido(p, orden.indexOf(p) < n)} />}
-        <main className="rapido-main">
-        <Suspense fallback={<Cargando />}>
-        {pasoRapido !== 'inicio' && <EstilosGaleria />}
-        {pasoRapido === 'inicio' && (
-          <Inicio
-            config={config}
-            onAvanzado={() => alAvanzado('proyecto')}
-            onElegir={(k) => {
-              // El diseño elegido pasa a ser el de la página, con un botón que combina.
-              setConfig((c) => {
-                const conEstilo = aplicarCombinacion(c, k);
-                return { ...conEstilo, botones: { ...conEstilo.botones, diseno: DISENO_POR_ESTILO[k.estilo] } };
-              });
-              irRapido('tipo');
-            }}
-          />
-        )}
-        {pasoRapido === 'tipo' && <PanelTipo {...comun} onAtras={() => irRapido('inicio', true)} onSeguir={() => irRapido(detallado ? 'botones' : 'paquete')} />}
-        {pasoRapido === 'paquete' && (
-          <PanelPaquete
-            {...comun}
-            onAtras={() => irRapido('tipo', true)}
-            onSeguir={() => irRapido('prototipo')}
-            onDetallado={() => irRapido('botones', false, true)}
-          />
-        )}
-        {pasoRapido === 'botones' && <PanelBotones {...comun} onAtras={() => irRapido('tipo', true)} onSeguir={() => irRapido('botones_mas')} />}
-        {pasoRapido === 'botones_mas' && (
-          <PanelGaleria
-            {...comun}
-            paso="botones_mas"
-            alFinal={volviendo}
-            onAtras={() => irRapido('botones', true)}
-            onSeguir={() => irRapido('cajas')}
-          />
-        )}
-        {pasoRapido === 'cajas' && <PanelCajas {...comun} onAtras={() => irRapido('botones_mas', true)} onSeguir={() => irRapido(esDatos ? 'datos' : 'formularios')} />}
-        {pasoRapido === 'formularios' && (
-          <PanelGaleria
-            {...comun}
-            paso="formularios"
-            alFinal={volviendo}
-            onAtras={() => irRapido(esDatos ? 'datos' : 'cajas', true)}
-            onSeguir={() => irRapido('navegacion')}
-          />
-        )}
-        {pasoRapido === 'navegacion' && (
-          <PanelGaleria
-            {...comun}
-            paso="navegacion"
-            alFinal={volviendo}
-            onAtras={() => irRapido('formularios', true)}
-            onSeguir={() => irRapido('elementos')}
-          />
-        )}
-        {pasoRapido === 'elementos' && (
-          <PanelGaleria
-            {...comun}
-            paso="elementos"
-            alFinal={volviendo}
-            onAtras={() => irRapido('navegacion', true)}
-            onSeguir={() => irRapido(esDatos ? 'movimiento' : 'datos')}
-          />
-        )}
-        {pasoRapido === 'datos' && (
-          <PanelGaleria
-            {...comun}
-            paso="datos"
-            alFinal={volviendo}
-            onAtras={() => irRapido(esDatos ? 'cajas' : 'elementos', true)}
-            onSeguir={() => irRapido(esDatos ? 'formularios' : 'movimiento')}
-          />
-        )}
-        {pasoRapido === 'movimiento' && (
-          <PanelMovimiento {...comun} onAtras={() => irRapido(esDatos ? 'elementos' : 'datos', true)} onSeguir={() => irRapido('prototipo')} />
-        )}
-        {pasoRapido === 'prototipo' && (
-          <Prototipo {...comun} onAtras={() => irRapido(detallado ? 'movimiento' : 'paquete', true)} onListo={() => irRapido('listo')} />
-        )}
-        {pasoRapido === 'listo' && (
-          <PanelListo config={config} onAtras={() => irRapido('prototipo', true)} onAvanzado={() => alAvanzado('exportar')} onInicio={() => irRapido('inicio')} />
-        )}
-        </Suspense>
-        </main>
-      </div>
-      </PasoContexto.Provider>
-    );
-  }
-
-  return (
-    <Suspense fallback={<Cargando />}>
-      <ModoAvanzado
-        config={config}
-        setConfig={setConfig}
-        reiniciar={reiniciar}
-        paso={ubicacion.paso}
-        onPaso={alAvanzado}
-        onRapido={() => irRapido('inicio')}
-      />
-    </Suspense>
-  );
+    if (!codigo) return;
+    let activo = true;
+    void import('./rapido/combinar').then(({ decodificar, aplicarCombinacion }) => {
+      const combinacion = decodificar(codigo);
+      if (activo && combinacion) setConfig((c) => aplicarCombinacion(c, combinacion));
+    });
+    return () => { activo = false; };
+  }, [codigo, setConfig]);
+  const { ubicacion, ir } = useUbicacion();
+  return <Suspense fallback={<div className="cargando-panel" role="status">Cargando…</div>}>
+    <Molde config={config} setConfig={setConfig} reiniciar={reiniciar} paso={ubicacion.paso}
+      ir={(paso, atras, reemplazar) => ir({ modo: 'molde', paso, detallado: false }, atras, reemplazar)} />
+  </Suspense>;
 }

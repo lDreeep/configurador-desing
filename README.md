@@ -1,4 +1,4 @@
-# Configurador de diseño
+# Molde
 
 Elegí cómo se ve y qué hace tu web o app, paso a paso y con vista previa en vivo, y descargá un
 **`DESIGN.md`**: un solo archivo con todo (pantallas, funciones, color, tipografía, forma,
@@ -15,12 +15,15 @@ npm install
 npm run dev
 ```
 
-Abrí la dirección que muestra la terminal. El recorrido simple tiene 5 pasos: Diseño, Proyecto,
-Tu UI, Prototipo y Descargar. Ahí bajás tu `DESIGN.md`. Después, en tu IA: *"Construí esta app
-siguiendo el DESIGN.md"*.
+Abrí la dirección que muestra la terminal. Molde es la pantalla principal: empezá desde la
+portada y elegí Proyecto, Rubro, Color, Layout y Estilo. Después podés sumar piezas,
+tipografía, entrada y las rondas propias de tu proyecto. Cada idea se muestra en el lienzo;
+en celular, tocala y confirmá con «Usar».
 
-Para ajustar pieza por pieza, el modo detallado (`#/detallado`) y el avanzado (`#/avanzado`, con
-vista previa en vivo y 10 pasos) tienen más controles.
+Las fichas permiten volver a una ronda y abrir sus «Ajustes finos». Al terminar, descargá
+el DESIGN.md y la página en HTML. El diseño y las rondas elegidas se guardan en este navegador.
+Las rutas son #/inicio, #/proyecto, #/color…; los enlaces anteriores se migran a Molde.
+Dale el DESIGN.md a tu IA con la instrucción: «Construí esta app siguiendo el DESIGN.md».
 
 ## Desarrollo
 
@@ -41,13 +44,8 @@ GitHub Pages sin configuración extra.
 - [`DESIGN.md`](./DESIGN.md): especificación del formato exportado y documento vivo del proyecto.
 - [`CLAUDE.md`](./CLAUDE.md): cómo está organizado el código y reglas para trabajar con IA.
 
-## Comparar y probar diseños
+## Vista previa y descargas
 
-En cada categoría de la galería podés marcar **Comparar** en hasta tres opciones
-y verlas juntas con el mismo contenido. Elegir una aplica ese diseño; cambiar de
-categoría limpia la comparación. No se agregan pasos al recorrido.
-
-Los formularios completos permiten probar campos obligatorios, adjuntos, guardado
-simulado y limpieza. Las tarjetas de producto permiten elegir color y talle,
-marcar favoritos y simular agregar/quitar del carrito. No se envían datos ni se
-realizan compras. Las elecciones se exportan en `DESIGN.md` con su estructura y CSS.
+El lienzo usa la misma configuración y los mismos tokens que el exportador.
+El HTML incorpora estilos y fotos para abrirlo sin conexión, salvo las fuentes externas.
+Las interacciones de las muestras son locales: no envían datos ni realizan compras.

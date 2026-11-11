@@ -160,10 +160,11 @@ Estado: `[ ]` pendiente · `[x]` hecha. Marcala al terminar.
   - Listo cuando: todo lo que se podía ajustar en `src/ModoAvanzado.tsx` se puede ajustar desde alguna ficha. Entregar una tabla de equivalencias en el PR.
   - Hecho en `src/molde/Ajustes.tsx` (se carga aparte) y `AJUSTES` en `src/molde/recorrido.ts`. En una ronda ya elegida, el pie muestra «Ajustes finos»: abre al costado (abajo en celular) los pasos de `PASOS` de ese tema con su nota, y la página queda entera a la vista y cambia en vivo. Un test verifica que cada paso de `PASOS` está en una sola ficha. Dirección va en una versión para Molde (`AjustesDireccion`: sensación y anti-referencias, sin pisar color, letra ni forma) y de Exportar solo las notas generales (`NotasGenerales`). Equivalencias: Proyecto → proyecto (tipo, nombre, descripción, objetivo, público, plataformas), qué hace y notas generales · Layout → pantallas y navegación · Color → paleta, personalizada, cada color a mano, contraste · Estilo → dirección, anti-referencias y forma (esquinas, sombras, bordes) · Piezas → botones (estilo, tamaño, mayúsculas, icono) · Letra → combinación, escala, fuentes, peso y espaciado · Entrada → movimiento (nivel, hover, presionar, aparición, cambio de pantalla). Lo que el modo avanzado elegía en Dirección y ya es ronda (estilo y layout) se elige en su ronda.
 
-- [ ] **C5 · Reemplazar el recorrido y retirar lo viejo** — Sonnet 5.5 · ChatGPT: Sol · depende de C3, C4 y E2
+- [x] **C5 · Reemplazar el recorrido y retirar lo viejo** — Sonnet 5.5 · ChatGPT: Sol · depende de C3, C4 y E2
   - Antes de borrar, que liste qué va a borrar y lo apruebe quien dirige.
   - `src/App.tsx` pasa a montar Molde. Borrar los paneles del modo rápido y `ModoAvanzado.tsx` que ya no se usen; conservar `Prototipo.tsx` si C4 lo reutiliza.
   - Listo cuando: no quedan imports muertos y el build pasa.
+  - Hecha (2026-11-11), con retiro de 20 archivos aprobado en el chat: App monta solo Molde; se conservan Pagina, el catálogo, combinaciones y los controles de PASOS usados por ajustes finos. Rutas canónicas #/<ronda>, con migración de enlaces y ubicaciones anteriores. README y CLAUDE actualizados. Pasan typecheck, 198 tests, peso (201,6 kB) y e2e con y sin movimiento reducido, incluidas descargas, migración, recarga y Atrás/Adelante.
 
 ### Tanda 3: más opciones (en paralelo, todas dependen de C1)
 

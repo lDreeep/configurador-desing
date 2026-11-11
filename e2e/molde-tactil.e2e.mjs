@@ -31,7 +31,7 @@ async function recorrer(browser, reducedMotion) {
   const page = await ctx.newPage();
   const errores = [];
   page.on('pageerror', (e) => errores.push(e.message));
-  await page.goto(URL_BASE + '#/molde/inicio');
+  await page.goto(URL_BASE);
   await page.getByRole('button', { name: 'Empezar', exact: true }).tap();
 
   for (const ronda of ['proyecto', 'rubro', 'color', 'layout', 'estilo']) {
@@ -85,6 +85,25 @@ async function recorrer(browser, reducedMotion) {
   await page.locator('.molde-resumen summary').click();
   await page.locator('.molde-resumen .molde-ficha').first().click();
   await page.waitForFunction(() => location.hash.endsWith('/proyecto'));
+  assert.deepEqual(errores, []);
+  // C5: las rutas anteriores llegan a Molde, y recargar conserva la ronda y el diseño.
+  const configAntes = await page.evaluate(() => localStorage.getItem('configurador-diseno:v1'));
+  for (const [vieja, nueva] of [['#/molde/color', '#/color'], ['#/avanzado/tipografia', '#/letra'], ['#/detallado/cajas', '#/estilo']]) {
+    await page.goto(URL_BASE + vieja);
+    await page.waitForFunction((hash) => location.hash === hash, nueva);
+    await page.locator('.molde').waitFor();
+    await page.reload();
+    await page.waitForFunction((hash) => location.hash === hash, nueva);
+    assert.equal(await page.evaluate(() => localStorage.getItem('configurador-diseno:v1')), configAntes);
+  }
+  await page.goBack();
+  await page.waitForFunction(() => location.hash === '#/letra');
+  await page.goForward();
+  await page.waitForFunction(() => location.hash === '#/estilo');
+  // Ubicación guardada de la app anterior, entrando sin hash.
+  await page.evaluate(() => localStorage.setItem('configurador-diseno:ubicacion', JSON.stringify({ modo: 'avanzado', paso: 'color' })));
+  await page.goto(URL_BASE);
+  await page.waitForFunction(() => location.hash === '#/color');
   assert.deepEqual(errores, []);
   await ctx.close();
 }
