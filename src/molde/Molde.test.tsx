@@ -103,6 +103,16 @@ describe('Molde (C2)', () => {
     await clic(conBoton('Terminar'));
     expect(pasoActual()).toBe('listo');
     expect(conBoton('Descargar DESIGN.md')).toBeTruthy();
+    expect(conBoton('Descargar HTML')).toBeTruthy();
+    expect(caja.querySelector('.molde-pie')).toBeNull();
+    expect(caja.querySelector('.molde-archivo pre')!.textContent).toContain('formato: design-md');
+    const resumen = caja.querySelector<HTMLDetailsElement>('.molde-resumen')!;
+    expect(resumen.open).toBe(false);
+    expect(document.activeElement?.id).toBe('molde-descarga-titulo');
+    resumen.open = true;
+    await clic(resumen.querySelector<HTMLButtonElement>('.molde-ficha')!);
+    expect(pasoActual()).toBe('proyecto');
+    expect(caja.querySelector('.molde-descarga')).toBeNull();
   });
 
   it('con el dedo: un toque muestra la idea, «Usar» la elige y «Ver otras» la descarta', async () => {

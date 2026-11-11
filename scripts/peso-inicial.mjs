@@ -3,7 +3,6 @@
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { join } from 'node:path';
-import { fileURLToPath } from 'node:url';
 
 const LIMITE = 250_000;
 const dist = fileURLToPath(new URL('../dist/', import.meta.url));

@@ -65,6 +65,26 @@ async function recorrer(browser, reducedMotion) {
   assert.equal(await page.locator('.molde-ficha').count(), 5); // Proyecto, Rubro, Color, Layout y Estilo
   await page.getByRole('button', { name: 'Terminar', exact: true }).tap();
   await page.getByRole('button', { name: 'Descargar DESIGN.md' }).waitFor();
+  // F3: ambas descargas completas dentro del primer pantallazo, en celular y escritorio.
+  for (const width of [390, 1440]) {
+    await page.setViewportSize({ width, height: width === 390 ? 844 : 900 });
+    await page.locator('.molde-descarga').waitFor();
+    for (const name of ['Descargar DESIGN.md', 'Descargar HTML']) {
+      const boton = page.getByRole('button', { name, exact: true });
+      const caja = await boton.boundingBox();
+      assert.ok(caja && caja.y >= 0 && caja.y + caja.height <= page.viewportSize().height, name + ' fuera de pantalla a ' + width);
+      const [descarga] = await Promise.all([page.waitForEvent('download'), boton.click()]);
+      assert.equal(descarga.suggestedFilename(), name.endsWith('HTML') ? 'preview.html' : 'DESIGN.md');
+      assert.equal(await descarga.failure(), null);
+    }
+    assert.equal(await page.locator('.molde-resumen').getAttribute('open'), null);
+    assert.ok(await page.locator('.molde-archivo pre').evaluate(el => el.scrollHeight > el.clientHeight));
+    assert.ok(await page.locator('.molde-descarga').evaluate(el => el.scrollWidth <= el.clientWidth));
+    await page.screenshot({ path: 'dist/descarga-' + width + (reducedMotion ? '-reduce' : '') + '.png' });
+  }
+  await page.locator('.molde-resumen summary').click();
+  await page.locator('.molde-resumen .molde-ficha').first().click();
+  await page.waitForFunction(() => location.hash.endsWith('/proyecto'));
   assert.deepEqual(errores, []);
   await ctx.close();
 }
