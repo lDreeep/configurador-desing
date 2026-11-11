@@ -1,63 +1,38 @@
-// Dónde está la persona en el configurador (modo y paso), guardado en la URL y en localStorage.
-// La URL lleva el paso en el hash (`#/rapido/tipo`, `#/detallado/cajas`, `#/avanzado/color`,
-// `#/molde/color`), así
-// Atrás y Adelante del navegador mueven entre pasos; localStorage lo recuerda si se vuelve sin hash.
-
+// Ronda de Molde en la URL y localStorage. Migra rutas del recorrido anterior.
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-export type Modo = 'rapido' | 'avanzado' | 'molde';
-
-/** Pasos del recorrido simple (sirven en los dos recorridos del modo rápido). */
-export const PASOS_SIMPLES = ['inicio', 'tipo', 'paquete', 'prototipo', 'listo'] as const;
-/** Pasos que solo tiene el recorrido detallado (pieza por pieza). */
-export const PASOS_DETALLADOS = ['botones', 'botones_mas', 'cajas', 'formularios', 'navegacion', 'elementos', 'datos', 'movimiento'] as const;
-export type PasoRapido = (typeof PASOS_SIMPLES)[number] | (typeof PASOS_DETALLADOS)[number];
-
-export interface Ubicacion {
-  modo: Modo;
-  /** Paso del modo rápido, id de un paso del modo avanzado (`PASOS` en `pasos/pasos.tsx`) o, en Molde,
-   *  la clave de la ronda abierta (`src/rondas/`), `inicio` o `listo`. */
-  paso: string;
-  /** En el modo rápido: recorrido pieza por pieza. */
-  detallado: boolean;
-}
-
-export const INICIO: Ubicacion = { modo: 'rapido', paso: 'inicio', detallado: false };
+export type Modo = 'molde';
+export interface Ubicacion { modo: Modo; paso: string; detallado: false; }
+export const INICIO: Ubicacion = { modo: 'molde', paso: 'inicio', detallado: false };
 export const CLAVE_UBICACION = 'configurador-diseno:ubicacion';
-/** Clave vieja: solo guardaba el modo. Se lee para no perder a quien ya estaba en el avanzado. */
 const CLAVE_MODO = 'configurador-diseno:modo';
-
-const esPasoRapido = (p: string): p is PasoRapido =>
-  (PASOS_SIMPLES as readonly string[]).includes(p) || (PASOS_DETALLADOS as readonly string[]).includes(p);
-const esDetallado = (p: string) => (PASOS_DETALLADOS as readonly string[]).includes(p);
-// Los ids del modo avanzado se validan por forma: la lista vive en el bundle del avanzado, que se carga aparte.
-const esIdAvanzado = (p: string) => /^[a-z_]{1,30}$/.test(p);
-// En Molde, la clave de una ronda (`color`, `galeria:producto`): también por forma, Molde la valida contra sus rondas.
+const ubicacion = (paso: string): Ubicacion => ({ modo: 'molde', paso, detallado: false });
 const esPasoMolde = (p: string) => /^[a-z_]{1,30}(:[a-z_]{1,30})?$/.test(p);
-
-export function aHash(u: Ubicacion): string {
-  if (u.modo === 'avanzado') return `#/avanzado/${u.paso}`;
-  if (u.modo === 'molde') return `#/molde/${u.paso}`;
-  if (u.paso === 'inicio') return '#/inicio';
-  return `#/${u.detallado ? 'detallado' : 'rapido'}/${u.paso}`;
-}
-
-/** Lee el hash; `null` si no es una ubicación válida. */
+const RAPIDO: Record<string, string> = {
+  inicio: 'inicio', tipo: 'proyecto', paquete: 'piezas', botones: 'piezas', botones_mas: 'piezas',
+  cajas: 'estilo', formularios: 'galeria:formulario', navegacion: 'layout', elementos: 'piezas',
+  datos: 'galeria:tabla', movimiento: 'entrada', prototipo: 'listo', listo: 'listo',
+};
+const AVANZADO: Record<string, string> = {
+  proyecto: 'proyecto', estructura: 'layout', funciones: 'proyecto', direccion: 'estilo',
+  color: 'color', tipografia: 'letra', forma: 'estilo', botones: 'piezas', movimiento: 'entrada', exportar: 'listo',
+};
+export function aHash(u: Ubicacion): string { return '#/' + u.paso; }
 export function desdeHash(hash: string): Ubicacion | null {
-  // Un link con el código de un diseño (`#c=XXXXX`, ver Inicio.tsx) abre la portada con ese diseño.
   if (esLinkConCodigo(hash)) return INICIO;
-  const [, prefijo, paso] = hash.replace(/^#/, '').split('/');
-  if (prefijo === 'inicio' && paso === undefined) return INICIO;
-  if (!paso) return null;
-  if (prefijo === 'avanzado') return esIdAvanzado(paso) ? { modo: 'avanzado', paso, detallado: false } : null;
-  if (prefijo === 'molde') return esPasoMolde(paso) ? { modo: 'molde', paso, detallado: false } : null;
-  if ((prefijo === 'rapido' || prefijo === 'detallado') && esPasoRapido(paso)) {
-    return { modo: 'rapido', paso, detallado: prefijo === 'detallado' || esDetallado(paso) };
+  const partes = hash.replace(/^#/, '').split('/');
+  if (partes[0] !== '' || partes.length < 2 || partes.length > 3) return null;
+  const [, prefijo, paso] = partes;
+  if (partes.length === 2) {
+    if (['rapido', 'detallado', 'avanzado', 'molde'].includes(prefijo)) return null;
+    return esPasoMolde(prefijo) ? ubicacion(prefijo) : null;
   }
-  return null;
+  if (prefijo === 'molde') return esPasoMolde(paso) ? ubicacion(paso) : null;
+  const mapa = prefijo === 'avanzado' ? AVANZADO : prefijo === 'rapido' || prefijo === 'detallado' ? RAPIDO : {};
+  const equivalente = Object.prototype.hasOwnProperty.call(mapa, paso) ? mapa[paso] : null;
+  return equivalente ? ubicacion(equivalente) : null;
 }
-
-export const esLinkConCodigo = (hash: string) => /^#?c=[0-9a-z]+$/i.test(hash);
+export const esLinkConCodigo = (hash: string) => /^#?c=[+~]?[0-9a-z]+$/i.test(hash);
 
 type Almacen = Pick<Storage, 'getItem' | 'setItem'>;
 
@@ -73,14 +48,14 @@ export function leerGuardada(almacen: Almacen | null = almacenDelNavegador()): U
   try {
     const crudo = almacen?.getItem(CLAVE_UBICACION);
     if (crudo) {
-      const u = JSON.parse(crudo) as Partial<Ubicacion>;
+      const u = JSON.parse(crudo) as { modo?: string; paso?: unknown };
       if (typeof u?.paso === 'string') {
-        const modo = u.modo === 'avanzado' || u.modo === 'molde' ? u.modo : 'rapido';
-        const desde = desdeHash(aHash({ modo, paso: u.paso, detallado: !!u.detallado }));
+        const prefijo = u.modo === 'molde' ? 'molde' : u.modo === 'avanzado' ? 'avanzado' : 'rapido';
+        const desde = desdeHash('#/' + prefijo + '/' + u.paso);
         if (desde) return desde;
       }
     }
-    if (almacen?.getItem(CLAVE_MODO) === 'avanzado') return { modo: 'avanzado', paso: 'proyecto', detallado: false };
+    if (almacen?.getItem(CLAVE_MODO) === 'avanzado') return ubicacion('proyecto');
   } catch {
     // guardado roto o sin almacenamiento: se arranca de la portada
   }
@@ -122,12 +97,12 @@ export function useUbicacion() {
   useEffect(() => {
     // La entrada de llegada queda con la ubicación real (corrige un hash inválido o vacío).
     actual.current.orden = ordenDe(history.state);
-    // Un link con código queda como está: la portada lo lee de la URL.
-    const url = esLinkConCodigo(location.hash) ? location.hash : aHash(actual.current.u);
+    const url = aHash(actual.current.u);
     history.replaceState({ orden: actual.current.orden } satisfies EstadoHistorial, '', url);
     const alMoverse = () => {
       const u = desdeHash(location.hash);
       if (!u) return;
+      history.replaceState(history.state, '', aHash(u));
       const orden = ordenDe(history.state);
       const atras = orden < actual.current.orden;
       actual.current = { u, orden };

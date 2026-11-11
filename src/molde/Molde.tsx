@@ -22,7 +22,7 @@ interface Props {
   config: Config;
   setConfig: Dispatch<SetStateAction<Config>>;
   reiniciar: () => void;
-  /** La ronda abierta (su clave), `inicio` o `listo`: viene de la URL (`#/molde/color`). */
+  /** La ronda abierta (su clave), `inicio` o `listo`: viene de la URL (`#/color`). */
   paso: string;
   /** Va a otro paso y suma una entrada al historial (Atrás del navegador vuelve); `reemplazar` no la suma. */
   ir: (paso: string, atras?: boolean, reemplazar?: boolean) => void;

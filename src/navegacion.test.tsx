@@ -15,10 +15,6 @@ describe('ubicación en la URL', () => {
   it('ida y vuelta entre ubicación y hash', () => {
     const casos: Ubicacion[] = [
       INICIO,
-      { modo: 'rapido', paso: 'tipo', detallado: false },
-      { modo: 'rapido', paso: 'prototipo', detallado: true },
-      { modo: 'rapido', paso: 'cajas', detallado: true },
-      { modo: 'avanzado', paso: 'color', detallado: false },
       { modo: 'molde', paso: 'color', detallado: false },
       { modo: 'molde', paso: 'galeria:producto', detallado: false },
     ];
@@ -31,20 +27,36 @@ describe('ubicación en la URL', () => {
 
   it('un link con el código de un diseño abre la portada aunque haya algo guardado', () => {
     const a = memoria();
-    guardar({ modo: 'rapido', paso: 'prototipo', detallado: false }, a);
+    guardar({ modo: 'molde', paso: 'prototipo', detallado: false }, a);
     expect(ubicacionInicial('#c=1A2B3', a)).toEqual(INICIO);
   });
 
-  it('un paso del recorrido detallado siempre es detallado', () => {
-    expect(desdeHash('#/rapido/cajas')).toEqual({ modo: 'rapido', paso: 'cajas', detallado: true });
+  it('migra un paso del recorrido anterior a su ficha', () => {
+    expect(desdeHash('#/rapido/cajas')).toEqual({ modo: 'molde', paso: 'estilo', detallado: false });
   });
 
   it('la URL manda; sin URL, lo guardado; sin nada, la portada', () => {
     const a = memoria();
     expect(ubicacionInicial('', a)).toEqual(INICIO);
-    guardar({ modo: 'rapido', paso: 'paquete', detallado: false }, a);
-    expect(ubicacionInicial('', a)).toEqual({ modo: 'rapido', paso: 'paquete', detallado: false });
-    expect(ubicacionInicial('#/avanzado/forma', a)).toEqual({ modo: 'avanzado', paso: 'forma', detallado: false });
+    guardar({ modo: 'molde', paso: 'piezas', detallado: false }, a);
+    expect(ubicacionInicial('', a)).toEqual({ modo: 'molde', paso: 'piezas', detallado: false });
+    expect(ubicacionInicial('#/avanzado/forma', a)).toEqual({ modo: 'molde', paso: 'estilo', detallado: false });
+  });
+
+  it('migra enlaces y ubicaciones anteriores', () => {
+    const casos = [
+      ['#/rapido/tipo', 'proyecto'], ['#/detallado/botones', 'piezas'],
+      ['#/avanzado/tipografia', 'letra'], ['#/molde/color', 'color'],
+      ['#/rapido/listo', 'listo'], ['#/avanzado/funciones', 'proyecto'],
+    ];
+    for (const [hash, paso] of casos) {
+      expect(desdeHash(hash)).toEqual({ modo: 'molde', paso, detallado: false });
+    }
+    const a = memoria();
+    a.setItem(CLAVE_UBICACION, JSON.stringify({ modo: 'rapido', paso: 'paquete', detallado: true }));
+    expect(leerGuardada(a)?.paso).toBe('piezas');
+    a.setItem(CLAVE_UBICACION, JSON.stringify({ modo: 'avanzado', paso: 'estructura' }));
+    expect(leerGuardada(a)?.paso).toBe('layout');
   });
 
   it('lo guardado roto o viejo no rompe', () => {
@@ -56,7 +68,7 @@ describe('ubicación en la URL', () => {
     // Antes solo se guardaba el modo.
     const b = memoria();
     b.setItem('configurador-diseno:modo', 'avanzado');
-    expect(leerGuardada(b)).toEqual({ modo: 'avanzado', paso: 'proyecto', detallado: false });
+    expect(leerGuardada(b)).toEqual({ modo: 'molde', paso: 'proyecto', detallado: false });
   });
 });
 
@@ -77,34 +89,34 @@ describe('useUbicacion con el historial del navegador', () => {
     act(() => raiz.render(<Sonda />));
     expect(location.hash).toBe('#/inicio');
 
-    act(() => ultimo.ir({ modo: 'rapido', paso: 'tipo', detallado: false }));
-    act(() => ultimo.ir({ modo: 'rapido', paso: 'paquete', detallado: false }));
-    expect(location.hash).toBe('#/rapido/paquete');
+    act(() => ultimo.ir({ modo: 'molde', paso: 'proyecto', detallado: false }));
+    act(() => ultimo.ir({ modo: 'molde', paso: 'piezas', detallado: false }));
+    expect(location.hash).toBe('#/piezas');
 
     const atras = esperarPopstate();
     history.back();
     await act(() => atras);
-    expect(ultimo.ubicacion.paso).toBe('tipo');
+    expect(ultimo.ubicacion.paso).toBe('proyecto');
     expect(ultimo.atras).toBe(true);
 
     const adelante = esperarPopstate();
     history.forward();
     await act(() => adelante);
-    expect(ultimo.ubicacion.paso).toBe('paquete');
+    expect(ultimo.ubicacion.paso).toBe('piezas');
     expect(ultimo.atras).toBe(false);
 
     // Recargar: se desmonta y se vuelve a montar con la misma URL.
     act(() => raiz.unmount());
     raiz = createRoot(div);
     act(() => raiz.render(<Sonda />));
-    expect(ultimo.ubicacion).toEqual({ modo: 'rapido', paso: 'paquete', detallado: false });
+    expect(ultimo.ubicacion).toEqual({ modo: 'molde', paso: 'piezas', detallado: false });
 
     // Entrar sin hash (otra pestaña, link guardado): sigue desde lo guardado.
     act(() => raiz.unmount());
     history.replaceState(null, '', '/');
     raiz = createRoot(div);
     act(() => raiz.render(<Sonda />));
-    expect(location.hash).toBe('#/rapido/paquete');
+    expect(location.hash).toBe('#/piezas');
     act(() => raiz.unmount());
   });
 });
