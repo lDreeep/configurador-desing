@@ -95,4 +95,17 @@ describe('F1 y D13', () => {
       expect(aplicarTipo(c, otroTipo).proyecto.rubro).toBeUndefined();
     }
   });
+
+  it('G5: cambiar a un tipo sin ronda Scroll ni Fondo animado no arrastra esas elecciones al export', () => {
+    const landing = aplicarTipo(configInicial(), 'landing');
+    landing.visual.scroll = ['se_aleja', 'barra_progreso'] as ScrollId[];
+    landing.visual.fondoAnimado = IDS_FONDOS_ANIMADOS[0];
+    expect(aplicarTipo(landing, 'sitio').visual.scroll).toHaveLength(2);
+    const dash = aplicarTipo(landing, 'dashboard');
+    expect(dash.visual.scroll).toEqual([]);
+    expect(dash.visual.fondoAnimado).toBe('ninguno');
+    const md = generarDesignMd(dash);
+    expect(md).not.toContain('fondo_animado:');
+    expect(md).not.toContain('uno_por_zona');
+  });
 });
