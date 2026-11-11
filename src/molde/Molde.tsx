@@ -51,6 +51,39 @@ function useTamano(ref: React.RefObject<HTMLElement>) {
   return t;
 }
 
+const sinMovimiento = () => typeof window.matchMedia === 'function' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/**
+ * Una capa del lienzo. Con `bajar`, la página se baja sola y vuelve, en un ciclo que comparten las
+ * dos capas (base y vista previa van parejas). Con movimiento reducido no se mueve.
+ */
+function Capa({ clase, bajar, children }: { clase: string; bajar: boolean; children: React.ReactNode }) {
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const el = ref.current;
+    if (!bajar || !el || typeof requestAnimationFrame === 'undefined' || sinMovimiento()) return;
+    let raf = 0;
+    const suave = (x: number) => x * x * (3 - 2 * x);
+    const marco = (t: number) => {
+      // Ciclo de 11 s: baja 6 s, espera 1,2 s abajo, sube 2,6 s y espera arriba.
+      const fase = (t % 11000) / 1000;
+      const p = fase < 6 ? suave(fase / 6) : fase < 7.2 ? 1 : fase < 9.8 ? 1 - suave((fase - 7.2) / 2.6) : 0;
+      el.scrollTop = p * Math.max(0, el.scrollHeight - el.clientHeight);
+      raf = requestAnimationFrame(marco);
+    };
+    raf = requestAnimationFrame(marco);
+    return () => {
+      cancelAnimationFrame(raf);
+      el.scrollTop = 0;
+    };
+  }, [bajar]);
+  return (
+    <div ref={ref} className={`molde-capa ${clase}`}>
+      {children}
+    </div>
+  );
+}
+
 const enDosCuadros = (f: () => void) => {
   if (typeof requestAnimationFrame === 'undefined') return void setTimeout(f, 0);
   requestAnimationFrame(() => requestAnimationFrame(f));
@@ -95,7 +128,8 @@ export function Molde({ config, setConfig, reiniciar, paso: pasoUrl, ir }: Props
     setElegidas(res.elegidas);
     setNueva(r.clave);
     setVista(null);
-    ir(res.siguiente);
+    // En las rondas de elegir varias (scroll) la ronda queda abierta para sumar o sacar; «Seguir» pasa a la otra.
+    if (!r.maximo) ir(res.siguiente);
   };
 
   const empezarDeCero = () => {
@@ -118,6 +152,8 @@ export function Molde({ config, setConfig, reiniciar, paso: pasoUrl, ir }: Props
   };
 
   const fichas = rondas.filter((r) => elegidas.has(r.clave));
+  // En la ronda de scroll la página se baja sola, para que se vea qué hace cada efecto.
+  const bajaSola = ronda?.clave === 'scroll';
   const sigOpcional = siguiente(config, elegidas);
   // Ajustes finos: solo en una ronda ya elegida (se llega tocando su ficha) que tenga pasos del modo avanzado.
   const conAjustes = ronda && elegidas.has(ronda.clave) && AJUSTES[ronda.clave] ? ronda : null;
@@ -147,8 +183,12 @@ export function Molde({ config, setConfig, reiniciar, paso: pasoUrl, ir }: Props
       <main className="molde-main">
         {/* El lienzo: la página real. Es una muestra, así que no se navega por dentro. */}
         <div className={`molde-lienzo ${hayPagina ? 'hay' : ''}`} aria-hidden="true" {...{ inert: '' }}>
-          <div className="molde-capa molde-base">{hayPagina && <Pagina key={config.visual.aparicion} config={config} />}</div>
-          <div className={`molde-capa molde-prev ${vista ? 'on' : ''}`}>{vista && <Pagina key={vista.id} config={vista.config} />}</div>
+          <Capa clase="molde-base" bajar={bajaSola}>
+            {hayPagina && <Pagina key={config.visual.aparicion} config={config} />}
+          </Capa>
+          <Capa clase={`molde-prev ${vista ? 'on' : ''}`} bajar={bajaSola && !!vista}>
+            {vista && <Pagina key={vista.id} config={vista.config} />}
+          </Capa>
         </div>
 
         {paso === INICIO_MOLDE && (
@@ -240,6 +280,11 @@ export function Molde({ config, setConfig, reiniciar, paso: pasoUrl, ir }: Props
                   Ajustes finos
                 </button>
               )}
+              {ronda?.maximo && (
+                <button type="button" className="molde-btn molde-btn-2" onClick={() => ir(siguiente(config, new Set([...elegidas, ronda.clave])))}>
+                  Seguir
+                </button>
+              )}
               {ronda && faltan.length === 0 && (
                 <button type="button" className="molde-btn molde-btn-1" onClick={() => ir(LISTO_MOLDE)}>
                   Terminar
@@ -308,6 +353,7 @@ function RondaAbierta(props: {
   const hojas = Math.max(1, Math.ceil(todas.length / POR_VEZ));
   // Lo que la config trae de fábrica no cuenta como elegido: solo lo que la persona eligió en esta ronda.
   const elegida = props.elegidas.has(ronda.clave) ? ronda.elegida(config) : null;
+  const marcadas = props.elegidas.has(ronda.clave) ? (ronda.marcadas?.(config) ?? (elegida ? [elegida] : [])) : [];
   // Se abre en la vuelta donde está lo que ya se eligió.
   const [hoja, setHoja] = useState(() => {
     const i = todas.findIndex((o) => o.id === elegida);
@@ -401,7 +447,7 @@ function RondaAbierta(props: {
               ref={(el) => (botones.current[k] = el)}
               type="button"
               className={`molde-idea ${vista?.id === op.id ? 'viva' : ''}`}
-              aria-pressed={op.id === elegida}
+              aria-pressed={marcadas.includes(op.id)}
               style={estilo}
               onPointerEnter={(e) => e.pointerType === 'mouse' && !arrastre.current && props.onVer(op)}
               onPointerLeave={(e) => e.pointerType === 'mouse' && !arrastre.current && props.onDejar(op)}

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { DIRECCIONES, FUENTES, MOVIMIENTOS, NAV_SUGERIDA, PALETAS, PLANTILLAS_PANTALLAS } from './catalogo';
 import { ESTILOS, LAYOUTS } from './estilos-visuales';
 import { FONDOS } from './fondos';
+import { limpiarScroll } from './scroll';
 import type { Config, DireccionId, FuenteId, MovimientoId, Pantalla, TipoProyecto } from './tipos';
 
 const CLAVE = 'configurador-diseno:v1';
@@ -66,6 +67,7 @@ export function configInicial(): Config {
       ...visualDeDireccion('calmo'),
       ambosModos: false,
       fondo: 'ninguno',
+      scroll: [],
       layout: 'hero_partido',
       antiReferencias: [],
       paletaPersonalizada: { fondo: r.fondo, texto: r.texto, acento: r.acento, manual: {} },
@@ -123,6 +125,7 @@ export function normalizar(guardado: Partial<Config>): Config {
   if (visual.estilo !== 'clasico' && !(visual.estilo in ESTILOS)) visual.estilo = 'clasico';
   if (!(visual.layout in LAYOUTS)) visual.layout = base.visual.layout;
   if (visual.fondo !== 'ninguno' && !(visual.fondo in FONDOS)) visual.fondo = 'ninguno';
+  visual.scroll = limpiarScroll(Array.isArray(visual.scroll) ? visual.scroll : []);
   visual.paletaPersonalizada = { ...base.visual.paletaPersonalizada, ...visual.paletaPersonalizada };
   return {
     ...base,

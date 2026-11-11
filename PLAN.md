@@ -191,6 +191,8 @@ Estado: `[ ]` pendiente · `[x]` hecha. Marcala al terminar.
   - La persona puede combinar hasta 3, **uno por zona**; el motor rechaza dos de la misma zona.
   - En la vista previa, la página se baja sola para mostrar el efecto.
   - Listo cuando: cualquier combinación válida funciona junta y hay un test de las reglas de combinación.
+  - **Parte de Opus hecha (2026-11-11):** motor y 4 efectos, uno por zona, en `src/scroll.ts` (Se aleja, Frase que se enciende, Corre de costado, Barra de progreso), con `src/scroll.test.tsx`. `visual.scroll` en `Config` (lo limpia `normalizar`), clases `scroll-<id>` en `Pagina` y la ronda Scroll en `src/rondas/ramas.ts` (elige varios: `maximo` y `marcadas` en `Ronda`). En Molde la ronda queda abierta, «Seguir» pasa a la siguiente y la página se baja sola. Decisión D89.
+  - **Falta (Sonnet):** los 10 de `SCROLL_PENDIENTES`, siguiendo los 4 hechos: sumar el id a `ScrollId` y la entrada a `EFECTOS_SCROLL` (al final), sacarlo de la lista y correr `src/scroll.test.tsx`. Solo propiedades sueltas, `@keyframes` con nombre propio y selectores que no repitan los de otro efecto de otra zona. Ojo: las plantillas de autor no tienen `.pg-hero` ni `.pg-fila`, así que ahí solo funcionan los efectos de la zona Página. El export queda para F1.
 
 - [x] **D8 · 7 entradas nuevas** — Sonnet 5.5 · apta para Codex
   - Sumar a la aparición (`AparicionId` en `src/tipos.ts`, opciones en `src/catalogo.ts`) las de la sección 7.8. Se reproducen solo en su ronda y al terminar.
