@@ -597,10 +597,11 @@ fichas, como hoy los ajustes finos. No se borra ningún catálogo ni cambia el e
     en un archivo aparte que no entre en la carga inicial. Tests: ningún tipo pasa de 5 pasos; un layout
     sin fondo no ofrece fondo animado.
   - Listo cuando: `pasosDe` cubre los 8 tipos y los 46 layouts, y `rondasDe` sigue andando para las fichas.
-- [ ] **I2 · Valores por defecto de lo que ya no se pregunta** — Sonnet 5.5 · ChatGPT: Sol · depende de I1
+- [x] **I2 · Valores por defecto de lo que ya no se pregunta** — Sonnet 5.5 · ChatGPT: Sol · depende de I1
   - Al elegir estilo, tipo o rubro se llenan letra, piezas, iconos, tono, entrada y densidad con el primer
     recomendado, sin pisar lo que la persona cambió a mano (`ContextoRonda.elegidas`). Test: el export de
     un recorrido de 4 pasos no deja ninguna sección vacía.
+  - Hecho: `conValoresPorDefecto` en `src/rondas/comunes.ts`; lo llaman `PROYECTO`, `RUBRO` y `ESTILO` al aplicar (solo con `ctx`). No marca las rondas como elegidas. Tests en `rondas.test.ts`.
 - [ ] **I3 · Interfaz del recorrido corto** — Fable 5.2 (u Opus 5.5) · ChatGPT: no (criterio visual) · depende de I1
   - `src/molde/Molde.tsx`: recorrer `pasosDe`, mostrar «paso 2 de 4», pasos con más de una ronda en una
     sola pantalla, y las fichas de lo no preguntado bajo «Ajustar». Rutas viejas (`#/letra`…) siguen
