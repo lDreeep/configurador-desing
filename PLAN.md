@@ -555,15 +555,25 @@ probar con personas y recién después sumar cosas. Cada tarea trae el pedido li
 
 ---
 
-## 10. Recorrido corto (tanda I) — propuesta, falta el OK de quien dirige
+## 10. Recorrido corto (tanda I) — aprobada por quien dirige (2026-11-11)
 
 **Por qué (2026-11-11):** quien dirige probó Molde publicado. El punto de partida le gusta, pero una
 landing recorre 14 rondas (10 comunes + 3 de la rama + densidad) y son demasiadas. Pedido: menos
 pasos, más englobados, y que cada persona vea solo lo que le sirve según su proyecto y su layout.
 La portada sigue verde pero queda como está por ahora (H7 espera).
 
-**Qué cambia respecto de §4:** las decisiones 1 a 6 y 8 a 10 siguen igual. Cambia el orden de las
-rondas y se refuerza la 7 (ramas): ya no alcanza con el tipo de proyecto, también filtra el layout.
+**Qué cambia respecto de §4:** cambia el orden de las rondas y se refuerza la 7 (ramas): ya no alcanza
+con el tipo de proyecto, también filtra el layout. Además, dos pedidos nuevos de quien dirige:
+
+- **La página se usa mientras se arma.** Hoy el lienzo está apagado a propósito (`inert` en
+  `Molde.tsx`, «es una muestra, así que no se navega por dentro»). Tiene que poder scrollearse,
+  navegarse y responder a los toques mientras la persona elige. Esto toca la decisión 3: las ideas
+  ya no pueden tapar el centro de la página (ver I3).
+- **Al final se ve la página terminada**, entera y usable, con un botón «Descargar» en una esquina
+  que lleva a la ventana de descarga (`DESIGN.md` y HTML). Hoy `#/listo` esconde la página y muestra
+  directo los archivos.
+
+Las decisiones 1, 2, 4 a 6 y 8 a 10 siguen igual.
 
 ### Los pasos nuevos (5 como máximo, 4 para la mayoría)
 
@@ -595,8 +605,20 @@ fichas, como hoy los ajustes finos. No se borra ningún catálogo ni cambia el e
   - `src/molde/Molde.tsx`: recorrer `pasosDe`, mostrar «paso 2 de 4», pasos con más de una ronda en una
     sola pantalla, y las fichas de lo no preguntado bajo «Ajustar». Rutas viejas (`#/letra`…) siguen
     abriendo su ficha (`navegacion.ts`). Revisar `npm run peso`.
+  - **Página usable:** sacar `inert` del lienzo y mover las ideas a un lugar que no tape la página (una
+    bandeja abajo o al costado, que se pueda achicar). Sigue valiendo «ver antes de elegir»: la vista
+    previa de una idea también se puede scrollear. Los links y formularios de la muestra no sacan a la
+    persona de Molde ni envían nada. Cuidar el foco y el orden de tabulación (la página ya no es
+    `aria-hidden`).
+  - **Final:** al terminar el último paso se muestra la página a pantalla completa, sin ideas ni
+    bandeja, con un botón fijo «Descargar» en una esquina (44 px, visible sobre cualquier estilo) y
+    «Seguir editando». El botón abre la ventana de descarga de hoy (`molde-descarga`).
+  - Antes de programar: maqueta de la bandeja y del final en `maqueta/`, a 1440 y 390 px, para que
+    quien dirige elija mirando.
 - [ ] **I4 · Cierre** — Sonnet 5.5 · ChatGPT: Sol · depende de I2 e I3
-  - e2e táctil con el recorrido nuevo; `DESIGN.md` §5, §8 (decisión) y §12; `CLAUDE.md` (estructura).
+  - e2e táctil con el recorrido nuevo: scrollear la página con una ronda abierta, tocar un botón de la
+    muestra, llegar al final y descargar desde el botón de la esquina. `DESIGN.md` §5, §8 (decisión)
+    y §12; `CLAUDE.md` (estructura).
 
 **Orden con la tanda H:** I1 → I2 e I3 en paralelo → I4. H3 (celulares) y H5 (el archivo con otras IA)
 pueden ir ya. **H4 (pruebas con personas) va después de I4**: no tiene sentido probar un recorrido
