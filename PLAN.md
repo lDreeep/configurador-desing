@@ -77,7 +77,7 @@ es conectar lo que existe al recorrido nuevo; el resto es catálogo que hoy no e
 | **Efectos de scroll combinables** | 0 (hay secciones fijas en 7 layouts) | 14, en 4 zonas | nuevo `src/scroll.ts` |
 | Rondas propias por rama | 0 | 2 a 4 por tipo | nuevo `src/rondas/ramas.ts` |
 
-`CLAUDE.md` dice «24 layouts» y el código tiene 34: la tarea G4 lo corrige.
+Los layouts reales son 46: 33 genéricos y 13 de autor (`LAYOUTS` en `src/estilos-visuales.ts`). `CLAUDE.md` ya no cita una cantidad (la corrigió G4).
 
 ---
 
@@ -275,8 +275,9 @@ Estado: `[ ]` pendiente · `[x]` hecha. Marcala al terminar.
   - Pasada con la skill `impeccable` («audit»): 44 px, foco visible, un solo `h1`, un solo `main`, contraste del marco en claro y oscuro.
 - [x] **G3 · Red de seguridad** — Sonnet 5.5 · apta para Codex · sin dependencias
   - `ErrorBoundary` en la raíz, ESLint con la configuración recomendada de React y TypeScript, y arreglar el error de consola `ERR_INVALID_URL` que aparece después de elegir el tipo de proyecto.
-- [ ] **G4 · Documentación al día** — Haiku 5.5 · ChatGPT: Terra o Luna · apta para Codex · depende de C5
+- [x] **G4 · Documentación al día** — Haiku 5.5 · ChatGPT: Terra o Luna · apta para Codex · depende de C5
   - `README.md` (habla de «9 pasos»), `CLAUDE.md` (estructura nueva y cantidades reales), orden cronológico de `DESIGN.md` §12, favicon y metadatos en `index.html`, y pasar `public/fotos/traccion-vehiculos.png` (1,8 MB) a webp.
+  - Hecha: `README.md` con el recorrido real (5 pasos en el simple, 10 en el avanzado) y los comandos; `CLAUDE.md` con los módulos que faltaban y las cantidades reales (37 categorías de galería); `DESIGN.md` §12 ordenado por versión, más reciente arriba, y el segundo 0.1.0 pasado a 0.1.1 (era un cambio sin formato); favicon SVG (`public/favicon.svg`) y metadatos en `index.html` sin nombre de marca hasta que se confirme Molde; foto de `concesionario` pasada a webp (1,8 MB → 355 kB, mismo tamaño). Quedan para C5: el recorrido que describe el README y la estructura de `src/molde/` cuando Molde pase a la raíz.
 - [ ] **G5 · Revisión final** — Opus 5.5 · ChatGPT: no (queda en Claude) · depende de todo
   - `/code-review` sobre el diff completo antes de mergear a `main`.
 

@@ -13,7 +13,7 @@ export const MODELOS_CONCESIONARIO = [
 
 function Vehiculo({ indice, principal = false }: { indice: number; principal?: boolean }) {
   return <div className="au-mot-vehiculo">
-    <img src="/fotos/traccion-vehiculos.png" width={916} height={1717}
+    <img src="/fotos/traccion-vehiculos.webp" width={916} height={1717}
       style={{ '--mot-fila': indice } as CSSProperties}
       alt={MODELOS_CONCESIONARIO[indice].alt} loading={principal ? 'eager' : 'lazy'} decoding="async" />
   </div>;

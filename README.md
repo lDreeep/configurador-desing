@@ -15,8 +15,21 @@ npm install
 npm run dev
 ```
 
-Abrí la dirección que muestra la terminal, completá los 9 pasos y en **Exportar** descargá o
-copiá tu `DESIGN.md`. Después, en tu IA: *"Construí esta app siguiendo el DESIGN.md"*.
+Abrí la dirección que muestra la terminal. El recorrido simple tiene 5 pasos: Diseño, Proyecto,
+Tu UI, Prototipo y Descargar. Ahí bajás tu `DESIGN.md`. Después, en tu IA: *"Construí esta app
+siguiendo el DESIGN.md"*.
+
+Para ajustar pieza por pieza, el modo detallado (`#/detallado`) y el avanzado (`#/avanzado`, con
+vista previa en vivo y 10 pasos) tienen más controles.
+
+## Desarrollo
+
+- `npm run dev`: servidor local.
+- `npm test`: tests (Vitest).
+- `npm run typecheck` y `npm run lint`: TypeScript y ESLint.
+- `npm run test:e2e`: prueba de Molde en celular (Playwright).
+- `npm run build`: build de producción en `dist/`.
+- `npm run peso`: build y control del JS inicial (tiene que quedar debajo de 250 kB).
 
 ## Publicarlo
 
