@@ -186,7 +186,7 @@ Estado: `[ ]` pendiente · `[x]` hecha. Marcala al terminar.
   - En la vista previa, la página se baja sola para mostrar el efecto.
   - Listo cuando: cualquier combinación válida funciona junta y hay un test de las reglas de combinación.
 
-- [ ] **D8 · 7 entradas nuevas** — Sonnet 5.5 · apta para Codex
+- [x] **D8 · 7 entradas nuevas** — Sonnet 5.5 · apta para Codex
   - Sumar a la aparición (`AparicionId` en `src/tipos.ts`, opciones en `src/catalogo.ts`) las de la sección 7.8. Se reproducen solo en su ronda y al terminar.
   - Listo cuando: cada entrada tiene su CSS con tokens `--duracion-*` y `--curva-*`.
 

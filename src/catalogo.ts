@@ -384,6 +384,13 @@ export const APARICIONES: Record<AparicionId, { nombre: string; descripcion: str
   subir: { nombre: 'Subir', descripcion: 'Sube un poco mientras aparece' },
   escalonada: { nombre: 'Escalonada', descripcion: 'Sube uno detrás del otro' },
   zoom: { nombre: 'Zoom', descripcion: 'Crece desde un poco más chico' },
+  enfoque: { nombre: 'Se enfocan', descripcion: 'Aparecen borrosos y se ponen nítidos' },
+  rebote: { nombre: 'Caen con rebote', descripcion: 'Caen de arriba y rebotan al llegar' },
+  destape: { nombre: 'Se destapan', descripcion: 'Una cortina los descubre de abajo hacia arriba' },
+  giro: { nombre: 'Giran', descripcion: 'Entran girando sobre su eje, como una tarjeta' },
+  maquina: { nombre: 'Título a máquina', descripcion: 'Se escriben de izquierda a derecha, letra a letra' },
+  costados: { nombre: 'Desde los costados', descripcion: 'Entran alternados, uno desde cada lado' },
+  desde_boton: { nombre: 'Se despliega desde el botón', descripcion: 'Se abren desde la esquina del botón principal' },
 };
 
 export const CAMBIOS: Record<CambioId, { nombre: string; descripcion: string }> = {
