@@ -14,6 +14,7 @@ gana `DESIGN.md`: avisá la diferencia, no la corrijas en silencio.
 - `npm run dev`: servidor local
 - `npm test`: tests (vitest)
 - `npm run typecheck`: TypeScript
+- `npm run lint`: ESLint
 - `npm run build`: build de producción en `dist/`
 
 Antes de dar una tarea por terminada: `npm run typecheck && npm test`.
