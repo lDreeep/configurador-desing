@@ -222,6 +222,14 @@
 .pgp.pv-aparicion-subir .pg-card, .pgp.pv-aparicion-escalonada .pg-card { animation: pv-subir var(--duracion-media) var(--curva-entrada) both; }
 .pgp.pv-aparicion-fundido .pg-card, .pgp.pv-aparicion-subir .pg-card { animation-delay: 0ms !important; }
 .pgp.pv-aparicion-zoom .pg-card { animation: pv-zoom var(--duracion-media) var(--curva-entrada) both; animation-delay: 0ms !important; }
+.pgp.pv-aparicion-enfoque .pg-card { animation: pv-enfoque var(--duracion-media) var(--curva-entrada) both; }
+.pgp.pv-aparicion-rebote .pg-card { animation: pv-rebote var(--duracion-lenta) var(--curva-entrada) both; }
+.pgp.pv-aparicion-destape .pg-card { animation: pv-destape var(--duracion-media) var(--curva-entrada) both; }
+.pgp.pv-aparicion-giro .pg-card { animation: pv-giro var(--duracion-media) var(--curva-entrada) both; }
+.pgp.pv-aparicion-maquina .pg-card { animation: pv-maquina var(--duracion-lenta) steps(16, end) both; }
+.pgp.pv-aparicion-costados .pg-card { animation: pv-costado-izq var(--duracion-media) var(--curva-entrada) both; }
+.pgp.pv-aparicion-costados .pg-card:nth-child(even) { animation-name: pv-costado-der; }
+.pgp.pv-aparicion-desde_boton .pg-card { animation: pv-desde-boton var(--duracion-media) var(--curva-entrada) both; transform-origin: 100% 100%; }
 .pgp .pg-pila .pg-card, .pg.pgp.estilo-memphis .pg-card { animation: none !important; }
 
 /* Angosto (celular): todo en una columna */

@@ -191,7 +191,9 @@ export type BordesId = 'ninguno' | 'sutil' | 'marcado';
 export type MovimientoId = 'minimo' | 'rapido' | 'sutil' | 'expresivo';
 export type HoverId = 'nada' | 'oscurecer' | 'brillo' | 'elevar' | 'escalar' | 'sombra' | 'desplazar';
 export type PresionarId = 'nada' | 'hundir';
-export type AparicionId = 'nada' | 'fundido' | 'subir' | 'escalonada' | 'zoom';
+export type AparicionId =
+  | 'nada' | 'fundido' | 'subir' | 'escalonada' | 'zoom'
+  | 'enfoque' | 'rebote' | 'destape' | 'giro' | 'maquina' | 'costados' | 'desde_boton';
 export type CambioId = 'nada' | 'fundido' | 'deslizar' | 'subir' | 'zoom';
 export type BotonDisenoId =
   | 'solido'

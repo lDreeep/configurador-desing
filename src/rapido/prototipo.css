@@ -170,6 +170,14 @@
 .proto-aparicion-escalonada .proto-zona:nth-child(3) { animation-delay: 140ms; }
 .proto-aparicion-escalonada .proto-zona:nth-child(4) { animation-delay: 210ms; }
 .proto-aparicion-escalonada .proto-zona:nth-child(n+5) { animation-delay: 280ms; }
+.proto-aparicion-enfoque .proto-zona { animation: pv-enfoque var(--duracion-media) var(--curva-entrada) both; }
+.proto-aparicion-rebote .proto-zona { animation: pv-rebote var(--duracion-lenta) var(--curva-entrada) both; }
+.proto-aparicion-destape .proto-zona { animation: pv-destape var(--duracion-media) var(--curva-entrada) both; }
+.proto-aparicion-giro .proto-zona { animation: pv-giro var(--duracion-media) var(--curva-entrada) both; }
+.proto-aparicion-maquina .proto-zona { animation: pv-maquina var(--duracion-lenta) steps(16, end) both; }
+.proto-aparicion-costados .proto-zona { animation: pv-costado-izq var(--duracion-media) var(--curva-entrada) both; }
+.proto-aparicion-costados .proto-zona:nth-child(even) { animation-name: pv-costado-der; }
+.proto-aparicion-desde_boton .proto-zona { animation: pv-desde-boton var(--duracion-media) var(--curva-entrada) both; transform-origin: 100% 100%; }
 @media (prefers-reduced-motion: reduce) {
   [class*='proto-aparicion-'] .proto-zona { animation: none; }
 }
