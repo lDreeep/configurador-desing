@@ -60,7 +60,7 @@ es conectar lo que existe al recorrido nuevo; el resto es catálogo que hoy no e
 | **Rubros** (para qué es) | 0 | 39 | nuevo `src/rubros.ts` |
 | Paletas | 32 | 60 | `src/catalogo.ts` |
 | Estilos visuales | 20 | 20 | `src/estilos-visuales.ts` |
-| Layouts genéricos | 21 | 33 | `src/estilos-visuales.ts`, `src/rapido/Pagina.tsx` |
+| Layouts genéricos | 33 | 33 | `src/estilos-visuales.ts`, `src/rapido/Pagina.tsx` |
 | Plantillas de autor | 13 | 13 | `src/rapido/autor*.tsx` |
 | Familias de UI (botón + caja + piezas) | 10 | 18 | `src/familias.ts` |
 | Combinaciones de letra | 10 (33 fuentes) | 20 | `src/catalogo.ts` |
@@ -141,13 +141,15 @@ Estado: `[ ]` pendiente · `[x]` hecha. Marcala al terminar.
   - Listo cuando: se puede recorrer Proyecto → Color → Layout → Estilo con mouse y con teclado, y lo elegido sobrevive a recargar.
   - Hecho en `src/molde/` (`Molde.tsx`, `recorrido.ts`, `molde.css`), en `#/molde/<ronda>` mientras convive con el modo rápido (C5 lo pasa a la raíz). La ronda abierta va en la URL (Atrás vuelve a la anterior) y las rondas elegidas en `localStorage` (`molde:elegidas`); la config, como siempre, en `estado.ts`. Al terminar baja el `DESIGN.md` real; el HTML queda para F2. Quedan para otras tareas: la portada animada (E2), «Usar» y «Ver otras» en pantallas táctiles (C3), los ajustes finos de cada ficha (C4) y «Sorprendeme» (§7.9). Las rondas de galería muestran la idea en la ficha pero `Pagina` todavía no dibuja esos componentes.
 
-- [ ] **C3 · Versión táctil y sin movimiento** — Sonnet 5.5 · depende de C2
+- [x] **C3 · Versión táctil y sin movimiento** — Sonnet 5.5 · depende de C2
   - En pantallas táctiles: un toque muestra, aparecen «Usar» y «Ver otras». Áreas táctiles de 44 px. Con `prefers-reduced-motion`, todo aparece sin animación y sigue funcionando.
   - Listo cuando: un test de Playwright recorre las rondas obligatorias a 390 px con toques.
+  - Hecho en `src/molde/Molde.tsx` (toque → vista previa + «Usar» y «Ver otras»; con mouse o Enter se elige directo) y `molde.css`. Con `prefers-reduced-motion` ya no había animaciones que frenar: se verificó que todo aparece y funciona. Test: `npm run test:e2e` (`e2e/molde-tactil.e2e.mjs`, levanta vite solo; recorre las 4 rondas a 390 px con toques, con y sin movimiento reducido, y revisa áreas de 44 px). G1 lo puede mover al CI.
 
-- [ ] **C4 · Fichas con ajustes finos (el modo avanzado fundido)** — Opus 5.5 · depende de C2
+- [x] **C4 · Fichas con ajustes finos (el modo avanzado fundido)** — Opus 5.5 · depende de C2
   - Tocar una ficha reabre su ronda y muestra «Ajustes finos»: los controles que hoy están en el modo avanzado para ese tema (`src/pasos/pasos.tsx`, `src/pasos/visual.tsx`), por ejemplo paleta personalizada en Color o peso y espaciado en Letra.
   - Listo cuando: todo lo que se podía ajustar en `src/ModoAvanzado.tsx` se puede ajustar desde alguna ficha. Entregar una tabla de equivalencias en el PR.
+  - Hecho en `src/molde/Ajustes.tsx` (se carga aparte) y `AJUSTES` en `src/molde/recorrido.ts`. En una ronda ya elegida, el pie muestra «Ajustes finos»: abre al costado (abajo en celular) los pasos de `PASOS` de ese tema con su nota, y la página queda entera a la vista y cambia en vivo. Un test verifica que cada paso de `PASOS` está en una sola ficha. Dirección va en una versión para Molde (`AjustesDireccion`: sensación y anti-referencias, sin pisar color, letra ni forma) y de Exportar solo las notas generales (`NotasGenerales`). Equivalencias: Proyecto → proyecto (tipo, nombre, descripción, objetivo, público, plataformas), qué hace y notas generales · Layout → pantallas y navegación · Color → paleta, personalizada, cada color a mano, contraste · Estilo → dirección, anti-referencias y forma (esquinas, sombras, bordes) · Piezas → botones (estilo, tamaño, mayúsculas, icono) · Letra → combinación, escala, fuentes, peso y espaciado · Entrada → movimiento (nivel, hover, presionar, aparición, cambio de pantalla). Lo que el modo avanzado elegía en Dirección y ya es ronda (estilo y layout) se elige en su ronda.
 
 - [ ] **C5 · Reemplazar el recorrido y retirar lo viejo** — Sonnet 5.5 · depende de C3, C4 y E2
   - `src/App.tsx` pasa a montar Molde. Borrar los paneles del modo rápido y `ModoAvanzado.tsx` que ya no se usen; conservar `Prototipo.tsx` si C4 lo reutiliza.
@@ -164,10 +166,11 @@ Estado: `[ ]` pendiente · `[x]` hecha. Marcala al terminar.
   - Sumar a `PALETAS` en `src/catalogo.ts` hasta llegar a 60, repartidas como en la sección 7.3. Cada una tiene que pasar el test de contraste AA de `src/export/generarDesignMd.test.ts`.
   - Listo cuando: el test de contraste pasa y cada paleta nueva está en al menos un estilo compatible.
 
-- [ ] **D3 · 12 layouts genéricos nuevos** — Fable 5.2
+- [x] **D3 · 12 layouts genéricos nuevos** — Fable 5.2
   - Diseñar e implementar los 12 de la sección 7.5 en `src/estilos-visuales.ts` y `src/rapido/Pagina.tsx`. Cargar antes la skill `frontend-design`; cada uno necesita una idea propia, no una variación de `hero_partido`.
   - Cada layout nuevo va **al final** de la lista para no romper los códigos compartidos.
   - Listo cuando: cada layout se ve bien con los 20 estilos a 1440 px y a 390 px, y tiene su `estructura` escrita para el export.
+  - Hecho en `src/rapido/layouts2.tsx` + `layouts2.css` (los monta `Pagina.tsx`), con su esquema, su `estructura` y recomendados por tipo. Como los layouts pasan de 36, los códigos de combinación suman el prefijo `~` (los viejos siguen valiendo). Formato 0.8.9. Suman 32 KB de JS y 34 KB de CSS a la carga inicial (queda en 334 y 123 KB): B2 puede pasarlos a `lazy` como hizo con las plantillas de autor.
 
 - [x] **D4 · 8 familias de UI nuevas** — Sonnet 5.5
   - Sumar a `src/familias.ts` las de la sección 7.6, armadas **solo con diseños que ya existen** (botones, cajas y galería). No escribir CSS nuevo.
@@ -178,29 +181,33 @@ Estado: `[ ]` pendiente · `[x]` hecha. Marcala al terminar.
   - Listo cuando: no hay pares repetidos y cada par usa pesos que la fuente tiene.
   - Hecha: 10 pares nuevos al final de `COMBINACIONES` (14 → 24), sin fuentes nuevas ni cambios en el export. Test en `src/export/generarDesignMd.test.ts` (sin pares ni nombres repetidos; ambas fuentes tienen peso 400).
 
-- [ ] **D6 · Fondos animados** — Opus 5.5 (motor y 4 fondos) y después Sonnet 5.5 (los otros 12)
+- [x] **D6 · Fondos animados** — Opus 5.5 (motor y 4 fondos) y después Sonnet 5.5 (los otros 12)
   - Crear `src/fondos-animados.ts` con los 16 de la sección 7.7. Solo CSS, salvo «luz que sigue al cursor». Los seis de `maqueta/molde-2.html` sirven de referencia.
   - Reglas: usan los tokens `--color-*`; cada uno tiene versión quieta para `prefers-reduced-motion`; nunca va texto directo sobre el fondo (velo o tarjeta sólida, como en `src/fondos.ts`).
   - Listo cuando: cada fondo corre a 60 cuadros por segundo en una laptop común y tiene su CSS listo para exportar.
+  - Hecho en `src/fondos-animados.ts` (los 16, motor incluido) con `src/fondos-animados.test.ts`. `cssDeFondoAnimado(id, selector)` da la capa, el fondo, sus `@keyframes` y la versión quieta; la clase es `fondo-animado fa-<id>`. Solo se mueven `::before` y `::after` con `transform` y `opacity` (lo verifica el test), y los 16 midieron 60 cuadros por segundo a 1440×900 en Chromium. La luz que sigue al cursor usa `seguirCursor` (y `JS_LUZ_CURSOR` para el export). Todavía no hay campo en `Config` ni ronda: «Fondo animado» sigue en `rondasPendientes()` hasta F1, que suma el campo al export.
 
 - [ ] **D7 · Efectos de scroll combinables** — Opus 5.5 (motor y 4 efectos) y después Sonnet 5.5 (los otros 10)
   - Crear `src/scroll.ts` con los 14 de la sección 7.4, en 4 zonas. Usar CSS scroll-driven animations como ya hace el proyecto (decisión D72), con versión quieta.
   - La persona puede combinar hasta 3, **uno por zona**; el motor rechaza dos de la misma zona.
   - En la vista previa, la página se baja sola para mostrar el efecto.
   - Listo cuando: cualquier combinación válida funciona junta y hay un test de las reglas de combinación.
+  - **Parte de Opus hecha (2026-11-11):** motor y 4 efectos, uno por zona, en `src/scroll.ts` (Se aleja, Frase que se enciende, Corre de costado, Barra de progreso), con `src/scroll.test.tsx`. `visual.scroll` en `Config` (lo limpia `normalizar`), clases `scroll-<id>` en `Pagina` y la ronda Scroll en `src/rondas/ramas.ts` (elige varios: `maximo` y `marcadas` en `Ronda`). En Molde la ronda queda abierta, «Seguir» pasa a la siguiente y la página se baja sola. Decisión D89.
+  - **Falta (Sonnet):** los 10 de `SCROLL_PENDIENTES`, siguiendo los 4 hechos: sumar el id a `ScrollId` y la entrada a `EFECTOS_SCROLL` (al final), sacarlo de la lista y correr `src/scroll.test.tsx`. Solo propiedades sueltas, `@keyframes` con nombre propio y selectores que no repitan los de otro efecto de otra zona. Ojo: las plantillas de autor no tienen `.pg-hero` ni `.pg-fila`, así que ahí solo funcionan los efectos de la zona Página. El export queda para F1.
 
 - [x] **D8 · 7 entradas nuevas** — Sonnet 5.5 · apta para Codex
   - Sumar a la aparición (`AparicionId` en `src/tipos.ts`, opciones en `src/catalogo.ts`) las de la sección 7.8. Se reproducen solo en su ronda y al terminar.
   - Listo cuando: cada entrada tiene su CSS con tokens `--duracion-*` y `--curva-*`.
 
-- [ ] **D9 · Rondas de rama con catálogo existente** — Sonnet 5.5
+- [x] **D9 · Rondas de rama con catálogo existente** — Sonnet 5.5
   - Conectar a `src/rondas/ramas.ts` las categorías de la galería que le tocan a cada tipo (sección 7.1): tarjetas de producto para tienda, gráficos y tablas para dashboard, barra inferior para app de celular, etc.
   - Listo cuando: cada tipo tiene sus rondas propias funcionando con datos reales.
-  - Ya hecho en C1: `rondaDeGaleria` arma la ronda de cualquier categoría de la galería con sus recomendados, y `RAMAS` conecta las de §7.1. Queda revisar los textos de cada pregunta y que las recomendadas de `recomendados.ts` alcancen para 6 por ronda.
+  - Ya hecho en C1: `rondaDeGaleria` arma la ronda de cualquier categoría de la galería con sus recomendados, y `RAMAS` conecta las de §7.1. D9: `recomendados.ts` suma las recomendadas que faltaban para que cada ronda de galería de cada rama tenga al menos 6 (test en `rondas.test.ts`); las preguntas de `ramas.ts` se revisaron y quedan como están.
 
-- [ ] **D10 · Recomendaciones por rubro** — Sonnet 5.5 · depende de D1 y D2
+- [x] **D10 · Recomendaciones por rubro** — Sonnet 5.5 · depende de D1 y D2
   - Extender `src/recomendados.ts`: para cada rubro, qué paletas, layouts, estilos y familias aparecen primero. Las primeras 6 de cada ronda salen de acá.
   - Listo cuando: un test verifica que cada rubro tiene al menos 6 recomendados por ronda y que todos existen.
+  - Hecha: `RECOMENDADOS_RUBRO` (6 paletas, 6 layouts, 6 estilos y 6 familias por rubro), `recomendadosDeRubro` y `conRubro` al final de `src/recomendados.ts`; tests en `src/rubros.test.ts`. Pendiente (lo cierra la tarea que sume la ronda Rubro): `Config` todavía no guarda el rubro, así que `COLOR`, `LAYOUT`, `ESTILO` y `PIEZAS` en `src/rondas/comunes.ts` aún no leen estas listas; con el rubro en `Config` alcanza con pasar `conRubro(rec.paletas, …)` a `primeroRecomendados`.
 
 - [ ] **D11 · Ideas nuevas como rondas opcionales** — Sonnet 5.5 · depende de C4
   - Sumar las rondas de la sección 7.9 que ya tienen formato definido en `DESIGN.md` §3 y nunca se implementaron: iconos (§11), tono de los textos (§13) y densidad (§8).

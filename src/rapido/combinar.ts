@@ -88,34 +88,46 @@ export function combinacionDe(c: Config): Combinacion | null {
 const b36 = (i: number) => i.toString(36).toUpperCase();
 
 /**
- * Un carácter por lista (base 36). Las paletas pasan de 36: las de índice 36 o más van con dos
- * caracteres y el código empieza con «+», así los códigos viejos (sin «+») siguen valiendo.
+ * Un carácter por lista (base 36). Las paletas y los layouts pasan de 36: con una paleta de índice
+ * 36 o más, la paleta va con dos caracteres y el código empieza con «+»; con un layout de índice 36
+ * o más, layout y paleta van los dos con dos caracteres y empieza con «~». Los códigos viejos
+ * (sin prefijo o con «+») siguen valiendo.
  */
 export function codigo(k: Combinacion): string {
+  const l = LISTA_LAYOUTS.indexOf(k.layout);
   const p = LISTA_PALETAS.indexOf(k.paleta);
-  const larga = p >= 36;
-  const cuerpo = [
-    LISTA_ESTILOS.indexOf(k.estilo),
-    LISTA_LAYOUTS.indexOf(k.layout),
-    p,
-    LISTA_FUENTES.indexOf(k.titulos),
-    LISTA_FUENTES.indexOf(k.texto),
-    ...(k.fondo && k.fondo !== 'ninguno' ? [LISTA_FONDOS.indexOf(k.fondo)] : []),
-  ]
-    .map((n, i) => (i === 2 && larga ? b36(n).padStart(2, '0') : b36(n)))
-    .join('');
-  return larga ? `+${cuerpo}` : cuerpo;
+  const prefijo = l >= 36 ? '~' : p >= 36 ? '+' : '';
+  const dos = (n: number) => b36(n).padStart(2, '0');
+  return (
+    prefijo +
+    [
+      b36(LISTA_ESTILOS.indexOf(k.estilo)),
+      prefijo === '~' ? dos(l) : b36(l),
+      prefijo ? dos(p) : b36(p),
+      b36(LISTA_FUENTES.indexOf(k.titulos)),
+      b36(LISTA_FUENTES.indexOf(k.texto)),
+      ...(k.fondo && k.fondo !== 'ninguno' ? [b36(LISTA_FONDOS.indexOf(k.fondo))] : []),
+    ].join('')
+  );
 }
 
 export function decodificar(cod: string): Combinacion | null {
-  const larga = cod.trim().startsWith('+');
+  const prefijo = cod.trim().charAt(0);
+  const layoutLargo = prefijo === '~';
+  const paletaLarga = layoutLargo || prefijo === '+';
   const limpio = cod.trim().toUpperCase().replace(/[^0-9A-Z]/g, '');
-  const extra = larga ? 1 : 0;
+  const extra = (layoutLargo ? 1 : 0) + (paletaLarga ? 1 : 0);
   if (limpio.length !== 5 + extra && limpio.length !== 6 + extra) return null;
   const n = limpio.split('').map((ch) => parseInt(ch, 36));
-  const [e, l] = n;
-  const p = larga ? n[2] * 36 + n[3] : n[2];
-  const [t, x, f] = n.slice(3 + extra);
+  let i = 0;
+  const uno = () => n[i++];
+  const par = () => n[i++] * 36 + n[i++];
+  const e = uno();
+  const l = layoutLargo ? par() : uno();
+  const p = paletaLarga ? par() : uno();
+  const t = uno();
+  const x = uno();
+  const f = n[i];
   const k = { estilo: LISTA_ESTILOS[e], layout: LISTA_LAYOUTS[l], paleta: LISTA_PALETAS[p], titulos: LISTA_FUENTES[t], texto: LISTA_FUENTES[x] };
   if (!Object.values(k).every(Boolean)) return null;
   const fondo = f === undefined ? 'ninguno' : LISTA_FONDOS[f];

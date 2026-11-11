@@ -181,7 +181,19 @@ export type LayoutId =
   | 'autor_turnos'
   | 'autor_curso'
   | 'autor_restaurante'
-  | 'autor_gimnasio';
+  | 'autor_gimnasio'
+  | 'linea_tiempo'
+  | 'antes_despues'
+  | 'mapa_lista'
+  | 'carta'
+  | 'agenda_semanal'
+  | 'tablero'
+  | 'muro'
+  | 'documentacion'
+  | 'link_bio'
+  | 'compra_unica'
+  | 'portada_buscador'
+  | 'partida_scroll';
 
 export type EscalaId = 'sutil' | 'medio' | 'dramatico' | 'extremo';
 export type EspaciadoTitulos = 'apretado' | 'normal' | 'amplio';
@@ -415,6 +427,8 @@ export interface Config {
     cambio: CambioId;
     /** Fondo con textura para los visuales y las composiciones ('ninguno' = el de cada estilo). */
     fondo: import('./fondos').FondoId | 'ninguno';
+    /** Efectos de scroll combinados: hasta 3, uno por zona (`scroll.ts`). Vacío = la página no reacciona al bajar. */
+    scroll: import('./scroll').ScrollId[];
     /** true: el archivo incluye también la versión opuesta de la paleta (claro ↔ oscuro). */
     ambosModos: boolean;
   };

@@ -8,7 +8,7 @@ import { paresDeContraste } from '../color';
 import { ESTRUCTURA_LAYOUT } from './estructuras-layout';
 import { BOTONES, clasesDeBoton, cssDeBoton, EFECTOS_TOQUE, efectoDe } from '../botones-disenos';
 import { CAJAS, clasesDeCaja, CSS_CAJA, paramsDe } from '../cajas';
-import { cssDeEstilo, ESTILOS, LAYOUTS } from '../estilos-visuales';
+import { cssDeEstilo, ESTILOS, LAYOUTS, llevaArgumento } from '../estilos-visuales';
 import { CATEGORIAS, type CategoriaId } from '../galeria';
 import { cssBaseDe, cssDisenoDe } from '../galeria/base';
 import { paletaActiva, sistemaDeDiseno, tokensCss } from './sistema';
@@ -16,7 +16,7 @@ import { cssDeFondo, FONDOS, type FondoId } from '../fondos';
 
 import { CSS_CONCESIONARIO as cssConcesionario } from '../rapido/concesionario-estilos';
 
-export const VERSION_FORMATO = '0.8.8';
+export const VERSION_FORMATO = '0.8.9';
 
 /** Lo que agregan todas las páginas que no son de autor ni app (D77): el argumento de una landing. */
 export const ARGUMENTO_LANDING =
@@ -492,7 +492,7 @@ preguntas_sugeridas:${lista(preguntas)}`,
       yaml(`
 layout: ${v.layout}
 layout_estructura: ${q(ESTRUCTURA_LAYOUT[v.layout])}${
-        !v.layout.startsWith('autor_') && v.layout !== 'app_lateral'
+        llevaArgumento(v.layout)
           ? `
 layout_argumento: ${q(ARGUMENTO_LANDING)}`
           : ''

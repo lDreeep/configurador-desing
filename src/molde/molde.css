@@ -14,7 +14,8 @@
     --molde-silicona: #ff6ba3; --molde-sobre-silicona: #1d1730; --molde-sombra: rgba(0, 0, 0, .55); color-scheme: dark;
   }
 }
-.molde button { font: inherit; color: inherit; cursor: pointer; border: 0; background: none; }
+/* Sin especificidad de clase: los controles de los ajustes finos (.opcion, .boton…) conservan su estilo. */
+:where(.molde) button { font: inherit; color: inherit; cursor: pointer; border: 0; background: none; }
 .molde :focus-visible { outline: 3px solid var(--molde-silicona); outline-offset: 3px; }
 
 .molde-barra { position: absolute; inset: 0 0 auto; height: 64px; display: flex; align-items: center; z-index: 8; padding: 0 max(20px, env(safe-area-inset-right, 0px)) 0 max(20px, env(safe-area-inset-left, 0px)); }
@@ -78,6 +79,10 @@
 .molde .molde-flecha { width: 44px; height: 44px; border-radius: 50%; background: var(--molde-superficie); box-shadow: inset 0 0 0 1px var(--molde-linea); font-size: 20px; line-height: 1; transition: scale var(--molde-toque); }
 .molde .molde-flecha:active { scale: .9; }
 
+/* Con el dedo: un toque muestra la idea y estos dos botones deciden (áreas de 48 px) */
+.molde-confirmar { position: absolute; left: 50%; bottom: 100px; translate: -50% 0; z-index: 9; display: flex; gap: 10px; padding: 8px; border-radius: 999px; background: var(--molde-superficie); box-shadow: 0 0 0 1px var(--molde-linea), 0 14px 30px -14px var(--molde-sombra); animation: molde-caer 300ms var(--molde-rebote) both; }
+.molde .molde-confirmar .molde-btn { min-width: 96px; }
+
 /* Fichas: lo que ya elegiste, abajo; tocar una vuelve a abrir esa ronda */
 .molde-pie { position: absolute; inset: auto 0 0; z-index: 8; height: 88px; display: flex; align-items: center; gap: 12px;
   padding: 0 max(20px, env(safe-area-inset-right, 0px)) env(safe-area-inset-bottom, 0px) max(20px, env(safe-area-inset-left, 0px)); }
@@ -97,7 +102,28 @@
 .molde-aviso { position: absolute; left: 50%; bottom: 96px; transform: translateX(-50%); z-index: 9; margin: 0; background: var(--molde-tinta); color: var(--molde-yeso); padding: 10px 16px; border-radius: 12px; font-size: 14px; max-width: calc(100% - 32px); }
 .molde-aviso[hidden] { display: none; }
 
+/* Ajustes finos (C4): los controles del modo avanzado al costado; la página, entera y en vivo, al lado */
+.molde-lienzo { transition: box-shadow var(--molde-cambio), right var(--molde-cambio); }
+.ajustando .molde-lienzo { right: calc(min(460px, 42vw) + 32px); }
+.molde-ajustes { position: absolute; z-index: 8; top: 64px; right: 16px; bottom: 88px; width: min(460px, 42vw); display: flex; flex-direction: column;
+  /* Hoja clara en los dos temas; el acento de los controles es el del marco (silicona en tono claro). */
+  --ui-acento: #d81e6a; --ui-acento-hover: #b5175a; --ui-acento-suave: #fdeef4;
+  border-radius: 22px; overflow: hidden; background: var(--ui-panel); color: var(--ui-texto); color-scheme: light;
+  box-shadow: 0 0 0 1px var(--molde-linea), 0 30px 60px -30px var(--molde-sombra); animation: molde-entrar var(--molde-cambio) var(--molde-curva); }
+@keyframes molde-entrar { from { translate: 24px 0; opacity: 0; } }
+.molde-ajustes-cargando { padding: 24px; }
+.molde-ajustes-cabeza { display: flex; align-items: center; gap: 12px; padding: 14px 16px 14px 24px; border-bottom: 1px solid var(--ui-borde); }
+.molde-ajustes-cabeza h2 { flex: 1; margin: 0; font: 700 20px/1.2 var(--molde-f-marca); letter-spacing: -.01em; }
+.molde-ajustes-cabeza h2 span { color: var(--ui-suave); font-weight: 600; }
+.molde-ajustes-cabeza h2:focus { outline: none; }
+.molde-ajustes-cuerpo { flex: 1; overflow-y: auto; padding: 22px 24px 32px; display: flex; flex-direction: column; gap: 22px; }
+.molde-ajuste { display: flex; flex-direction: column; gap: 22px; }
+.molde-ajuste + .molde-ajuste { padding-top: 22px; border-top: 1px solid var(--ui-borde); }
+
 @media (max-width: 760px) {
+  .ajustando .molde-lienzo { right: 12px; bottom: calc(62% + 8px); }
+  .molde-ajustes { top: auto; left: 0; right: 0; bottom: 0; width: auto; height: 62%; z-index: 9; border-radius: 22px 22px 0 0; animation-name: molde-subir; }
+  @keyframes molde-subir { from { translate: 0 40px; opacity: 0; } }
   .molde-lienzo { inset: 60px 12px 136px; }
   .molde-pie { height: 136px; flex-wrap: wrap; align-content: center; gap: 6px; }
   .molde-fichas { flex-basis: 100%; }
@@ -110,6 +136,7 @@
   .molde-paginas { top: calc(50% + 40px); }
   .molde-centro p { font-size: 16px; }
   .molde-aviso { bottom: 144px; }
+  .molde-confirmar { bottom: 148px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .molde *, .molde *::before, .molde *::after { animation: none !important; transition: none !important; }

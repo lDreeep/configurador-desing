@@ -15,7 +15,7 @@ describe('rondas de Molde (C1)', () => {
     for (const tipo of TIPOS) {
       const claves = rondasDe(conTipo(tipo)).map((r) => r.clave);
       expect(claves.slice(0, COMUNES.length), tipo).toEqual(['proyecto', 'color', 'layout', 'estilo', 'piezas', 'letra', 'entrada']);
-      const deRama = RAMAS[tipo].map((e) => ('galeria' in e ? `galeria:${e.galeria}` : null)).filter(Boolean);
+      const deRama = RAMAS[tipo].map((e) => ('galeria' in e ? `galeria:${e.galeria}` : 'ronda' in e ? e.ronda.clave : null)).filter(Boolean);
       expect(claves.slice(COMUNES.length), tipo).toEqual(deRama);
       expect(new Set(claves).size, `${tipo}: claves repetidas`).toBe(claves.length);
     }
@@ -28,7 +28,7 @@ describe('rondas de Molde (C1)', () => {
     expect(fichas('dashboard')).toEqual(['Métricas', 'Gráficos', 'Tablas', 'Densidad']);
     for (const t of TIPOS) expect(RAMAS[t].length, t).toBeGreaterThanOrEqual(2);
     // Lo que todavía no existe queda anotado con su tarea.
-    expect(rondasPendientes(conTipo('landing')).map((p) => p.tarea)).toEqual(['D1', 'D6', 'D7', 'D12']);
+    expect(rondasPendientes(conTipo('landing')).map((p) => p.tarea)).toEqual(['D1', 'D6', 'D12']);
     expect(rondasPendientes(conTipo('tienda')).map((p) => p.clave)).toEqual(['rubro']);
   });
 
@@ -52,6 +52,16 @@ describe('rondas de Molde (C1)', () => {
           const c = r.aplicar(base, o.id);
           expect(r.elegida(c), `${tipo}/${r.clave}/${o.id}`).toBe(o.id);
         }
+      }
+    }
+  });
+
+  it('cada ronda de rama de la galería tiene al menos 6 recomendadas (D9)', () => {
+    for (const tipo of TIPOS) {
+      const base = conTipo(tipo);
+      for (const r of rondasDe(base).filter((x) => x.clave.startsWith('galeria:'))) {
+        const ops = r.opciones(base);
+        expect(ops.filter((o) => o.recomendada).length, `${tipo}/${r.clave}`).toBeGreaterThanOrEqual(Math.min(6, ops.length));
       }
     }
   });

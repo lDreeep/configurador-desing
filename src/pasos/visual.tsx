@@ -149,6 +149,30 @@ export function PasoDireccion({ config: c, setConfig }: PropsPaso) {
   );
 }
 
+/**
+ * Ajustes finos de la ficha Estilo en Molde: la sensación y lo que no tiene que parecer.
+ * A diferencia de `PasoDireccion`, no pisa color, letra ni forma, que ya se eligieron en sus rondas.
+ * El layout y el estilo se eligen en sus propias rondas.
+ */
+export function AjustesDireccion({ config: c, setConfig }: PropsPaso) {
+  return (
+    <Seccion titulo="Sensación" ayuda="Cómo se describe la sensación en el archivo. Cambiarla no toca los colores, la letra ni la forma que ya elegiste.">
+      <Opciones<DireccionId>
+        etiqueta="Dirección"
+        opciones={lista(DIRECCIONES)}
+        valor={c.visual.direccion}
+        onElegir={(direccion) => setVisual(setConfig, { direccion })}
+      />
+      <ListaEditable
+        etiqueta="¿Qué NO querés que parezca?"
+        items={c.visual.antiReferencias}
+        onCambiar={(v) => setVisual(setConfig, { antiReferencias: v })}
+        placeholder="Ej.: un banco"
+      />
+    </Seccion>
+  );
+}
+
 // ---------- Color ----------
 
 const ROLES: { id: RolColor; nombre: string }[] = [

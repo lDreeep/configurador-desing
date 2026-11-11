@@ -1,7 +1,8 @@
 import { configInicial } from '../estado';
 import { rondaPorClave, rondasDe, type ClaveRonda } from '../rondas';
 import type { Config } from '../tipos';
-import { CLAVE_ELEGIDAS, elegir, guardarElegidas, INICIO_MOLDE, leerElegidas, LISTO_MOLDE, posiciones, resolverPaso, siguiente, valorDeFicha } from './recorrido';
+import { PASOS } from '../pasos/pasos';
+import { AJUSTES, CLAVE_ELEGIDAS, elegir, guardarElegidas, INICIO_MOLDE, leerElegidas, LISTO_MOLDE, posiciones, resolverPaso, siguiente, valorDeFicha } from './recorrido';
 
 const memoria = () => {
   const m = new Map<string, string>();
@@ -83,5 +84,31 @@ describe('recorrido de Molde (C2)', () => {
         }
       }
     }
+  });
+
+  it('scroll (D7): se eligen varios efectos, la ficha los nombra a todos y la ronda no se marca hasta elegir', () => {
+    let r = paso(configInicial(), new Set(), 'proyecto', 'landing');
+    for (const k of ['color', 'layout', 'estilo'] as ClaveRonda[]) r = paso(r.config, r.elegidas, k);
+    const scroll = rondaPorClave(r.config, 'scroll')!;
+    expect(scroll.maximo).toBe(3);
+    r = elegir(r.config, r.elegidas, scroll, 'se_aleja');
+    r = elegir(r.config, r.elegidas, scroll, 'barra_progreso');
+    expect(r.elegidas.has('scroll')).toBe(true);
+    expect(valorDeFicha(r.config, scroll)).toBe('Se aleja + Barra de progreso');
+    r = elegir(r.config, r.elegidas, scroll, 'ninguno');
+    expect(valorDeFicha(r.config, scroll)).toBe('Sin efectos');
+  });
+});
+
+describe('ajustes finos de las fichas (C4)', () => {
+  it('todo paso del modo avanzado se ajusta desde alguna ficha, y una sola vez', () => {
+    const cubiertos = Object.values(AJUSTES).flat();
+    expect(new Set(cubiertos).size).toBe(cubiertos.length);
+    expect([...cubiertos].sort()).toEqual(PASOS.map((p) => p.id).sort());
+  });
+
+  it('cada ficha con ajustes es una ronda que todo proyecto ve', () => {
+    const comunes = rondasDe(configInicial()).map((r) => r.clave);
+    for (const clave of Object.keys(AJUSTES)) expect(comunes).toContain(clave);
   });
 });
