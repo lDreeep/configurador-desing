@@ -29,3 +29,6 @@ export const rondaPorClave = (c: Config, clave: ClaveRonda) => rondasDe(c).find(
 
 /** Las obligatorias que faltan elegir: hasta que no queda ninguna no se puede descargar. */
 export const faltanObligatorias = (c: Config, elegidas: ReadonlySet<ClaveRonda>) => rondasDe(c).filter((r) => r.obligatoria && !elegidas.has(r.clave));
+
+export { MAX_PASOS, admiteRonda, clavesPropias, pasoDeRonda, pasosDe, rondasDeAjustar, type Paso, type PasoId } from './pasos';
+export { ADMITE_LAYOUT, type Admite } from './admite-layout';
