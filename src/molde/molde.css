@@ -1,0 +1,116 @@
+/* Molde (PLAN.md C2). El marco (yeso, tinta, silicona) no cambia con el estilo elegido: es la
+   interfaz, no la página. La página del lienzo usa solo los tokens de sistema.ts (vía Pagina). */
+.molde {
+  --molde-yeso: #f7f8fa; --molde-superficie: #ffffff; --molde-tinta: #1d1730; --molde-tinta-2: #5a5470; --molde-linea: #d5d9e0;
+  --molde-silicona: #d81e6a; --molde-sobre-silicona: #ffffff; --molde-sombra: rgba(29, 23, 48, .18);
+  --molde-f-marca: 'Bricolage Grotesque', 'Trebuchet MS', sans-serif;
+  --molde-toque: 140ms; --molde-cambio: 560ms; --molde-curva: cubic-bezier(.2, .8, .2, 1); --molde-rebote: cubic-bezier(.3, 1.45, .45, 1);
+  position: fixed; inset: 0; overflow: hidden; background: var(--molde-yeso); color: var(--molde-tinta);
+  font: 16px/1.45 Inter, system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  .molde {
+    --molde-yeso: #15121c; --molde-superficie: #2a2338; --molde-tinta: #f1eef6; --molde-tinta-2: #b0a9c0; --molde-linea: #443b58;
+    --molde-silicona: #ff6ba3; --molde-sobre-silicona: #1d1730; --molde-sombra: rgba(0, 0, 0, .55); color-scheme: dark;
+  }
+}
+.molde button { font: inherit; color: inherit; cursor: pointer; border: 0; background: none; }
+.molde :focus-visible { outline: 3px solid var(--molde-silicona); outline-offset: 3px; }
+
+.molde-barra { position: absolute; inset: 0 0 auto; height: 64px; display: flex; align-items: center; z-index: 8; padding: 0 max(20px, env(safe-area-inset-right, 0px)) 0 max(20px, env(safe-area-inset-left, 0px)); }
+.molde-marca { display: flex; align-items: center; gap: 9px; font: 700 24px/1 var(--molde-f-marca); letter-spacing: -.02em; }
+.molde-marca i { width: 19px; height: 19px; border: 4px solid var(--molde-silicona); border-radius: 6px; }
+.molde-hueco { flex: 1; }
+.molde .molde-enlace { min-height: 44px; padding: 0 12px; color: var(--molde-tinta-2); font-weight: 500; text-decoration: underline; text-underline-offset: 4px; }
+
+.molde-main { position: absolute; inset: 0; }
+
+/* El lienzo: vacío al principio, después la página que se va armando */
+.molde-lienzo { position: absolute; inset: 64px 16px 88px; border-radius: 22px; overflow: hidden; transition: box-shadow var(--molde-cambio); }
+.molde-lienzo.hay { box-shadow: 0 0 0 1px var(--molde-linea), 0 30px 60px -30px var(--molde-sombra); }
+.molde-capa { position: absolute; inset: 0; overflow: hidden; }
+.molde-capa > .pg { min-height: 100%; }
+.molde-base { transition: opacity var(--molde-cambio), filter var(--molde-cambio); }
+.eligiendo .molde-base { opacity: .3; filter: saturate(.55); }
+/* La vista previa se abre en círculo desde el centro, sobre la página */
+.molde-prev { clip-path: circle(0 at 50% 50%); transition: clip-path 220ms ease-in; }
+.molde-prev.on { clip-path: circle(120% at 50% 50%); transition: clip-path var(--molde-cambio) var(--molde-curva); }
+
+/* Inicio: título y el botón del que sale todo */
+.molde-centro { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); z-index: 4; display: grid; justify-items: center; gap: 16px; text-align: center; width: min(92%, 620px); }
+.molde-centro h1 { margin: 0; font: 700 clamp(36px, 5.4vw, 72px)/.96 var(--molde-f-marca); letter-spacing: -.035em; }
+.molde-centro p { margin: 0 0 24px; color: var(--molde-tinta-2); font-size: 18px; max-width: 42ch; }
+.molde .molde-empezar { min-height: 64px; padding: 0 34px; border-radius: 999px; background: var(--molde-silicona); color: var(--molde-sobre-silicona); font-size: 20px; font-weight: 600; transition: scale var(--molde-toque); animation: molde-latir 1.7s var(--molde-curva) infinite; }
+.molde .molde-empezar:active { scale: .94; }
+@keyframes molde-latir { from { box-shadow: 0 0 0 0 color-mix(in srgb, var(--molde-silicona) 55%, transparent); } to { box-shadow: 0 0 0 22px transparent; } }
+
+/* La pregunta de la ronda, en el centro: de acá salen las ideas */
+.molde-pregunta { position: absolute; left: 50%; top: calc(50% - 12px); translate: -50% -50%; z-index: 7; margin: 0; max-width: calc(100% - 32px);
+  display: flex; align-items: center; min-height: 52px; padding: 0 24px; border-radius: 999px; background: var(--molde-tinta); color: var(--molde-yeso);
+  font: 600 17px/1.2 Inter, system-ui, sans-serif; text-align: center; white-space: nowrap; animation: molde-pulso 480ms var(--molde-rebote); transition: opacity var(--molde-toque); }
+@keyframes molde-pulso { 40% { scale: 1.12; } }
+
+/* Ideas: salen del centro y se acomodan alrededor */
+.molde-ideas { position: absolute; left: 50%; top: calc(50% - 12px); z-index: 6; }
+.molde .molde-idea { position: absolute; left: 0; top: 0; transform: translate(-50%, -50%) translate(var(--x, 0px), var(--y, 0px)) scale(.2); opacity: 0;
+  transition: transform 620ms var(--molde-rebote), opacity 260ms; touch-action: none; user-select: none;
+  min-height: 56px; max-width: min(320px, 44vw); padding: 10px 16px; border-radius: 18px; background: var(--molde-superficie);
+  box-shadow: 0 0 0 1px var(--molde-linea), 0 14px 30px -14px var(--molde-sombra);
+  display: flex; align-items: center; gap: 11px; text-align: left; font-weight: 600; white-space: nowrap; cursor: grab; }
+.molde-ideas.abiertas .molde-idea { transform: translate(-50%, -50%) translate(var(--x, 0px), var(--y, 0px)) scale(1); opacity: 1; }
+.molde-idea-texto { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.molde-idea small { display: block; font-weight: 400; color: var(--molde-tinta-2); font-size: 13px; overflow: hidden; text-overflow: ellipsis; max-width: 30ch; }
+.molde-sello { color: var(--molde-silicona); font-weight: 600; }
+.molde .molde-idea[aria-pressed='true'] { box-shadow: 0 0 0 2px var(--molde-tinta), 0 14px 30px -14px var(--molde-sombra); }
+.molde .molde-idea.arrastra { transition: none; cursor: grabbing; z-index: 2; }
+/* La idea que estás mirando se vuelve translúcida para no tapar la página */
+.molde-ideas.abiertas .molde-idea.viva { opacity: .5; box-shadow: 0 0 0 2px var(--molde-silicona); }
+.molde-ideas.abiertas .molde-idea.viva.arrastra { opacity: .9; }
+.viendo .molde-ideas .molde-idea:not(.viva) { opacity: 0; }
+.viendo .molde-pregunta, .viendo .molde-paginas { opacity: 0; }
+.molde-muestras { display: flex; flex: none; }
+.molde-muestras i { width: 20px; height: 20px; border-radius: 50%; margin-left: -6px; box-shadow: 0 0 0 2px var(--molde-superficie); }
+.molde-muestras i:first-child { margin-left: 0; }
+.molde-idea .esquema { width: 54px; height: 35px; flex: none; border-radius: 6px; box-shadow: 0 0 0 1px var(--molde-linea); }
+
+/* Más ideas: flechas debajo de la pregunta, de a 6 por vez */
+.molde-paginas { position: absolute; left: 50%; top: calc(50% + 44px); translate: -50% -50%; z-index: 7; display: flex; align-items: center; gap: 4px; font-size: 14px; color: var(--molde-tinta-2); font-variant-numeric: tabular-nums; transition: opacity var(--molde-toque); }
+.molde .molde-flecha { width: 44px; height: 44px; border-radius: 50%; background: var(--molde-superficie); box-shadow: inset 0 0 0 1px var(--molde-linea); font-size: 20px; line-height: 1; transition: scale var(--molde-toque); }
+.molde .molde-flecha:active { scale: .9; }
+
+/* Fichas: lo que ya elegiste, abajo; tocar una vuelve a abrir esa ronda */
+.molde-pie { position: absolute; inset: auto 0 0; z-index: 8; height: 88px; display: flex; align-items: center; gap: 12px;
+  padding: 0 max(20px, env(safe-area-inset-right, 0px)) env(safe-area-inset-bottom, 0px) max(20px, env(safe-area-inset-left, 0px)); }
+.molde-fichas { flex: 1; min-width: 0; display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; padding: 4px; }
+.molde-fichas::-webkit-scrollbar { display: none; }
+.molde .molde-ficha { flex: none; min-height: 48px; padding: 4px 14px; border-radius: 14px; background: var(--molde-superficie); box-shadow: inset 0 0 0 1px var(--molde-linea); text-align: left; font-size: 13px; color: var(--molde-tinta-2); line-height: 1.2; }
+.molde .molde-ficha.nueva { animation: molde-caer 420ms var(--molde-rebote) both; }
+.molde-ficha b { display: block; color: var(--molde-tinta); font-size: 15px; font-weight: 600; }
+.molde .molde-ficha[aria-current='step'] { box-shadow: inset 0 0 0 2.5px var(--molde-silicona); }
+@keyframes molde-caer { from { transform: translateY(-26px) scale(.7); opacity: 0; } }
+.molde-pista { color: var(--molde-tinta-2); font-size: 15px; margin: 0; }
+.molde-final { display: flex; gap: 8px; flex: none; }
+.molde .molde-btn { min-height: 48px; padding: 0 20px; border-radius: 999px; font-weight: 600; white-space: nowrap; transition: scale var(--molde-toque); }
+.molde .molde-btn:active { scale: .96; }
+.molde .molde-btn-1 { background: var(--molde-silicona); color: var(--molde-sobre-silicona); }
+.molde .molde-btn-2 { background: var(--molde-superficie); box-shadow: inset 0 0 0 1.5px var(--molde-tinta); }
+.molde-aviso { position: absolute; left: 50%; bottom: 96px; transform: translateX(-50%); z-index: 9; margin: 0; background: var(--molde-tinta); color: var(--molde-yeso); padding: 10px 16px; border-radius: 12px; font-size: 14px; max-width: calc(100% - 32px); }
+.molde-aviso[hidden] { display: none; }
+
+@media (max-width: 760px) {
+  .molde-lienzo { inset: 60px 12px 136px; }
+  .molde-pie { height: 136px; flex-wrap: wrap; align-content: center; gap: 6px; }
+  .molde-fichas { flex-basis: 100%; }
+  .molde-final { flex: 1; }
+  .molde-final .molde-btn { flex: 1; padding: 0 14px; font-size: 14px; }
+  .molde .molde-idea { min-height: 50px; padding: 8px 12px; font-size: 14px; gap: 8px; }
+  .molde-idea small { display: none; }
+  .molde-idea .esquema { width: 40px; height: 26px; }
+  .molde-pregunta { white-space: normal; font-size: 15px; }
+  .molde-paginas { top: calc(50% + 40px); }
+  .molde-centro p { font-size: 16px; }
+  .molde-aviso { bottom: 144px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .molde *, .molde *::before, .molde *::after { animation: none !important; transition: none !important; }
+}

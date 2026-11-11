@@ -1,10 +1,11 @@
 // Dónde está la persona en el configurador (modo y paso), guardado en la URL y en localStorage.
-// La URL lleva el paso en el hash (`#/rapido/tipo`, `#/detallado/cajas`, `#/avanzado/color`), así
+// La URL lleva el paso en el hash (`#/rapido/tipo`, `#/detallado/cajas`, `#/avanzado/color`,
+// `#/molde/color`), así
 // Atrás y Adelante del navegador mueven entre pasos; localStorage lo recuerda si se vuelve sin hash.
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-export type Modo = 'rapido' | 'avanzado';
+export type Modo = 'rapido' | 'avanzado' | 'molde';
 
 /** Pasos del recorrido simple (sirven en los dos recorridos del modo rápido). */
 export const PASOS_SIMPLES = ['inicio', 'tipo', 'paquete', 'prototipo', 'listo'] as const;
@@ -14,7 +15,8 @@ export type PasoRapido = (typeof PASOS_SIMPLES)[number] | (typeof PASOS_DETALLAD
 
 export interface Ubicacion {
   modo: Modo;
-  /** Paso del modo rápido o id de un paso del modo avanzado (`PASOS` en `pasos/pasos.tsx`). */
+  /** Paso del modo rápido, id de un paso del modo avanzado (`PASOS` en `pasos/pasos.tsx`) o, en Molde,
+   *  la clave de la ronda abierta (`src/rondas/`), `inicio` o `listo`. */
   paso: string;
   /** En el modo rápido: recorrido pieza por pieza. */
   detallado: boolean;
@@ -30,9 +32,12 @@ const esPasoRapido = (p: string): p is PasoRapido =>
 const esDetallado = (p: string) => (PASOS_DETALLADOS as readonly string[]).includes(p);
 // Los ids del modo avanzado se validan por forma: la lista vive en el bundle del avanzado, que se carga aparte.
 const esIdAvanzado = (p: string) => /^[a-z_]{1,30}$/.test(p);
+// En Molde, la clave de una ronda (`color`, `galeria:producto`): también por forma, Molde la valida contra sus rondas.
+const esPasoMolde = (p: string) => /^[a-z_]{1,30}(:[a-z_]{1,30})?$/.test(p);
 
 export function aHash(u: Ubicacion): string {
   if (u.modo === 'avanzado') return `#/avanzado/${u.paso}`;
+  if (u.modo === 'molde') return `#/molde/${u.paso}`;
   if (u.paso === 'inicio') return '#/inicio';
   return `#/${u.detallado ? 'detallado' : 'rapido'}/${u.paso}`;
 }
@@ -45,6 +50,7 @@ export function desdeHash(hash: string): Ubicacion | null {
   if (prefijo === 'inicio' && paso === undefined) return INICIO;
   if (!paso) return null;
   if (prefijo === 'avanzado') return esIdAvanzado(paso) ? { modo: 'avanzado', paso, detallado: false } : null;
+  if (prefijo === 'molde') return esPasoMolde(paso) ? { modo: 'molde', paso, detallado: false } : null;
   if ((prefijo === 'rapido' || prefijo === 'detallado') && esPasoRapido(paso)) {
     return { modo: 'rapido', paso, detallado: prefijo === 'detallado' || esDetallado(paso) };
   }
@@ -69,7 +75,8 @@ export function leerGuardada(almacen: Almacen | null = almacenDelNavegador()): U
     if (crudo) {
       const u = JSON.parse(crudo) as Partial<Ubicacion>;
       if (typeof u?.paso === 'string') {
-        const desde = desdeHash(aHash({ modo: u.modo === 'avanzado' ? 'avanzado' : 'rapido', paso: u.paso, detallado: !!u.detallado }));
+        const modo = u.modo === 'avanzado' || u.modo === 'molde' ? u.modo : 'rapido';
+        const desde = desdeHash(aHash({ modo, paso: u.paso, detallado: !!u.detallado }));
         if (desde) return desde;
       }
     }
@@ -133,8 +140,12 @@ export function useUbicacion() {
 
   useEffect(() => guardar(estado.u), [estado.u]);
 
-  const ir = useCallback((u: Ubicacion, atras = false) => {
-    if (aHash(u) !== aHash(actual.current.u)) {
+  // `reemplazar` corrige la entrada actual sin sumar historial (un paso que no correspondía).
+  const ir = useCallback((u: Ubicacion, atras = false, reemplazar = false) => {
+    if (reemplazar) {
+      history.replaceState({ orden: actual.current.orden } satisfies EstadoHistorial, '', aHash(u));
+      actual.current = { ...actual.current, u };
+    } else if (aHash(u) !== aHash(actual.current.u)) {
       const orden = actual.current.orden + 1;
       history.pushState({ orden } satisfies EstadoHistorial, '', aHash(u));
       actual.current = { u, orden };

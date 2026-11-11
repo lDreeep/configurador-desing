@@ -134,11 +134,12 @@ Estado: `[ ]` pendiente · `[x]` hecha. Marcala al terminar.
   - Listo cuando: hay tests que verifican que cada tipo devuelve sus rondas, que cada opción existe en el catálogo y que cambiar de tipo conserva color, estilo, piezas y letra.
   - Hecho en `src/rondas/` (`ronda.ts`, `comunes.ts`, `ramas.ts`, `index.ts`). Las rondas que piden catálogo nuevo (Rubro → D1, fondo animado → D6, scroll → D7, secciones → D12, densidad y lectura → D11) quedan en `rondasPendientes()` y `rondasDe()` no las devuelve hasta que existan. Estilo usa `estilosPara` (A3).
 
-- [ ] **C2 · Lienzo y explosión de ideas** — Opus 5.5 · depende de C1
+- [x] **C2 · Lienzo y explosión de ideas** — Opus 5.5 · depende de C1
   - Portar la interacción de `maqueta/molde-2.html` a React en `src/molde/`: lienzo con capa base y capa de vista previa, explosión desde el botón, de a 6 con flechas, vista previa al pasar el mouse con la opción translúcida, elegir con clic o arrastrando al centro, fichas abajo.
   - El lienzo usa `Pagina` (`src/rapido/Pagina.tsx`) con la `Config` real, no el HTML de muestra de la maqueta.
   - Las opciones son botones reales: con teclado, el foco muestra y Enter elige.
   - Listo cuando: se puede recorrer Proyecto → Color → Layout → Estilo con mouse y con teclado, y lo elegido sobrevive a recargar.
+  - Hecho en `src/molde/` (`Molde.tsx`, `recorrido.ts`, `molde.css`), en `#/molde/<ronda>` mientras convive con el modo rápido (C5 lo pasa a la raíz). La ronda abierta va en la URL (Atrás vuelve a la anterior) y las rondas elegidas en `localStorage` (`molde:elegidas`); la config, como siempre, en `estado.ts`. Al terminar baja el `DESIGN.md` real; el HTML queda para F2. Quedan para otras tareas: la portada animada (E2), «Usar» y «Ver otras» en pantallas táctiles (C3), los ajustes finos de cada ficha (C4) y «Sorprendeme» (§7.9). Las rondas de galería muestran la idea en la ficha pero `Pagina` todavía no dibuja esos componentes.
 
 - [ ] **C3 · Versión táctil y sin movimiento** — Sonnet 5.5 · depende de C2
   - En pantallas táctiles: un toque muestra, aparecen «Usar» y «Ver otras». Áreas táctiles de 44 px. Con `prefers-reduced-motion`, todo aparece sin animación y sigue funcionando.
