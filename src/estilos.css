@@ -284,6 +284,29 @@ button:disabled { cursor: not-allowed; opacity: 0.4; }
 .pv-aparicion-subir .pv-bloque { animation: pv-subir var(--duracion-media) var(--curva-entrada) both; animation-delay: 0ms !important; }
 .pv-aparicion-escalonada .pv-bloque { animation: pv-subir var(--duracion-media) var(--curva-entrada) both; }
 .pv-aparicion-zoom .pv-bloque { animation: pv-zoom var(--duracion-media) var(--curva-entrada) both; animation-delay: 0ms !important; }
+@keyframes pv-enfoque { from { opacity: 0; filter: blur(12px); } to { opacity: 1; filter: none; } }
+@keyframes pv-rebote {
+  0% { opacity: 0; transform: translateY(-40px); }
+  45% { opacity: 1; transform: translateY(0); }
+  65% { transform: translateY(-10px); }
+  82% { transform: translateY(0); }
+  92% { transform: translateY(-3px); }
+  100% { opacity: 1; transform: none; }
+}
+@keyframes pv-destape { from { clip-path: inset(100% 0 0 0); } to { clip-path: inset(0 0 0 0); } }
+@keyframes pv-giro { from { opacity: 0; transform: perspective(600px) rotateY(-80deg); } to { opacity: 1; transform: none; } }
+@keyframes pv-maquina { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0 0 0 0); } }
+@keyframes pv-costado-izq { from { opacity: 0; transform: translateX(-48px); } to { opacity: 1; transform: none; } }
+@keyframes pv-costado-der { from { opacity: 0; transform: translateX(48px); } to { opacity: 1; transform: none; } }
+@keyframes pv-desde-boton { from { opacity: 0; transform: scale(0.2); } to { opacity: 1; transform: none; } }
+.pv-aparicion-enfoque .pv-bloque { animation: pv-enfoque var(--duracion-media) var(--curva-entrada) both; }
+.pv-aparicion-rebote .pv-bloque { animation: pv-rebote var(--duracion-lenta) var(--curva-entrada) both; }
+.pv-aparicion-destape .pv-bloque { animation: pv-destape var(--duracion-media) var(--curva-entrada) both; }
+.pv-aparicion-giro .pv-bloque { animation: pv-giro var(--duracion-media) var(--curva-entrada) both; }
+.pv-aparicion-maquina .pv-bloque { animation: pv-maquina var(--duracion-lenta) steps(16, end) both; }
+.pv-aparicion-costados .pv-bloque { animation: pv-costado-izq var(--duracion-media) var(--curva-entrada) both; }
+.pv-aparicion-costados .pv-bloque:nth-child(even) { animation-name: pv-costado-der; }
+.pv-aparicion-desde_boton .pv-bloque { animation: pv-desde-boton var(--duracion-media) var(--curva-entrada) both; transform-origin: 100% 100%; }
 
 @media (prefers-reduced-motion: reduce) {
   .pv *, .pv, .mini-pv * { animation: none !important; transition: none !important; }

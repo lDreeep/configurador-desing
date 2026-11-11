@@ -105,6 +105,17 @@ describe('catálogo', () => {
     for (const x of COMBINACIONES) expect(FUENTES[x.titulos] && FUENTES[x.texto]).toBeTruthy();
   });
 
+  it('las combinaciones no se repiten (ni el par ni el nombre) y ambas fuentes tienen peso normal (400)', () => {
+    const pares = COMBINACIONES.map((x) => `${x.titulos}+${x.texto}`);
+    const nombres = COMBINACIONES.map((x) => x.nombre);
+    expect(new Set(pares).size).toBe(pares.length);
+    expect(new Set(nombres).size).toBe(nombres.length);
+    for (const x of COMBINACIONES) {
+      expect(FUENTES[x.titulos].pesos, `${x.nombre}: títulos`).toContain(400);
+      expect(FUENTES[x.texto].pesos, `${x.nombre}: texto`).toContain(400);
+    }
+  });
+
   it('cada dirección genera un export válido', () => {
     for (const id of Object.keys(DIRECCIONES) as (keyof typeof DIRECCIONES)[]) {
       const md = generarDesignMd(aplicarDireccion(configCompleta(), id));
@@ -312,8 +323,15 @@ describe('galería de componentes', () => {
 describe('límites del código de combinación', () => {
   it('cada lista entra en un solo carácter del código (máximo 36)', async () => {
     const { ESTILOS, LAYOUTS } = await import('../estilos-visuales');
-    for (const [nombre, n] of Object.entries({ estilos: Object.keys(ESTILOS).length, layouts: Object.keys(LAYOUTS).length, paletas: Object.keys(PALETAS).length, fuentes: Object.keys(FUENTES).length }))
+    for (const [nombre, n] of Object.entries({ estilos: Object.keys(ESTILOS).length, layouts: Object.keys(LAYOUTS).length, fuentes: Object.keys(FUENTES).length }))
       expect(n, nombre).toBeLessThanOrEqual(36);
+  });
+
+  it('las paletas pasan de 36: sus códigos largos se decodifican igual', async () => {
+    const { codigo, decodificar } = await import('../rapido/combinar');
+    const k = { estilo: 'editorial' as const, layout: 'hero_partido' as const, paleta: 'frutal_mandarina' as const, titulos: 'inter' as const, texto: 'inter' as const, fondo: 'ninguno' as const };
+    expect(codigo(k).startsWith('+')).toBe(true);
+    expect(decodificar(codigo(k))).toEqual(k);
   });
 
   it('el texto de una caja invertida pasa contraste', async () => {

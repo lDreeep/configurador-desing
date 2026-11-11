@@ -87,23 +87,35 @@ export function combinacionDe(c: Config): Combinacion | null {
 
 const b36 = (i: number) => i.toString(36).toUpperCase();
 
+/**
+ * Un carácter por lista (base 36). Las paletas pasan de 36: las de índice 36 o más van con dos
+ * caracteres y el código empieza con «+», así los códigos viejos (sin «+») siguen valiendo.
+ */
 export function codigo(k: Combinacion): string {
-  return [
+  const p = LISTA_PALETAS.indexOf(k.paleta);
+  const larga = p >= 36;
+  const cuerpo = [
     LISTA_ESTILOS.indexOf(k.estilo),
     LISTA_LAYOUTS.indexOf(k.layout),
-    LISTA_PALETAS.indexOf(k.paleta),
+    p,
     LISTA_FUENTES.indexOf(k.titulos),
     LISTA_FUENTES.indexOf(k.texto),
     ...(k.fondo && k.fondo !== 'ninguno' ? [LISTA_FONDOS.indexOf(k.fondo)] : []),
   ]
-    .map(b36)
+    .map((n, i) => (i === 2 && larga ? b36(n).padStart(2, '0') : b36(n)))
     .join('');
+  return larga ? `+${cuerpo}` : cuerpo;
 }
 
 export function decodificar(cod: string): Combinacion | null {
+  const larga = cod.trim().startsWith('+');
   const limpio = cod.trim().toUpperCase().replace(/[^0-9A-Z]/g, '');
-  if (limpio.length !== 5 && limpio.length !== 6) return null;
-  const [e, l, p, t, x, f] = limpio.split('').map((ch) => parseInt(ch, 36));
+  const extra = larga ? 1 : 0;
+  if (limpio.length !== 5 + extra && limpio.length !== 6 + extra) return null;
+  const n = limpio.split('').map((ch) => parseInt(ch, 36));
+  const [e, l] = n;
+  const p = larga ? n[2] * 36 + n[3] : n[2];
+  const [t, x, f] = n.slice(3 + extra);
   const k = { estilo: LISTA_ESTILOS[e], layout: LISTA_LAYOUTS[l], paleta: LISTA_PALETAS[p], titulos: LISTA_FUENTES[t], texto: LISTA_FUENTES[x] };
   if (!Object.values(k).every(Boolean)) return null;
   const fondo = f === undefined ? 'ninguno' : LISTA_FONDOS[f];

@@ -60,7 +60,35 @@ export type PaletaId =
   | 'medianoche_violeta'
   | 'bosque_noche'
   | 'carbon_coral'
-  | 'vino';
+  | 'vino'
+  | 'pastel_rosa'
+  | 'pastel_celeste'
+  | 'pastel_lila'
+  | 'pastel_menta'
+  | 'tierra_ocre'
+  | 'tierra_cuero'
+  | 'tierra_barro'
+  | 'tierra_musgo'
+  | 'neon_rosa'
+  | 'neon_cian'
+  | 'neon_limon'
+  | 'neon_magenta'
+  | 'mono_rojo'
+  | 'mono_azul'
+  | 'mono_verde'
+  | 'mono_naranja'
+  | 'contraste_amarillo'
+  | 'contraste_cian'
+  | 'contraste_azul'
+  | 'contraste_magenta'
+  | 'marina_espuma'
+  | 'marina_costa'
+  | 'marina_abismo'
+  | 'marina_naval'
+  | 'frutal_sandia'
+  | 'frutal_limon'
+  | 'frutal_arandano'
+  | 'frutal_mandarina';
 
 export type FuenteId =
   | 'inter'
@@ -163,7 +191,9 @@ export type BordesId = 'ninguno' | 'sutil' | 'marcado';
 export type MovimientoId = 'minimo' | 'rapido' | 'sutil' | 'expresivo';
 export type HoverId = 'nada' | 'oscurecer' | 'brillo' | 'elevar' | 'escalar' | 'sombra' | 'desplazar';
 export type PresionarId = 'nada' | 'hundir';
-export type AparicionId = 'nada' | 'fundido' | 'subir' | 'escalonada' | 'zoom';
+export type AparicionId =
+  | 'nada' | 'fundido' | 'subir' | 'escalonada' | 'zoom'
+  | 'enfoque' | 'rebote' | 'destape' | 'giro' | 'maquina' | 'costados' | 'desde_boton';
 export type CambioId = 'nada' | 'fundido' | 'deslizar' | 'subir' | 'zoom';
 export type BotonDisenoId =
   | 'solido'

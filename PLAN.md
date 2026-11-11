@@ -134,11 +134,12 @@ Estado: `[ ]` pendiente · `[x]` hecha. Marcala al terminar.
   - Listo cuando: hay tests que verifican que cada tipo devuelve sus rondas, que cada opción existe en el catálogo y que cambiar de tipo conserva color, estilo, piezas y letra.
   - Hecho en `src/rondas/` (`ronda.ts`, `comunes.ts`, `ramas.ts`, `index.ts`). Las rondas que piden catálogo nuevo (Rubro → D1, fondo animado → D6, scroll → D7, secciones → D12, densidad y lectura → D11) quedan en `rondasPendientes()` y `rondasDe()` no las devuelve hasta que existan. Estilo usa `estilosPara` (A3).
 
-- [ ] **C2 · Lienzo y explosión de ideas** — Opus 5.5 · depende de C1
+- [x] **C2 · Lienzo y explosión de ideas** — Opus 5.5 · depende de C1
   - Portar la interacción de `maqueta/molde-2.html` a React en `src/molde/`: lienzo con capa base y capa de vista previa, explosión desde el botón, de a 6 con flechas, vista previa al pasar el mouse con la opción translúcida, elegir con clic o arrastrando al centro, fichas abajo.
   - El lienzo usa `Pagina` (`src/rapido/Pagina.tsx`) con la `Config` real, no el HTML de muestra de la maqueta.
   - Las opciones son botones reales: con teclado, el foco muestra y Enter elige.
   - Listo cuando: se puede recorrer Proyecto → Color → Layout → Estilo con mouse y con teclado, y lo elegido sobrevive a recargar.
+  - Hecho en `src/molde/` (`Molde.tsx`, `recorrido.ts`, `molde.css`), en `#/molde/<ronda>` mientras convive con el modo rápido (C5 lo pasa a la raíz). La ronda abierta va en la URL (Atrás vuelve a la anterior) y las rondas elegidas en `localStorage` (`molde:elegidas`); la config, como siempre, en `estado.ts`. Al terminar baja el `DESIGN.md` real; el HTML queda para F2. Quedan para otras tareas: la portada animada (E2), «Usar» y «Ver otras» en pantallas táctiles (C3), los ajustes finos de cada ficha (C4) y «Sorprendeme» (§7.9). Las rondas de galería muestran la idea en la ficha pero `Pagina` todavía no dibuja esos componentes.
 
 - [ ] **C3 · Versión táctil y sin movimiento** — Sonnet 5.5 · depende de C2
   - En pantallas táctiles: un toque muestra, aparecen «Usar» y «Ver otras». Áreas táctiles de 44 px. Con `prefers-reduced-motion`, todo aparece sin animación y sigue funcionando.
@@ -154,11 +155,12 @@ Estado: `[ ]` pendiente · `[x]` hecha. Marcala al terminar.
 
 ### Tanda 3: más opciones (en paralelo, todas dependen de C1)
 
-- [ ] **D1 · Rubros** — Sonnet 5.5
+- [x] **D1 · Rubros** — Sonnet 5.5
   - Crear `src/rubros.ts` con los 39 rubros de la sección 7.2: id, nombre, tipo al que pertenece y contenido de muestra (marca inventada, título, bajada, dos botones, tres ítems), en español rioplatense y con datos creíbles.
   - Listo cuando: un test verifica que cada tipo tiene al menos 4 rubros y que ningún texto supera el largo de los actuales en `src/rapido/contenido-tipo.ts`.
+  - Hecho en `src/rubros.ts` (`RUBROS`, `rubrosDe`, `rubroPorId`) con `src/rubros.test.ts`. Todavía no se conecta a la ronda Rubro (sale de `rondasPendientes()` en otra tarea).
 
-- [ ] **D2 · 28 paletas nuevas** — Sonnet 5.5
+- [x] **D2 · 28 paletas nuevas** — Sonnet 5.5
   - Sumar a `PALETAS` en `src/catalogo.ts` hasta llegar a 60, repartidas como en la sección 7.3. Cada una tiene que pasar el test de contraste AA de `src/export/generarDesignMd.test.ts`.
   - Listo cuando: el test de contraste pasa y cada paleta nueva está en al menos un estilo compatible.
 
@@ -167,13 +169,14 @@ Estado: `[ ]` pendiente · `[x]` hecha. Marcala al terminar.
   - Cada layout nuevo va **al final** de la lista para no romper los códigos compartidos.
   - Listo cuando: cada layout se ve bien con los 20 estilos a 1440 px y a 390 px, y tiene su `estructura` escrita para el export.
 
-- [ ] **D4 · 8 familias de UI nuevas** — Sonnet 5.5
+- [x] **D4 · 8 familias de UI nuevas** — Sonnet 5.5
   - Sumar a `src/familias.ts` las de la sección 7.6, armadas **solo con diseños que ya existen** (botones, cajas y galería). No escribir CSS nuevo.
   - Listo cuando: pasa el test que verifica que todos los ids existen.
 
-- [ ] **D5 · 10 combinaciones de letra nuevas** — Haiku 5.5 · apta para Codex
+- [x] **D5 · 10 combinaciones de letra nuevas** — Haiku 5.5 · apta para Codex
   - Sumar a `COMBINACIONES` en `src/catalogo.ts` diez pares con las 33 fuentes que ya están cargadas. Consultar `python3 .claude/skills/ui-ux-pro-max/scripts/search.py "consulta" --domain typography` para elegir pares.
   - Listo cuando: no hay pares repetidos y cada par usa pesos que la fuente tiene.
+  - Hecha: 10 pares nuevos al final de `COMBINACIONES` (14 → 24), sin fuentes nuevas ni cambios en el export. Test en `src/export/generarDesignMd.test.ts` (sin pares ni nombres repetidos; ambas fuentes tienen peso 400).
 
 - [ ] **D6 · Fondos animados** — Opus 5.5 (motor y 4 fondos) y después Sonnet 5.5 (los otros 12)
   - Crear `src/fondos-animados.ts` con los 16 de la sección 7.7. Solo CSS, salvo «luz que sigue al cursor». Los seis de `maqueta/molde-2.html` sirven de referencia.
@@ -186,7 +189,7 @@ Estado: `[ ]` pendiente · `[x]` hecha. Marcala al terminar.
   - En la vista previa, la página se baja sola para mostrar el efecto.
   - Listo cuando: cualquier combinación válida funciona junta y hay un test de las reglas de combinación.
 
-- [ ] **D8 · 7 entradas nuevas** — Sonnet 5.5 · apta para Codex
+- [x] **D8 · 7 entradas nuevas** — Sonnet 5.5 · apta para Codex
   - Sumar a la aparición (`AparicionId` en `src/tipos.ts`, opciones en `src/catalogo.ts`) las de la sección 7.8. Se reproducen solo en su ronda y al terminar.
   - Listo cuando: cada entrada tiene su CSS con tokens `--duracion-*` y `--curva-*`.
 

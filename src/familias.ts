@@ -8,7 +8,8 @@ import { CATEGORIAS, type CategoriaId, DISENO_INICIAL } from './galeria';
 import { BOTONES } from './botones-disenos';
 import { CAJAS } from './cajas';
 
-export type FamiliaId = 'clasica' | 'suave' | 'minimal' | 'editorial' | 'tonal' | 'neobrutal' | 'vidrio' | 'oscura' | 'neon' | 'retro';
+export type FamiliaId = 'clasica' | 'suave' | 'minimal' | 'editorial' | 'tonal' | 'neobrutal' | 'vidrio' | 'oscura' | 'neon' | 'retro'
+  | 'pastel' | 'monocroma' | 'lineas_dobles' | 'recortada' | 'relieve' | 'precio' | 'terminal' | 'papel';
 
 export interface Familia {
   nombre: string;
@@ -166,6 +167,111 @@ export const FAMILIAS: Record<FamiliaId, Familia> = {
     cajas: ['doble', 'sello', 'cuaderno'],
     genericos: ['retro', 'retro_bisel', 'terminal', 'maquina'],
     piezas: { boton_sec: ['retro_bisel'], campo: ['retro', 'terminal', 'maquina'] },
+  },
+  pastel: {
+    nombre: 'Pastel',
+    descripcion: 'Colores lavados, formas redondas y nada que pese: dulce y liviana',
+    botones: ['pildora', 'tonal', 'almohada', 'acuoso'],
+    cajas: ['pildora_suave', 'velo', 'hundida_color'],
+    genericos: ['pastel', 'tonal', 'suave', 'pildora'],
+    piezas: {
+      boton_sec: ['pastilla_suave', 'tonal', 'pildora'], boton_icono: ['tonal', 'flotante', 'gota'], campo: ['relleno', 'pildora', 'flotante'],
+      selector: ['pastillas', 'pildora', 'gota'], casilla: ['suave', 'redonda', 'chip'], deslizador: ['pastilla', 'tonal', 'burbuja'],
+      etiqueta: ['suave', 'pildora_icono'], avatar: ['pastel', 'anillo'], aviso: ['tonal', 'pildora'], progreso: ['tonal', 'gruesa'],
+      formulario: ['pastel', 'relleno', 'lista_agrupada'], reserva: ['tonal', 'pastillas'], calendario: ['tonal', 'circulos'],
+    },
+  },
+  monocroma: {
+    nombre: 'Monocroma',
+    descripcion: 'Un solo tono con un acento: todo en escala de grises y una marca de color',
+    botones: ['solido', 'plano_cuadrado', 'contorno'],
+    cajas: ['superficie', 'contorno', 'compacta', 'aire'],
+    genericos: ['clasico', 'clasica', 'contorno', 'simple'],
+    piezas: {
+      boton_sec: ['contorno', 'gris_solido', 'fantasma'], boton_icono: ['contorno', 'fantasma', 'oscuro'], campo: ['contorno', 'relleno', 'subrayado'],
+      selector: ['contorno', 'cuadrado', 'oscuro'], interruptor: ['clasico', 'cuadrado', 'contorno'], casilla: ['cuadrada', 'cruz', 'oscura'],
+      etiqueta: ['contorno', 'mono', 'solida'], aviso: ['contorno', 'oscura', 'barra'], metrica: ['simple', 'oscura', 'borde'],
+      grafico: ['barras', 'linea', 'barras_resaltada'], tabla: ['lineas', 'compacta', 'cebra'], tooltip: ['oscuro', 'mono'], modal: ['centrada', 'oscura'],
+      pie: ['simple', 'oscuro'], formulario: ['apilado', 'compacto', 'oscuro'],
+    },
+  },
+  lineas_dobles: {
+    nombre: 'Líneas dobles',
+    descripcion: 'Dos filetes paralelos en cada borde, como un diploma o un billete',
+    botones: ['doble', 'contorno_doble_color', 'doble_capa'],
+    cajas: ['doble', 'renglones', 'contorno'],
+    genericos: ['doble', 'doble_linea', 'contorno_doble'],
+    piezas: {
+      boton_sec: ['contorno_doble', 'contorno', 'subrayado_crece'], campo: ['doble_linea', 'contorno', 'leyenda'], selector: ['editorial', 'contorno'],
+      interruptor: ['lineas', 'contorno'], casilla: ['dibujada', 'cuadrada'], etiqueta: ['sello', 'contorno'], aviso: ['contorno', 'barra'],
+      acordeon: ['lineas', 'contorno', 'numerado'], tabla: ['encabezado', 'lineas', 'grilla'], pasos: ['texto', 'circulos'], vacio: ['punteado', 'centrado'],
+      formulario: ['editorial_abierto', 'subrayado'], migas: ['barra', 'chevron'],
+    },
+  },
+  recortada: {
+    nombre: 'Recortada',
+    descripcion: 'Esquinas cortadas en diagonal: una estética de panel de control',
+    botones: ['esquinas', 'hexagonal', 'diagonal', 'banderin'],
+    cajas: ['cortada', 'cortada_contorno', 'ticket'],
+    genericos: ['esquinas', 'hexagono', 'cuadrada', 'cuadrado'],
+    piezas: {
+      boton_sec: ['contorno_recto', 'contorno', 'flecha_circulo'], boton_icono: ['hexagono', 'cuadrado_contorno', 'cuadrado'], campo: ['esquinas', 'prefijo', 'contorno'],
+      selector: ['cuadrado', 'linea_arriba'], interruptor: ['cuadrado', 'pequeno'], casilla: ['cuadrada', 'cuadrada_grande', 'cruz'],
+      nav_movil: ['muesca', 'cuadrado', 'linea_superior'], etiqueta: ['colgante', 'cuadrada'], avatar: ['cuadrado', 'contorno'],
+      progreso: ['escalones', 'cuadrada'], pasos: ['cuadrados', 'flechas'], paginacion: ['cuadros', 'grupo'], migas: ['flechas', 'barra'],
+    },
+  },
+  relieve: {
+    nombre: 'Relieve',
+    descripcion: 'Piezas que sobresalen o se hunden, con luz y sombra suaves',
+    botones: ['neumorfico', 'extruido', 'tres_d_lateral', 'clay'],
+    cajas: ['neumorfica', 'hundida', 'elevada'],
+    genericos: ['neumorfico', 'sombra', 'tres_d'],
+    piezas: {
+      boton_sec: ['elevado', 'superficie', 'tonal'], boton_icono: ['sombra', 'flotante', 'rebota'], campo: ['hundido', 'sombra_flotante', 'relleno'],
+      interruptor: ['neumorfico', 'tres_d', 'liquido'], casilla: ['sobresale', 'rebote', 'redonda'], deslizador: ['termometro', 'grueso', 'burbuja'],
+      selector: ['gota', 'pildora'], etiqueta: ['suave', 'colgante'], acordeon: ['sombra', 'tarjetas'], progreso: ['gruesa', 'brillo'],
+      producto: ['sombra', 'al_pasar'], modal: ['hoja', 'centrada_icono'],
+    },
+  },
+  precio: {
+    nombre: 'Etiqueta de precio',
+    descripcion: 'Stickers, cintas y talones: ideal para tiendas, ofertas y catálogos',
+    botones: ['sticker', 'banderin', 'cinta', 'estallido'],
+    cajas: ['ticket', 'ticket_punteado', 'sello'],
+    genericos: ['sello', 'colgante', 'punteado'],
+    piezas: {
+      boton_sec: ['punteado', 'punteado_redondo', 'mayusculas'], boton_icono: ['contador', 'gira', 'rebota'], campo: ['punteado', 'prefijo'],
+      etiqueta: ['colgante', 'sello', 'grande'], aviso: ['icono_grande', 'rebote', 'costado'], metrica: ['hero', 'acento', 'pastilla'],
+      producto: ['precio_foto', 'escaparate', 'pedido_rapido', 'catalogo_detallado'], carrusel: ['asoma', 'escala'], vacio: ['punteado', 'color'],
+      notificaciones: ['acento', 'pulso'], reserva: ['franja', 'cuadros'], subir: ['zona', 'boton'],
+    },
+  },
+  terminal: {
+    nombre: 'Terminal',
+    descripcion: 'Texto monoespaciado, cursor parpadeante y teclas: para desarrolladores',
+    botones: ['terminal', 'teclado', 'pixel'],
+    cajas: ['hundida', 'punteada', 'invertida'],
+    genericos: ['terminal', 'maquina', 'mono', 'comando'],
+    piezas: {
+      boton_sec: ['oscuro', 'contorno_recto', 'retro_bisel'], boton_icono: ['cuadrado_contorno', 'retro'], campo: ['terminal', 'maquina', 'invertido'],
+      selector: ['oscuro', 'cuadrado'], casilla: ['cruz', 'oscura'], etiqueta: ['mono', 'cuadrada'], aviso: ['oscura', 'contorno'], tooltip: ['mono', 'oscuro'],
+      cargando: ['texto', 'barras', 'cuadrados'], buscador: ['comando', 'simple'], tabla: ['compacta', 'grilla'], progreso: ['rayada', 'cuadrada'],
+      modal: ['oscura', 'arriba'], metrica: ['oscura', 'borde'], formulario: ['en_linea', 'oscuro', 'compacto'], acceso: ['sin_caja', 'oscuro'],
+    },
+  },
+  papel: {
+    nombre: 'Papel',
+    descripcion: 'Hojas recortadas, renglones, tiza y trazo a mano: cálida y artesanal',
+    botones: ['papel_recortado', 'tiza', 'a_mano', 'tinta'],
+    cajas: ['papel', 'cuaderno', 'renglones'],
+    genericos: ['cuaderno', 'papel', 'sello'],
+    piezas: {
+      boton_sec: ['punteado', 'subrayado', 'contorno_grueso'], campo: ['cuaderno', 'subrayado', 'leyenda'], casilla: ['dibujada', 'tachar', 'tachar_suave'],
+      etiqueta: ['sello', 'colgante', 'subrayada'], aviso: ['costado', 'barra'], acordeon: ['numerado', 'lineas'], vacio: ['punteado', 'grande'],
+      formulario: ['papel', 'expediente', 'editorial_abierto'], tabla: ['lineas', 'cebra'], producto: ['ficha_editorial', 'sin_caja'],
+      pie: ['simple', 'gigante'], reserva: ['franja', 'lista'], subir: ['minimo', 'fila'],
+    },
   },
 };
 

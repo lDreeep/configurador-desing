@@ -19,12 +19,14 @@ describe('ubicación en la URL', () => {
       { modo: 'rapido', paso: 'prototipo', detallado: true },
       { modo: 'rapido', paso: 'cajas', detallado: true },
       { modo: 'avanzado', paso: 'color', detallado: false },
+      { modo: 'molde', paso: 'color', detallado: false },
+      { modo: 'molde', paso: 'galeria:producto', detallado: false },
     ];
     for (const u of casos) expect(desdeHash(aHash(u)), aHash(u)).toEqual(u);
   });
 
   it('rechaza hashes que no son ubicaciones', () => {
-    for (const h of ['', '#', '#/', '#/rapido/nada', '#/rapido', '#/avanzado/<script>', '#/otro/tipo', '#seccion']) expect(desdeHash(h), h).toBeNull();
+    for (const h of ['', '#', '#/', '#/rapido/nada', '#/rapido', '#/avanzado/<script>', '#/molde/', '#/molde/a:b:c', '#/molde/<x>', '#/otro/tipo', '#seccion']) expect(desdeHash(h), h).toBeNull();
   });
 
   it('un link con el código de un diseño abre la portada aunque haya algo guardado', () => {
