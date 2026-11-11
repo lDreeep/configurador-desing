@@ -274,8 +274,9 @@ Estado: `[ ]` pendiente · `[x]` hecha. Marcala al terminar.
 
 ### Tanda 5: calidad y cierre
 
-- [ ] **G1 · Tests del recorrido en el CI** — Sonnet 5.5 · ChatGPT: Terra · apta para Codex · depende de C5
+- [x] **G1 · Tests del recorrido en el CI** — Sonnet 5.5 · ChatGPT: Terra · apta para Codex · depende de C5
   - Playwright: una landing y un dashboard de punta a punta, en escritorio y celular, más axe en cada ronda. Sumarlo a `.github/workflows/`.
+  - Hecha: `e2e/punta-a-punta.e2e.mjs` recorre Molde desde el inicio hasta «Tu molde está listo» con Landing y Dashboard, a 1440 px (mouse) y 390 px (toques). Audita con axe (WCAG 2 A y AA) el inicio, cada ronda y la pantalla final, y en celular revisa áreas de 44 px. Corre en `npm run test:e2e` (junto con `molde-tactil`) y en `.github/workflows/validar.yml`, que sube las capturas. `@axe-core/playwright` 4.10.2 pasa a devDependency. Axe encontró dos fallos reales de contraste y se corrigieron en `src/molde/molde.css`: la idea «viva» dejó de atenuarse con opacity y el contador «1 de N» tiene fondo propio. Limitación: axe revisa la primera idea de cada ronda, no todas las paletas.
 - [ ] **G2 · Accesibilidad y celular** — Sonnet 5.5 · ChatGPT: Sol (pegale la lista: no carga la skill `impeccable`) · depende de C5
   - Pasada con la skill `impeccable` («audit»): 44 px, foco visible, un solo `h1`, un solo `main`, contraste del marco en claro y oscuro.
 - [x] **G3 · Red de seguridad** — Sonnet 5.5 · apta para Codex · sin dependencias

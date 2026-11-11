@@ -1,0 +1,156 @@
+// Recorrido completo de Molde para una landing y un dashboard (PLAN.md G1), en escritorio (1440 px, mouse)
+// y celular (390 px, toques). En cada ronda se audita con axe (WCAG 2 A y AA).
+// Uso: `npm run test:e2e` (levanta vite solo). Capturas finales en screenshots/punta-a-punta/.
+import { spawn } from 'node:child_process';
+import { createRequire } from 'node:module';
+import { mkdir } from 'node:fs/promises';
+import { dirname, join } from 'node:path';
+import assert from 'node:assert/strict';
+
+const require = createRequire(import.meta.url);
+const { chromium } = require('playwright');
+const AxeBuilder = require('@axe-core/playwright').default;
+const PUERTO = 5200;
+const URL_BASE = `http://localhost:${PUERTO}/`;
+const MAX_RONDAS = 30;
+
+const vite = join(dirname(require.resolve('vite/package.json')), 'bin/vite.js');
+const servidor = spawn(process.execPath, [vite, '--port', String(PUERTO), '--strictPort'], { stdio: 'ignore', windowsHide: true });
+const cerrar = () => servidor.kill();
+process.on('exit', cerrar);
+
+const TIPOS = [
+  { id: 'landing', nombre: 'Landing' },
+  { id: 'dashboard', nombre: 'Dashboard' },
+];
+const VIEWPORTS = [
+  { nombre: 'escritorio', ancho: 1440, alto: 900, touch: false },
+  { nombre: 'celular', ancho: 390, alto: 844, touch: true },
+];
+
+async function esperarServidor() {
+  for (let i = 0; i < 100; i++) {
+    try {
+      if ((await fetch(URL_BASE, { signal: AbortSignal.timeout(1000) })).ok) return;
+    } catch {}
+    await new Promise((r) => setTimeout(r, 300));
+  }
+  throw new Error('vite no arrancó');
+}
+
+// Axe en la pantalla actual. Un fallo indica la ronda y las reglas que no pasan.
+async function auditar(page, etiqueta) {
+  const resultado = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa']).analyze();
+  const fallos = resultado.violations.map((v) => ({
+    ronda: etiqueta,
+    regla: v.id,
+    impacto: v.impact,
+    nodos: v.nodes.slice(0, 3).map((n) => n.target.join(' ')),
+  }));
+  assert.deepEqual(fallos, [], `axe en «${etiqueta}»`);
+}
+
+// Un toque (o clic) elige la primera idea; en celular el toque solo la muestra y hay que confirmar con «Usar».
+async function elegirPrimeraIdea(page, touch, filtro) {
+  const idea = filtro ? page.locator('.molde-idea', { hasText: filtro }).first() : page.locator('.molde-idea').first();
+  if (touch) {
+    await idea.tap();
+    await page.getByRole('button', { name: 'Usar', exact: true }).tap();
+  } else {
+    await idea.click();
+  }
+}
+
+// En celular, los controles que se tocan tienen que medir al menos 44 px.
+async function revisarAreasTactiles(page, etiqueta) {
+  const chicos = await page
+    .locator('.molde-ideas button, .molde-confirmar button, .molde-paginas button, .molde-final button')
+    .evaluateAll((bs) => bs.filter((b) => b.offsetParent).map((b) => [b.textContent.trim().slice(0, 30), Math.round(b.getBoundingClientRect().width), Math.round(b.getBoundingClientRect().height)]).filter(([, w, h]) => w < 44 || h < 44));
+  assert.deepEqual(chicos, [], `áreas de menos de 44 px en «${etiqueta}»`);
+}
+
+async function recorrer(browser, tipo, vp) {
+  const etiquetaBase = `${tipo.id} · ${vp.nombre}`;
+  const ctx = await browser.newContext({
+    viewport: { width: vp.ancho, height: vp.alto },
+    hasTouch: vp.touch,
+    isMobile: vp.touch,
+    deviceScaleFactor: vp.touch ? 2 : 1,
+  });
+  const page = await ctx.newPage();
+  const errores = [];
+  page.on('pageerror', (e) => errores.push(e.message));
+
+  await page.goto(URL_BASE);
+  const empezar = page.getByRole('button', { name: 'Empezar', exact: true });
+  await empezar.waitFor();
+  await auditar(page, `${etiquetaBase} · inicio`);
+  if (vp.touch) await empezar.tap();
+  else await empezar.click();
+
+  // Primera ronda: el tipo de proyecto. Después, cada ronda hasta la pantalla final.
+  await page.waitForFunction(() => location.hash === '#/proyecto');
+  await page.locator('.molde-idea').first().waitFor();
+  await page.waitForFunction(() => document.querySelector('.molde-ideas.abiertas'));
+  await page.waitForTimeout(900);
+  await auditar(page, `${etiquetaBase} · proyecto`);
+  await elegirPrimeraIdea(page, vp.touch, tipo.nombre);
+  await page.waitForFunction(() => location.hash !== '#/proyecto');
+
+  const rondas = [];
+  for (let i = 0; i < MAX_RONDAS && !page.url().endsWith('/listo'); i++) {
+    const hashAntes = await page.evaluate(() => location.hash);
+    const ronda = hashAntes.replace(/^#\//, '');
+    if (ronda === 'proyecto') {
+      // Todavía en Proyecto: el tipo no quedó elegido. Se corta en vez de dar vueltas.
+      throw new Error(`no se pudo elegir ${tipo.nombre} en Proyecto`);
+    }
+    rondas.push(ronda);
+    await page.locator('.molde-idea').first().waitFor();
+    await page.waitForFunction(() => document.querySelector('.molde-ideas.abiertas'));
+    await page.waitForTimeout(900);
+    const etiqueta = `${etiquetaBase} · ${ronda}`;
+    await auditar(page, etiqueta);
+    if (vp.touch) await revisarAreasTactiles(page, etiqueta);
+
+    await elegirPrimeraIdea(page, vp.touch);
+    // Las rondas de elegir varias quedan abiertas y se cierran con «Seguir»; las demás pasan solas a la siguiente.
+    await page.waitForFunction(
+      (h) => location.hash !== h || [...document.querySelectorAll('button')].some((b) => b.textContent.trim() === 'Seguir'),
+      hashAntes,
+    );
+    if ((await page.evaluate(() => location.hash)) === hashAntes) {
+      await page.getByRole('button', { name: 'Seguir', exact: true }).click();
+      await page.waitForFunction((h) => location.hash !== h, hashAntes);
+    }
+  }
+
+  assert.ok(page.url().endsWith('/listo'), `${etiquetaBase}: no llegó a la pantalla final en ${MAX_RONDAS} rondas (${rondas.join(', ')})`);
+  await page.getByRole('heading', { name: 'Tu molde está listo', exact: true }).waitFor();
+  await page.waitForTimeout(900);
+  await auditar(page, `${etiquetaBase} · listo`);
+
+  // La descarga de DESIGN.md llega completa y la vista previa tiene contenido.
+  const [descarga] = await Promise.all([page.waitForEvent('download'), page.getByRole('button', { name: 'Descargar DESIGN.md', exact: true }).click()]);
+  assert.equal(descarga.suggestedFilename(), 'DESIGN.md');
+  assert.equal(await descarga.failure(), null);
+  assert.ok((await page.locator('.molde-archivo pre').textContent()).trim().length > 200, 'DESIGN.md vacío en la vista previa');
+
+  await mkdir('screenshots/punta-a-punta', { recursive: true });
+  await page.screenshot({ path: `screenshots/punta-a-punta/${tipo.id}-${vp.nombre}.png`, fullPage: false });
+  assert.deepEqual(errores, [], `errores de página en ${etiquetaBase}`);
+  console.log(`ok: ${etiquetaBase} (${rondas.length} rondas: ${rondas.join(', ')})`);
+  await ctx.close();
+}
+
+try {
+  await esperarServidor();
+  const browser = await chromium.launch({ executablePath: process.env.CHROMIUM_PATH || undefined });
+  for (const tipo of TIPOS) {
+    for (const vp of VIEWPORTS) await recorrer(browser, tipo, vp);
+  }
+  await browser.close();
+  console.log('PASS: landing y dashboard de punta a punta, en escritorio y celular, con axe en cada ronda.');
+} finally {
+  cerrar();
+}
