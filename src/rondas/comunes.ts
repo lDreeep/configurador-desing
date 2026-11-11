@@ -3,7 +3,8 @@ import { rubrosDe, rubroPorId } from '../rubros';
 // y Piezas · Letra · Entrada (opcionales). Las propias de cada tipo están en ramas.ts.
 
 import { DISENO_POR_ESTILO } from '../botones-por-estilo';
-import { APARICIONES, COMBINACIONES, DENSIDADES, DIRECCIONES, FUENTES, ICONOS, MOVIMIENTOS, PALETAS, TIPOS_PROYECTO, TONOS } from '../catalogo';
+import { APARICIONES, COMBINACIONES, DENSIDADES, DIRECCIONES, FUENTES, MOVIMIENTOS, PALETAS, TIPOS_PROYECTO } from '../catalogo';
+import { ICONOS, TONOS } from '../catalogo-textos';
 import { estilosPara, LISTA_ESTILOS } from '../compatibilidad';
 import { aplicarTipo } from '../estado';
 import { ESTILOS, LAYOUTS } from '../estilos-visuales';

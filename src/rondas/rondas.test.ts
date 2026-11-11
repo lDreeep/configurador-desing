@@ -1,3 +1,5 @@
+import { ICONOS_VALIDOS, TONOS_VALIDOS } from '../catalogo';
+import { ICONOS, TONOS } from '../catalogo-textos';
 import { APARICIONES, COMBINACIONES, FUENTES, PALETAS, TIPOS_PROYECTO } from '../catalogo';
 import { pasaAA } from '../compatibilidad';
 import { configInicial } from '../estado';
@@ -141,5 +143,10 @@ describe('rondas de Molde (C1)', () => {
     expect(c.tono).toEqual({ voz: 'formal', tratamiento: 'usted', largo: 'medio' });
     expect({ ...c, tono: null }).toEqual(base);
     expect(rondasPendientes(conTipo('dashboard')).map((p) => p.clave)).toEqual([]);
+  });
+
+  it('las combinaciones válidas de iconos y tono (catalogo.ts, las que usa normalizar) coinciden con las opciones', () => {
+    expect([...ICONOS_VALIDOS].sort()).toEqual([...new Set(Object.values(ICONOS).map((o) => `${o.libreria}/${o.estilo}`))].sort());
+    expect([...TONOS_VALIDOS].sort()).toEqual([...new Set(Object.values(TONOS).map((o) => `${o.voz}/${o.tratamiento}/${o.largo}`))].sort());
   });
 });

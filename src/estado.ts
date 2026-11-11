@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { DENSIDADES, DIRECCIONES, FUENTES, ICONOS, TONOS, MOVIMIENTOS, NAV_SUGERIDA, PALETAS, PLANTILLAS_PANTALLAS } from './catalogo';
+import { DENSIDADES, DIRECCIONES, FUENTES, ICONOS_VALIDOS, TONOS_VALIDOS, MOVIMIENTOS, NAV_SUGERIDA, PALETAS, PLANTILLAS_PANTALLAS } from './catalogo';
 import { ESTILOS, LAYOUTS } from './estilos-visuales';
 import { FONDOS } from './fondos';
 import { limpiarScroll } from './scroll-base';
@@ -147,8 +147,8 @@ export function normalizar(guardado: Partial<Config>): Config {
     estructura: { ...base.estructura, ...guardado.estructura },
     funciones: { ...base.funciones, ...guardado.funciones },
     visual,
-    iconos: guardado.iconos && Object.values(ICONOS).some((o) => o.libreria === guardado.iconos?.libreria && o.estilo === guardado.iconos?.estilo) ? { ...guardado.iconos } : null,
-    tono: guardado.tono && Object.values(TONOS).some((o) => o.voz === guardado.tono?.voz && o.tratamiento === guardado.tono?.tratamiento && o.largo === guardado.tono?.largo) ? { ...guardado.tono } : null,
+    iconos: guardado.iconos && ICONOS_VALIDOS.has(`${guardado.iconos.libreria}/${guardado.iconos.estilo}`) ? { ...guardado.iconos } : null,
+    tono: guardado.tono && TONOS_VALIDOS.has(`${guardado.tono.voz}/${guardado.tono.tratamiento}/${guardado.tono.largo}`) ? { ...guardado.tono } : null,
     botones: { ...base.botones, ...guardado.botones },
     cajas: { ...base.cajas, ...guardado.cajas },
     componentes: { ...guardado.componentes },
