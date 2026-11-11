@@ -459,7 +459,7 @@ probar con personas y recién después sumar cosas. Cada tarea trae el pedido li
     - `codex/recorrido-simple`: toca `App.tsx`, `Prototipo.tsx` e `InicioSimple.tsx`, que C5 retiró. Recomendación: borrar.
     - Pendiente el OK para borrar las dos y las 36 mergeadas.
 
-- [ ] **H2 · Publicar el sitio** — Sonnet 5.5 · ChatGPT: Sol
+- [x] **H2 · Publicar el sitio** — Sonnet 5.5 · ChatGPT: Sol
   - Molde online con una URL fija, que se actualice sola con cada merge a `main`. `vite.config.ts` ya usa `base: './'`.
   - Pedido:
     > Leé `CLAUDE.md` y `PLAN.md`. Hacé H2: sumá un workflow en `.github/workflows/` que, en cada push a

@@ -11,13 +11,14 @@ import { BotonPrincipal } from '../componentes/BotonPrincipal';
 import { animarToque } from '../componentes/ui';
 import type { Config } from '../tipos';
 import { creditos, FOTOS, type FotoId } from './fotos';
+import { rutaPublica } from '../ruta';
 
 export function Img({ id, clase = '', prioridad = false }: { id: FotoId; clase?: string; prioridad?: boolean }) {
   const f = FOTOS[id];
   return (
     <img
       className={`au-img ${clase}`}
-      src={f.src}
+      src={rutaPublica(f.src)}
       alt={f.alt}
       width={1200}
       height={Math.round((1200 * f.alto) / f.ancho)}

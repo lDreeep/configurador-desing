@@ -36,16 +36,12 @@ Dale el DESIGN.md a tu IA con la instrucción: «Construí esta app siguiendo el
 
 ## Publicarlo
 
-`npm run build` genera una web estática en `dist/` que se puede subir a Vercel, Netlify o
-GitHub Pages sin configuración extra.
+Molde está online en **https://ldreeep.github.io/configurador-desing/**
 
-## Documentación
+Se actualiza solo: cada push a `main` corre `validar.yml` y, si pasa, `.github/workflows/publicar.yml`
+hace `npm run build` y publica `dist/` en GitHub Pages. Para publicarlo a mano: pestaña Actions →
+«Publicar en GitHub Pages» → Run workflow.
 
-- [`DESIGN.md`](./DESIGN.md): especificación del formato exportado y documento vivo del proyecto.
-- [`CLAUDE.md`](./CLAUDE.md): cómo está organizado el código y reglas para trabajar con IA.
-
-## Vista previa y descargas
-
-El lienzo usa la misma configuración y los mismos tokens que el exportador.
-El HTML incorpora estilos y fotos para abrirlo sin conexión, salvo las fuentes externas.
-Las interacciones de las muestras son locales: no envían datos ni realizan compras.
+El build usa `base: './'` y las fotos de `public/fotos/` se piden con `rutaPublica()` (`src/ruta.ts`),
+así que funciona bajo la subcarpeta `/configurador-desing/`. Las rutas `#/…` van en el hash y no
+necesitan configuración del servidor. También sirve en Vercel o Netlify sin cambios.

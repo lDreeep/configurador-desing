@@ -4,6 +4,7 @@ import { useId, useRef, useState, type CSSProperties } from 'react';
 import { BotonPrincipal } from '../componentes/BotonPrincipal';
 import type { Config } from '../tipos';
 import { CSS_CONCESIONARIO } from './concesionario-estilos';
+import { rutaPublica } from '../ruta';
 
 export const MODELOS_CONCESIONARIO = [
   { id: 'utv', nombre: 'UTV', titulo: 'Dos plazas para salir acompañado', descripcion: 'Techo, jaula y espacio para llevar tu equipo.', plazas: '2', traccion: '4 × 4', uso: 'Recreativo', detalle: 'Cabina abierta de dos plazas, volante y neumáticos para terreno irregular.', alt: 'UTV azul de dos plazas con techo y jaula, ilustración generada con IA' },
@@ -13,7 +14,7 @@ export const MODELOS_CONCESIONARIO = [
 
 function Vehiculo({ indice, principal = false }: { indice: number; principal?: boolean }) {
   return <div className="au-mot-vehiculo">
-    <img src="/fotos/traccion-vehiculos.webp" width={916} height={1717}
+    <img src={rutaPublica("fotos/traccion-vehiculos.webp")} width={916} height={1717}
       style={{ '--mot-fila': indice } as CSSProperties}
       alt={MODELOS_CONCESIONARIO[indice].alt} loading={principal ? 'eager' : 'lazy'} decoding="async" />
   </div>;
