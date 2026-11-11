@@ -20,6 +20,7 @@ const cargar = {
   listo: () => import('./rapido/PanelListo'),
   estilosGaleria: () => import('./galeria/EstilosGaleria'),
   avanzado: () => import('./ModoAvanzado'),
+  molde: () => import('./molde/Molde'),
 };
 const PanelTipo = lazy(() => cargar.tipo().then((m) => ({ default: m.PanelTipo })));
 const PanelBotones = lazy(() => cargar.botones().then((m) => ({ default: m.PanelBotones })));
@@ -31,6 +32,8 @@ const Prototipo = lazy(() => cargar.prototipo().then((m) => ({ default: m.Protot
 const PanelListo = lazy(() => cargar.listo().then((m) => ({ default: m.PanelListo })));
 const EstilosGaleria = lazy(cargar.estilosGaleria);
 const ModoAvanzado = lazy(cargar.avanzado);
+// Molde (PLAN.md): el recorrido nuevo, en #/molde mientras convive con el modo rápido (C5 lo pasa a la raíz).
+const Molde = lazy(() => cargar.molde().then((m) => ({ default: m.Molde })));
 
 function Cargando() {
   return (
@@ -64,6 +67,20 @@ export function App() {
     }, 2500);
     return () => window.clearTimeout(t);
   }, []);
+
+  if (modo === 'molde') {
+    return (
+      <Suspense fallback={<Cargando />}>
+        <Molde
+          config={config}
+          setConfig={setConfig}
+          reiniciar={reiniciar}
+          paso={ubicacion.paso}
+          ir={(paso, atras, reemplazar) => ir({ modo: 'molde', paso, detallado: false }, atras, reemplazar)}
+        />
+      </Suspense>
+    );
+  }
 
   if (modo === 'rapido') {
     const comun = { config, setConfig };
