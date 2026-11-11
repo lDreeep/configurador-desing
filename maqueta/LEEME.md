@@ -1,7 +1,10 @@
-# Maqueta de «Molde»
+# Maquetas de «Molde»
 
-`molde.html` es la maqueta de la fase 1 del rediseño: un solo lienzo, marco con identidad propia
-y lenguaje de movimiento. Es una referencia para aprobar la dirección; no forma parte del build
-ni usa el catálogo real (trae 4 tipos, 6 estilos y 3 composiciones de muestra).
+Referencias para aprobar la dirección del rediseño. No forman parte del build ni usan el
+catálogo real (traen datos de muestra). Para verlas, abrí el archivo en un navegador.
 
-Para verla, abrí el archivo en un navegador. Tiene tres vistas: inicio, lienzo y descarga.
+- `molde.html`: primera idea. Landing con relato, lienzo único y decisiones en un panel inferior.
+- `molde-2.html`: idea elegida. La página arranca en blanco; el botón del centro explota en
+  ideas (proyecto, color, layout, piezas y una ronda propia de cada tipo de proyecto). Pasar el
+  mouse muestra la idea en la página; tocarla o arrastrarla al centro la deja elegida. Lo
+  elegido queda como fichas abajo y se puede volver a abrir. Al final: DESIGN.md y HTML.

@@ -1,0 +1,385 @@
+<title>Molde: ideas</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Instrument+Sans:wght@400;500;600;700&family=Archivo:wght@900&family=Fraunces:opsz,wght@9..144,600&family=Unbounded:wght@700&display=swap">
+<style>
+/* Maqueta 2 de Molde. Concepto: la página arranca en blanco; un botón en el centro explota en
+   ideas, y cada idea elegida se queda en la página. El marco (yeso, tinta, silicona) no cambia. */
+:root {
+  --yeso: #F7F8FA; --superficie: #FFFFFF; --tinta: #1D1730; --tinta-2: #5A5470; --linea: #D5D9E0;
+  --silicona: #D81E6A; --sobre-silicona: #FFFFFF; --sombra: rgba(29, 23, 48, .18);
+  --f-marca: 'Bricolage Grotesque', 'Trebuchet MS', sans-serif; --f-texto: 'Instrument Sans', system-ui, sans-serif;
+  --toque: 140ms; --cambio: 560ms; --curva: cubic-bezier(.2, .8, .2, 1); --rebote: cubic-bezier(.3, 1.45, .45, 1);
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --yeso: #15121C; --superficie: #2A2338; --tinta: #F1EEF6; --tinta-2: #B0A9C0; --linea: #443B58;
+  --silicona: #FF6BA3; --sobre-silicona: #1D1730; --sombra: rgba(0, 0, 0, .55); color-scheme: dark } }
+:root[data-theme="dark"] {
+  --yeso: #15121C; --superficie: #2A2338; --tinta: #F1EEF6; --tinta-2: #B0A9C0; --linea: #443B58;
+  --silicona: #FF6BA3; --sobre-silicona: #1D1730; --sombra: rgba(0, 0, 0, .55); color-scheme: dark }
+
+* { box-sizing: border-box }
+html, body { height: 100%; overflow: hidden }
+body { background: var(--yeso); color: var(--tinta); font: 16px/1.45 var(--f-texto); overflow: hidden }
+button { font: inherit; color: inherit; cursor: pointer; border: 0; background: none }
+:focus-visible { outline: 3px solid var(--silicona); outline-offset: 3px }
+#app { position: relative; height: 100%; overflow: hidden; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)) }
+
+.barra { position: absolute; inset: 0 0 auto; height: 64px; display: flex; align-items: center; z-index: 6;
+  padding-left: max(20px, env(safe-area-inset-left, 0px)); padding-right: max(20px, env(safe-area-inset-right, 0px)) }
+.marca { display: flex; align-items: center; gap: 9px; font: 700 24px/1 var(--f-marca); letter-spacing: -.02em }
+.marca i { width: 19px; height: 19px; border: 4px solid var(--silicona); border-radius: 6px }
+.barra .hueco { flex: 1 }
+.enlace { min-height: 44px; padding: 0 12px; color: var(--tinta-2); font-weight: 500; text-decoration: underline; text-underline-offset: 4px }
+
+/* El lienzo: vacío al principio, después la página que se va armando */
+.lienzo { position: absolute; inset: 64px 16px 88px; border-radius: 22px; overflow: hidden; transition: box-shadow var(--cambio) }
+.lienzo.hay { box-shadow: 0 0 0 1px var(--linea), 0 30px 60px -30px var(--sombra) }
+.capa { position: absolute; inset: 0 }
+#base { transition: opacity var(--cambio), filter var(--cambio) }
+.eligiendo #base { opacity: .3; filter: saturate(.55) }
+#prev { clip-path: circle(0 at 50% 50%); transition: clip-path 220ms ease-in }
+#prev.on { clip-path: circle(120% at 50% 50%); transition: clip-path var(--cambio) var(--curva) }
+#prev.sin { transition: none }
+
+/* Centro: el botón del que sale todo */
+.centro { position: absolute; left: 50%; top: calc(50% - 12px); transform: translate(-50%, -50%); z-index: 4; display: grid; justify-items: center; gap: 18px;
+  text-align: center; width: min(92%, 560px); pointer-events: none; transition: opacity var(--toque) }
+.centro > * { pointer-events: auto }
+.centro h1 { margin: 0; font: 700 clamp(34px, 5vw, 64px)/.98 var(--f-marca); letter-spacing: -.035em; text-wrap: balance }
+.centro p { margin: 0; color: var(--tinta-2); font-size: 18px; max-width: 40ch }
+.nucleo { position: relative; min-height: 64px; padding: 0 34px; border-radius: 999px; background: var(--silicona); color: var(--sobre-silicona); font: 600 20px var(--f-texto);
+  transition: transform var(--toque), background var(--cambio), color var(--cambio), padding var(--cambio) var(--curva) }
+.nucleo:active { transform: scale(.94) }
+.centro:not([hidden]) .nucleo { margin-top: 52px } .iniciado .nucleo { margin-top: 0 !important }
+.otras { min-height: 48px; padding: 0 18px; border-radius: 999px; background: var(--superficie); box-shadow: inset 0 0 0 1.5px var(--tinta); font-weight: 600 }
+.nucleo.pregunta { background: var(--tinta); color: var(--yeso); font-size: 17px; min-height: 52px; padding: 0 24px; cursor: default }
+.nucleo.pulso { animation: pulso 480ms var(--rebote) }
+@keyframes pulso { 40% { transform: scale(1.18) } }
+/* Semillas: las ideas, todavía adentro, girando alrededor del botón */
+.semillas { position: absolute; inset: -34px; animation: girar 14s linear infinite; pointer-events: none; transition: opacity var(--cambio), transform var(--cambio) var(--curva) }
+.semillas i { position: absolute; width: 12px; height: 12px; border-radius: 4px; left: calc(50% - 6px); top: calc(50% - 6px) }
+.semillas i:nth-child(1) { transform: rotate(0deg) translateX(98px); background: #2F4BFF; border-radius: 50% }
+.semillas i:nth-child(2) { transform: rotate(62deg) translateX(84px); background: #F0552B }
+.semillas i:nth-child(3) { transform: rotate(128deg) translateX(100px); background: #2E7D4F; border-radius: 50% }
+.semillas i:nth-child(4) { transform: rotate(196deg) translateX(92px); background: #C6F23C; width: 20px; border-radius: 6px }
+.semillas i:nth-child(5) { transform: rotate(254deg) translateX(86px); background: var(--silicona) }
+.semillas i:nth-child(6) { transform: rotate(312deg) translateX(94px); background: #8C9BFF; border-radius: 50% }
+.iniciado .semillas { opacity: 0; transform: scale(2.4) }
+.iniciado .centro h1, .iniciado .centro p { display: none }
+@keyframes girar { to { rotate: 360deg } }
+
+/* Ideas: salen del centro y se acomodan alrededor */
+.ideas { position: absolute; left: 50%; top: calc(50% - 12px); z-index: 3 }
+.idea { position: absolute; left: 0; top: 0; transform: translate(-50%, -50%) translate(var(--x, 0px), var(--y, 0px)) scale(var(--s, .2)); opacity: var(--o, 0);
+  transition: transform 620ms var(--rebote), opacity 260ms; touch-action: none; user-select: none;
+  min-height: 56px; padding: 10px 16px; border-radius: 18px; background: var(--superficie); box-shadow: 0 0 0 1px var(--linea), 0 14px 30px -14px var(--sombra);
+  display: flex; align-items: center; gap: 11px; text-align: left; font-weight: 600; white-space: nowrap; cursor: grab }
+.idea small { display: block; font-weight: 400; color: var(--tinta-2); font-size: 13px }
+.idea.arrastra { transition: none; cursor: grabbing; z-index: 2 }
+.idea.viva { box-shadow: 0 0 0 2.5px var(--silicona), 0 14px 30px -14px var(--sombra) }
+.viendo .idea:not(.viva) { opacity: 0 }
+.viendo .centro { opacity: 0 }
+.tacto.viendo .centro { opacity: 1; top: auto; bottom: 150px; transform: translateX(-50%); display: flex; justify-content: center; gap: 8px }
+.tacto.viendo .idea { opacity: 0; pointer-events: none }
+.tacto.viendo .nucleo { font-size: 16px; white-space: nowrap; padding: 0 20px; min-height: 52px } .otras { white-space: nowrap }
+.muestras { display: flex } .muestras i { width: 20px; height: 20px; border-radius: 50%; margin-left: -6px; box-shadow: 0 0 0 2px var(--superficie) } .muestras i:first-child { margin-left: 0 }
+.idea svg { width: 54px; height: 38px; border-radius: 6px; flex: none; box-shadow: 0 0 0 1px var(--linea) }
+.mini-btn { padding: 6px 12px; font-size: 13px; font-weight: 600 }
+
+/* Fichas: lo que ya elegiste, abajo; tocar una vuelve a abrir esa ronda */
+.pie { position: absolute; inset: auto 0 0; z-index: 6; height: 88px; display: flex; align-items: center; gap: 12px;
+  padding: 0 max(20px, env(safe-area-inset-right, 0px)) env(safe-area-inset-bottom, 0px) max(20px, env(safe-area-inset-left, 0px)) }
+.fichas { flex: 1; min-width: 0; display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; padding: 4px }
+.fichas::-webkit-scrollbar { display: none }
+.ficha { flex: none; min-height: 48px; padding: 4px 14px; border-radius: 14px; background: var(--superficie); box-shadow: inset 0 0 0 1px var(--linea); text-align: left; font-size: 13px; color: var(--tinta-2); line-height: 1.2;
+  animation: caer 420ms var(--rebote) both }
+.ficha b { display: block; color: var(--tinta); font-size: 15px; font-weight: 600 }
+.ficha[aria-current="true"] { box-shadow: inset 0 0 0 2.5px var(--silicona) }
+@keyframes caer { from { transform: translateY(-26px) scale(.7); opacity: 0 } }
+.pista { color: var(--tinta-2); font-size: 15px; margin: 0 }
+.final { display: flex; gap: 8px; flex: none }
+.btn { min-height: 48px; padding: 0 20px; border-radius: 999px; font-weight: 600; white-space: nowrap; transition: transform var(--toque) }
+.btn:active { transform: scale(.96) }
+.btn-1 { background: var(--silicona); color: var(--sobre-silicona) } .btn-2 { box-shadow: inset 0 0 0 1.5px var(--tinta) }
+.aviso { position: absolute; left: 50%; bottom: 96px; transform: translateX(-50%); z-index: 7; background: var(--tinta); color: var(--yeso); padding: 10px 16px; border-radius: 12px; font-size: 14px; max-width: calc(100% - 32px) }
+
+/* ───── La página que se arma (todo en em) ───── */
+.pg { position: absolute; inset: 0; font-size: clamp(10px, 1.08vw, 17px); display: flex; flex-direction: column; background: var(--bg); color: var(--fg); font-family: 'Instrument Sans', sans-serif;
+  --r: .4em; --borde: 0 solid transparent; --sh: none; --ft: 'Instrument Sans', sans-serif; --fw: 700; --ls: -.02em }
+.pg[data-ui="suave"] { --r: .8em; --sh: 0 .8em 1.8em -1em rgba(0, 0, 0, .35); --ft: 'Bricolage Grotesque', sans-serif; --ls: -.035em }
+.pg[data-ui="neobrutal"] { --r: .45em; --borde: .18em solid var(--fg); --sh: .32em .32em 0 var(--fg); --ft: 'Archivo', sans-serif; --fw: 900 }
+.pg[data-ui="lineas"] { --r: 0em; --borde: .08em solid var(--fg); --ft: 'Fraunces', serif; --fw: 600 }
+.pg[data-ui="pildora"] { --r: 1.8em; --ft: 'Unbounded', sans-serif; --ls: -.045em }
+.pg-fondo { position: absolute; inset: 0; pointer-events: none }
+.pg[data-fondo="aurora"] .pg-fondo { background: radial-gradient(40em 30em at 80% 10%, color-mix(in srgb, var(--acc) 55%, transparent), transparent 70%), radial-gradient(36em 30em at 15% 90%, color-mix(in srgb, var(--acc) 35%, transparent), transparent 70%); animation: aurora 9s ease-in-out infinite alternate }
+.pg[data-fondo="puntos"] .pg-fondo { background: radial-gradient(color-mix(in srgb, var(--fg) 28%, transparent) .11em, transparent .12em) 0 0 / 1.8em 1.8em; animation: puntos 6s linear infinite; mask-image: linear-gradient(120deg, transparent 20%, #000) }
+.pg[data-fondo="ondas"] .pg-fondo { background: repeating-linear-gradient(115deg, transparent 0 3em, color-mix(in srgb, var(--acc) 22%, transparent) 3em 6em); background-size: 200% 100%; animation: ondas 12s linear infinite }
+@keyframes aurora { to { transform: translate(-4%, 5%) scale(1.15) } } @keyframes puntos { to { background-position: 1.8em 1.8em } } @keyframes ondas { to { background-position: -13.2em 0 } }
+.pg-nav { position: relative; display: flex; align-items: center; gap: 2em; padding: 1.6em 3em }
+.pg-nav b { font: var(--fw) 1.4em var(--ft); letter-spacing: var(--ls); margin-right: auto }
+.pg-cuerpo { position: relative; flex: 1; min-height: 0; display: grid; grid-template-columns: 1.05fr .95fr; gap: 3em; align-items: center; padding: 0 3em 3em }
+.pg h2 { margin: 0; font: var(--fw) 3.6em/1 var(--ft); letter-spacing: var(--ls); text-wrap: balance }
+.pg[data-ui="pildora"] h2 { font-size: 2.9em }
+.pg-bajada { margin: 1.1em 0 1.6em; color: var(--sub); font-size: 1.12em; max-width: 34em }
+.pg-acc, .pg-ui { display: flex; gap: .8em; flex-wrap: wrap; align-items: center }
+.pg-btn, .pg-btn2 { padding: .85em 1.5em; border-radius: var(--r); border: var(--borde); font-weight: 600 }
+.pg-btn { background: var(--acc); color: var(--sobre); box-shadow: var(--sh) } .pg-btn2 { box-shadow: inset 0 0 0 .1em var(--sub) }
+.pg[data-ui="lineas"] .pg-btn { background: none; color: var(--fg); border: 0; border-bottom: .2em solid var(--acc); padding-inline: .2em }
+.pg-ui { margin-top: 1.8em } .pg[data-ui="base"] .pg-ui { display: none }
+.pg-campo { padding: .7em 1em; min-width: 12em; border-radius: var(--r); background: var(--card); border: var(--borde); color: var(--sub); box-shadow: inset 0 0 0 .08em color-mix(in srgb, var(--fg) 22%, transparent) }
+.pg-switch { width: 3em; height: 1.7em; border-radius: max(var(--r), .2em); background: var(--acc); border: var(--borde); position: relative }
+.pg-switch::after { content: ""; position: absolute; right: .2em; top: 50%; translate: 0 -50%; width: 1.2em; height: 1.2em; border-radius: max(calc(var(--r) * .7), .12em); background: var(--sobre) }
+.pg-chip { padding: .3em .8em; border-radius: var(--r); background: color-mix(in srgb, var(--acc) 20%, transparent); border: var(--borde); font-size: .9em; font-weight: 600 }
+.pg-bloque { display: grid; gap: 1em }
+.pg-caja { padding: 1.1em 1.2em; background: var(--card); border: var(--borde); border-radius: var(--r); box-shadow: var(--sh); display: flex; align-items: center; gap: 1em; min-width: 0 }
+.pg-caja i { width: 3em; height: 3em; flex: none; border-radius: calc(var(--r) * .6); background: var(--acc) }
+.pg-caja:nth-child(2) i { background: var(--fg) } .pg-caja:nth-child(3) i { background: var(--sub) }
+.pg-caja span { margin-left: auto; color: var(--sub); white-space: nowrap; font-variant-numeric: tabular-nums } .pg-caja div { min-width: 0 } .pg-caja small { display: block; color: var(--sub) }
+/* Variantes del bloque según la rama */
+.pg-bloque[data-v="grilla"], .pg-bloque[data-v="semana"], .pg-bloque[data-v="numeros"] { grid-template-columns: repeat(3, 1fr) }
+.pg-bloque[data-v="grilla"] .pg-caja, .pg-bloque[data-v="numeros"] .pg-caja { flex-direction: column; align-items: flex-start } .pg-bloque[data-v="grilla"] i { width: 100%; height: 6em }
+.pg-bloque[data-v="grilla"] span, .pg-bloque[data-v="numeros"] span { margin-left: 0 }
+.pg-bloque[data-v="destacado"] .pg-caja:first-child { flex-direction: column; align-items: flex-start } .pg-bloque[data-v="destacado"] .pg-caja:first-child i { width: 100%; height: 9em } .pg-bloque[data-v="destacado"] .pg-caja:first-child span { margin-left: 0 }
+.pg-bloque[data-v="semana"] .pg-caja { flex-direction: column; align-items: flex-start; gap: .3em; padding: .8em } .pg-bloque[data-v="semana"] i { display: none } .pg-bloque[data-v="semana"] span { margin-left: 0 }
+.pg-num { font: var(--fw) 2.2em/1 var(--ft); letter-spacing: var(--ls) }
+.pg-graf { grid-column: 1 / -1; height: 9em; padding: 1em; background: var(--card); border: var(--borde); border-radius: var(--r); box-shadow: var(--sh); display: flex; align-items: flex-end; gap: .7em }
+.pg-graf u { flex: 1; background: var(--acc); border-radius: calc(var(--r) * .4) calc(var(--r) * .4) 0 0 } .pg-graf svg { width: 100%; height: 100% }
+/* Layouts */
+.pg[data-l="centrado"] .pg-cuerpo { grid-template-columns: 1fr; text-align: center; justify-items: center; gap: 2em; align-content: center }
+.pg[data-l="centrado"] .pg-acc, .pg[data-l="centrado"] .pg-ui { justify-content: center } .pg[data-l="centrado"] .pg-bajada { margin-inline: auto }
+.pg[data-l="centrado"] .pg-bloque { grid-template-columns: repeat(3, 1fr); width: min(100%, 60em); text-align: left } .pg[data-l="centrado"] h2 { font-size: 3.1em }
+.pg[data-l="afiche"] .pg-cuerpo { grid-template-columns: 1fr; align-content: end; gap: 1.5em } .pg[data-l="afiche"] h2 { font-size: 6.4em; line-height: .9 } .pg[data-l="afiche"][data-ui="pildora"] h2 { font-size: 4.6em }
+.pg[data-l="afiche"] .pg-bloque { grid-template-columns: repeat(3, 1fr) } .pg[data-l="afiche"] .pg-bajada { margin-bottom: 1em }
+.pg[data-l="lateral"] { flex-direction: row } .pg[data-l="lateral"] .pg-nav { flex-direction: column; align-items: flex-start; gap: 1.1em; width: 13em; padding: 2em 1.6em; background: var(--card) } .pg[data-l="lateral"] .pg-nav b { margin: 0 0 1em }
+.pg[data-l="lateral"] .pg-cuerpo { grid-template-columns: 1fr; padding: 2.4em 3em; align-content: center; gap: 1.8em } .pg[data-l="lateral"] h2 { font-size: 2.6em } .pg[data-l="lateral"] .pg-bloque { grid-template-columns: repeat(3, 1fr) }
+
+@media (max-width: 760px) {
+  .pg { font-size: 2.9vw } .pg-nav span { display: none } .pg-nav, .pg-cuerpo { padding-inline: 1.6em }
+  .pg-cuerpo, .pg[data-l] .pg-bloque { grid-template-columns: 1fr } .pg-cuerpo { align-content: start; gap: 1.6em; padding-top: 1em }
+  .pg h2, .pg[data-l="centrado"] h2 { font-size: 2.7em } .pg[data-l="afiche"] h2 { font-size: 3.8em }
+  .pg[data-l="lateral"] .pg-nav { width: 4.4em; padding-inline: 1em } .pg[data-l="lateral"] .pg-nav b { font-size: .9em }
+  .pg-bloque[data-v="grilla"] i { height: 3em; width: 3em } .pg-bloque[data-v="grilla"] .pg-caja { flex-direction: row; align-items: center }
+  .idea { min-height: 50px; padding: 8px 12px; font-size: 14px; gap: 8px } .idea small { display: none } .idea svg { width: 40px; height: 28px }
+  .lienzo { inset: 60px 12px 136px } .pie { height: 136px; flex-wrap: wrap; align-content: center; gap: 6px } .fichas { flex-basis: 100% } .final { flex: 1 } .final .btn { flex: 1 } .pista { font-size: 14px } .final .btn { padding: 0 14px; font-size: 14px }
+  .centro p { font-size: 16px }
+}
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important } }
+</style>
+
+<div id="app">
+  <header class="barra">
+    <span class="marca"><i></i>Molde</span><span class="hueco"></span>
+    <button class="enlace" id="cero" hidden>Empezar de cero</button>
+  </header>
+
+  <div class="lienzo" id="lienzo" aria-live="polite">
+    <div class="capa" id="base"></div>
+    <div class="capa sin" id="prev"></div>
+  </div>
+
+  <div class="ideas" id="ideas"></div>
+  <div class="centro" id="centro">
+    <h1>Armá el diseño de tu página</h1>
+    <p>Del botón salen ideas. Las que elegís se quedan en la página, y al final te la llevás armada.</p>
+    <button class="nucleo" id="nucleo"><span class="semillas" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></span><span id="nucleo-texto">Empezar</span></button>
+    <button class="otras" id="otras" hidden>Ver otras</button>
+  </div>
+
+  <footer class="pie">
+    <div class="fichas" id="fichas"><p class="pista" id="pista">Gratis y sin cuenta. Lo que elegís queda en tu navegador.</p></div>
+    <div class="final" id="final" hidden>
+      <button class="btn btn-2" id="bajar-html">Descargar HTML</button>
+      <button class="btn btn-1" id="bajar-md">Descargar DESIGN.md</button>
+    </div>
+  </footer>
+  <p class="aviso" id="aviso" role="status" hidden></p>
+</div>
+
+<script>
+// ───── Datos de muestra (en la versión real salen del catálogo y de recomendados.ts) ─────
+const TIPOS = {
+  landing: { nombre: 'Landing page', desc: 'Una página que presenta y convence', marca: 'Turnera', nav: ['Cómo funciona', 'Precios', 'Ayuda'], titulo: 'Tu agenda llena, sin atender el teléfono', bajada: 'Tus pacientes sacan turno solos desde WhatsApp o la web, y el horario se libera si cancelan.', b1: 'Probar 30 días gratis', b2: 'Ver cómo funciona',
+    cajas: [['Turnos por WhatsApp', 'Sin instalar nada'], ['Recordatorio el día anterior', 'Menos ausencias'], ['Lista de espera', 'El hueco se llena solo']] },
+  tienda: { nombre: 'Tienda online', desc: 'Catálogo, carrito y compra', marca: 'Lumbre', nav: ['Velas', 'Difusores', 'Envíos'], titulo: 'Una vela que dura cuarenta horas', bajada: 'Cera de soja, mecha de algodón y aromas que no marean. Envíos a todo el país.', b1: 'Ver las velas', b2: 'Cómo las hacemos',
+    cajas: [['Higo y cedro', '$ 14.500'], ['Naranja amarga', '$ 14.500'], ['Lavanda', '$ 12.900']] },
+  stock: { nombre: 'Sistema de stock', desc: 'Una herramienta con datos y tablas', marca: 'Estiba', nav: ['Productos', 'Movimientos', 'Reportes'], titulo: 'El stock del depósito, al día', bajada: 'Entradas, salidas y faltantes en una sola pantalla. Avisa antes de que algo se termine.', b1: 'Cargar un ingreso', b2: 'Ver faltantes',
+    cajas: [['Productos', '1.284'], ['Por reponer', '37'], ['Valor en stock', '$ 8,4 M']] },
+  turnos: { nombre: 'Reserva de turnos', desc: 'Agenda para que reserven solos', marca: 'Barbería Sur', nav: ['Servicios', 'Barberos', 'Dónde estamos'], titulo: 'Reservá tu corte en dos toques', bajada: 'Elegís barbero, día y horario. Te avisamos por WhatsApp una hora antes.', b1: 'Reservar un turno', b2: 'Ver precios',
+    cajas: [['Jue 10:00', 'Libre'], ['Jue 10:45', 'Libre'], ['Jue 11:30', 'Último']] },
+  portfolio: { nombre: 'Portfolio', desc: 'Mostrar tus trabajos', marca: 'Estudio Vera', nav: ['Trabajos', 'Estudio', 'Contacto'], titulo: 'Marcas que se reconocen desde la vereda', bajada: 'Nombre, logo y cartel para comercios que atienden a la calle. Trabajamos en Rosario.', b1: 'Ver trabajos', b2: 'Escribinos',
+    cajas: [['Panadería Lirio', '2026'], ['Ferretería Sol', '2025'], ['Club Atlas', '2025']] },
+};
+const NEUTRA = { bg: '#FFFFFF', fg: '#2B2B33', sub: '#8A8A96', acc: '#B9BAC4', sobre: '#FFFFFF', card: '#F1F1F4' };
+const PALETAS = {
+  papel: { nombre: 'Papel y azul', bg: '#FBFAF7', fg: '#16161A', sub: '#5F5F6B', acc: '#2F4BFF', sobre: '#FFFFFF', card: '#EFEDE6' },
+  bosque: { nombre: 'Bosque', bg: '#F1F5EE', fg: '#14261C', sub: '#52655A', acc: '#2E7D4F', sobre: '#FFFFFF', card: '#E1E9DC' },
+  durazno: { nombre: 'Durazno', bg: '#FFF1E8', fg: '#3A1B12', sub: '#80574A', acc: '#E04A22', sobre: '#FFFFFF', card: '#FFE1D0' },
+  chicle: { nombre: 'Chicle', bg: '#FFE9F3', fg: '#2A0F2E', sub: '#7A4E7C', acc: '#C3207A', sobre: '#FFFFFF', card: '#FFD3E8' },
+  noche: { nombre: 'Noche', bg: '#101322', fg: '#EEF0FF', sub: '#A3A8CC', acc: '#8C9BFF', sobre: '#101322', card: '#1C2038' },
+  lima: { nombre: 'Grafito y lima', bg: '#1B1D1A', fg: '#F2F4EC', sub: '#A9AD9F', acc: '#C6F23C', sobre: '#1B1D1A', card: '#292C27' },
+};
+const LAYOUTS = { partido: 'Texto y visual', centrado: 'Centrado', afiche: 'Título gigante', lateral: 'Menú al costado' };
+const UIS = { suave: ['Suave', 'Esquinas y sombras blandas'], neobrutal: ['Neobrutal', 'Bordes gruesos, sombra dura'], lineas: ['Líneas finas', 'Recto y con serif'], pildora: ['Píldora', 'Todo bien redondo'] };
+// Cada rama tiene sus propios layouts recomendados y su ronda extra.
+const RAMAS = {
+  landing: { layouts: ['afiche', 'partido', 'centrado'], extra: ['Fondo animado', { '': 'Sin fondo', aurora: 'Aurora', puntos: 'Puntos que corren', ondas: 'Franjas' }] },
+  portfolio: { layouts: ['afiche', 'centrado', 'partido'], extra: ['Fondo animado', { '': 'Sin fondo', aurora: 'Aurora', puntos: 'Puntos que corren', ondas: 'Franjas' }] },
+  tienda: { layouts: ['partido', 'centrado', 'lateral'], extra: ['Productos', { lista: 'En lista', grilla: 'En grilla', destacado: 'Uno destacado' }] },
+  stock: { layouts: ['lateral', 'partido'], extra: ['Estadísticas', { barras: 'Barras', linea: 'Línea', numeros: 'Solo números' }] },
+  turnos: { layouts: ['partido', 'centrado', 'lateral'], extra: ['Agenda', { lista: 'Lista del día', semana: 'Semana' }] },
+};
+const RONDAS = [
+  { clave: 'tipo', ficha: 'Proyecto', pregunta: '¿Qué vas a armar?' },
+  { clave: 'paleta', ficha: 'Color', pregunta: 'Elegí los colores' },
+  { clave: 'layout', ficha: 'Layout', pregunta: 'Elegí cómo se acomoda' },
+  { clave: 'ui', ficha: 'Piezas', pregunta: 'Elegí botones y piezas' },
+  { clave: 'extra', ficha: '', pregunta: '' },
+];
+
+const $ = (s) => document.querySelector(s);
+const app = $('#app'), base = $('#base'), prev = $('#prev'), ideas = $('#ideas'), nucleo = $('#nucleo');
+let estado = {}, ronda = -1, viva = null, arrastre = null, recienArrastrado = false;
+const tacto = matchMedia('(pointer: coarse)').matches;
+app.classList.toggle('tacto', tacto);
+
+// ───── La página, a partir de lo elegido (lo no elegido va en gris neutro) ─────
+function pagina(s) {
+  if (!s.tipo) return '';
+  const t = TIPOS[s.tipo], p = PALETAS[s.paleta] || NEUTRA, v = s.extra ?? '';
+  const esFondo = s.tipo === 'landing' || s.tipo === 'portfolio';
+  let bloque = t.cajas.map(([a, b]) => `<div class="pg-caja"><i></i><div><b>${a}</b></div><span>${b}</span></div>`).join('');
+  if (s.tipo === 'stock') {
+    const nums = t.cajas.map(([a, b]) => `<div class="pg-caja" style="flex-direction:column;align-items:flex-start;gap:.2em"><small>${a}</small><b class="pg-num">${b}</b></div>`).join('');
+    const graf = v === 'linea' ? `<div class="pg-graf"><svg viewBox="0 0 100 40" preserveAspectRatio="none"><polyline points="0,30 14,26 28,31 42,18 56,22 70,10 84,14 100,4" fill="none" stroke="${p.acc}" stroke-width="2.5" vector-effect="non-scaling-stroke"/></svg></div>`
+      : v === 'numeros' ? '' : `<div class="pg-graf">${[40, 62, 35, 78, 55, 90, 70, 48].map((h) => `<u style="height:${h}%"></u>`).join('')}</div>`;
+    bloque = nums + graf;
+  }
+  const dv = s.tipo === 'stock' ? 'numeros' : esFondo ? '' : v;
+  return `<div class="pg" data-l="${s.layout || 'partido'}" data-ui="${s.ui || 'base'}" data-fondo="${esFondo ? v : ''}" style="--bg:${p.bg};--fg:${p.fg};--sub:${p.sub};--acc:${p.acc};--sobre:${p.sobre};--card:${p.card}">
+    <div class="pg-fondo"></div>
+    <div class="pg-nav"><b>${t.marca}</b>${t.nav.map((n) => `<span>${n}</span>`).join('')}</div>
+    <div class="pg-cuerpo"><div>
+      <h2>${t.titulo}</h2><p class="pg-bajada">${t.bajada}</p>
+      <div class="pg-acc"><span class="pg-btn">${t.b1}</span><span class="pg-btn2">${t.b2}</span></div>
+      <div class="pg-ui"><span class="pg-campo">vos@ejemplo.com</span><span class="pg-switch"></span><span class="pg-chip">Nuevo</span></div>
+    </div><div class="pg-bloque" data-v="${dv}">${bloque}</div></div></div>`;
+}
+
+// ───── Opciones de cada ronda: dependen de lo ya elegido ─────
+function opciones(i) {
+  const p = PALETAS[estado.paleta] || NEUTRA, rama = RAMAS[estado.tipo];
+  if (i === 0) return Object.entries(TIPOS).map(([id, t]) => ({ id, html: `<span>${t.nombre}<small>${t.desc}</small></span>`, nombre: t.nombre }));
+  if (i === 1) return Object.entries(PALETAS).map(([id, c]) => ({ id, nombre: c.nombre, html: `<span class="muestras"><i style="background:${c.bg}"></i><i style="background:${c.fg}"></i><i style="background:${c.acc}"></i></span>${c.nombre}` }));
+  if (i === 2) return rama.layouts.map((id) => ({ id, nombre: LAYOUTS[id], html: esquema(id, p) + LAYOUTS[id] }));
+  if (i === 3) return Object.entries(UIS).map(([id, [n, d]]) => ({ id, nombre: n, html: miniBoton(id, p) + `<span>${n}<small>${d}</small></span>` }));
+  return Object.entries(rama.extra[1]).map(([id, n]) => ({ id, nombre: n, html: n }));
+}
+function esquema(id, p) {
+  const r = (x, y, w, h, c) => `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="1.5" fill="${c}"/>`;
+  const d = { partido: r(5, 12, 20, 5, p.fg) + r(5, 20, 14, 3, p.sub) + r(5, 27, 10, 5, p.acc) + r(31, 9, 18, 24, p.card),
+    centrado: r(14, 8, 26, 5, p.fg) + r(18, 16, 18, 3, p.sub) + r(22, 22, 10, 4, p.acc) + r(5, 29, 13, 6, p.card) + r(20.5, 29, 13, 6, p.card) + r(36, 29, 13, 6, p.card),
+    afiche: r(5, 10, 44, 9, p.fg) + r(5, 21, 30, 9, p.fg) + r(5, 33, 10, 3, p.acc),
+    lateral: r(0, 0, 13, 38, p.card) + r(18, 8, 20, 5, p.fg) + r(18, 17, 9, 8, p.acc) + r(29, 17, 9, 8, p.sub) + r(40, 17, 9, 8, p.sub) + r(18, 28, 31, 6, p.card) }[id];
+  return `<svg viewBox="0 0 54 38" aria-hidden="true"><rect width="54" height="38" fill="${p.bg}"/>${d}</svg>`;
+}
+function miniBoton(id, p) {
+  const e = { suave: `border-radius:9px;box-shadow:0 6px 12px -6px rgba(0,0,0,.4);background:${p.acc};color:${p.sobre}`, neobrutal: `border-radius:5px;border:2.5px solid ${p.fg};box-shadow:3px 3px 0 ${p.fg};background:${p.acc};color:${p.sobre}`,
+    lineas: `border-bottom:3px solid ${p.acc};color:${p.fg};background:${p.bg}`, pildora: `border-radius:99px;background:${p.acc};color:${p.sobre}` }[id];
+  return `<span class="mini-btn" style="${e}" aria-hidden="true">Botón</span>`;
+}
+
+// ───── Explosión: las ideas salen del centro y se acomodan alrededor ─────
+function posiciones(n) {
+  const w = app.clientWidth, h = app.clientHeight - 150;
+  if (w < 760) { // celular: dos columnas, mitad arriba y mitad abajo del centro
+    return Array.from({ length: n }, (_, i) => { const fila = Math.floor(i / 2), arriba = fila % 2 === 0, k = Math.floor(fila / 2);
+      const solo = n % 2 === 1 && i === n - 1;
+      return [solo ? 0 : (i % 2 ? 1 : -1) * w * .24, (arriba ? -1 : 1) * (88 + k * 62)]; });
+  }
+  const rx = Math.min(w * .33, 470), ry = Math.min(h * .36, 270);
+  return Array.from({ length: n }, (_, i) => { const a = -Math.PI / 2 + (i / n) * Math.PI * 2 + (n % 2 ? 0 : Math.PI / n); return [Math.cos(a) * rx, Math.sin(a) * ry]; });
+}
+function abrir(i) {
+  ronda = i; viva = null;
+  const def = RONDAS[i], esExtra = def.clave === 'extra';
+  app.classList.add('iniciado', 'eligiendo'); app.classList.remove('viendo');
+  $('#centro').hidden = false; $('#final').hidden = true;
+  nucleo.className = 'nucleo pregunta pulso'; nucleo.onanimationend = () => nucleo.classList.remove('pulso');
+  $('#nucleo-texto').textContent = esExtra ? `Elegí: ${RAMAS[estado.tipo].extra[0].toLowerCase()}` : def.pregunta;
+  const ops = opciones(i), pos = posiciones(ops.length);
+  ideas.innerHTML = '';
+  ops.forEach((op, k) => {
+    const b = document.createElement('button');
+    b.className = 'idea'; b.innerHTML = op.html; b.setAttribute('aria-label', op.nombre);
+    b.style.transitionDelay = `${k * 40}ms`;
+    ideas.append(b);
+    requestAnimationFrame(() => requestAnimationFrame(() => { const tope = Math.max(0, app.clientWidth / 2 - b.offsetWidth / 2 - 10); pos[k][0] = Math.max(-tope, Math.min(tope, pos[k][0])); b.style.setProperty('--x', pos[k][0] + 'px'); b.style.setProperty('--y', pos[k][1] + 'px'); b.style.setProperty('--s', 1); b.style.setProperty('--o', 1); }));
+    setTimeout(() => (b.style.transitionDelay = '0ms'), 700);
+    const ver = () => mostrar(op, b), dejar = () => ocultar(b);
+    b.addEventListener('pointerenter', (e) => !tacto && e.pointerType === 'mouse' && !arrastre && ver());
+    b.addEventListener('pointerleave', (e) => e.pointerType === 'mouse' && !arrastre && dejar());
+    b.addEventListener('focus', () => !tacto && b.matches(':focus-visible') && ver()); b.addEventListener('blur', dejar);
+    b.addEventListener('click', () => { if (recienArrastrado) return; if (tacto && viva !== b) return ver(); elegir(op); });
+    // Arrastrar al centro también elige.
+    b.addEventListener('pointerdown', (e) => { if (e.pointerType !== 'mouse') return; arrastre = { b, op, x0: e.clientX, y0: e.clientY, ox: pos[k][0], oy: pos[k][1], movio: false }; b.setPointerCapture(e.pointerId); });
+    b.addEventListener('pointermove', (e) => { if (!arrastre || arrastre.b !== b) return; const dx = e.clientX - arrastre.x0, dy = e.clientY - arrastre.y0;
+      if (!arrastre.movio && Math.hypot(dx, dy) < 8) return; arrastre.movio = true; b.classList.add('arrastra');
+      b.style.setProperty('--x', arrastre.ox + dx + 'px'); b.style.setProperty('--y', arrastre.oy + dy + 'px'); });
+    b.addEventListener('pointerup', (e) => { if (!arrastre || arrastre.b !== b) return; const a = arrastre; arrastre = null; b.classList.remove('arrastra'); if (!a.movio) return;
+      recienArrastrado = true; setTimeout(() => (recienArrastrado = false), 50);
+      const x = a.ox + e.clientX - a.x0, y = a.oy + e.clientY - a.y0;
+      if (Math.hypot(x, y) < 130) elegir(a.op); else { b.style.setProperty('--x', a.ox + 'px'); b.style.setProperty('--y', a.oy + 'px'); } });
+  });
+  fichas();
+}
+function mostrar(op, b) {
+  viva?.classList.remove('viva'); viva = b; b.classList.add('viva');
+  prev.innerHTML = pagina({ ...estado, [RONDAS[ronda].clave]: op.id });
+  prev.classList.remove('sin'); prev.classList.add('on'); app.classList.add('viendo');
+  if (tacto) { nucleo.className = 'nucleo'; $('#nucleo-texto').textContent = `Usar «${op.nombre}»`; nucleo.onclick = () => elegir(op); $('#otras').hidden = false; }
+}
+function ocultar(b) {
+  if (viva !== b || tacto) return;
+  b.classList.remove('viva'); viva = null; prev.classList.remove('on'); app.classList.remove('viendo');
+}
+function elegir(op) {
+  const clave = RONDAS[ronda].clave;
+  if (clave === 'tipo' && estado.tipo !== op.id) { const { paleta, ui } = estado; estado = {}; if (paleta) estado.paleta = paleta; if (ui) estado.ui = ui; } // otra rama: layout y extra se vuelven a elegir
+  estado[clave] = op.id;
+  base.innerHTML = pagina(estado); $('#lienzo').classList.add('hay');
+  prev.classList.add('sin'); prev.classList.remove('on'); app.classList.remove('viendo'); viva = null; nucleo.onclick = null; $('#otras').hidden = true;
+  ideas.querySelectorAll('.idea').forEach((b) => { b.style.setProperty('--x', '0px'); b.style.setProperty('--y', '0px'); b.style.setProperty('--s', .2); b.style.setProperty('--o', 0); b.disabled = true; });
+  const falta = RONDAS.findIndex((r) => !(r.clave in estado));
+  setTimeout(() => (falta < 0 ? terminar() : abrir(falta)), 420);
+  fichas();
+}
+function terminar() {
+  ronda = -1; ideas.innerHTML = ''; app.classList.remove('eligiendo');
+  $('#centro').hidden = true; $('#final').hidden = false; fichas();
+}
+function fichas() {
+  const f = $('#fichas'); f.innerHTML = ''; $('#cero').hidden = !estado.tipo;
+  RONDAS.forEach((r, i) => {
+    if (!(r.clave in estado)) return;
+    const esExtra = r.clave === 'extra', v = estado[r.clave];
+    const valor = [TIPOS[v]?.nombre, PALETAS[v]?.nombre, LAYOUTS[v], UIS[v]?.[0], esExtra && RAMAS[estado.tipo].extra[1][v]][i];
+    const b = document.createElement('button');
+    b.className = 'ficha'; b.setAttribute('aria-current', String(i === ronda));
+    b.innerHTML = `${esExtra ? RAMAS[estado.tipo].extra[0] : r.ficha}<b>${valor}</b>`;
+    b.onclick = () => abrir(i);
+    f.append(b);
+  });
+  if (!f.children.length) f.innerHTML = '<p class="pista">Pasá el mouse por una idea para verla en la página. Tocala o arrastrala al centro para quedártela.</p>';
+  if (tacto && !f.querySelector('.ficha')) f.querySelector('.pista').textContent = 'Tocá una idea para verla en la página y después el botón de usarla.';
+}
+function avisar(t) { const a = $('#aviso'); a.textContent = t; a.hidden = false; clearTimeout(avisar.t); avisar.t = setTimeout(() => (a.hidden = true), 3200); }
+
+nucleo.onclick = () => { if (ronda < 0 && !estado.tipo) abrir(0); };
+$('#otras').onclick = () => { $('#otras').hidden = true; nucleo.onclick = null; prev.classList.remove('on'); abrir(ronda); };
+$('#cero').onclick = () => { estado = {}; ronda = -1; base.innerHTML = ''; ideas.innerHTML = ''; $('#lienzo').classList.remove('hay'); $('#final').hidden = true; $('#centro').hidden = false;
+  app.classList.remove('iniciado', 'eligiendo', 'viendo'); nucleo.className = 'nucleo'; $('#nucleo-texto').textContent = 'Empezar'; nucleo.onclick = () => abrir(0);
+  $('#fichas').innerHTML = '<p class="pista">Gratis y sin cuenta. Lo que elegís queda en tu navegador.</p>'; $('#cero').hidden = true; };
+$('#bajar-md').onclick = () => avisar('Esto es una maqueta: en la versión real acá baja tu DESIGN.md.');
+$('#bajar-html').onclick = () => avisar('Esto es una maqueta: en la versión real acá baja la página en HTML.');
+addEventListener('resize', () => { if (ronda >= 0) abrir(ronda); });
+</script>
