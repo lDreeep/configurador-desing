@@ -44,7 +44,8 @@ Nota sobre Codex: no lo probé en este repo. La tarea A1 le deja un `AGENTS.md` 
 `CLAUDE.md` y a este plan, que es el archivo que ese agente lee al arrancar.
 
 **Dónde se ahorra:** las tandas 3 y 5 (catálogo y documentación) son la mayor parte del
-volumen y van casi enteras con Sonnet y Haiku. Fable y Opus se usan en 9 de las 34 tareas.
+volumen y van casi enteras con Sonnet y Haiku. De las 32 tareas, 18 son de Sonnet o Haiku,
+11 de Opus y 3 de Fable; D6 y D7 arrancan con Opus y siguen con Sonnet.
 
 ---
 
