@@ -1236,6 +1236,17 @@ validación/limpieza de formulario, comparación y límite de tres, navegación,
 color/talle/favoritos/carrito simulado y descarga con las elecciones. Estas pruebas
 no reemplazan las pruebas con IA de P1–P3 ni una auditoría WCAG completa.
 
+Auditoría paleta × estilo (2026-11-11, `src/compatibilidad.test.ts`): 47 de 640 pares no pasan
+AA (32 paletas × 20 estilos). Se arma el sistema de `sistema.ts` para cada par y se mide texto y
+texto suave sobre fondo y tarjetas, y el texto del botón principal, con los colores que el CSS
+de cada estilo pone debajo del texto. Fallan: Sistema retro con las 32 (pinta la página de
+`#008080` y el texto de las secciones fuera del hero y las tarjetas queda encima: 4.40:1 el texto
+y 2.65:1 el suave con `retro_gris`, su única paleta declarada) y Neobrutalismo con las 15 paletas
+oscuras (texto suave claro sobre sus tarjetas amarillas, celestes y verdes). Los demás pares
+declarados en `ESTILOS[id].paletas` pasan. `estilosPara(paleta)` ordena los estilos (los que
+declaran la paleta primero) y saca los que no pasan; hasta que se arregle, Sistema retro no se
+ofrece con ninguna paleta. No mide el brillo del botón Y2K ni los fondos con textura.
+
 **Qué mirar en cada prueba:**
 - ¿Usó los tokens o metió colores y medidas sueltos?
 - ¿Respetó las notas?

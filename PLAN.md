@@ -111,7 +111,7 @@ Estado: `[ ]` pendiente · `[x]` hecha. Marcala al terminar.
   - No tocar §3 ni la versión del formato: todavía no cambia la salida.
   - Listo cuando: §8 tiene las filas nuevas numeradas a continuación de D78.
 
-- [ ] **A3 · Auditoría de paleta × estilo** — Opus 5.5 · sin dependencias
+- [x] **A3 · Auditoría de paleta × estilo** — Opus 5.5 · sin dependencias
   - Hoy cada estilo declara sus paletas compatibles (`ESTILOS[id].paletas`). El recorrido nuevo elige color **antes** que estilo, así que hay que saber qué pasa con cualquier par.
   - Escribir un test que arme el sistema de diseño (`src/export/sistema.ts`) para cada par paleta × estilo y verifique contraste AA en texto, texto secundario y botón principal.
   - Entregar: el test, y una función `estilosPara(paleta)` que ordene los estilos (compatibles primero) y excluya los que no pasan.
