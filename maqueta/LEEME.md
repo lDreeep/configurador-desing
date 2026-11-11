@@ -11,3 +11,5 @@ catálogo real (traen datos de muestra). Para verlas, abrí el archivo en un nav
   La portada se baja y arma páginas al azar, con el botón fijo arriba. Las opciones van de a 6
   con flechas. Rondas de entrada, fondo animado y scroll interactivo (este último solo en
   landing y portfolio; la página se baja sola para mostrarlo).
+
+El plan para llevar `molde-2.html` a la web real está en `PLAN.md`, en la raíz.
