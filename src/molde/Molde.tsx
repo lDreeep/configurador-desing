@@ -14,6 +14,7 @@ import { esDisenoSeccion, seccionDe } from '../secciones';
 import type { Config, LayoutId } from '../tipos';
 import { AJUSTES, elegir, INICIO_MOLDE, LISTO_MOLDE, POR_VEZ, posiciones, resolverPaso, siguiente, useElegidas, valorDeFicha } from './recorrido';
 import './molde.css';
+const Portada = lazy(() => import('./Portada').then((m) => ({ default: m.Portada })));
 
 const Ajustes = lazy(() => import('./Ajustes'));
 
@@ -214,13 +215,9 @@ export function Molde({ config, setConfig, reiniciar, paso: pasoUrl, ir }: Props
         </div>
 
         {paso === INICIO_MOLDE && (
-          <div className="molde-centro">
-            <h1>Armá el diseño de tu página</h1>
-            <p>Del botón salen ideas. Las que elegís se quedan en la página, y al final te la llevás armada.</p>
-            <button type="button" className="molde-nucleo molde-empezar" onClick={() => ir(siguiente(config, elegidas))}>
-              Empezar
-            </button>
-          </div>
+          <Suspense fallback={<div className="molde-centro"><button type="button" className="molde-empezar" onClick={() => ir(siguiente(config, elegidas))}>Empezar</button></div>}>
+            <Portada empezar={() => ir(siguiente(config, elegidas))} />
+          </Suspense>
         )}
 
         {ronda && <h1 className="solo-lectores">Molde: armá el diseño de tu página</h1>}

@@ -247,10 +247,11 @@ Estado: `[ ]` pendiente · `[x]` hecha. Marcala al terminar.
   - **Cambios por la revisión (2026-11-11):** (1) las flechas, «Ver otras» y las descargas se veían en la portada porque su `display` le ganaba a `hidden`: arreglado con `[hidden] { display: none !important }`. (2) Se sacaron las piezas que giraban alrededor del botón y se apartaban del mouse, y las ondas. En su lugar, **linterna de estilos**: de fondo, una página apagada del tamaño del lienzo; una lente que sigue al cursor la muestra con otro color y otras piezas (mismo tipo y layout), con su nombre abajo («Neobrutal · Durazno»). El estilo cambia junto con la palabra del título. En celular la lente pasea sola; con movimiento reducido queda quieta. El título y «Bajá…» llevan velo. Midió 60 cuadros por segundo a 1440 × 900. Las otras ideas de fondo quedan en `DESIGN.md` §10 (Ideas sueltas). Falta la aprobación.
   - Para E2: la lente en el sitio real tiene que usar `Pagina` con la `Config` de muestra y bajar aparte (el JS inicial está en el límite).
 
-- [ ] **E2 · Portar la portada** — Opus 5.5 · ChatGPT: Astra, con revisión a ojo · depende de E1 y C2
+- [x] **E2 · Portar la portada** — Opus 5.5 · ChatGPT: Astra, con revisión a ojo · depende de E1 y C2
   - Ojo: el JS inicial está en 249,7 kB (límite 250, `npm run peso`). Lo que sume la portada tiene que bajar aparte.
   - Llevar la portada aprobada a `src/molde/`, con páginas reales del catálogo.
   - Listo cuando: el scroll va a 60 cuadros por segundo y «Empezar» funciona en cualquier punto.
+  - Hecha en `#/molde/inicio` con la linterna de la maqueta revisada y tres páginas reales (tienda, dashboard y blog). El módulo de portada se carga aparte. Prueba sobre el build con `node e2e/portada.e2e.mjs` (Playwright): «Empezar» al inicio, en el medio, al final y con movimiento reducido. En Chrome, 59,7 fps a 1440 × 900 y 60,0 fps a 390 × 844 emulado. JS inicial: 249,7 kB.
 
 - [x] **F1 · Formato 0.9.1: campos nuevos en el export** — Sonnet 5.5 · ChatGPT: Sol · depende de D1, D6, D7 y D8
   - La 0.9.0 ya la usaron D11 y D12: esta tarea sube a **0.9.1**.
