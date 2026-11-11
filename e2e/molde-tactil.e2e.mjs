@@ -59,7 +59,7 @@ async function recorrer(browser, reducedMotion) {
     await page.getByRole('button', { name: 'Usar', exact: true }).tap();
   }
   await page.waitForFunction(() => location.hash.endsWith('/piezas') || location.hash.endsWith('/listo'));
-  assert.equal(await page.locator('.molde-ficha').count(), 4);
+  assert.equal(await page.locator('.molde-ficha').count(), 5); // Proyecto, Rubro, Color, Layout y Estilo
   await page.getByRole('button', { name: 'Terminar', exact: true }).tap();
   await page.getByRole('button', { name: 'Descargar DESIGN.md' }).waitFor();
   assert.deepEqual(errores, []);
