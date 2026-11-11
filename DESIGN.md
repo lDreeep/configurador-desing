@@ -1361,6 +1361,14 @@ Convertir el configurador en **Molde**: página en blanco, un botón que explota
 
 Lo que todavía no tiene lugar en §5. Se mueve allá cuando se decide hacerlo.
 
+- **Fondos interactivos para la portada de Molde** (2026-11-11): se eligió la «linterna de estilos» (ver E1 en `PLAN.md`). Quedan para probar, en `maqueta/` y lado a lado, antes de decidir si alguno la reemplaza o se suma como fondo animado del catálogo:
+  - **Retícula que se curva**: columnas y guías de maquetación que se doblan alrededor del cursor y vuelven con rebote (canvas 2D).
+  - **Campo de letras**: una trama de «Aa» que, cerca del cursor, cambia a otras combinaciones de letra del catálogo y vuelve, como una ola.
+  - **Muestrario de colores**: cuadraditos neutros que se dan vuelta y muestran paletas del catálogo, con un rastro que se apaga.
+  - **Silicona**: un material blando del color de la marca que se hunde con el cursor (WebGL). Es el más llamativo y el más caro: medir 60 cuadros por segundo en celulares viejos y el peso inicial antes de elegirlo.
+  - Se descartan los genéricos (puntos que se apartan del cursor, partículas, fluido): ya son lo que se ve en todas partes y no hablan del producto.
+  - Reglas para cualquiera: en celular se mueve solo o con el toque; con `prefers-reduced-motion` queda quieto; nunca va texto directo encima (velo); no suma a la carga inicial (`npm run peso`).
+  - Tests futuros: que el fondo no baje de 60 cuadros por segundo a 1440 × 900 y a 390 × 844 (como se midió en D6); que con movimiento reducido no haya `requestAnimationFrame` corriendo; que el título y «Empezar» pasen contraste AA con el fondo detrás en cualquier posición de la lente.
 - ~~**Catálogo de secciones de landing**~~: hecho (D92, formato 0.9.0, §22). Queda como idea reordenar arrastrando y sumar más diseños por sección.
 - **Plantillas de estructura por tipo de proyecto**: que elegir "tienda" ya proponga pantallas típicas.
 - **Más direcciones visuales**: lujoso, juguetón, editorial.

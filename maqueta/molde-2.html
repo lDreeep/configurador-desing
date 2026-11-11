@@ -68,16 +68,20 @@ button { font: inherit; color: inherit; cursor: pointer; border: 0; background: 
 .nucleo.pulso { animation: pulso 480ms var(--rebote) }
 @keyframes pulso { 40% { scale: 1.18 } }
 .viendo .nucleo, .viendo .paginas { opacity: 0 }
-/* Piezas sueltas que giran alrededor del botón: lo que después sale como ideas */
-.orbita { position: absolute; left: 50%; top: calc(50% + 140px); z-index: 6; pointer-events: none }
-.iniciado .orbita, .fin .orbita { display: none }
-.pieza { position: absolute; left: 0; top: 0; will-change: transform, opacity }
-/* Ondas que salen del botón, en reposo */
-.ondas { position: absolute; left: 50%; top: calc(50% + 140px); z-index: 3; pointer-events: none; transition: opacity var(--cambio) }
-.ondas i { position: absolute; left: -90px; top: -90px; width: 180px; height: 180px; border-radius: 50%; border: 1.5px solid var(--linea); opacity: 0; animation: onda 4.5s linear infinite }
-.ondas i:nth-child(2) { animation-delay: -1.5s } .ondas i:nth-child(3) { animation-delay: -3s }
-@keyframes onda { from { transform: scale(.5); opacity: .9 } to { transform: scale(4.2); opacity: 0 } }
-.bajando .ondas, .iniciado .ondas, .fin .ondas { opacity: 0 }
+/* Fondo de la portada: una página apagada y una lente que sigue al cursor y la muestra en otro estilo.
+   El texto nunca queda sobre la página: el título y el aviso de abajo llevan su velo. */
+.linterna { position: absolute; inset: 64px 16px 88px; border-radius: 22px; overflow: hidden; z-index: 2; pointer-events: none; transition: opacity var(--cambio) }
+.iniciado .linterna, .fin .linterna { visibility: hidden }
+.lt-fantasma { position: absolute; inset: 0; opacity: .16; filter: grayscale(1) }
+.lt-lente { position: absolute; inset: 0; clip-path: circle(var(--lr, 0px) at var(--lx, 50%) var(--ly, 50%)) }
+.lt-lente > .capa { transition: opacity 520ms var(--curva) }
+.lt-lente > .capa.sale { opacity: 0 }
+.lt-aro { position: absolute; left: 0; top: 0; width: calc(var(--lr, 0px) * 2); height: calc(var(--lr, 0px) * 2); border-radius: 50%;
+  translate: calc(var(--lxp, 0px) - 50%) calc(var(--lyp, 0px) - 50%); box-shadow: 0 0 0 1.5px var(--tinta), 0 24px 50px -18px var(--sombra) }
+.lt-nombre { position: absolute; left: 0; top: 0; translate: calc(var(--lxp, 0px) - 50%) calc(var(--lyp, 0px) + var(--lr, 0px) + 10px);
+  background: var(--tinta); color: var(--yeso); font: 600 12px/1 var(--f-texto); padding: 6px 10px; border-radius: 99px; white-space: nowrap; transition: opacity 260ms }
+.centro::before { content: ""; position: absolute; inset: -80px -150px; z-index: -1; background: radial-gradient(closest-side, var(--yeso) 72%, color-mix(in srgb, var(--yeso) 0%, transparent)) }
+.bajar { background: var(--yeso); padding: 6px 12px; border-radius: 99px }
 /* La idea que viaja del botón al lienzo mientras se baja */
 .volador { position: absolute; left: 0; top: 0; z-index: 7; opacity: 0; pointer-events: none; box-shadow: 0 0 0 1px var(--linea), 0 14px 30px -12px var(--sombra); will-change: transform, opacity; display: block }
 .iniciado .volador { display: none }
@@ -220,7 +224,7 @@ div.ficha { cursor: default }
 .pg-rollo-pista { position: absolute; right: 1.2em; bottom: 1.2em; z-index: 2; padding: .5em .9em; border-radius: 99px; background: var(--fg); color: var(--bg); font-size: .85em; font-weight: 600; opacity: calc(1 - var(--p) * 4) }
 
 @media (max-width: 760px) {
-  .lienzo { inset: 60px 12px 136px } .pie { height: 136px; flex-wrap: wrap; align-content: center; gap: 6px } .fichas { flex-basis: 100% } .final { flex: 1 } .final .btn { flex: 1; padding: 0 14px; font-size: 14px }
+  .lienzo, .linterna { inset: 60px 12px 136px } .pie { height: 136px; flex-wrap: wrap; align-content: center; gap: 6px } .fichas { flex-basis: 100% } .final { flex: 1 } .final .btn { flex: 1; padding: 0 14px; font-size: 14px }
   .pg { font-size: 2.9vw } .pg-nav span { display: none } .pg-nav, .pg-cuerpo, .pg-s2 { padding-inline: 1.6em }
   .pg-cuerpo, .pg[data-l] .pg-bloque { grid-template-columns: 1fr } .pg-cuerpo { align-content: start; gap: 1.6em; padding-top: 1em }
   .pg h2, .pg[data-l="centrado"] h2 { font-size: 2.7em } .pg[data-l="afiche"] h2 { font-size: 3.8em }
@@ -229,7 +233,7 @@ div.ficha { cursor: default }
   .pg-fila { grid-template-columns: 1fr 1fr } .pg-tile { height: 8em } .pg-frase { font-size: 2.2em }
   .idea { min-height: 50px; padding: 8px 12px; font-size: 14px; gap: 8px } .idea small { display: none } .idea svg { width: 40px; height: 28px }
   .pista { font-size: 14px } .centro p { font-size: 16px } .centro { top: calc(50% - 110px) }
-  .paginas { top: calc(50% + 40px) } .bajar { bottom: 150px } .nucleo, .orbita, .ondas { top: calc(50% + 120px) } .fin .nucleo { top: calc(50% + 30px) } .bajando .nucleo { left: calc(100% - 76px) }
+  .paginas { top: calc(50% + 40px) } .bajar { bottom: 150px } .nucleo { top: calc(50% + 120px) } .fin .nucleo { top: calc(50% + 30px) } .bajando .nucleo { left: calc(100% - 76px) }
 }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important } }
 </style>
@@ -246,14 +250,18 @@ div.ficha { cursor: default }
     <div class="capa sin" id="prev"></div>
   </div>
 
+  <div class="linterna" id="linterna" aria-hidden="true">
+    <div class="lt-fantasma" id="lt-fantasma"></div>
+    <div class="lt-lente" id="lt-lente"></div>
+    <div class="lt-aro"></div>
+    <span class="lt-nombre" id="lt-nombre"></span>
+  </div>
   <div class="portada" id="portada" tabindex="-1"><div id="largo"></div></div>
   <div class="centro">
     <h1>Armá el diseño<br>de tu <span class="palabra" id="palabra">página</span></h1>
     <p>Del botón salen ideas. Las que elegís se quedan en la página, y al final te la llevás armada.</p>
   </div>
-  <div class="orbita" id="orbita" aria-hidden="true"></div>
   <p class="bajar" id="bajar">Bajá para ver cómo se arma<i></i></p>
-  <div class="ondas" aria-hidden="true"><i></i><i></i><i></i></div>
   <p class="cierre">Ahora armá la tuya</p>
   <div class="volador ficha" id="volador" aria-hidden="true"></div>
 
@@ -495,18 +503,13 @@ function avisar(t) { const a = $('#aviso'); a.textContent = t; a.hidden = false;
 // ───── Portada: el scroll arma páginas cuadro a cuadro ─────
 // Nada se vuelve a dibujar mientras se baja: las 15 capas se arman una vez y después solo
 // cambian transform, opacity y clip-path, siguiendo al scroll con un pequeño retraso.
-const PIEZAS = ['<span class="pz pz-boton">Empezar</span>', '<span class="pz"><i style="background:#2F4BFF"></i><i style="background:#F0552B"></i><i style="background:#C6F23C"></i></span>', '<span class="pz pz-switch"></span>',
-  '<span class="pz pz-letra">Aa</span>', '<span class="pz" style="height:34px"><u style="height:8px"></u><u style="height:16px"></u><u style="height:11px"></u><u style="height:20px"></u></span>', '<span class="pz">Turnos</span>',
-  '<span class="pz" style="border-radius:4px;box-shadow:3px 3px 0 var(--tinta), 0 0 0 2px var(--tinta)">Comprar</span>', '<span class="pz"><i style="background:#2E7D4F"></i>Bosque</span>',
-  '<span class="pz" style="border-radius:99px"><i style="background:#C084FF"></i><i style="background:#1C1230"></i></span>', '<span class="pz" style="font-family:Unbounded,sans-serif;font-size:12px">Hola</span>'];
-const DESTINOS = [[.15, .3], [.5, .25], [.8, .3], [.2, .6], [.5, .55], [.8, .6], [.3, .8], [.65, .8], [.4, .4], [.6, .45]];
 const ANCLAS = [[.5, .5], [.3, .62], [.62, .4], [.26, .72], [.74, .3]]; // dónde cae cada idea en el lienzo
 const PALABRAS = ['página', 'tienda', 'landing', 'app', 'portfolio', 'sistema'];
 const INI = .06, FIN = .94, ETAPAS = 5;
 const alAzar = (a) => a[Math.floor(Math.random() * a.length)];
 const tope = (x) => Math.max(0, Math.min(1, x)), suave = (x) => x * x * (3 - 2 * x);
 const centro = $('.centro'), volador = $('#volador'), demoCaja = $('#demo');
-let demo = [], piezas = [], geo = null, P = 0, capaAct = -2, fichasAct = '', raf = 0, raton = null;
+let demo = [], geo = null, P = 0, capaAct = -2, fichasAct = '', raf = 0, raton = null;
 
 function armarDemo() {
   demoCaja.innerHTML = ''; demo = [];
@@ -525,11 +528,47 @@ function medir() {
   const a = app.getBoundingClientRect(), l = $('#lienzo').getBoundingClientRect(), chico = a.width < 760;
   geo = { w: a.width, h: a.height, lx: l.left - a.left, ly: l.top - a.top, lw: l.width, lh: l.height, bx: a.width - (chico ? 76 : 92), by: 32, cx: a.width / 2, cy: a.height / 2 + (chico ? 120 : 140) };
   $('#largo').style.height = quieto ? '0' : a.height * 6 + 'px'; // 5 pantallas de recorrido
-  const n = PIEZAS.length;
-  $('#orbita').innerHTML = PIEZAS.map((h) => `<div class="pieza">${h}</div>`).join('');
-  piezas = [...$('#orbita').children].map((el, i) => ({ el, f: (i / n) * Math.PI * 2, v: i % 2 ? -.34 : .46,
-    rx: Math.min(a.width * .44, i % 2 ? 350 : 255), ry: (i % 2 ? 92 : 66) * (chico ? .85 : 1), ax: DESTINOS[i][0], ay: DESTINOS[i][1] }));
+  armarLinterna();
 }
+// ───── Linterna: la misma página, apagada, y una lente que la muestra con un estilo ─────
+const lente = { x: 0, y: 0, ok: false, tipo: 'landing', n: 0 };
+const linterna = $('#linterna'), ltLente = $('#lt-lente');
+function estiloAlAzar() {
+  // Misma página que la apagada (mismo tipo y layout): solo cambian el color y las piezas.
+  return { tipo: lente.tipo, paleta: alAzar(Object.keys(PALETAS)), layout: lente.layout, ui: alAzar(Object.keys(UIS)) };
+}
+function armarLinterna() {
+  const l = $('#lienzo').getBoundingClientRect();
+  lente.w = l.width; lente.h = l.height; lente.r = Math.round(Math.min(l.width, l.height) * (l.width < 600 ? .3 : .24));
+  lente.layout = RAMAS[lente.tipo].layouts[0];
+  $('#lt-fantasma').innerHTML = pagina({ tipo: lente.tipo, layout: lente.layout });
+  ltLente.innerHTML = ''; cambiarEstilo();
+  if (!lente.ok) { lente.x = lente.w * (quieto ? .76 : .72); lente.y = lente.h * .34; lente.ok = true; }
+  pintarLente();
+}
+// Un estilo nuevo entra encima del anterior, que se apaga y se va.
+function cambiarEstilo() {
+  const s = estiloAlAzar(), el = document.createElement('div');
+  el.className = 'capa'; el.innerHTML = pagina(s);
+  const viejas = [...ltLente.children]; ltLente.append(el);
+  viejas.forEach((v) => { v.classList.add('sale'); setTimeout(() => v.remove(), 600); });
+  $('#lt-nombre').textContent = `${UIS[s.ui][0]} · ${PALETAS[s.paleta].nombre}`;
+}
+function pintarLente() {
+  linterna.style.setProperty('--lr', lente.r + 'px');
+  linterna.style.setProperty('--lx', lente.x.toFixed(1) + 'px'); linterna.style.setProperty('--ly', lente.y.toFixed(1) + 'px');
+  linterna.style.setProperty('--lxp', lente.x.toFixed(1) + 'px'); linterna.style.setProperty('--lyp', lente.y.toFixed(1) + 'px');
+}
+function moverLente(t, e) {
+  linterna.style.opacity = (1 - e).toFixed(3);
+  if (e >= 1 || quieto) return;
+  let ox, oy;
+  if (raton) { ox = raton.x - geo.lx; oy = raton.y - geo.ly; }
+  else { const s = t / 1000; ox = lente.w * (.5 + .3 * Math.sin(s * .37)); oy = lente.h * (.42 + .22 * Math.sin(s * .53 + 1)); }
+  lente.x += (ox - lente.x) * (raton ? .16 : .05); lente.y += (oy - lente.y) * (raton ? .16 : .05);
+  pintarLente();
+}
+
 function cuadro(t) {
   if (!quieto) raf = requestAnimationFrame(cuadro);
   const meta = portada.scrollTop / Math.max(1, portada.scrollHeight - portada.clientHeight);
@@ -542,15 +581,8 @@ function cuadro(t) {
   let mx = 0, my = 0;
   if (raton && P < .006) { const dx = raton.x - geo.cx, dy = raton.y - geo.cy, d = Math.hypot(dx, dy); if (d < 190) { mx = dx * .16; my = dy * .16; } }
   nucleo.style.setProperty('--mx', mx.toFixed(1) + 'px'); nucleo.style.setProperty('--my', my.toFixed(1) + 'px');
-  // Piezas: giran en dos anillos, se apartan del mouse y, al bajar, vuelan a su lugar en la página.
-  if (sal < 1) for (const z of piezas) {
-    const a = (t / 1000) * z.v + z.f, prof = (Math.sin(a) + 1) / 2;
-    let x = Math.cos(a) * z.rx, y = Math.sin(a) * z.ry;
-    if (raton) { const dx = geo.cx + x - raton.x, dy = geo.cy + y - raton.y, d = Math.hypot(dx, dy) || 1; if (d < 150) { const f = ((150 - d) / 150) * 52; x += (dx / d) * f; y += (dy / d) * f; } }
-    const tx = geo.lx + geo.lw * z.ax - geo.cx, ty = geo.ly + geo.lh * z.ay - geo.cy;
-    z.el.style.transform = `translate(${(x + (tx - x) * e).toFixed(1)}px, ${(y + (ty - y) * e).toFixed(1)}px) translate(-50%, -50%) scale(${((.82 + prof * .3) * (1 - e * .4)).toFixed(3)})`;
-    z.el.style.opacity = (1 - e * e).toFixed(3);
-  } else if (piezas[0]?.el.style.opacity !== '0') for (const z of piezas) z.el.style.opacity = '0';
+  // Fondo: la lente sigue al cursor (o pasea sola) y se apaga al bajar.
+  moverLente(t, e);
   // Etapas: cada idea vuela desde el botón, cae en el lienzo y se abre desde ahí.
   const q = ((P - INI) / (FIN - INI)) * demo.length, cur = P < INI ? -1 : Math.min(demo.length - 1, Math.floor(q)), u = cur < 0 ? 0 : tope(q - cur);
   if (cur !== capaAct) {
@@ -582,7 +614,7 @@ app.addEventListener('pointerleave', () => (raton = null));
 // La última palabra del título va cambiando.
 let nPalabra = 0;
 if (!quieto) setInterval(() => { if (app.classList.contains('iniciado') || document.hidden) return; const p = $('#palabra'); p.classList.add('sale');
-  setTimeout(() => { p.textContent = PALABRAS[++nPalabra % PALABRAS.length]; p.classList.remove('sale'); }, 260); }, 2400);
+  setTimeout(() => { p.textContent = PALABRAS[++nPalabra % PALABRAS.length]; p.classList.remove('sale'); }, 260); if (!app.classList.contains('bajando')) cambiarEstilo(); }, 2400);
 
 function empezar() {
   turno++; cancelAnimationFrame(raf); demoCaja.innerHTML = ''; demo = []; capaAct = -2; fichasAct = ''; volador.style.opacity = '0'; centro.removeAttribute('style');
@@ -594,7 +626,7 @@ function aPortada() {
   turno++; cancelAnimationFrame(raf); estado = {}; ronda = -1; base.innerHTML = ''; ideas.innerHTML = ''; $('#lienzo').classList.remove('hay');
   $('#final').hidden = true; $('#paginas').hidden = true; $('#usar').hidden = true; nucleo.hidden = false; nucleo.textContent = 'Empezar'; nucleo.onclick = empezar;
   app.classList.remove('iniciado', 'eligiendo', 'viendo', 'bajando', 'fin'); portada.hidden = false; portada.scrollTop = 0; $('#cero').hidden = true;
-  P = 0; capaAct = -2; fichasAct = ''; armarDemo(); medir(); demoCaja.style.opacity = '1';
+  P = 0; capaAct = -2; fichasAct = ''; lente.tipo = alAzar(Object.keys(TIPOS)); armarDemo(); medir(); demoCaja.style.opacity = '1';
   raf = requestAnimationFrame(cuadro);
 }
 
