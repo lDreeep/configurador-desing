@@ -3,9 +3,8 @@
 
 import type { MouseEvent, ReactNode } from 'react';
 import { botonesCargados, useBotones } from '../botones-carga';
-import { IconoFlecha } from '../pasos/visual';
 import type { BotonDisenoId, Config } from '../tipos';
-import { animarToque } from './ui';
+import { animarToque, IconoFlecha } from './toque';
 
 /** Clases del botón principal. Con un diseño elegido, mientras su archivo no llegó (botones-carga.tsx), se ve con el estilo simple. */
 export function claseBotonPrincipal(c: Config, diseno: BotonDisenoId | 'ninguno' = c.botones.diseno) {

@@ -3,13 +3,13 @@
 // aparecen las flechas para pasar de a una y el botón central pasa a ser «Elegir este diseño».
 
 import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { esAutor, ESTILOS, LAYOUTS, RECETAS_AUTOR } from '../estilos-visuales';
+import { esAutor, ESTILOS, LAYOUTS } from '../estilos-visuales';
 import type { Config } from '../tipos';
 import { aplicarCombinacion, codigo, type Combinacion, combinacionAlAzar, decodificar, LISTA_FONDOS } from './combinar';
 import { type Contenido, contenido as contenidoDe, Pagina } from './Pagina';
-// Los esquemas solo se ven al abrir «Ver layouts»: bajan aparte.
-const Esquema = lazy(() => import('./esquemas').then((m) => ({ default: m.Esquema })));
-import { autorListo, precargarAutor, precargarAutores } from './autores';
+// La lista de layouts (con sus esquemas) solo se ve al abrir «Ver todos los layouts»: baja aparte.
+const ListaLayouts = lazy(() => import('./ListaLayouts').then((m) => ({ default: m.ListaLayouts })));
+import { layoutListo, precargarLayout, precargarLayouts } from './autores';
 import { pedirFuentes } from '../fuentes';
 import { FONDOS, type FondoId } from '../fondos';
 import type { EstiloId, LayoutId } from '../tipos';
@@ -33,17 +33,23 @@ function codigoDeLaUrl(): Combinacion | null {
   }
 }
 
-/** La primera muestra: si sale una plantilla de autor que todavía no bajó, se elige otra (no hay «cargando» al entrar). */
+/**
+ * La primera muestra: siempre con un layout que ya está en la carga inicial (no hay «cargando» al
+ * entrar). Los demás bajan en segundo plano y aparecen desde la segunda.
+ */
 function primeraMuestra(): Combinacion {
   let k = combinacionAlAzar(null, new Set());
-  for (let i = 0; i < 30 && esAutor(k.layout) && !autorListo(k.layout); i++) k = combinacionAlAzar(null, new Set());
-  return k;
+  // Una plantilla de autor trae su receta: si no está, se sortea otra combinación.
+  while (esAutor(k.layout) && !layoutListo(k.layout)) k = combinacionAlAzar(null, new Set());
+  if (layoutListo(k.layout)) return k;
+  const listos = (Object.keys(LAYOUTS) as LayoutId[]).filter(layoutListo);
+  return { ...k, layout: listos[Math.floor(Math.random() * listos.length)] };
 }
 
-/** Pide de antemano lo que una combinación necesita para verse bien: sus fuentes y, si es de autor, su archivo. */
+/** Pide de antemano lo que una combinación necesita para verse bien: sus fuentes y, si baja aparte, su archivo. */
 function preparar(k: Combinacion) {
   pedirFuentes([k.titulos, k.texto]);
-  void precargarAutor(k.layout);
+  void precargarLayout(k.layout);
 }
 
 interface Capa {
@@ -85,9 +91,9 @@ export function Inicio(props: { config: Config; onElegir: (k: Combinacion) => vo
     proxima.current = combinacionAlAzar(historial[historial.length - 1], new Set());
     preparar(proxima.current);
   }, [pos, historial]);
-  // Las plantillas de autor bajan en segundo plano apenas se ve la portada.
+  // Las plantillas de autor y los layouts de layouts2 bajan en segundo plano apenas se ve la portada.
   useEffect(() => {
-    const t = window.setTimeout(() => void precargarAutores(), 800);
+    const t = window.setTimeout(() => void precargarLayouts(), 800);
     return () => window.clearTimeout(t);
   }, []);
 
@@ -306,53 +312,9 @@ export function Inicio(props: { config: Config; onElegir: (k: Combinacion) => vo
       </div>
 
       {modo === 'eleccion' && verLayouts && (
-        <div className="inicio-layouts" role="dialog" aria-label="Elegí un layout">
-          <div className="inicio-layouts-cabeza">
-            <strong>Elegí la estructura</strong>
-            <span>Se mantiene el estilo, los colores y la letra.</span>
-            <button type="button" className="inicio-layouts-cerrar" aria-label="Cerrar" onClick={() => setVerLayouts(false)}>
-              ×
-            </button>
-          </div>
-          <p className="inicio-layouts-sub">Diseños de autor: páginas pensadas para un negocio concreto. Se abren con su estilo, sus colores y su letra; después cambiás lo que quieras.</p>
-          <div className="inicio-layouts-grilla">
-            {(Object.keys(LAYOUTS) as LayoutId[]).filter(esAutor).map((id) => (
-              <button
-                key={id}
-                type="button"
-                className="inicio-layout inicio-layout-autor"
-                aria-pressed={actual.layout === id}
-                onClick={() => {
-                  irA({ ...actual, layout: id, ...RECETAS_AUTOR[id] });
-                  setVerLayouts(false);
-                }}
-              >
-                <Suspense fallback={<span className="inicio-esquema-cargando" />}><Esquema id={id} /></Suspense>
-                <span className="inicio-layout-nombre">{LAYOUTS[id].nombre}</span>
-                <span className="inicio-layout-desc">{LAYOUTS[id].descripcion}</span>
-              </button>
-            ))}
-          </div>
-          <p className="inicio-layouts-sub">Estructuras para cualquier proyecto: se mantiene el estilo, los colores y la letra.</p>
-          <div className="inicio-layouts-grilla">
-            {(Object.keys(LAYOUTS) as LayoutId[]).filter((id) => !esAutor(id)).map((id) => (
-              <button
-                key={id}
-                type="button"
-                className="inicio-layout"
-                aria-pressed={actual.layout === id}
-                onClick={() => {
-                  if (id !== actual.layout) irA({ ...actual, layout: id });
-                  setVerLayouts(false);
-                }}
-              >
-                <Suspense fallback={<span className="inicio-esquema-cargando" />}><Esquema id={id} /></Suspense>
-                <span className="inicio-layout-nombre">{LAYOUTS[id].nombre}</span>
-                <span className="inicio-layout-desc">{LAYOUTS[id].descripcion}</span>
-              </button>
-            ))}
-          </div>
-        </div>
+        <Suspense fallback={null}>
+          <ListaLayouts actual={actual} irA={irA} cerrar={() => setVerLayouts(false)} />
+        </Suspense>
       )}
 
       <div className="inicio-control" role="group" aria-label="Controles">

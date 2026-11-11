@@ -3,7 +3,7 @@
 // El DESIGN.md sigue siendo la salida completa: estas son versiones parciales del mismo sistema.
 
 import { BOTONES } from '../botones-disenos';
-import { CAJAS } from '../cajas';
+import { CAJAS } from '../cajas-disenos';
 import { APARICIONES, CAMBIOS, MOVIMIENTOS } from '../catalogo';
 import { ESTILOS, LAYOUTS } from '../estilos-visuales';
 import { CATEGORIAS, type CategoriaId } from '../galeria';

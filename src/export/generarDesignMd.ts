@@ -7,12 +7,16 @@ import type { Config } from '../tipos';
 import { paresDeContraste } from '../color';
 import { ESTRUCTURA_LAYOUT } from './estructuras-layout';
 import { BOTONES, clasesDeBoton, cssDeBoton, EFECTOS_TOQUE, efectoDe } from '../botones-disenos';
-import { CAJAS, clasesDeCaja, CSS_CAJA, paramsDe } from '../cajas';
-import { cssDeEstilo, ESTILOS, LAYOUTS, llevaArgumento } from '../estilos-visuales';
+import { clasesDeCaja, CSS_CAJA, paramsDe } from '../cajas';
+import { CAJAS } from '../cajas-disenos';
+import { cssDeEstilo } from '../estilos-css';
+import { REGLAS_ESTILOS } from '../estilos-reglas';
+import { ESTILOS, LAYOUTS, llevaArgumento } from '../estilos-visuales';
 import { CATEGORIAS, type CategoriaId } from '../galeria';
 import { cssBaseDe, cssDisenoDe } from '../galeria/base';
 import { paletaActiva, sistemaDeDiseno, tokensCss } from './sistema';
-import { cssDeFondo, FONDOS, type FondoId } from '../fondos';
+import { cssDeFondo } from '../fondos-css';
+import { FONDOS, type FondoId } from '../fondos';
 
 import { CSS_CONCESIONARIO as cssConcesionario } from '../rapido/concesionario-estilos';
 
@@ -481,7 +485,7 @@ preguntas_sugeridas:${lista(preguntas)}`,
 
   const v = c.visual;
   const lay = LAYOUTS[v.layout];
-  const estV = v.estilo !== 'clasico' ? ESTILOS[v.estilo] : null;
+  const estV = v.estilo !== 'clasico' ? { ...ESTILOS[v.estilo], ...REGLAS_ESTILOS[v.estilo] } : null;
   const fondoV = v.fondo && v.fondo !== 'ninguno' ? FONDOS[v.fondo] : null;
   secciones.push(
     [

@@ -2,7 +2,8 @@
 
 import { usePaso } from './BarraPasos';
 import { useId, type CSSProperties } from 'react';
-import { CAJAS, clasesDeCaja, OPCIONES_CAJA, type ParamsCaja, paramsDe, tokensDeCaja } from '../cajas';
+import { clasesDeCaja, type ParamsCaja, paramsDe, tokensDeCaja } from '../cajas';
+import { CAJAS, OPCIONES_CAJA } from '../cajas-disenos';
 import { BotonPrincipal } from '../componentes/BotonPrincipal';
 import { sistemaDeDiseno } from '../export/sistema';
 import type { CajaPresetId, Config } from '../tipos';

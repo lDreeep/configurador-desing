@@ -699,7 +699,6 @@ button:disabled { cursor: not-allowed; opacity: 0.4; }
 .inicio-layout-nombre { font-size: 13px; font-weight: 700; }
 .inicio-layout-desc { font-size: 11.5px; color: #a8adb8; }
 .esquema { width: 100%; height: auto; display: block; }
-.inicio-esquema-cargando { display: block; width: 100%; aspect-ratio: 100 / 64; }
 .esq-fondo { fill: #f4f4f2; }
 .esq-n { fill: #c9ccd3; }
 .esq-t { fill: #6b7080; }
