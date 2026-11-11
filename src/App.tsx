@@ -1,5 +1,6 @@
 import { lazy, Suspense, useEffect } from 'react';
-import { DISENO_POR_ESTILO } from './botones-disenos';
+import { cargarBotones } from './botones-carga';
+import { DISENO_POR_ESTILO } from './botones-por-estilo';
 import { useConfig } from './estado';
 import { BarraPasos, PasoContexto } from './rapido/BarraPasos';
 import { aplicarCombinacion } from './rapido/combinar';
@@ -59,6 +60,7 @@ export function App() {
   useEffect(() => {
     const t = window.setTimeout(() => {
       for (const k of ['tipo', 'paquete', 'botones', 'cajas', 'galeria', 'estilosGaleria', 'movimiento', 'prototipo', 'listo'] as const) void cargar[k]();
+      void cargarBotones();
     }, 2500);
     return () => window.clearTimeout(t);
   }, []);

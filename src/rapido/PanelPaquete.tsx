@@ -11,6 +11,7 @@ import { CATEGORIAS, type CategoriaId } from '../galeria';
 import { claseDe, GaleriaContexto } from '../galeria/base';
 import type { Config } from '../tipos';
 import { usePaso } from './BarraPasos';
+import './panel-paquete.css';
 
 /** Piezas chicas: en el celular van de a dos por fila. */
 const CHICAS: CategoriaId[] = ['boton_icono', 'interruptor', 'casilla', 'avatar', 'etiqueta', 'tooltip', 'cargando', 'progreso', 'deslizador', 'metrica'];

@@ -39,6 +39,8 @@ export function aHash(u: Ubicacion): string {
 
 /** Lee el hash; `null` si no es una ubicación válida. */
 export function desdeHash(hash: string): Ubicacion | null {
+  // Un link con el código de un diseño (`#c=XXXXX`, ver Inicio.tsx) abre la portada con ese diseño.
+  if (esLinkConCodigo(hash)) return INICIO;
   const [, prefijo, paso] = hash.replace(/^#/, '').split('/');
   if (prefijo === 'inicio' && paso === undefined) return INICIO;
   if (!paso) return null;
@@ -48,6 +50,8 @@ export function desdeHash(hash: string): Ubicacion | null {
   }
   return null;
 }
+
+export const esLinkConCodigo = (hash: string) => /^#?c=[0-9a-z]+$/i.test(hash);
 
 type Almacen = Pick<Storage, 'getItem' | 'setItem'>;
 
@@ -111,7 +115,9 @@ export function useUbicacion() {
   useEffect(() => {
     // La entrada de llegada queda con la ubicación real (corrige un hash inválido o vacío).
     actual.current.orden = ordenDe(history.state);
-    history.replaceState({ orden: actual.current.orden } satisfies EstadoHistorial, '', aHash(actual.current.u));
+    // Un link con código queda como está: la portada lo lee de la URL.
+    const url = esLinkConCodigo(location.hash) ? location.hash : aHash(actual.current.u);
+    history.replaceState({ orden: actual.current.orden } satisfies EstadoHistorial, '', url);
     const alMoverse = () => {
       const u = desdeHash(location.hash);
       if (!u) return;

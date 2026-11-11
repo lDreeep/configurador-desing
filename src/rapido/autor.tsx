@@ -5,6 +5,7 @@
 // design-taste-frontend: un protagonista por página, texto concreto, sin plantilla genérica.
 
 import type { CSSProperties, ReactNode } from 'react';
+import './autor.css';
 import { FraseRevelada, useGuion, type Beat } from './demo';
 import { BotonPrincipal } from '../componentes/BotonPrincipal';
 import { animarToque } from '../componentes/ui';

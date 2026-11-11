@@ -1,0 +1,42 @@
+/* Piezas animadas compartidas (demo.tsx): frase que se enciende, preguntas, cursor y toques.
+   Las usan las estructuras genéricas y las plantillas de autor; por eso van en la carga inicial
+   y el resto del CSS de autor viaja con cada plantilla (autor.css, autor3.css). Solo tokens. */
+
+/* De autor.css */
+.au-h2 { margin: 0; font-family: var(--fuente-titulos); font-weight: var(--titulos-peso); font-size: clamp(28px, 3.6cqw, 48px); line-height: 1.05; letter-spacing: var(--titulos-espaciado); text-wrap: balance; }
+.au-oculto { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+
+/* De autor3.css */
+.pgp, .au3 { --au3-curva: cubic-bezier(.22, 1, .36, 1); --au3-linea: color-mix(in srgb, var(--color-texto) 12%, transparent); --au3-tenue: color-mix(in srgb, var(--color-texto) 8%, transparent); }
+.au3-cursor { position: absolute; left: 0; top: 0; z-index: 5; pointer-events: none; transition: transform .75s var(--au3-curva); filter: drop-shadow(0 2px 3px rgba(0,0,0,.25)); }
+.au3-cursor svg { display: block; transform-origin: 2px 2px; }
+.au3-pulsa.p0 { animation: au3-pulsa0 .3s var(--au3-curva) .7s; }
+.au3-pulsa.p1 { animation: au3-pulsa1 .3s var(--au3-curva) .7s; }
+@keyframes au3-pulsa0 { 50% { transform: scale(.82); } }
+@keyframes au3-pulsa1 { 50% { transform: scale(.82); } }
+.au3-onda { position: absolute; left: -14px; top: -14px; width: 30px; height: 30px; border-radius: 50%; background: color-mix(in srgb, var(--color-acento) 45%, transparent); opacity: 0; animation: au3-onda .6s var(--au3-curva) .7s; }
+@keyframes au3-onda { from { opacity: 1; transform: scale(.3); } to { opacity: 0; transform: scale(1.4); } }
+.au3-cursor.es-dedo b { display: block; width: 34px; height: 34px; margin: -17px 0 0 -17px; border-radius: 50%; background: rgba(255,255,255,.55); border: 1.5px solid rgba(0,0,0,.25); backdrop-filter: blur(2px); }
+.au3-toca.t0 { animation: au3-toca0 .35s var(--au3-curva) .7s; }
+.au3-toca.t1 { animation: au3-toca1 .35s var(--au3-curva) .7s; }
+@keyframes au3-toca0 { 50% { transform: scale(.75); } }
+@keyframes au3-toca1 { 50% { transform: scale(.75); } }
+.au3-cursor.es-dedo .au3-onda { left: -15px; top: -15px; }
+.au3-frase { margin: 0; padding: clamp(64px, 10cqw, 144px) var(--au-borde); max-width: calc(760px + var(--au-borde) * 2); font-family: var(--fuente-titulos); font-weight: var(--titulos-peso); font-size: clamp(30px, 4.6cqw, 60px); line-height: 1.1; letter-spacing: var(--titulos-espaciado); text-wrap: balance; }
+.au3-frase span span { color: color-mix(in srgb, var(--color-texto) 50%, var(--color-fondo)); transition: color .6s var(--au3-curva); }
+.au3-frase span span.on { color: var(--color-texto); }
+.au3-faq { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); gap: clamp(20px, 5cqw, 80px); padding: clamp(48px, 7cqw, 96px) var(--au-borde); border-top: 1px solid var(--au3-linea); }
+.au3-faq details { border-bottom: 1px solid var(--au3-linea); }
+.au3-faq summary, .au3-modulos summary { display: flex; align-items: center; gap: 12px; min-height: 44px; padding: 16px 0; cursor: pointer; list-style: none; font-weight: 600; font-size: 17px; }
+.au3-faq summary::-webkit-details-marker, .au3-modulos summary::-webkit-details-marker { display: none; }
+.au3-faq summary::after, .au3-modulos summary::after { content: '+'; margin-left: auto; font-size: 22px; font-weight: 400; color: var(--color-texto-suave); transition: transform .4s var(--au3-curva); }
+.au3-faq details[open] summary::after, .au3-modulos details[open] summary::after { transform: rotate(45deg); }
+.au3-faq summary:focus-visible, .au3-modulos summary:focus-visible { outline: 2px solid var(--color-acento); outline-offset: 2px; }
+.au3-faq details p { margin: 0 0 18px; max-width: 60ch; color: var(--color-texto-suave); }
+.au3-cierre .au-h2 { max-width: 18ch; }
+@container (max-width: 760px) {
+  .au3-problema, .au3-faq, .au3-modulos, .au3-comparar, .au3-res-visita { grid-template-columns: minmax(0, 1fr); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .au3-frase span span { color: var(--color-texto); }
+}

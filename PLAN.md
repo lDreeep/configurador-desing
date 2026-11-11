@@ -126,6 +126,7 @@ Estado: `[ ]` pendiente · `[x]` hecha. Marcala al terminar.
 - [ ] **B2 · Partir la carga inicial** — Opus 5.5 · depende de B1
   - La primera visita baja unos 1,9 MB. Cargar con `lazy` las plantillas de autor (`src/rapido/Pagina.tsx` las importa todas), separar el CSS por panel y pedir cada fuente recién cuando se muestra (`urlGoogleFonts` en `src/catalogo.ts` las pide todas juntas).
   - Listo cuando: el JS inicial pesa menos de 250 KB sin comprimir y la portada no parpadea al cargar.
+  - **Parcial (2026-11-11):** JS inicial de 442 a 302 KB (94 KB comprimido); CSS inicial de 166 a 89 KB; hojas de fuentes de la portada de 212 a 42 KB; el título de la portada ya no cambia de alto al cargar. Plantillas de autor (`rapido/autores.tsx`), diseños de botón (`botones-carga.tsx`), esquemas, estructuras de layout (`export/estructuras-layout.ts`) y el CSS del prototipo y de tres paneles bajan aparte; las fuentes se piden de a una (`fuentes.ts`). Falta: React ocupa ~140 KB y el resto es lo que la portada muestra (CSS de los 20 estilos, paletas, fondos, layouts genéricos, cajas). Bajar de 250 KB pide separar el CSS de los estilos o las cajas de sus datos; queda abierto.
 
 - [ ] **C1 · Modelo de rondas y ramas** — Opus 5.5 · depende de A3
   - Crear `src/rondas/`: el tipo `Ronda` (clave, nombre de ficha, pregunta, opciones según la config, cómo se aplica a `Config`, si es obligatoria), `rondasDe(config)` y `ramas.ts` con las rondas propias de cada tipo de proyecto (tabla de la sección 7.1). Es **datos**, sin UI.

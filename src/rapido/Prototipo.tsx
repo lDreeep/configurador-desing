@@ -22,6 +22,8 @@ import { baseDesdeColores, derivarRoles, hexesDeTexto } from '../color';
 import { COLORES } from './PanelBotones';
 import { Pagina } from './Pagina';
 import { TEXTOS_PROTOTIPO } from './textos-prototipo';
+import { useFuentes } from '../fuentes';
+import './prototipo.css';
 
 /** ¿Se está viendo desde un teléfono? */
 const enTelefono = () => {
@@ -159,6 +161,7 @@ function Metrica({ etq, valor, cambio, meta }: { etq: string; valor: string; cam
 
 export function Prototipo(props: { config: Config; setConfig: (fn: (c: Config) => Config) => void; onAtras: () => void; onListo: () => void }) {
   const real = props.config;
+  useFuentes([real.visual.fuenteTitulos, real.visual.fuenteTexto]);
   // Ver el modo opuesto (claro ↔ oscuro) sin tocar la paleta elegida.
   const [verAlterno, setVerAlterno] = useState(false);
   const c = useMemo(() => (verAlterno ? conPaletaAlterna(real) : real), [real, verAlterno]);

@@ -27,6 +27,12 @@ describe('ubicación en la URL', () => {
     for (const h of ['', '#', '#/', '#/rapido/nada', '#/rapido', '#/avanzado/<script>', '#/otro/tipo', '#seccion']) expect(desdeHash(h), h).toBeNull();
   });
 
+  it('un link con el código de un diseño abre la portada aunque haya algo guardado', () => {
+    const a = memoria();
+    guardar({ modo: 'rapido', paso: 'prototipo', detallado: false }, a);
+    expect(ubicacionInicial('#c=1A2B3', a)).toEqual(INICIO);
+  });
+
   it('un paso del recorrido detallado siempre es detallado', () => {
     expect(desdeHash('#/rapido/cajas')).toEqual({ modo: 'rapido', paso: 'cajas', detallado: true });
   });

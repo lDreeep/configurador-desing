@@ -9,6 +9,7 @@ import { BotonPrincipal } from '../componentes/BotonPrincipal';
 import { aplicarMovimiento } from '../estado';
 import { sistemaDeDiseno } from '../export/sistema';
 import type { AparicionId, CambioId, Config, MovimientoId } from '../tipos';
+import './panel-movimiento.css';
 
 const reducido = () => typeof window !== 'undefined' && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
 
