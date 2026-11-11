@@ -285,8 +285,9 @@ Estado: `[ ]` pendiente · `[x]` hecha. Marcala al terminar.
 - [x] **G4 · Documentación al día** — Haiku 5.5 · ChatGPT: Terra o Luna · apta para Codex · depende de C5
   - `README.md` (habla de «9 pasos»), `CLAUDE.md` (estructura nueva y cantidades reales), orden cronológico de `DESIGN.md` §12, favicon y metadatos en `index.html`, y pasar `public/fotos/traccion-vehiculos.png` (1,8 MB) a webp.
   - Hecha: `README.md` con el recorrido real (5 pasos en el simple, 10 en el avanzado) y los comandos; `CLAUDE.md` con los módulos que faltaban y las cantidades reales (37 categorías de galería); `DESIGN.md` §12 ordenado por versión, más reciente arriba, y el segundo 0.1.0 pasado a 0.1.1 (era un cambio sin formato); favicon SVG (`public/favicon.svg`) y metadatos en `index.html` sin nombre de marca hasta que se confirme Molde; foto de `concesionario` pasada a webp (1,8 MB → 355 kB, mismo tamaño). Quedan para C5: el recorrido que describe el README y la estructura de `src/molde/` cuando Molde pase a la raíz.
-- [ ] **G5 · Revisión final** — Opus 5.5 · ChatGPT: no (queda en Claude) · depende de todo
+- [x] **G5 · Revisión final** — Opus 5.5 · ChatGPT: no (queda en Claude) · depende de todo
   - `/code-review` sobre el diff completo antes de mergear a `main`.
+  - Hecha (2026-11-11): `/code-review` de `main` contra `DESIGN.md`. `VERSION_FORMATO` (0.9.2), el encabezado y §2, §7 (lectura solo en blog), §12 (scroll), §19 (fondo animado, `layout_argumento`) y §22 coinciden con la especificación. Corregido: cambiar a un tipo sin ronda Scroll ni Fondo animado ya no arrastra esas elecciones a la página y al export (D93, test en `f1-d13.test.tsx`); el único aviso de lint (`demo.tsx`). Abierto para decidir: §11 y §8 difieren en algunas claves del ejemplo de §3 (Q7). Chequeos: typecheck, 199 tests, lint sin avisos, peso 201,7 kB y e2e en verde. En la nube el e2e necesita `CHROMIUM_PATH=/opt/pw-browsers/chromium` (el Playwright del proyecto no trae su navegador).
 
 ---
 
@@ -316,7 +317,7 @@ La tanda 3 puede arrancar apenas termina C1, sin esperar al resto de la tanda 2.
 | 8 | G1 · tests en el CI (después de C5) | Sonnet 5.5 | Terra | 9 y 10 |
 | 9 | G2 · accesibilidad y celular (después de C5) | Sonnet 5.5 | Sol | 8 y 10 |
 | 10 | G4 · documentación al día (después de C5) | Haiku 5.5 | Terra o Luna | 8 y 9 |
-| 11 | G5 · revisión final | Opus 5.5 | — (queda en Claude) | — |
+| 11 | ~~G5 · revisión final~~ (hecha) | Opus 5.5 | — (queda en Claude) | — |
 
 Entre paso y paso, el merge de las ramas y su revisión van con Claude (Opus 5.5).
 

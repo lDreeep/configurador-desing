@@ -4,7 +4,7 @@ import { lecturaDe } from './lectura-base';
 import { ESTILOS, LAYOUTS } from './estilos-visuales';
 import { FONDOS } from './fondos';
 import { limpiarScroll } from './scroll-base';
-import { limpiarSecciones } from './secciones-base';
+import { limpiarSecciones, llevaSecciones } from './secciones-base';
 import { IDS_FONDOS_ANIMADOS } from './fondos-animados-base';
 import { TIPOS_RUBRO } from './rubros-base';
 import type { Config, DireccionId, FuenteId, MovimientoId, Pantalla, TipoProyecto } from './tipos';
@@ -118,9 +118,12 @@ export function aplicarMovimiento(c: Config, id: MovimientoId): Config {
 /** Cambiar el tipo de proyecto sugiere pantallas y navegación, salvo que ya se hayan editado. */
 export function aplicarTipo(c: Config, tipo: TipoProyecto): Config {
   const proyecto = { ...c.proyecto, tipo, rubro: c.proyecto.rubro && TIPOS_RUBRO[c.proyecto.rubro] === tipo ? c.proyecto.rubro : undefined };
-  if (c.estructura.editadas) return { ...c, proyecto };
+  // Scroll y fondo animado solo tienen ronda en landing, sitio y portfolio (como §22): en otro
+  // tipo no se podrían sacar, así que no se arrastran al cambiar.
+  const visual = llevaSecciones(tipo) ? c.visual : { ...c.visual, scroll: [], fondoAnimado: 'ninguno' as const };
+  if (c.estructura.editadas) return { ...c, proyecto, visual };
   const [patron, patronMovil] = NAV_SUGERIDA[tipo];
-  return { ...c, proyecto, estructura: { patron, patronMovil, pantallas: pantallasDePlantilla(tipo), editadas: false } };
+  return { ...c, proyecto, visual, estructura: { patron, patronMovil, pantallas: pantallasDePlantilla(tipo), editadas: false } };
 }
 
 /** Une una config guardada (quizás de una versión anterior) con los valores por defecto actuales. */

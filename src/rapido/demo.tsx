@@ -29,7 +29,7 @@ export function useGuion(beats: Beat[], poster: number, bucle = true) {
   useEffect(() => {
     if (activo && !terminado.current) setPaso(0);
     else if (bucle || terminado.current) setPaso(poster);
-  }, [activo, poster]);
+  }, [activo, bucle, poster]);
   useEffect(() => {
     if (!activo || terminado.current) return;
     if (!bucle && paso + 1 >= beats.length) {

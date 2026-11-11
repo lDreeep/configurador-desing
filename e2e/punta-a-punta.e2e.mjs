@@ -122,9 +122,13 @@ async function recorrer(browser, tipo, vp) {
   const errores = [];
   page.on('pageerror', (e) => errores.push(e.message));
 
+  if (process.env.E2E_LENTO) await page.route(/Portada/, async (r) => { await new Promise((ok) => setTimeout(ok, 3000)); await r.continue(); });
   await page.goto(URL_BASE);
   const empezar = page.getByRole('button', { name: 'Empezar', exact: true });
   await empezar.waitFor();
+  // La portada baja aparte: mientras tanto Molde muestra un «Empezar» provisorio sin h1. En un CI
+  // lento ese botón aparece antes que la portada, así que se espera su título.
+  await page.locator('h1').first().waitFor();
   await auditar(page, `${etiquetaBase} · inicio`);
   if (vp.touch) await revisarAreasTactiles(page, `${etiquetaBase} · inicio`);
   else await revisarFoco(page, `${etiquetaBase} · inicio`);
