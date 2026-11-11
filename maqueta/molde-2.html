@@ -1,0 +1,527 @@
+<title>Molde: ideas</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Instrument+Sans:wght@400;500;600;700&family=Archivo:wght@900&family=Fraunces:opsz,wght@9..144,600&family=Unbounded:wght@700&display=swap">
+<style>
+/* Maqueta 2 de Molde. Concepto: la página arranca en blanco; un botón en el centro explota en
+   ideas, y cada idea elegida se queda en la página. El marco (yeso, tinta, silicona) no cambia. */
+:root {
+  --yeso: #F7F8FA; --superficie: #FFFFFF; --tinta: #1D1730; --tinta-2: #5A5470; --linea: #D5D9E0;
+  --silicona: #D81E6A; --sobre-silicona: #FFFFFF; --sombra: rgba(29, 23, 48, .18);
+  --f-marca: 'Bricolage Grotesque', 'Trebuchet MS', sans-serif; --f-texto: 'Instrument Sans', system-ui, sans-serif;
+  --toque: 140ms; --cambio: 560ms; --curva: cubic-bezier(.2, .8, .2, 1); --rebote: cubic-bezier(.3, 1.45, .45, 1);
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --yeso: #15121C; --superficie: #2A2338; --tinta: #F1EEF6; --tinta-2: #B0A9C0; --linea: #443B58;
+  --silicona: #FF6BA3; --sobre-silicona: #1D1730; --sombra: rgba(0, 0, 0, .55); color-scheme: dark } }
+:root[data-theme="dark"] {
+  --yeso: #15121C; --superficie: #2A2338; --tinta: #F1EEF6; --tinta-2: #B0A9C0; --linea: #443B58;
+  --silicona: #FF6BA3; --sobre-silicona: #1D1730; --sombra: rgba(0, 0, 0, .55); color-scheme: dark }
+
+* { box-sizing: border-box }
+html, body { height: 100%; overflow: hidden }
+body { background: var(--yeso); color: var(--tinta); font: 16px/1.45 var(--f-texto) }
+button { font: inherit; color: inherit; cursor: pointer; border: 0; background: none }
+:focus-visible { outline: 3px solid var(--silicona); outline-offset: 3px }
+#app { position: relative; height: 100%; overflow: hidden; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)) }
+
+.barra { position: absolute; inset: 0 0 auto; height: 64px; display: flex; align-items: center; z-index: 8; pointer-events: none;
+  padding-left: max(20px, env(safe-area-inset-left, 0px)); padding-right: max(20px, env(safe-area-inset-right, 0px)) }
+.barra > * { pointer-events: auto }
+.marca { display: flex; align-items: center; gap: 9px; font: 700 24px/1 var(--f-marca); letter-spacing: -.02em }
+.marca i { width: 19px; height: 19px; border: 4px solid var(--silicona); border-radius: 6px }
+.barra .hueco { flex: 1 }
+.enlace { min-height: 44px; padding: 0 12px; color: var(--tinta-2); font-weight: 500; text-decoration: underline; text-underline-offset: 4px }
+
+/* El lienzo: vacío al principio, después la página que se va armando */
+.lienzo { position: absolute; inset: 64px 16px 88px; border-radius: 22px; overflow: hidden; transition: box-shadow var(--cambio) }
+.lienzo.hay { box-shadow: 0 0 0 1px var(--linea), 0 30px 60px -30px var(--sombra) }
+.capa { position: absolute; inset: 0 }
+#base { transition: opacity var(--cambio), filter var(--cambio) }
+.eligiendo #base { opacity: .3; filter: saturate(.55) }
+#prev { clip-path: circle(0 at 50% 50%); transition: clip-path 220ms ease-in }
+#prev.on { clip-path: circle(120% at 50% 50%); transition: clip-path var(--cambio) var(--curva) }
+#prev.sin { transition: none }
+
+/* ───── Portada: se baja y se van armando páginas ───── */
+.portada { position: absolute; inset: 0; z-index: 5; overflow-y: auto; scrollbar-width: none }
+.portada::-webkit-scrollbar { display: none }
+.centro { position: absolute; left: 50%; top: calc(50% - 80px); transform: translate(-50%, -50%); z-index: 4; display: grid; justify-items: center; gap: 16px;
+  text-align: center; width: min(92%, 620px); pointer-events: none; transition: opacity var(--cambio), transform var(--cambio) var(--curva) }
+.centro h1 { margin: 0; font: 700 clamp(36px, 5.4vw, 72px)/.96 var(--f-marca); letter-spacing: -.035em; text-wrap: balance }
+.centro p { margin: 0; color: var(--tinta-2); font-size: 18px; max-width: 42ch }
+.bajando .centro, .iniciado .centro { opacity: 0; transform: translate(-50%, -90%) }
+.bajar { position: absolute; left: 50%; bottom: 100px; translate: -50% 0; z-index: 4; margin: 0; color: var(--tinta-2); font-size: 14px; display: grid; justify-items: center; gap: 4px; transition: opacity var(--cambio); pointer-events: none }
+.bajar i { width: 10px; height: 10px; border: solid var(--tinta-2); border-width: 0 2px 2px 0; rotate: 45deg; animation: bajar 1.6s var(--curva) infinite }
+@keyframes bajar { 50% { translate: 0 7px } }
+.bajando .bajar, .iniciado .bajar { opacity: 0 }
+
+/* El botón del que sale todo: en la portada va en el centro; al bajar sube y queda fijo */
+.nucleo { position: absolute; left: 50%; top: calc(50% + 140px); translate: -50% -50%; z-index: 7; min-height: 64px; padding: 0 34px; border-radius: 999px; white-space: nowrap;
+  background: var(--silicona); color: var(--sobre-silicona); font: 600 20px var(--f-texto);
+  transition: left var(--cambio) var(--curva), top var(--cambio) var(--curva), scale var(--toque), min-height var(--cambio), padding var(--cambio), font-size var(--cambio), background var(--cambio), color var(--cambio), opacity var(--toque) }
+.nucleo:active { scale: .94 }
+.bajando .nucleo { left: calc(100% - 92px); top: 32px; min-height: 46px; padding: 0 20px; font-size: 16px }
+.iniciado .nucleo { top: calc(50% - 12px); left: 50%; background: var(--tinta); color: var(--yeso); font-size: 17px; min-height: 52px; padding: 0 24px; cursor: default }
+.nucleo.pulso { animation: pulso 480ms var(--rebote) }
+@keyframes pulso { 40% { scale: 1.18 } }
+.viendo .nucleo, .viendo .paginas { opacity: 0 }
+/* Piezas sueltas que giran alrededor del botón: lo que después sale como ideas */
+.orbita { position: absolute; left: 50%; top: calc(50% + 140px); z-index: 6; pointer-events: none; transition: opacity var(--cambio), scale var(--cambio) var(--curva) }
+.bajando .orbita, .iniciado .orbita { opacity: 0; scale: 2.2 }
+.pieza { position: absolute; left: 0; top: 0; animation: vaiven var(--d, 9s) ease-in-out infinite alternate; animation-delay: var(--t, 0s) }
+.pieza > span { display: block; translate: -50% -50%; animation: sube var(--d, 9s) ease-in-out infinite alternate; animation-delay: calc(var(--t, 0s) - var(--d, 9s) / 2) }
+@keyframes vaiven { from { translate: calc(var(--rx, 250px) * -1) 0 } to { translate: var(--rx, 250px) 0 } }
+@keyframes sube { from { transform: translateY(calc(var(--ry, 60px) * -1)) scale(.82) } to { transform: translateY(var(--ry, 60px)) scale(1.08) } }
+.pz { display: flex; align-items: center; gap: 4px; padding: 9px 13px; border-radius: 13px; background: var(--superficie); box-shadow: 0 0 0 1px var(--linea), 0 10px 22px -12px var(--sombra); font-weight: 600; font-size: 14px; white-space: nowrap }
+.pz i { width: 14px; height: 14px; border-radius: 50% } .pz u { width: 6px; border-radius: 2px 2px 0 0; align-self: flex-end; background: var(--silicona) }
+.pz-boton { background: var(--tinta); color: var(--yeso); border-radius: 999px; box-shadow: none; padding: 7px 14px }
+.pz-switch { width: 38px; height: 22px; padding: 0; border-radius: 99px; background: #2E7D4F; box-shadow: none; position: relative } .pz-switch::after { content: ""; position: absolute; right: 3px; top: 3px; width: 16px; height: 16px; border-radius: 50%; background: #fff }
+.pz-letra { font: 600 20px 'Fraunces', serif; padding: 2px 10px }
+
+/* Ideas: salen del centro y se acomodan alrededor */
+.ideas { position: absolute; left: 50%; top: calc(50% - 12px); z-index: 6 }
+.idea { position: absolute; left: 0; top: 0; transform: translate(-50%, -50%) translate(var(--x, 0px), var(--y, 0px)) scale(var(--s, .2)); opacity: var(--o, 0);
+  transition: transform 620ms var(--rebote), opacity 260ms; touch-action: none; user-select: none;
+  min-height: 56px; padding: 10px 16px; border-radius: 18px; background: var(--superficie); box-shadow: 0 0 0 1px var(--linea), 0 14px 30px -14px var(--sombra);
+  display: flex; align-items: center; gap: 11px; text-align: left; font-weight: 600; white-space: nowrap; cursor: grab }
+.idea small { display: block; font-weight: 400; color: var(--tinta-2); font-size: 13px }
+.idea.arrastra { transition: none; cursor: grabbing; z-index: 2 }
+/* La idea que estás mirando se vuelve translúcida para no tapar la página */
+.idea.viva { opacity: .5; box-shadow: 0 0 0 2px var(--silicona) }
+.idea.viva.arrastra { opacity: .9 }
+.viendo .idea:not(.viva) { opacity: 0 }
+.tacto.viendo .idea { opacity: 0; pointer-events: none }
+.muestras { display: flex } .muestras i { width: 20px; height: 20px; border-radius: 50%; margin-left: -6px; box-shadow: 0 0 0 2px var(--superficie) } .muestras i:first-child { margin-left: 0 }
+.idea svg { width: 54px; height: 38px; border-radius: 6px; flex: none; box-shadow: 0 0 0 1px var(--linea) }
+.mini-btn { padding: 6px 12px; font-size: 13px; font-weight: 600 }
+/* Más opciones: flechas debajo del botón, de a 6 por vez */
+.paginas { position: absolute; left: 50%; top: calc(50% + 44px); translate: -50% -50%; z-index: 7; display: flex; align-items: center; gap: 4px; font-size: 14px; color: var(--tinta-2); font-variant-numeric: tabular-nums; transition: opacity var(--toque) }
+.flecha { width: 44px; height: 44px; border-radius: 50%; background: var(--superficie); box-shadow: inset 0 0 0 1px var(--linea); font-size: 20px; line-height: 1; transition: scale var(--toque) }
+.flecha:active { scale: .9 }
+.usar { position: absolute; left: 0; right: 0; bottom: 150px; z-index: 7; display: flex; justify-content: center; gap: 8px; padding: 0 16px }
+
+/* Fichas: lo que ya elegiste, abajo; tocar una vuelve a abrir esa ronda */
+.pie { position: absolute; inset: auto 0 0; z-index: 8; height: 88px; display: flex; align-items: center; gap: 12px; pointer-events: none;
+  padding: 0 max(20px, env(safe-area-inset-right, 0px)) env(safe-area-inset-bottom, 0px) max(20px, env(safe-area-inset-left, 0px)) }
+.pie > * { pointer-events: auto }
+.fichas { flex: 1; min-width: 0; display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; padding: 4px }
+.fichas::-webkit-scrollbar { display: none }
+.ficha { flex: none; min-height: 48px; padding: 4px 14px; border-radius: 14px; background: var(--superficie); box-shadow: inset 0 0 0 1px var(--linea); text-align: left; font-size: 13px; color: var(--tinta-2); line-height: 1.2 }
+.ficha.nueva { animation: caer 420ms var(--rebote) both }
+.ficha b { display: block; color: var(--tinta); font-size: 15px; font-weight: 600 }
+.ficha[aria-current="true"] { box-shadow: inset 0 0 0 2.5px var(--silicona) }
+div.ficha { cursor: default }
+@keyframes caer { from { transform: translateY(-26px) scale(.7); opacity: 0 } }
+.pista { color: var(--tinta-2); font-size: 15px; margin: 0 }
+.final { display: flex; gap: 8px; flex: none }
+.btn { min-height: 48px; padding: 0 20px; border-radius: 999px; font-weight: 600; white-space: nowrap; transition: scale var(--toque) }
+.btn:active { scale: .96 }
+.btn-1 { background: var(--silicona); color: var(--sobre-silicona) } .btn-2 { background: var(--superficie); box-shadow: inset 0 0 0 1.5px var(--tinta) }
+.aviso { position: absolute; left: 50%; bottom: 96px; transform: translateX(-50%); z-index: 9; margin: 0; background: var(--tinta); color: var(--yeso); padding: 10px 16px; border-radius: 12px; font-size: 14px; max-width: calc(100% - 32px) }
+
+/* ───── La página que se arma (todo en em) ───── */
+.pg { position: absolute; inset: 0; font-size: clamp(10px, 1.08vw, 17px); display: flex; flex-direction: column; background: var(--bg); color: var(--fg); font-family: 'Instrument Sans', sans-serif; overflow: hidden;
+  --r: .4em; --borde: 0 solid transparent; --sh: none; --ft: 'Instrument Sans', sans-serif; --fw: 700; --ls: -.02em; --p: 0 }
+.pg[data-ui="suave"] { --r: .8em; --sh: 0 .8em 1.8em -1em rgba(0, 0, 0, .35); --ft: 'Bricolage Grotesque', sans-serif; --ls: -.035em }
+.pg[data-ui="neobrutal"] { --r: .45em; --borde: .18em solid var(--fg); --sh: .32em .32em 0 var(--fg); --ft: 'Archivo', sans-serif; --fw: 900 }
+.pg[data-ui="lineas"] { --r: 0em; --borde: .08em solid var(--fg); --ft: 'Fraunces', serif; --fw: 600 }
+.pg[data-ui="pildora"] { --r: 1.8em; --ft: 'Unbounded', sans-serif; --ls: -.045em }
+/* Fondos animados */
+.pg-fondo { position: absolute; inset: 0; pointer-events: none; overflow: hidden }
+.pg-fondo::before { content: ""; position: absolute; inset: 0 }
+.pg[data-fondo="aurora"] .pg-fondo::before { background: radial-gradient(40em 30em at 80% 10%, color-mix(in srgb, var(--acc) 55%, transparent), transparent 70%), radial-gradient(36em 30em at 15% 90%, color-mix(in srgb, var(--acc) 35%, transparent), transparent 70%); animation: aurora 9s ease-in-out infinite alternate }
+.pg[data-fondo="puntos"] .pg-fondo::before { background: radial-gradient(color-mix(in srgb, var(--fg) 28%, transparent) .11em, transparent .12em) 0 0 / 1.8em 1.8em; animation: puntos 6s linear infinite; mask-image: linear-gradient(120deg, transparent 20%, #000) }
+.pg[data-fondo="ondas"] .pg-fondo::before { background: repeating-linear-gradient(115deg, transparent 0 3em, color-mix(in srgb, var(--acc) 22%, transparent) 3em 6em); background-size: 200% 100%; animation: ondas 12s linear infinite }
+.pg[data-fondo="burbujas"] .pg-fondo::before { inset: 0 0 -100%; background: radial-gradient(circle, color-mix(in srgb, var(--acc) 38%, transparent) 0 3.2em, transparent 3.3em) 0 0 / 17em 15em, radial-gradient(circle, color-mix(in srgb, var(--fg) 12%, transparent) 0 1.6em, transparent 1.7em) 6em 4em / 11em 15em; animation: burbujas 16s linear infinite; filter: blur(.5em) }
+.pg[data-fondo="malla"] .pg-fondo::before { inset: 35% -40% -20%; background: linear-gradient(color-mix(in srgb, var(--acc) 55%, transparent) .1em, transparent .1em) 0 0 / 3em 3em, linear-gradient(90deg, color-mix(in srgb, var(--acc) 55%, transparent) .1em, transparent .1em) 0 0 / 3em 3em; transform: perspective(30em) rotateX(62deg); animation: malla 2.4s linear infinite; mask-image: linear-gradient(transparent, #000 60%) }
+.pg[data-fondo="barrido"] .pg-fondo::before { background: linear-gradient(110deg, transparent 42%, color-mix(in srgb, var(--acc) 45%, transparent) 50%, transparent 58%) 0 0 / 300% 100%; animation: barrido 4.5s var(--curva) infinite }
+@keyframes aurora { to { transform: translate(-4%, 5%) scale(1.15) } } @keyframes puntos { to { background-position: 1.8em 1.8em } } @keyframes ondas { to { background-position: -13.2em 0 } }
+@keyframes burbujas { to { transform: translateY(-50%) } } @keyframes malla { to { background-position: 0 3em, 0 0 } } @keyframes barrido { from { background-position: 100% 0 } to { background-position: 0 0 } }
+
+.pg-nav { position: relative; display: flex; align-items: center; gap: 2em; padding: 1.6em 3em; flex: none }
+.pg-nav b { font: var(--fw) 1.4em var(--ft); letter-spacing: var(--ls); margin-right: auto }
+.pg-rollo { position: relative; flex: 1; min-height: 0; min-width: 0; overflow: hidden; display: flex; flex-direction: column }
+.pg[data-scroll]:not([data-scroll=""]) .pg-rollo { overflow-y: auto; display: block; scrollbar-width: thin }
+.pg-cuerpo { position: relative; flex: 1; min-height: 0; display: grid; grid-template-columns: 1.05fr .95fr; gap: 3em; align-items: center; padding: 0 3em 3em }
+.pg[data-scroll]:not([data-scroll=""]) .pg-cuerpo { height: 100% }
+.pg h2 { margin: 0; font: var(--fw) 3.6em/1 var(--ft); letter-spacing: var(--ls); text-wrap: balance }
+.pg[data-ui="pildora"] h2 { font-size: 2.9em }
+.pg-bajada { margin: 1.1em 0 1.6em; color: var(--sub); font-size: 1.12em; max-width: 34em }
+.pg-acc, .pg-ui { display: flex; gap: .8em; flex-wrap: wrap; align-items: center }
+.pg-btn, .pg-btn2 { padding: .85em 1.5em; border-radius: var(--r); border: var(--borde); font-weight: 600 }
+.pg-btn { background: var(--acc); color: var(--sobre); box-shadow: var(--sh) } .pg-btn2 { box-shadow: inset 0 0 0 .1em var(--sub) }
+.pg[data-ui="lineas"] .pg-btn { background: none; color: var(--fg); border: 0; border-bottom: .2em solid var(--acc); padding-inline: .2em }
+.pg-ui { margin-top: 1.8em } .pg[data-ui="base"] .pg-ui { display: none }
+.pg-campo { padding: .7em 1em; min-width: 12em; border-radius: var(--r); background: var(--card); border: var(--borde); color: var(--sub); box-shadow: inset 0 0 0 .08em color-mix(in srgb, var(--fg) 22%, transparent) }
+.pg-switch { width: 3em; height: 1.7em; border-radius: max(var(--r), .2em); background: var(--acc); border: var(--borde); position: relative }
+.pg-switch::after { content: ""; position: absolute; right: .2em; top: 50%; translate: 0 -50%; width: 1.2em; height: 1.2em; border-radius: max(calc(var(--r) * .7), .12em); background: var(--sobre) }
+.pg-chip { padding: .3em .8em; border-radius: var(--r); background: color-mix(in srgb, var(--acc) 20%, transparent); border: var(--borde); font-size: .9em; font-weight: 600 }
+.pg-bloque { display: grid; gap: 1em }
+.pg-caja { padding: 1.1em 1.2em; background: var(--card); border: var(--borde); border-radius: var(--r); box-shadow: var(--sh); display: flex; align-items: center; gap: 1em; min-width: 0 }
+.pg-caja i { width: 3em; height: 3em; flex: none; border-radius: calc(var(--r) * .6); background: var(--acc) }
+.pg-caja:nth-child(2) i { background: var(--fg) } .pg-caja:nth-child(3) i { background: var(--sub) }
+.pg-caja span { margin-left: auto; color: var(--sub); white-space: nowrap; font-variant-numeric: tabular-nums } .pg-caja div { min-width: 0 } .pg-caja small { display: block; color: var(--sub) }
+.pg-bloque[data-v="grilla"], .pg-bloque[data-v="semana"], .pg-bloque[data-v="numeros"] { grid-template-columns: repeat(3, 1fr) }
+.pg-bloque[data-v="grilla"] .pg-caja, .pg-bloque[data-v="numeros"] .pg-caja { flex-direction: column; align-items: flex-start } .pg-bloque[data-v="grilla"] i { width: 100%; height: 6em }
+.pg-bloque[data-v="grilla"] span, .pg-bloque[data-v="numeros"] span { margin-left: 0 }
+.pg-bloque[data-v="destacado"] .pg-caja:first-child { flex-direction: column; align-items: flex-start } .pg-bloque[data-v="destacado"] .pg-caja:first-child i { width: 100%; height: 9em } .pg-bloque[data-v="destacado"] .pg-caja:first-child span { margin-left: 0 }
+.pg-bloque[data-v="semana"] .pg-caja { flex-direction: column; align-items: flex-start; gap: .3em; padding: .8em } .pg-bloque[data-v="semana"] i { display: none } .pg-bloque[data-v="semana"] span { margin-left: 0 }
+.pg-num { font: var(--fw) 2.2em/1 var(--ft); letter-spacing: var(--ls) }
+.pg-graf { grid-column: 1 / -1; height: 9em; padding: 1em; background: var(--card); border: var(--borde); border-radius: var(--r); box-shadow: var(--sh); display: flex; align-items: flex-end; gap: .7em }
+.pg-graf u { flex: 1; background: var(--acc); border-radius: calc(var(--r) * .4) calc(var(--r) * .4) 0 0 } .pg-graf svg { width: 100%; height: 100% }
+/* Layouts */
+.pg[data-l="centrado"] .pg-cuerpo { grid-template-columns: 1fr; text-align: center; justify-items: center; gap: 2em; align-content: center }
+.pg[data-l="centrado"] .pg-acc, .pg[data-l="centrado"] .pg-ui { justify-content: center } .pg[data-l="centrado"] .pg-bajada { margin-inline: auto }
+.pg[data-l="centrado"] .pg-bloque { grid-template-columns: repeat(3, 1fr); width: min(100%, 60em); text-align: left } .pg[data-l="centrado"] h2 { font-size: 3.1em }
+.pg[data-l="afiche"] .pg-cuerpo { grid-template-columns: 1fr; align-content: end; gap: 1.5em } .pg[data-l="afiche"] h2 { font-size: 6.4em; line-height: .9 } .pg[data-l="afiche"][data-ui="pildora"] h2 { font-size: 4.6em }
+.pg[data-l="afiche"] .pg-bloque { grid-template-columns: repeat(3, 1fr) } .pg[data-l="afiche"] .pg-bajada { margin-bottom: 1em }
+.pg[data-l="lateral"] { flex-direction: row } .pg[data-l="lateral"] .pg-nav { flex-direction: column; align-items: flex-start; gap: 1.1em; width: 13em; padding: 2em 1.6em; background: var(--card) } .pg[data-l="lateral"] .pg-nav b { margin: 0 0 1em }
+.pg[data-l="lateral"] .pg-cuerpo { grid-template-columns: 1fr; padding: 2.4em 3em; align-content: center; gap: 1.8em } .pg[data-l="lateral"] h2 { font-size: 2.6em } .pg[data-l="lateral"] .pg-bloque { grid-template-columns: repeat(3, 1fr) }
+
+/* Cómo entra la página (se reproduce al elegirla) */
+.pg[data-entra] :is(h2, .pg-bajada, .pg-acc, .pg-ui, .pg-caja, .pg-graf) { animation: var(--ea) var(--ed, 700ms) var(--ec, var(--curva)) both }
+.pg[data-entra] .pg-bajada { animation-delay: 90ms } .pg[data-entra] .pg-acc { animation-delay: 180ms } .pg[data-entra] .pg-ui { animation-delay: 250ms }
+.pg[data-entra] .pg-caja:nth-child(1) { animation-delay: 300ms } .pg[data-entra] .pg-caja:nth-child(2) { animation-delay: 390ms } .pg[data-entra] .pg-caja:nth-child(3) { animation-delay: 480ms } .pg[data-entra] .pg-graf { animation-delay: 560ms }
+.pg[data-entra="suben"] { --ea: e-suben } .pg[data-entra="enfocan"] { --ea: e-enfocan; --ed: 900ms } .pg[data-entra="rebote"] { --ea: e-rebote; --ec: var(--rebote) }
+.pg[data-entra="cortina"] { --ea: e-cortina; --ed: 900ms } .pg[data-entra="giro"] { --ea: e-giro; --ed: 800ms }
+@keyframes e-suben { from { opacity: 0; transform: translateY(2.4em) } } @keyframes e-enfocan { from { opacity: 0; filter: blur(14px); transform: scale(1.06) } }
+@keyframes e-rebote { from { opacity: 0; transform: translateY(-3em) scale(.86) } } @keyframes e-cortina { from { clip-path: inset(0 100% 0 0) } to { clip-path: inset(0 -10% 0 0) } }
+@keyframes e-giro { from { opacity: 0; transform: perspective(40em) rotateX(-70deg); transform-origin: top } }
+
+/* Scroll interactivo: --p va de 0 a 1 según cuánto se bajó */
+.pg-s2 { position: relative; padding: 4em 3em 5em; background: var(--bg); display: grid; grid-template-columns: minmax(0, 1fr); gap: 2.4em; overflow: hidden }
+.pg-frase { margin: 0; font: var(--fw) 2.7em/1.08 var(--ft); letter-spacing: var(--ls); max-width: 18em }
+.pg-fila { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1em }
+.pg-tile { height: 11em; padding: 1em; border-radius: var(--r); border: var(--borde); box-shadow: var(--sh); background: var(--card); display: flex; align-items: flex-end; font-weight: 600 }
+.pg-tile:nth-child(odd) { background: color-mix(in srgb, var(--acc) 30%, var(--card)) } .pg-tile:nth-child(n+4) { display: none }
+.pg[data-scroll="aparecer"] .pg-tile { --a: clamp(0, (var(--p) - .3 - var(--i) * .13) * 6, 1); opacity: var(--a); translate: 0 calc((1 - var(--a)) * 4em) }
+.pg[data-scroll="frase"] .pg-frase span { opacity: clamp(.16, (var(--p) - .12 - var(--i) * .045) * 7, 1) }
+.pg[data-scroll="costado"] .pg-fila { grid-template-columns: repeat(6, 17em); translate: calc((.42 - var(--p)) * 70em) 0 } .pg[data-scroll="costado"] .pg-tile:nth-child(n+4) { display: flex }
+.pg[data-scroll="alejar"] .pg-cuerpo { position: sticky; top: 0; scale: calc(1 - var(--p) * .22); opacity: calc(1 - var(--p) * 1.1); filter: blur(calc(var(--p) * 10px)) }
+.pg[data-scroll="alejar"] .pg-s2 { border-radius: 2em 2em 0 0; box-shadow: 0 -2em 4em -2em rgba(0, 0, 0, .35) }
+.pg[data-scroll="contar"] .pg-frase { font-size: 5em; font-variant-numeric: tabular-nums }
+.pg-rollo-pista { position: absolute; right: 1.2em; bottom: 1.2em; z-index: 2; padding: .5em .9em; border-radius: 99px; background: var(--fg); color: var(--bg); font-size: .85em; font-weight: 600; opacity: calc(1 - var(--p) * 4) }
+
+@media (max-width: 760px) {
+  .lienzo { inset: 60px 12px 136px } .pie { height: 136px; flex-wrap: wrap; align-content: center; gap: 6px } .fichas { flex-basis: 100% } .final { flex: 1 } .final .btn { flex: 1; padding: 0 14px; font-size: 14px }
+  .pg { font-size: 2.9vw } .pg-nav span { display: none } .pg-nav, .pg-cuerpo, .pg-s2 { padding-inline: 1.6em }
+  .pg-cuerpo, .pg[data-l] .pg-bloque { grid-template-columns: 1fr } .pg-cuerpo { align-content: start; gap: 1.6em; padding-top: 1em }
+  .pg h2, .pg[data-l="centrado"] h2 { font-size: 2.7em } .pg[data-l="afiche"] h2 { font-size: 3.8em }
+  .pg[data-l="lateral"] .pg-nav { width: 4.4em; padding-inline: 1em } .pg[data-l="lateral"] .pg-nav b { font-size: .9em }
+  .pg-bloque[data-v="grilla"] i { height: 3em; width: 3em } .pg-bloque[data-v="grilla"] .pg-caja { flex-direction: row; align-items: center }
+  .pg-fila { grid-template-columns: 1fr 1fr } .pg-tile { height: 8em } .pg-frase { font-size: 2.2em }
+  .idea { min-height: 50px; padding: 8px 12px; font-size: 14px; gap: 8px } .idea small { display: none } .idea svg { width: 40px; height: 28px }
+  .pista { font-size: 14px } .centro p { font-size: 16px } .centro { top: calc(50% - 110px) }
+  .paginas { top: calc(50% + 40px) } .bajar { bottom: 150px } .nucleo, .orbita { top: calc(50% + 120px) } .bajando .nucleo { left: calc(100% - 76px) }
+}
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important } }
+</style>
+
+<div id="app">
+  <header class="barra">
+    <span class="marca"><i></i>Molde</span><span class="hueco"></span>
+    <button class="enlace" id="cero" hidden>Empezar de cero</button>
+  </header>
+
+  <div class="lienzo" id="lienzo">
+    <div class="capa" id="base"></div>
+    <div class="capa sin" id="prev"></div>
+  </div>
+
+  <div class="portada" id="portada" tabindex="-1"><div id="largo"></div></div>
+  <div class="centro">
+    <h1>Armá el diseño de tu página</h1>
+    <p>Del botón salen ideas. Las que elegís se quedan en la página, y al final te la llevás armada.</p>
+  </div>
+  <div class="orbita" id="orbita" aria-hidden="true"></div>
+  <p class="bajar" id="bajar">Bajá para ver cómo se arma<i></i></p>
+
+  <div class="ideas" id="ideas"></div>
+  <button class="nucleo" id="nucleo">Empezar</button>
+  <div class="paginas" id="paginas" hidden>
+    <button class="flecha" id="antes" aria-label="Opciones anteriores">‹</button>
+    <span id="cuenta"></span>
+    <button class="flecha" id="despues" aria-label="Más opciones">›</button>
+  </div>
+  <div class="usar" id="usar" hidden>
+    <button class="btn btn-1" id="usar-esta"></button>
+    <button class="btn btn-2" id="otras">Ver otras</button>
+  </div>
+
+  <footer class="pie">
+    <div class="fichas" id="fichas"></div>
+    <div class="final" id="final" hidden>
+      <button class="btn btn-2" id="bajar-html">Descargar HTML</button>
+      <button class="btn btn-1" id="bajar-md">Descargar DESIGN.md</button>
+    </div>
+  </footer>
+  <p class="aviso" id="aviso" role="status" hidden></p>
+</div>
+
+<script>
+// ───── Datos de muestra (en la versión real salen del catálogo y de recomendados.ts) ─────
+const TIPOS = {
+  landing: { nombre: 'Landing page', desc: 'Una página que presenta y convence', marca: 'Turnera', nav: ['Cómo funciona', 'Precios', 'Ayuda'], titulo: 'Tu agenda llena, sin atender el teléfono', bajada: 'Tus pacientes sacan turno solos desde WhatsApp o la web, y el horario se libera si cancelan.', b1: 'Probar 30 días gratis', b2: 'Ver cómo funciona',
+    cajas: [['Turnos por WhatsApp', 'Sin instalar nada'], ['Recordatorio el día anterior', 'Menos ausencias'], ['Lista de espera', 'El hueco se llena solo']],
+    frase: 'Cada turno que se cancela vuelve a ofrecerse solo, antes de que te enteres.', tiles: ['Consultorios', 'Kinesiología', 'Odontología', 'Psicología', 'Estética', 'Veterinarias'], cifra: '1.243 consultorios' },
+  tienda: { nombre: 'Tienda online', desc: 'Catálogo, carrito y compra', marca: 'Lumbre', nav: ['Velas', 'Difusores', 'Envíos'], titulo: 'Una vela que dura cuarenta horas', bajada: 'Cera de soja, mecha de algodón y aromas que no marean. Envíos a todo el país.', b1: 'Ver las velas', b2: 'Cómo las hacemos',
+    cajas: [['Higo y cedro', '$ 14.500'], ['Naranja amarga', '$ 14.500'], ['Lavanda', '$ 12.900']] },
+  stock: { nombre: 'Sistema de stock', desc: 'Una herramienta con datos y tablas', marca: 'Estiba', nav: ['Productos', 'Movimientos', 'Reportes'], titulo: 'El stock del depósito, al día', bajada: 'Entradas, salidas y faltantes en una sola pantalla. Avisa antes de que algo se termine.', b1: 'Cargar un ingreso', b2: 'Ver faltantes',
+    cajas: [['Productos', '1.284'], ['Por reponer', '37'], ['Valor en stock', '$ 8,4 M']] },
+  turnos: { nombre: 'Reserva de turnos', desc: 'Agenda para que reserven solos', marca: 'Barbería Sur', nav: ['Servicios', 'Barberos', 'Dónde estamos'], titulo: 'Reservá tu corte en dos toques', bajada: 'Elegís barbero, día y horario. Te avisamos por WhatsApp una hora antes.', b1: 'Reservar un turno', b2: 'Ver precios',
+    cajas: [['Jue 10:00', 'Libre'], ['Jue 10:45', 'Libre'], ['Jue 11:30', 'Último']] },
+  portfolio: { nombre: 'Portfolio', desc: 'Mostrar tus trabajos', marca: 'Estudio Vera', nav: ['Trabajos', 'Estudio', 'Contacto'], titulo: 'Marcas que se reconocen desde la vereda', bajada: 'Nombre, logo y cartel para comercios que atienden a la calle. Trabajamos en Rosario.', b1: 'Ver trabajos', b2: 'Escribinos',
+    cajas: [['Panadería Lirio', '2026'], ['Ferretería Sol', '2025'], ['Club Atlas', '2025']],
+    frase: 'Un buen cartel se lee desde la vereda de enfrente y con el colectivo en marcha.', tiles: ['Panadería Lirio', 'Ferretería Sol', 'Club Atlas', 'Verdulería Tito', 'Librería Faro', 'Bar Unión'], cifra: '64 marcas hechas' },
+};
+const NEUTRA = { bg: '#FFFFFF', fg: '#2B2B33', sub: '#8A8A96', acc: '#B9BAC4', sobre: '#FFFFFF', card: '#F1F1F4' };
+const PALETAS = {
+  papel: { nombre: 'Papel y azul', bg: '#FBFAF7', fg: '#16161A', sub: '#5F5F6B', acc: '#2F4BFF', sobre: '#FFFFFF', card: '#EFEDE6' },
+  bosque: { nombre: 'Bosque', bg: '#F1F5EE', fg: '#14261C', sub: '#52655A', acc: '#2E7D4F', sobre: '#FFFFFF', card: '#E1E9DC' },
+  durazno: { nombre: 'Durazno', bg: '#FFF1E8', fg: '#3A1B12', sub: '#80574A', acc: '#E04A22', sobre: '#FFFFFF', card: '#FFE1D0' },
+  chicle: { nombre: 'Chicle', bg: '#FFE9F3', fg: '#2A0F2E', sub: '#7A4E7C', acc: '#C3207A', sobre: '#FFFFFF', card: '#FFD3E8' },
+  noche: { nombre: 'Noche', bg: '#101322', fg: '#EEF0FF', sub: '#A3A8CC', acc: '#8C9BFF', sobre: '#101322', card: '#1C2038' },
+  lima: { nombre: 'Grafito y lima', bg: '#1B1D1A', fg: '#F2F4EC', sub: '#A9AD9F', acc: '#C6F23C', sobre: '#1B1D1A', card: '#292C27' },
+  oceano: { nombre: 'Océano', bg: '#EAF4F7', fg: '#0C2A36', sub: '#4C6B78', acc: '#0B7C9E', sobre: '#FFFFFF', card: '#D6EAF0' },
+  arena: { nombre: 'Arena', bg: '#F4EDE1', fg: '#2D2618', sub: '#6F6450', acc: '#9A6B1F', sobre: '#FFFFFF', card: '#E9DFCC' },
+  uva: { nombre: 'Uva', bg: '#1C1230', fg: '#F3ECFF', sub: '#B3A3D1', acc: '#C084FF', sobre: '#1C1230', card: '#2A1C47' },
+  tomate: { nombre: 'Tomate', bg: '#FFFFFF', fg: '#1A1A1A', sub: '#666666', acc: '#E3170A', sobre: '#FFFFFF', card: '#F3F3F3' },
+};
+const LAYOUTS = { partido: 'Texto y visual', centrado: 'Centrado', afiche: 'Título gigante', lateral: 'Menú al costado' };
+const UIS = { suave: ['Suave', 'Esquinas y sombras blandas'], neobrutal: ['Neobrutal', 'Bordes gruesos, sombra dura'], lineas: ['Líneas finas', 'Recto y con serif'], pildora: ['Píldora', 'Todo bien redondo'] };
+const ENTRADAS = { '': 'Sin animación', suben: 'Suben de a uno', enfocan: 'Se enfocan', rebote: 'Caen con rebote', cortina: 'Se destapan', giro: 'Giran al entrar' };
+const FONDOS = { '': 'Sin fondo', aurora: 'Aurora', puntos: 'Puntos que corren', ondas: 'Franjas', burbujas: 'Burbujas', malla: 'Piso en perspectiva', barrido: 'Brillo que pasa' };
+const SCROLLS = { '': 'Sin efecto al bajar', aparecer: 'Aparecen al bajar', frase: 'Frase que se enciende', costado: 'Galería de costado', alejar: 'Portada que se aleja', contar: 'Número que cuenta' };
+const lista = (o) => () => Object.entries(o).map(([id, nombre]) => ({ id, nombre, html: nombre }));
+// Cada rama tiene sus propios layouts recomendados y sus rondas propias.
+const fondo = { clave: 'fondo', ficha: 'Fondo animado', pregunta: 'Elegí un fondo animado', ops: lista(FONDOS), valor: (v) => FONDOS[v] };
+const scroll = { clave: 'scroll', ficha: 'Al bajar', pregunta: 'Elegí qué pasa al bajar', ops: lista(SCROLLS), valor: (v) => SCROLLS[v] };
+const PRODUCTOS = { lista: 'En lista', grilla: 'En grilla', destacado: 'Uno destacado' }, STATS = { barras: 'Barras', linea: 'Línea', numeros: 'Solo números' }, AGENDAS = { lista: 'Lista del día', semana: 'Semana' };
+const RAMAS = {
+  landing: { layouts: ['afiche', 'partido', 'centrado'], extras: [fondo, scroll] },
+  portfolio: { layouts: ['afiche', 'centrado', 'partido'], extras: [fondo, scroll] },
+  tienda: { layouts: ['partido', 'centrado', 'lateral'], extras: [{ clave: 'productos', ficha: 'Productos', pregunta: 'Elegí cómo van los productos', ops: lista(PRODUCTOS), valor: (v) => PRODUCTOS[v] }] },
+  stock: { layouts: ['lateral', 'partido'], extras: [{ clave: 'stats', ficha: 'Estadísticas', pregunta: 'Elegí las estadísticas', ops: lista(STATS), valor: (v) => STATS[v] }] },
+  turnos: { layouts: ['partido', 'centrado', 'lateral'], extras: [{ clave: 'agenda', ficha: 'Agenda', pregunta: 'Elegí la agenda', ops: lista(AGENDAS), valor: (v) => AGENDAS[v] }] },
+};
+const COMUNES = [
+  { clave: 'tipo', ficha: 'Proyecto', pregunta: '¿Qué vas a armar?', valor: (v) => TIPOS[v].nombre, ops: () => Object.entries(TIPOS).map(([id, t]) => ({ id, nombre: t.nombre, html: `<span>${t.nombre}<small>${t.desc}</small></span>` })) },
+  { clave: 'paleta', ficha: 'Color', pregunta: 'Elegí los colores', valor: (v) => PALETAS[v].nombre, ops: () => Object.entries(PALETAS).map(([id, c]) => ({ id, nombre: c.nombre, html: `<span class="muestras"><i style="background:${c.bg}"></i><i style="background:${c.fg}"></i><i style="background:${c.acc}"></i></span>${c.nombre}` })) },
+  { clave: 'layout', ficha: 'Layout', pregunta: 'Elegí cómo se acomoda', valor: (v) => LAYOUTS[v], ops: (s) => RAMAS[s.tipo].layouts.map((id) => ({ id, nombre: LAYOUTS[id], html: esquema(id, PALETAS[s.paleta] || NEUTRA) + LAYOUTS[id] })) },
+  { clave: 'ui', ficha: 'Piezas', pregunta: 'Elegí botones y piezas', valor: (v) => UIS[v][0], ops: (s) => Object.entries(UIS).map(([id, [n, d]]) => ({ id, nombre: n, html: miniBoton(id, PALETAS[s.paleta] || NEUTRA) + `<span>${n}<small>${d}</small></span>` })) },
+  { clave: 'entrada', ficha: 'Entrada', pregunta: 'Elegí cómo entra la página', valor: (v) => ENTRADAS[v], ops: lista(ENTRADAS) },
+];
+const rondasDe = (s) => [...COMUNES, ...(RAMAS[s.tipo]?.extras ?? [])];
+const POR_VEZ = 6;
+
+const $ = (s) => document.querySelector(s);
+const app = $('#app'), base = $('#base'), prev = $('#prev'), ideas = $('#ideas'), nucleo = $('#nucleo'), portada = $('#portada');
+let estado = {}, ronda = -1, hoja = 0, viva = null, arrastre = null, recienArrastrado = false, turno = 0;
+const tacto = matchMedia('(pointer: coarse)').matches, quieto = matchMedia('(prefers-reduced-motion: reduce)').matches;
+app.classList.toggle('tacto', tacto);
+
+// ───── La página, a partir de lo elegido (lo no elegido va en gris neutro) ─────
+function pagina(s, entra) {
+  if (!s.tipo) return '';
+  const t = TIPOS[s.tipo], p = PALETAS[s.paleta] || NEUTRA;
+  let bloque = t.cajas.map(([a, b]) => `<div class="pg-caja"><i></i><div><b>${a}</b></div><span>${b}</span></div>`).join('');
+  if (s.tipo === 'stock') {
+    const nums = t.cajas.map(([a, b]) => `<div class="pg-caja" style="flex-direction:column;align-items:flex-start;gap:.2em"><small>${a}</small><b class="pg-num">${b}</b></div>`).join('');
+    const graf = s.stats === 'linea' ? `<div class="pg-graf"><svg viewBox="0 0 100 40" preserveAspectRatio="none"><polyline points="0,30 14,26 28,31 42,18 56,22 70,10 84,14 100,4" fill="none" stroke="${p.acc}" stroke-width="2.5" vector-effect="non-scaling-stroke"/></svg></div>`
+      : s.stats === 'numeros' ? '' : `<div class="pg-graf">${[40, 62, 35, 78, 55, 90, 70, 48].map((h) => `<u style="height:${h}%"></u>`).join('')}</div>`;
+    bloque = nums + graf;
+  }
+  const dv = s.tipo === 'stock' ? 'numeros' : s.productos || s.agenda || '';
+  const s2 = s.scroll && t.frase ? `<div class="pg-s2"><p class="pg-frase">${s.scroll === 'contar' ? `<span data-cifra="${t.cifra}">${t.cifra}</span>` : t.frase.split(' ').map((w, i) => `<span style="--i:${i}">${w} </span>`).join('')}</p>
+      <div class="pg-fila">${t.tiles.map((n, i) => `<div class="pg-tile" style="--i:${i}">${n}</div>`).join('')}</div></div>` : '';
+  return `<div class="pg" data-l="${s.layout || 'partido'}" data-ui="${s.ui || 'base'}" data-fondo="${s.fondo || ''}" data-scroll="${s2 ? s.scroll : ''}" ${entra && s.entrada ? `data-entra="${s.entrada}"` : ''} style="--bg:${p.bg};--fg:${p.fg};--sub:${p.sub};--acc:${p.acc};--sobre:${p.sobre};--card:${p.card}">
+    <div class="pg-fondo"></div>
+    <div class="pg-nav"><b>${t.marca}</b>${t.nav.map((n) => `<span>${n}</span>`).join('')}</div>
+    <div class="pg-rollo"><div class="pg-cuerpo"><div>
+      <h2>${t.titulo}</h2><p class="pg-bajada">${t.bajada}</p>
+      <div class="pg-acc"><span class="pg-btn">${t.b1}</span><span class="pg-btn2">${t.b2}</span></div>
+      <div class="pg-ui"><span class="pg-campo">vos@ejemplo.com</span><span class="pg-switch"></span><span class="pg-chip">Nuevo</span></div>
+    </div><div class="pg-bloque" data-v="${dv}">${bloque}</div></div>${s2}</div>${s2 ? '<span class="pg-rollo-pista">Se baja sola para que lo veas</span>' : ''}</div>`;
+}
+/** Pone una página en una capa. Si tiene scroll interactivo, la baja sola para mostrarlo. */
+function poner(capa, s, entra) {
+  capa.innerHTML = pagina(s, entra);
+  const pg = capa.querySelector('.pg'), rollo = capa.querySelector('.pg-rollo');
+  if (!pg || !pg.dataset.scroll) return;
+  const cifra = pg.querySelector('[data-cifra]');
+  rollo.addEventListener('scroll', () => {
+    const p = rollo.scrollTop / Math.max(1, rollo.scrollHeight - rollo.clientHeight);
+    pg.style.setProperty('--p', p.toFixed(3));
+    if (cifra) cifra.textContent = cifra.dataset.cifra.replace(/[\d.]+/, (n) => Math.round(+n.replace('.', '') * Math.min(1, p * 1.6)).toLocaleString('es-AR'));
+  });
+  if (quieto) return;
+  let t0 = 0, vivo = true;
+  const parar = () => (vivo = false);
+  rollo.addEventListener('wheel', parar, { passive: true }); rollo.addEventListener('touchstart', parar, { passive: true });
+  const paso = (t) => {
+    if (!vivo || !rollo.isConnected) return;
+    t0 ||= t;
+    const k = (t - t0) / 5200, max = rollo.scrollHeight - rollo.clientHeight;
+    if (capa === base && k > 1) return void (rollo.scrollTop = 0); // en la página elegida, una sola vuelta
+    rollo.scrollTop = max * (1 - Math.cos(k * Math.PI * 2)) / 2;
+    requestAnimationFrame(paso);
+  };
+  requestAnimationFrame(paso);
+}
+
+function esquema(id, p) {
+  const r = (x, y, w, h, c) => `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="1.5" fill="${c}"/>`;
+  const d = { partido: r(5, 12, 20, 5, p.fg) + r(5, 20, 14, 3, p.sub) + r(5, 27, 10, 5, p.acc) + r(31, 9, 18, 24, p.card),
+    centrado: r(14, 8, 26, 5, p.fg) + r(18, 16, 18, 3, p.sub) + r(22, 22, 10, 4, p.acc) + r(5, 29, 13, 6, p.card) + r(20.5, 29, 13, 6, p.card) + r(36, 29, 13, 6, p.card),
+    afiche: r(5, 10, 44, 9, p.fg) + r(5, 21, 30, 9, p.fg) + r(5, 33, 10, 3, p.acc),
+    lateral: r(0, 0, 13, 38, p.card) + r(18, 8, 20, 5, p.fg) + r(18, 17, 9, 8, p.acc) + r(29, 17, 9, 8, p.sub) + r(40, 17, 9, 8, p.sub) + r(18, 28, 31, 6, p.card) }[id];
+  return `<svg viewBox="0 0 54 38" aria-hidden="true"><rect width="54" height="38" fill="${p.bg}"/>${d}</svg>`;
+}
+function miniBoton(id, p) {
+  const e = { suave: `border-radius:9px;box-shadow:0 6px 12px -6px rgba(0,0,0,.4);background:${p.acc};color:${p.sobre}`, neobrutal: `border-radius:5px;border:2.5px solid ${p.fg};box-shadow:3px 3px 0 ${p.fg};background:${p.acc};color:${p.sobre}`,
+    lineas: `border-bottom:3px solid ${p.acc};color:${p.fg};background:${p.bg}`, pildora: `border-radius:99px;background:${p.acc};color:${p.sobre}` }[id];
+  return `<span class="mini-btn" style="${e}" aria-hidden="true">Botón</span>`;
+}
+
+// ───── Explosión: las ideas salen del centro y se acomodan alrededor ─────
+function posiciones(n) {
+  const w = app.clientWidth, h = app.clientHeight - 150;
+  if (w < 760) return Array.from({ length: n }, (_, i) => { const fila = Math.floor(i / 2), arriba = fila % 2 === 0, k = Math.floor(fila / 2), solo = n % 2 === 1 && i === n - 1;
+    return [solo ? 0 : (i % 2 ? 1 : -1) * w * .24, (arriba ? -1 : 1) * (108 + k * 62)]; });
+  const rx = Math.min(w * .33, 470), ry = Math.min(h * .36, 270);
+  return Array.from({ length: n }, (_, i) => { const a = -Math.PI / 2 + (i / n) * Math.PI * 2 + (n % 2 ? 0 : Math.PI / n); return [Math.cos(a) * rx, Math.sin(a) * ry]; });
+}
+function abrir(i, pag = 0) {
+  ronda = i; hoja = pag; viva = null; turno++;
+  const def = rondasDe(estado)[i];
+  app.classList.add('iniciado', 'eligiendo'); app.classList.remove('viendo', 'bajando');
+  portada.hidden = true; $('#final').hidden = true; $('#usar').hidden = true; nucleo.hidden = false;
+  nucleo.textContent = def.pregunta; nucleo.classList.add('pulso'); nucleo.onanimationend = () => nucleo.classList.remove('pulso');
+  const todas = def.ops(estado), hojas = Math.ceil(todas.length / POR_VEZ);
+  const ops = todas.slice(pag * POR_VEZ, pag * POR_VEZ + POR_VEZ), pos = posiciones(ops.length);
+  $('#paginas').hidden = hojas < 2; $('#cuenta').textContent = `${pag + 1} de ${hojas}`;
+  $('#antes').onclick = () => cambiarHoja((pag - 1 + hojas) % hojas); $('#despues').onclick = () => cambiarHoja((pag + 1) % hojas);
+  ideas.innerHTML = '';
+  ops.forEach((op, k) => {
+    const b = document.createElement('button');
+    b.className = 'idea'; b.innerHTML = op.html; b.setAttribute('aria-label', op.nombre);
+    b.style.transitionDelay = `${k * 40}ms`;
+    ideas.append(b);
+    requestAnimationFrame(() => requestAnimationFrame(() => { const tope = Math.max(0, app.clientWidth / 2 - b.offsetWidth / 2 - 10); pos[k][0] = Math.max(-tope, Math.min(tope, pos[k][0]));
+      b.style.setProperty('--x', pos[k][0] + 'px'); b.style.setProperty('--y', pos[k][1] + 'px'); b.style.setProperty('--s', 1); b.style.setProperty('--o', 1); }));
+    setTimeout(() => (b.style.transitionDelay = '0ms'), 700);
+    const ver = () => mostrar(op, b), dejar = () => ocultar(b);
+    b.addEventListener('pointerenter', (e) => !tacto && e.pointerType === 'mouse' && !arrastre && ver());
+    b.addEventListener('pointerleave', (e) => e.pointerType === 'mouse' && !arrastre && dejar());
+    b.addEventListener('focus', () => !tacto && b.matches(':focus-visible') && ver()); b.addEventListener('blur', dejar);
+    b.addEventListener('click', () => { if (recienArrastrado) return; if (tacto && viva !== b) return ver(); elegir(op); });
+    // Arrastrar al centro también elige.
+    b.addEventListener('pointerdown', (e) => { if (e.pointerType !== 'mouse') return; arrastre = { b, op, x0: e.clientX, y0: e.clientY, ox: pos[k][0], oy: pos[k][1], movio: false }; b.setPointerCapture(e.pointerId); });
+    b.addEventListener('pointermove', (e) => { if (!arrastre || arrastre.b !== b) return; const dx = e.clientX - arrastre.x0, dy = e.clientY - arrastre.y0;
+      if (!arrastre.movio && Math.hypot(dx, dy) < 8) return; arrastre.movio = true; b.classList.add('arrastra');
+      b.style.setProperty('--x', arrastre.ox + dx + 'px'); b.style.setProperty('--y', arrastre.oy + dy + 'px'); });
+    b.addEventListener('pointerup', (e) => { if (!arrastre || arrastre.b !== b) return; const a = arrastre; arrastre = null; b.classList.remove('arrastra'); if (!a.movio) return;
+      recienArrastrado = true; setTimeout(() => (recienArrastrado = false), 50);
+      const x = a.ox + e.clientX - a.x0, y = a.oy + e.clientY - a.y0;
+      if (Math.hypot(x, y) < 130) elegir(a.op); else { b.style.setProperty('--x', a.ox + 'px'); b.style.setProperty('--y', a.oy + 'px'); } });
+  });
+  fichas(estado, true);
+}
+function recoger() { ideas.querySelectorAll('.idea').forEach((b) => { b.style.setProperty('--x', '0px'); b.style.setProperty('--y', '0px'); b.style.setProperty('--s', .2); b.style.setProperty('--o', 0); b.disabled = true; }); }
+function cambiarHoja(pag) { const r = ronda, t = ++turno; recoger(); setTimeout(() => t === turno && abrir(r, pag), 300); }
+function mostrar(op, b) {
+  viva?.classList.remove('viva'); viva = b; b.classList.add('viva');
+  const clave = rondasDe(estado)[ronda].clave;
+  poner(prev, { ...estado, [clave]: op.id }, clave === 'entrada');
+  prev.classList.remove('sin'); prev.classList.add('on'); app.classList.add('viendo');
+  if (tacto) { $('#usar').hidden = false; $('#usar-esta').textContent = `Usar «${op.nombre}»`; $('#usar-esta').onclick = () => elegir(op); }
+}
+function ocultar(b) {
+  if (viva !== b || tacto) return;
+  b.classList.remove('viva'); viva = null; prev.classList.remove('on'); app.classList.remove('viendo');
+}
+function elegir(op) {
+  const clave = rondasDe(estado)[ronda].clave;
+  if (clave === 'tipo' && estado.tipo !== op.id) { const { paleta, ui, entrada } = estado; estado = {}; if (paleta) estado.paleta = paleta; if (ui) estado.ui = ui; if (entrada !== undefined) estado.entrada = entrada; } // otra rama: lo propio se vuelve a elegir
+  estado[clave] = op.id;
+  poner(base, estado, clave === 'entrada'); $('#lienzo').classList.add('hay');
+  prev.classList.add('sin'); prev.classList.remove('on'); prev.innerHTML = ''; app.classList.remove('viendo'); viva = null; $('#usar').hidden = true;
+  recoger();
+  const falta = rondasDe(estado).findIndex((r) => !(r.clave in estado)), t = ++turno;
+  setTimeout(() => t === turno && (falta < 0 ? terminar() : abrir(falta)), 420);
+  fichas(estado, true, clave);
+}
+function terminar() {
+  ronda = -1; ideas.innerHTML = ''; app.classList.remove('eligiendo');
+  nucleo.hidden = true; $('#paginas').hidden = true; $('#final').hidden = false;
+  poner(base, estado, true); fichas(estado, true);
+}
+/** Fichas de lo elegido. En la portada son solo de muestra (no se tocan). */
+function fichas(s, tocables, nueva) {
+  const f = $('#fichas'); f.innerHTML = ''; $('#cero').hidden = !tocables || !s.tipo;
+  rondasDe(s).forEach((r, i) => {
+    if (!(r.clave in s)) return;
+    const b = document.createElement(tocables ? 'button' : 'div');
+    b.className = 'ficha' + (r.clave === nueva ? ' nueva' : ''); if (tocables) { b.setAttribute('aria-current', String(i === ronda)); b.onclick = () => abrir(i); }
+    b.innerHTML = `${r.ficha}<b>${r.valor(s[r.clave])}</b>`;
+    f.append(b);
+  });
+  if (f.children.length) return void (f.scrollLeft = f.scrollWidth);
+  f.innerHTML = `<p class="pista">${!tocables ? 'Gratis y sin cuenta. Lo que elegís queda en tu navegador.' : tacto ? 'Tocá una idea para verla en la página y después el botón de usarla.' : 'Pasá el mouse por una idea para verla en la página. Tocala o arrastrala al centro para quedártela.'}</p>`;
+}
+function avisar(t) { const a = $('#aviso'); a.textContent = t; a.hidden = false; clearTimeout(avisar.t); avisar.t = setTimeout(() => (a.hidden = true), 3200); }
+
+// ───── Portada: piezas girando y páginas que se arman solas al bajar ─────
+const PIEZAS = ['<span class="pz pz-boton">Empezar</span>', '<span class="pz"><i style="background:#2F4BFF"></i><i style="background:#F0552B"></i><i style="background:#C6F23C"></i></span>', '<span class="pz pz-switch"></span>',
+  '<span class="pz pz-letra">Aa</span>', '<span class="pz" style="height:34px"><u style="height:8px"></u><u style="height:16px"></u><u style="height:11px"></u><u style="height:20px"></u></span>', '<span class="pz">Turnos</span>',
+  '<span class="pz" style="border-radius:4px;box-shadow:3px 3px 0 var(--tinta), 0 0 0 2px var(--tinta)">Comprar</span>', '<span class="pz"><i style="background:#2E7D4F"></i>Bosque</span>'];
+function orbitar() {
+  // Todas con el mismo período y repartidas en la vuelta, así no se amontonan.
+  const chico = app.clientWidth < 760, d = 11, n = PIEZAS.length;
+  $('#orbita').innerHTML = PIEZAS.map((h, i) => { const rx = (250 + (i % 2) * 90) * (chico ? .5 : 1), ry = (64 + (i % 2) * 24) * (chico ? .85 : 1);
+    return `<div class="pieza" style="--d:${d}s;--t:${(-(i / n) * 2 * d).toFixed(2)}s;--rx:${rx}px;--ry:${ry}px"><span>${h}</span></div>`; }).join('');
+}
+let guion = [], pasoDemo = 0;
+const alAzar = (a) => a[Math.floor(Math.random() * a.length)];
+function armarGuion() {
+  guion = []; const tipos = Object.keys(TIPOS).sort(() => Math.random() - .5).slice(0, 2);
+  for (const tipo of tipos) {
+    let s = { tipo }; guion.push(s);
+    s = { ...s, paleta: alAzar(Object.keys(PALETAS)) }; guion.push(s);
+    s = { ...s, layout: alAzar(RAMAS[tipo].layouts) }; guion.push(s);
+    s = { ...s, ui: alAzar(Object.keys(UIS)) }; guion.push(s);
+    const x = RAMAS[tipo].extras[0]; s = { ...s, [x.clave]: alAzar(x.ops(s).map((o) => o.id).filter(Boolean)) }; guion.push(s);
+  }
+  const alto = app.clientHeight; $('#largo').style.height = alto + (guion.length + .6) * alto * .55 + 'px';
+}
+portada.addEventListener('scroll', () => {
+  const y = portada.scrollTop, alto = app.clientHeight * .55;
+  app.classList.toggle('bajando', y > 24);
+  const paso = Math.min(guion.length, Math.floor((y + alto * .7) / alto));
+  if (paso === pasoDemo) return;
+  const sube = paso < pasoDemo; pasoDemo = paso;
+  const s = paso ? guion[paso - 1] : {}, t = ++turno;
+  fichas(s, false, sube ? '' : Object.keys(s).pop());
+  if (!paso) { base.innerHTML = ''; prev.classList.add('sin'); prev.classList.remove('on'); return $('#lienzo').classList.remove('hay'); }
+  $('#lienzo').classList.add('hay');
+  poner(prev, s); prev.classList.add('sin'); prev.classList.remove('on'); void prev.offsetWidth; prev.classList.remove('sin'); prev.classList.add('on');
+  setTimeout(() => { if (t !== turno) return; poner(base, s); prev.classList.add('sin'); prev.classList.remove('on'); }, quieto ? 0 : 560);
+});
+function empezar() {
+  turno++; pasoDemo = 0; base.innerHTML = ''; prev.innerHTML = ''; prev.classList.add('sin'); prev.classList.remove('on'); $('#lienzo').classList.remove('hay');
+  nucleo.onclick = null; abrir(0);
+}
+function aPortada() {
+  turno++; estado = {}; ronda = -1; pasoDemo = 0; base.innerHTML = ''; ideas.innerHTML = ''; $('#lienzo').classList.remove('hay');
+  $('#final').hidden = true; $('#paginas').hidden = true; $('#usar').hidden = true; nucleo.hidden = false; nucleo.textContent = 'Empezar'; nucleo.onclick = empezar;
+  app.classList.remove('iniciado', 'eligiendo', 'viendo', 'bajando'); portada.hidden = false; portada.scrollTop = 0;
+  armarGuion(); orbitar(); fichas({}, false);
+}
+
+$('#cero').onclick = aPortada;
+$('#otras').onclick = () => { prev.classList.remove('on'); abrir(ronda, hoja); };
+$('#bajar-md').onclick = () => avisar('Esto es una maqueta: en la versión real acá baja tu DESIGN.md.');
+$('#bajar-html').onclick = () => avisar('Esto es una maqueta: en la versión real acá baja la página en HTML.');
+addEventListener('resize', () => { if (ronda >= 0) abrir(ronda, hoja); else if (!estado.tipo) { armarGuion(); orbitar(); } });
+aPortada();
+</script>

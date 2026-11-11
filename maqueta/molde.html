@@ -1,0 +1,440 @@
+<title>Molde</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Instrument+Sans:wght@400;500;600&family=Archivo:wght@500;800;900&family=Fraunces:opsz,wght@9..144,400;9..144,600&family=Unbounded:wght@500;800&family=Cormorant+Garamond:wght@500;600&display=swap">
+<style>
+/* Maqueta de Molde (fase 1). Concepto: un solo lienzo. La página de la persona nunca sale de
+   pantalla; el marco (yeso, tinta, silicona) es fijo y todo lo demás pasa adentro del lienzo. */
+:root {
+  --yeso: #EEF0F3; --yeso-2: #E0E4EA; --superficie: #FFFFFF;
+  --tinta: #1D1730; --tinta-2: #5A5470; --linea: #C9CDD6;
+  --silicona: #D81E6A; --sobre-silicona: #FFFFFF; --sombra: rgba(29, 23, 48, .16);
+  --f-marca: 'Bricolage Grotesque', 'Trebuchet MS', sans-serif;
+  --f-texto: 'Instrument Sans', system-ui, sans-serif;
+  /* Lenguaje de movimiento: tres duraciones y una curva. */
+  --toque: 140ms; --cambio: 520ms; --escena: 760ms; --curva: cubic-bezier(.2, .8, .2, 1);
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --yeso: #17131F; --yeso-2: #231D30; --superficie: #2B243A; --tinta: #F1EEF6; --tinta-2: #B0A9C0;
+  --linea: #443B58; --silicona: #FF6BA3; --sobre-silicona: #1D1730; --sombra: rgba(0, 0, 0, .5); color-scheme: dark } }
+:root[data-theme="dark"] {
+  --yeso: #17131F; --yeso-2: #231D30; --superficie: #2B243A; --tinta: #F1EEF6; --tinta-2: #B0A9C0;
+  --linea: #443B58; --silicona: #FF6BA3; --sobre-silicona: #1D1730; --sombra: rgba(0, 0, 0, .5); color-scheme: dark }
+
+* { box-sizing: border-box }
+body { background: var(--yeso); color: var(--tinta); font: 16px/1.5 var(--f-texto) }
+button { font: inherit; color: inherit; cursor: pointer; border: 0; background: none }
+:focus-visible { outline: 3px solid var(--silicona); outline-offset: 3px }
+.gutter { padding-left: max(20px, env(safe-area-inset-left, 0px)); padding-right: max(20px, env(safe-area-inset-right, 0px)) }
+
+/* ───── Marco ───── */
+.barra { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; display: flex; align-items: center; gap: 16px;
+  height: 64px; background: var(--yeso) }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--yeso) }
+.marca { display: flex; align-items: center; gap: 9px; font: 700 24px/1 var(--f-marca); letter-spacing: -.02em; min-height: 44px }
+.marca i { width: 19px; height: 19px; border: 4px solid var(--silicona); border-radius: 6px }
+.barra .hueco { flex: 1 }
+.btn { min-height: 44px; padding: 0 20px; border-radius: 999px; font-weight: 600; transition: transform var(--toque), background var(--toque) }
+.btn:active { transform: scale(.96) }
+.btn-1 { background: var(--silicona); color: var(--sobre-silicona) }
+.btn-2 { box-shadow: inset 0 0 0 1.5px var(--tinta) }
+.btn-grande { min-height: 56px; padding: 0 30px; font-size: 18px }
+
+/* ───── Inicio: relato a la izquierda, lienzo fijo a la derecha ───── */
+.inicio { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: 56px; max-width: 1320px; margin: 0 auto }
+.escenario { position: sticky; top: calc(64px + env(safe-area-inset-top, 0px)); height: calc(100dvh - 64px); display: flex; flex-direction: column;
+  justify-content: center; gap: 14px; min-width: 0 }
+.rotulo { margin: 0; color: var(--tinta-2); font-size: 14px; min-height: 21px }
+.rotulo b { color: var(--tinta); font-weight: 600 }
+.beat { min-height: 80vh; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; gap: 18px; min-width: 0 }
+.beat:first-child { min-height: calc(100dvh - 64px) }
+.beat h1, .beat h2 { margin: 0; font-family: var(--f-marca); font-weight: 700; letter-spacing: -.035em; text-wrap: balance }
+.beat h1 { font-size: clamp(42px, 5.6vw, 84px); line-height: .96 }
+.beat h2 { font-size: clamp(30px, 3.4vw, 50px); line-height: 1.02 }
+.beat p { margin: 0; max-width: 46ch; font-size: 19px; color: var(--tinta-2) }
+.beat .chico { font-size: 15px }
+.beat { opacity: .32; transition: opacity var(--cambio) }
+.beat.activo { opacity: 1 }
+
+/* ───── Lienzo: el contenedor que viaja entre vistas ───── */
+.lienzo { width: 100%; aspect-ratio: 4 / 3; max-width: 100%; container-type: inline-size; border-radius: 20px; overflow: hidden;
+  box-shadow: 0 0 0 1px var(--linea), 0 30px 60px -24px var(--sombra); view-transition-name: lienzo; position: relative }
+.escenario .lienzo { pointer-events: none; max-height: calc(100dvh - 150px); width: min(100%, calc((100dvh - 150px) * 4 / 3)) }
+.nota-pieza, .hoja-mini { position: absolute; z-index: 2; opacity: 0; transform: translateY(12px); transition: opacity var(--cambio), transform var(--cambio) var(--curva); pointer-events: none }
+.nota-pieza { right: 5%; top: 18%; background: var(--tinta); color: var(--yeso); padding: 8px 14px; border-radius: 10px; font-size: 14px; font-weight: 600 }
+.hoja-mini { right: 4%; bottom: 5%; width: 46%; min-width: 180px; background: var(--superficie); color: var(--tinta); border-radius: 12px; padding: 14px 16px;
+  box-shadow: 0 18px 40px -14px var(--sombra); font: 12px/1.7 ui-monospace, Menlo, monospace; white-space: pre; overflow: hidden }
+[data-beat="3"] .nota-pieza, [data-beat="4"] .hoja-mini { opacity: 1; transform: none }
+
+/* ───── La página de muestra (todo en em: escala con el lienzo) ───── */
+#pagina { height: 100%; font-size: 2.05cqi; display: flex; flex-direction: column; background: var(--p-bg); color: var(--p-fg); font-family: var(--p-fb);
+  --p-r: var(--p-r0); }
+#pagina[data-radio="rectas"] { --p-r: 0 } #pagina[data-radio="suaves"] { --p-r: .7em } #pagina[data-radio="redondas"] { --p-r: 2.2em }
+.p-nav { display: flex; align-items: center; gap: 2em; padding: 1.5em 2.6em; font-size: .92em }
+.p-marca { font-family: var(--p-ft); font-weight: var(--p-fw); font-size: 1.35em; margin-right: auto; letter-spacing: var(--p-ls) }
+.p-hero { flex: 1; display: grid; grid-template-columns: 1.1fr .9fr; gap: 2.4em; align-items: center; padding: .5em 2.6em 2.6em; min-height: 0 }
+.p-sobre { margin: 0 0 .9em; color: var(--p-acc-texto); font-weight: 600; font-size: .95em }
+.p-titulo { margin: 0; font-family: var(--p-ft); font-weight: var(--p-fw); font-size: 3.5em; line-height: 1; letter-spacing: var(--p-ls); text-transform: var(--p-tt); text-wrap: balance }
+.p-bajada { margin: 1.1em 0 1.5em; color: var(--p-sub); font-size: 1.08em; line-height: 1.45; max-width: 34em }
+.p-acciones { display: flex; gap: .8em; flex-wrap: wrap }
+.p-btn, .p-btn2 { font: 600 1em var(--p-fb); padding: .85em 1.5em; border-radius: var(--p-r); border: var(--p-borde); cursor: pointer; transition: transform var(--toque), border-radius var(--cambio) var(--curva) }
+.p-btn { background: var(--p-acc); color: var(--p-sobre-acc); box-shadow: var(--p-sombra) }
+.p-btn2 { background: transparent; color: var(--p-fg) }
+#pagina[data-boton="contorno"] .p-btn { background: transparent; color: var(--p-fg); border: .14em solid var(--p-fg); box-shadow: none }
+#pagina[data-boton="subrayado"] .p-btn { background: transparent; color: var(--p-fg); border: 0; border-bottom: .2em solid var(--p-acc); border-radius: 0; box-shadow: none; padding-inline: .2em }
+#pagina[data-boton="lleno"] .p-btn { background: var(--p-acc); color: var(--p-sobre-acc) }
+.p-media { display: grid; gap: .9em }
+.p-item { display: flex; align-items: center; gap: 1em; padding: .9em 1.1em; background: var(--p-card); border: var(--p-borde); border-radius: var(--p-r); box-shadow: var(--p-sombra);
+  backdrop-filter: var(--p-filtro, none); transition: border-radius var(--cambio) var(--curva) }
+.p-thumb { width: 3em; height: 3em; flex: none; border-radius: calc(var(--p-r) * .6); background: var(--p-acc) }
+.p-item:nth-child(2) .p-thumb { background: var(--p-fg) } .p-item:nth-child(3) .p-thumb { background: var(--p-sub) }
+.p-item b { font-weight: 600 } .p-item span { margin-left: auto; color: var(--p-sub); font-variant-numeric: tabular-nums; white-space: nowrap }
+/* Composiciones */
+#pagina[data-comp="centrado"] .p-hero { grid-template-columns: 1fr; text-align: center; justify-items: center; gap: 1.6em }
+#pagina[data-comp="centrado"] .p-acciones { justify-content: center } #pagina[data-comp="centrado"] .p-bajada { margin-inline: auto }
+#pagina[data-comp="centrado"] .p-media { grid-template-columns: repeat(3, 1fr); width: 100% }
+#pagina[data-comp="centrado"] .p-item { flex-direction: column; align-items: flex-start; gap: .5em } #pagina[data-comp="centrado"] .p-item span { margin-left: 0 }
+#pagina[data-comp="centrado"] .p-titulo { font-size: 3em }
+#pagina[data-comp="afiche"] .p-hero { grid-template-columns: 1fr; align-items: end; gap: 1.2em }
+#pagina[data-comp="afiche"] .p-titulo { font-size: 5.6em; line-height: .9 } #pagina[data-comp="afiche"] .p-media { display: none }
+#pagina[data-comp="afiche"] .p-bajada { margin-bottom: 1em }
+@container (max-width: 520px) {
+  #pagina { font-size: 3.5cqi }
+  .p-nav span { display: none } .p-nav, .p-hero { padding-inline: 1.6em }
+  .p-hero, #pagina[data-comp="centrado"] .p-media { grid-template-columns: 1fr }
+  .p-titulo, #pagina[data-comp="centrado"] .p-titulo { font-size: 2.6em } #pagina[data-comp="afiche"] .p-titulo { font-size: 3.6em }
+  .p-item:nth-child(n+2) { display: none } #pagina[data-comp="centrado"] .p-item { flex-direction: row; align-items: center } #pagina[data-comp="centrado"] .p-item span { margin-left: auto }
+}
+/* Estilos de la muestra: mundos cerrados, no siguen el tema del visor */
+#pagina[data-estilo="suizo"] { --p-bg: #FFFFFF; --p-fg: #111111; --p-sub: #555555; --p-acc: #E10600; --p-acc-texto: #C40500; --p-sobre-acc: #FFFFFF; --p-card: #F2F2F2; --p-borde: 0 solid transparent; --p-r0: 0em; --p-sombra: none;
+  --p-ft: 'Archivo', sans-serif; --p-fw: 800; --p-ls: -.03em; --p-tt: none; --p-fb: 'Instrument Sans', sans-serif }
+#pagina[data-estilo="neobrutal"] { --p-bg: #FFE45C; --p-fg: #111111; --p-sub: #3B3B3B; --p-acc: #FF5C8A; --p-acc-texto: #111111; --p-sobre-acc: #111111; --p-card: #FFFFFF; --p-borde: .18em solid #111111; --p-r0: .5em; --p-sombra: .35em .35em 0 #111111;
+  --p-ft: 'Archivo', sans-serif; --p-fw: 900; --p-ls: -.02em; --p-tt: none; --p-fb: 'Instrument Sans', sans-serif }
+#pagina[data-estilo="editorial"] { --p-bg: #F3EFE6; --p-fg: #1B1B18; --p-sub: #5E5A50; --p-acc: #1F4D3A; --p-acc-texto: #1F4D3A; --p-sobre-acc: #F3EFE6; --p-card: transparent; --p-borde: 0 solid transparent; --p-r0: 0em; --p-sombra: 0 -.08em 0 #1B1B18;
+  --p-ft: 'Fraunces', serif; --p-fw: 600; --p-ls: -.02em; --p-tt: none; --p-fb: 'Instrument Sans', sans-serif }
+#pagina[data-estilo="vidrio"] { --p-bg: radial-gradient(60em 40em at 85% 20%, #5B4BFF 0%, transparent 60%), radial-gradient(50em 40em at 10% 100%, #00B3A4 0%, transparent 55%), #0E1030; --p-fg: #F4F5FF; --p-sub: #B9BEE8; --p-acc: #FFFFFF; --p-acc-texto: #B9C4FF; --p-sobre-acc: #14163A; --p-card: rgba(255, 255, 255, .12); --p-borde: .08em solid rgba(255, 255, 255, .3); --p-r0: 1.3em; --p-sombra: none; --p-filtro: blur(14px);
+  --p-ft: 'Bricolage Grotesque', sans-serif; --p-fw: 600; --p-ls: -.03em; --p-tt: none; --p-fb: 'Instrument Sans', sans-serif }
+#pagina[data-estilo="dopamina"] { --p-bg: #5326E0; --p-fg: #FFFFFF; --p-sub: #D9CFFF; --p-acc: #C9FF3D; --p-acc-texto: #C9FF3D; --p-sobre-acc: #1B0B57; --p-card: #6B41EE; --p-borde: 0 solid transparent; --p-r0: 2.2em; --p-sombra: none;
+  --p-ft: 'Unbounded', sans-serif; --p-fw: 800; --p-ls: -.04em; --p-tt: none; --p-fb: 'Instrument Sans', sans-serif }
+#pagina[data-estilo="neobrutal"] .p-titulo { font-size: 3em }
+#pagina[data-estilo="dopamina"] .p-titulo { font-size: 2.9em } #pagina[data-estilo="dopamina"][data-comp="afiche"] .p-titulo { font-size: 4.2em }
+#pagina[data-estilo="lujo"] { --p-bg: #15120F; --p-fg: #F2EBDD; --p-sub: #A89F8E; --p-acc: #C9A45C; --p-acc-texto: #C9A45C; --p-sobre-acc: #15120F; --p-card: transparent; --p-borde: .07em solid #5A4E38; --p-r0: 0em; --p-sombra: none;
+  --p-ft: 'Cormorant Garamond', serif; --p-fw: 500; --p-ls: 0em; --p-tt: none; --p-fb: 'Instrument Sans', sans-serif }
+#pagina[data-estilo="lujo"] .p-titulo { font-size: 4em } #pagina[data-estilo="lujo"][data-comp="afiche"] .p-titulo { font-size: 6.4em }
+.tocada { outline: .25em solid var(--silicona); outline-offset: .3em }
+
+/* ───── Taller: el lienzo y, abajo, las decisiones ───── */
+.taller, .llevar { max-width: 1320px; margin: 0 auto; min-height: calc(100dvh - 64px); display: flex; flex-direction: column }
+.mesa { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; padding-block: 8px 16px; min-height: 0 }
+.mesa .lienzo { width: min(100%, calc((100dvh - 330px) * 4 / 3)) }
+.pista { margin: 0; font-size: 14px; color: var(--tinta-2) }
+.dock { position: sticky; bottom: 0; background: var(--yeso); padding-block: 10px calc(14px + env(safe-area-inset-bottom, 0px)); display: grid; gap: 10px; border-top: 1px solid var(--linea) }
+.fila { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; padding: 3px } .fila::-webkit-scrollbar { display: none }
+.opcion { flex: none; min-height: 48px; padding: 0 16px; border-radius: 14px; background: var(--superficie); display: flex; align-items: center; gap: 10px; font-weight: 500;
+  box-shadow: inset 0 0 0 1px var(--linea); transition: transform var(--toque), box-shadow var(--toque) }
+.opcion:active { transform: scale(.96) }
+.opcion[aria-pressed="true"] { box-shadow: inset 0 0 0 2.5px var(--silicona) }
+.muestra { width: 22px; height: 22px; border-radius: 7px; flex: none; box-shadow: inset 0 0 0 1px rgba(128, 128, 128, .35) }
+.decisiones { display: flex; align-items: center; gap: 4px }
+.decisiones .fila { flex: 1; min-width: 0 }
+.decision { flex: none; min-height: 48px; padding: 4px 14px; border-radius: 12px; text-align: left; line-height: 1.2; color: var(--tinta-2); font-size: 13px }
+.decision b { display: block; color: var(--tinta); font-size: 15px; font-weight: 600 }
+.decision[aria-selected="true"] { background: var(--tinta); color: var(--yeso-2) } .decision[aria-selected="true"] b { color: var(--yeso) }
+
+/* ───── Llevártelo ───── */
+.llevar { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: 48px; align-items: center; padding-block: 24px 40px }
+.llevar h2 { margin: 0 0 8px; font: 700 clamp(32px, 3.6vw, 52px)/1 var(--f-marca); letter-spacing: -.035em }
+.llevar p { margin: 0 0 20px; color: var(--tinta-2); max-width: 48ch }
+.acciones { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 18px }
+.hoja { background: var(--superficie); border-radius: 16px; box-shadow: 0 0 0 1px var(--linea), 0 24px 50px -24px var(--sombra); padding: 20px 22px; margin: 0;
+  font: 13.5px/1.75 ui-monospace, Menlo, Consolas, monospace; overflow-x: auto; max-height: 46vh; animation: salir var(--escena) var(--curva) both }
+.aviso { font-size: 14px; color: var(--tinta-2); min-height: 21px; margin: 12px 0 0 }
+@keyframes salir { from { clip-path: inset(0 0 100% 0); transform: translateY(-14px) } to { clip-path: inset(0); transform: none } }
+
+/* ───── Transiciones firma ───── */
+::view-transition-group(lienzo) { animation-duration: var(--escena); animation-timing-function: var(--curva) }
+/* «Colada»: el diseño nuevo llena el lienzo de abajo hacia arriba, como un molde. */
+html.colada::view-transition-old(lienzo) { animation: none }
+html.colada::view-transition-new(lienzo) { animation: colada var(--cambio) var(--curva) both; mix-blend-mode: normal }
+@keyframes colada { from { clip-path: inset(100% 0 0 0) } to { clip-path: inset(0) } }
+
+@media (max-width: 860px) {
+  .inicio { grid-template-columns: minmax(0, 1fr); gap: 0 }
+  .escenario { order: -1; top: calc(64px + env(safe-area-inset-top, 0px)); height: auto; padding-block: 4px 12px; background: var(--yeso); z-index: 3 }
+  .escenario .lienzo { aspect-ratio: 5 / 4; width: min(100%, 38vh * 5 / 4); max-height: none; margin-inline: auto }
+  .escenario #pagina { font-size: 2.9cqi } .escenario .p-media { display: none }
+  .hoja-mini { width: 62%; font-size: 10px } .nota-pieza { top: 5%; font-size: 12px }
+  .beat, .beat:first-child { min-height: 52vh; padding-block: 24px }
+  .beat p { font-size: 17px }
+  .mesa .lienzo { aspect-ratio: 4 / 5; width: min(100%, calc((100dvh - 330px) * 4 / 5)) }
+  .llevar { grid-template-columns: minmax(0, 1fr); gap: 20px; align-items: start }
+  .llevar .lienzo { aspect-ratio: 16 / 10 } .llevar > div:first-child { order: 2 }
+  .barra .solo-ancho { display: none }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, ::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*) { animation: none !important; transition: none !important }
+}
+</style>
+
+<div id="app" data-vista="inicio" data-beat="0">
+  <header class="barra gutter">
+    <button class="marca" id="ir-inicio" aria-label="Molde, volver al inicio"><i></i>Molde</button>
+    <span class="hueco"></span>
+    <button class="btn btn-2 solo-ancho" id="volver" hidden>Volver a ajustar</button>
+    <button class="btn btn-1" id="accion">Empezar a armar</button>
+  </header>
+
+  <main class="inicio gutter" id="v-inicio">
+    <div class="relato">
+      <section class="beat activo" data-n="0">
+        <h1>Armá el diseño de tu página y dáselo a tu IA</h1>
+        <p>Elegís a ojo, sobre una página de verdad que cambia mientras la tocás. Te llevás un archivo que Claude, v0 o Lovable siguen al pie de la letra.</p>
+        <button class="btn btn-1 btn-grande" data-ir="lienzo">Empezar a armar</button>
+        <p class="chico">Gratis y sin cuenta. Lo que elegís queda guardado en tu navegador.</p>
+      </section>
+      <section class="beat" data-n="1">
+        <h2>Primero contás qué vas a hacer</h2>
+        <p>Una tienda, turnos, una app, tu portfolio. La página de muestra se llena con contenido de tu rubro, así elegís mirando algo parecido a lo tuyo.</p>
+      </section>
+      <section class="beat" data-n="2">
+        <h2>Después probás estilos sobre la misma página</h2>
+        <p>Hay 19 estilos y 24 composiciones. Cambian en el lugar, sin pasar de pantalla, hasta que uno te cierre.</p>
+      </section>
+      <section class="beat" data-n="3">
+        <h2>Si algo no te convence, lo tocás</h2>
+        <p>El botón, las esquinas, la letra: tocás la pieza y la cambiás ahí mismo. Cualquier decisión que ya tomaste se puede volver a abrir.</p>
+      </section>
+      <section class="beat" data-n="4">
+        <h2>Y te llevás el molde</h2>
+        <p>Un archivo DESIGN.md con cada decisión y su CSS real. Tu IA construye la página con ese molde, sin inventar el diseño.</p>
+        <button class="btn btn-1 btn-grande" data-ir="lienzo">Empezar a armar</button>
+      </section>
+    </div>
+    <div class="escenario">
+      <div id="slot-inicio">
+        <div class="lienzo" id="lienzo">
+          <div id="pagina" data-estilo="suizo" data-comp="partido">
+            <div class="p-nav" data-pieza="proyecto"><b class="p-marca"></b><span></span><span></span><span></span></div>
+            <div class="p-hero">
+              <div>
+                <p class="p-sobre"></p>
+                <h3 class="p-titulo" data-pieza="estilo"></h3>
+                <p class="p-bajada"></p>
+                <div class="p-acciones"><button class="p-btn" data-pieza="boton" tabindex="-1"></button><button class="p-btn2" data-pieza="boton" tabindex="-1"></button></div>
+              </div>
+              <div class="p-media" data-pieza="esquinas">
+                <div class="p-item"><i class="p-thumb"></i><b></b><span></span></div>
+                <div class="p-item"><i class="p-thumb"></i><b></b><span></span></div>
+                <div class="p-item"><i class="p-thumb"></i><b></b><span></span></div>
+              </div>
+            </div>
+          </div>
+          <div class="nota-pieza">Botón: contorno · Esquinas: redondas</div>
+          <div class="hoja-mini" id="hoja-mini"></div>
+        </div>
+      </div>
+      <p class="rotulo" id="rotulo"></p>
+    </div>
+  </main>
+
+  <section class="taller gutter" id="v-lienzo" hidden>
+    <div class="mesa">
+      <div id="slot-lienzo" style="display:contents"></div>
+      <p class="pista">Tocá cualquier parte de la página para ajustarla.</p>
+    </div>
+    <div class="dock">
+      <div class="fila" id="opciones" role="group" aria-label="Opciones"></div>
+      <div class="decisiones">
+        <div class="fila" id="decisiones" role="tablist" aria-label="Tus decisiones"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="llevar gutter" id="v-llevar" hidden>
+    <div id="slot-llevar"></div>
+    <div>
+      <h2>Tu molde está listo</h2>
+      <p>Descargalo y dáselo a tu IA junto con lo que querés construir. Si después cambiás de idea, volvés y ajustás.</p>
+      <div class="acciones">
+        <button class="btn btn-1 btn-grande" id="descargar">Descargar DESIGN.md</button>
+        <button class="btn btn-2 btn-grande" id="copiar">Copiar</button>
+      </div>
+      <pre class="hoja" id="hoja" tabindex="0"></pre>
+      <p class="aviso" id="aviso" role="status"></p>
+    </div>
+  </section>
+</div>
+
+<script>
+const TIPOS = {
+  tienda: { nombre: 'Tienda', marca: 'Lumbre', nav: ['Velas', 'Difusores', 'Envíos'], sobre: 'Velas de soja hechas en Córdoba', titulo: 'Una vela que dura cuarenta horas',
+    bajada: 'Cera de soja, mecha de algodón y aromas que no marean. Envíos a todo el país.', b1: 'Ver las velas', b2: 'Cómo las hacemos',
+    items: [['Higo y cedro', '$ 14.500'], ['Naranja amarga', '$ 14.500'], ['Lavanda', '$ 12.900']] },
+  turnos: { nombre: 'Turnos', marca: 'Turnera', nav: ['Agenda', 'Recordatorios', 'Precios'], sobre: 'Para consultorios y centros de salud', titulo: 'Tu agenda llena, sin atender el teléfono',
+    bajada: 'Tus pacientes sacan turno solos desde WhatsApp o la web, y el horario se libera si cancelan.', b1: 'Probar 30 días gratis', b2: 'Ver cómo funciona',
+    items: [['Lun 9:30 · García', 'Confirmado'], ['Lun 10:15 · Ríos', 'Avisado'], ['Lun 11:00', 'Libre']] },
+  app: { nombre: 'App', marca: 'Moneda', nav: ['Cuenta', 'Ahorro', 'Costos'], sobre: 'Sin costo de mantenimiento', titulo: 'Una cuenta que ahorra los vueltos',
+    bajada: 'Cada pago se redondea a los $ 100 siguientes y la diferencia va a tu ahorro.', b1: 'Abrir mi cuenta', b2: 'Ver los costos',
+    items: [['Café Tito', '− $ 3.840'], ['Sueldo', '+ $ 812.000'], ['Ahorrado', '$ 18.940']] },
+  portfolio: { nombre: 'Portfolio', marca: 'Estudio Vera', nav: ['Trabajos', 'Estudio', 'Contacto'], sobre: 'Diseño de marcas para negocios de barrio', titulo: 'Marcas que se reconocen desde la vereda',
+    bajada: 'Nombre, logo y cartel para comercios que atienden a la calle. Trabajamos en Rosario.', b1: 'Ver trabajos', b2: 'Escribinos',
+    items: [['Panadería Lirio', '2026'], ['Ferretería Sol', '2025'], ['Club Atlas', '2025']] },
+};
+const ESTILOS = { suizo: ['Suizo', '#FFFFFF', '#E10600'], neobrutal: ['Neobrutal', '#FFE45C', '#FF5C8A'], editorial: ['Editorial', '#F3EFE6', '#1F4D3A'],
+  vidrio: ['Vidrio', '#0E1030', '#5B4BFF'], dopamina: ['Dopamina', '#5326E0', '#C9FF3D'], lujo: ['Lujo', '#15120F', '#C9A45C'] };
+const COMPS = { partido: 'Hero partido', centrado: 'Centrado', afiche: 'Afiche' };
+const DECISIONES = {
+  tipo: ['Proyecto', Object.fromEntries(Object.entries(TIPOS).map(([k, v]) => [k, v.nombre]))],
+  estilo: ['Estilo', Object.fromEntries(Object.entries(ESTILOS).map(([k, v]) => [k, v[0]]))],
+  comp: ['Composición', COMPS],
+  boton: ['Botón', { '': 'El del estilo', lleno: 'Lleno', contorno: 'Contorno', subrayado: 'Subrayado' }],
+  radio: ['Esquinas', { '': 'Las del estilo', rectas: 'Rectas', suaves: 'Suaves', redondas: 'Redondas' }],
+};
+const PIEZA_A_DECISION = { proyecto: 'tipo', estilo: 'estilo', boton: 'boton', esquinas: 'radio' };
+
+const $ = (s) => document.querySelector(s);
+const app = $('#app'), pagina = $('#pagina'), lienzo = $('#lienzo');
+const quieto = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const estado = { tipo: 'tienda', estilo: 'suizo', comp: 'partido', boton: '', radio: '' };
+let abierta = 'tipo', vista = 'inicio', beat = 0, reloj = 0;
+
+/** Cambia algo con transición; `colada` es la firma para cambios de diseño dentro del lienzo. */
+function mutar(fn, colada) {
+  if (quieto || !document.startViewTransition) return fn();
+  document.documentElement.classList.toggle('colada', !!colada);
+  const t = document.startViewTransition(fn);
+  t.finished.catch(() => {}).finally(() => document.documentElement.classList.remove('colada'));
+  t.ready.catch(() => {});
+}
+
+function pintar() {
+  const t = TIPOS[estado.tipo];
+  pagina.dataset.estilo = estado.estilo; pagina.dataset.comp = estado.comp;
+  estado.boton ? (pagina.dataset.boton = estado.boton) : delete pagina.dataset.boton;
+  estado.radio ? (pagina.dataset.radio = estado.radio) : delete pagina.dataset.radio;
+  pagina.querySelector('.p-marca').textContent = t.marca;
+  pagina.querySelectorAll('.p-nav span').forEach((e, i) => (e.textContent = t.nav[i]));
+  pagina.querySelector('.p-sobre').textContent = t.sobre;
+  pagina.querySelector('.p-titulo').textContent = t.titulo;
+  pagina.querySelector('.p-bajada').textContent = t.bajada;
+  pagina.querySelector('.p-btn').textContent = t.b1; pagina.querySelector('.p-btn2').textContent = t.b2;
+  pagina.querySelectorAll('.p-item').forEach((e, i) => { e.querySelector('b').textContent = t.items[i][0]; e.querySelector('span').textContent = t.items[i][1]; });
+  $('#rotulo').innerHTML = `Ahora ves: <b>${t.nombre}</b> en estilo <b>${ESTILOS[estado.estilo][0]}</b>, composición <b>${COMPS[estado.comp]}</b>`;
+  $('#hoja-mini').textContent = archivo().split('\n').slice(0, 9).join('\n');
+  if (vista === 'lienzo') pintarDock();
+  if (vista === 'llevar') $('#hoja').textContent = archivo();
+}
+
+function pintarDock() {
+  const dec = $('#decisiones'), ops = $('#opciones');
+  dec.innerHTML = ''; ops.innerHTML = '';
+  for (const [k, [nombre, valores]] of Object.entries(DECISIONES)) {
+    const b = document.createElement('button');
+    b.className = 'decision'; b.setAttribute('role', 'tab'); b.setAttribute('aria-selected', String(k === abierta));
+    b.innerHTML = `${nombre}<b>${valores[estado[k]]}</b>`;
+    b.onclick = () => { abierta = k; pintarDock(); };
+    dec.append(b);
+  }
+  for (const [v, texto] of Object.entries(DECISIONES[abierta][1])) {
+    const b = document.createElement('button');
+    b.className = 'opcion'; b.setAttribute('aria-pressed', String(estado[abierta] === v));
+    if (abierta === 'estilo') b.innerHTML = `<i class="muestra" style="background:linear-gradient(135deg, ${ESTILOS[v][1]} 50%, ${ESTILOS[v][2]} 50%)"></i>`;
+    b.append(texto);
+    b.onclick = () => { if (estado[abierta] !== v) mutar(() => { estado[abierta] = v; pintar(); }, true); };
+    ops.append(b);
+  }
+}
+
+function archivo() {
+  const t = TIPOS[estado.tipo];
+  return `---
+formato: design-md
+version_formato: 0.8.8
+proyecto: ${t.marca}
+---
+
+## 2. Proyecto
+tipo: ${estado.tipo}
+objetivo: "${t.b1}"
+
+## 5. Dirección visual
+estilo: ${estado.estilo}
+layout: ${estado.comp}
+
+## 9. Forma
+radio: ${estado.radio || 'del_estilo'}
+
+## 10. Componentes
+botones:
+  estilo: ${estado.boton || 'del_estilo'}
+
+# Extracto de muestra: el archivo real trae
+# las 21 secciones y el CSS de cada pieza.`;
+}
+
+function ir(a) {
+  if (!['inicio', 'lienzo', 'llevar'].includes(a)) a = 'inicio';
+  if (a === vista) return;
+  clearInterval(reloj);
+  mutar(() => {
+    if (vista === 'inicio') { estado.boton = ''; estado.radio = ''; } // las escenas del relato no se heredan
+    vista = a; app.dataset.vista = a; app.dataset.beat = '0';
+    for (const v of ['inicio', 'lienzo', 'llevar']) $('#v-' + v).hidden = v !== a;
+    $('#slot-' + a).append(lienzo);
+    $('#accion').textContent = a === 'inicio' ? 'Empezar a armar' : a === 'lienzo' ? 'Llevármelo' : 'Empezar otro';
+    $('#volver').hidden = a !== 'llevar';
+    pintar(); scrollTo(0, 0);
+  });
+  if (a === 'inicio') girar();
+  if (location.hash.slice(1) !== a) location.hash = a;
+}
+
+// En el inicio, el lienzo cambia solo; cada tramo del relato le da una escena.
+const ESCENAS = [
+  null,
+  { tipo: 'turnos', estilo: 'suizo', comp: 'partido', boton: '', radio: '' },
+  { tipo: 'turnos', estilo: 'vidrio', comp: 'centrado', boton: '', radio: '' },
+  { tipo: 'turnos', estilo: 'vidrio', comp: 'partido', boton: 'contorno', radio: 'redondas' },
+  { tipo: 'turnos', estilo: 'vidrio', comp: 'partido', boton: 'contorno', radio: 'redondas' },
+];
+function girar() {
+  clearInterval(reloj);
+  if (quieto) return;
+  const estilos = Object.keys(ESTILOS), tipos = Object.keys(TIPOS), comps = Object.keys(COMPS);
+  let i = estilos.indexOf(estado.estilo);
+  reloj = setInterval(() => {
+    if (vista !== 'inicio' || beat !== 0 || document.hidden) return;
+    i++;
+    mutar(() => { Object.assign(estado, { estilo: estilos[i % estilos.length], tipo: tipos[i % tipos.length], comp: comps[i % comps.length], boton: '', radio: '' }); pintar(); }, true);
+  }, 2600);
+}
+const obs = new IntersectionObserver((es) => {
+  for (const e of es) if (e.isIntersecting && vista === 'inicio') {
+    const n = +e.target.dataset.n;
+    if (n === beat) continue;
+    beat = n; app.dataset.beat = String(n);
+    document.querySelectorAll('.beat').forEach((b) => b.classList.toggle('activo', b === e.target));
+    if (ESCENAS[n]) mutar(() => { Object.assign(estado, ESCENAS[n]); pintar(); }, true);
+  }
+}, { rootMargin: '-45% 0px -45% 0px' });
+document.querySelectorAll('.beat').forEach((b) => obs.observe(b));
+
+// Tocar una pieza del lienzo abre su decisión: así se ajusta lo ya elegido, sin modo aparte.
+pagina.addEventListener('click', (e) => {
+  const p = e.target.closest('[data-pieza]');
+  if (!p || vista !== 'lienzo') return;
+  abierta = PIEZA_A_DECISION[p.dataset.pieza]; pintarDock();
+  p.classList.add('tocada'); setTimeout(() => p.classList.remove('tocada'), 900);
+});
+document.querySelectorAll('[data-ir]').forEach((b) => (b.onclick = () => ir(b.dataset.ir)));
+$('#ir-inicio').onclick = () => ir('inicio');
+$('#volver').onclick = () => ir('lienzo');
+$('#accion').onclick = () => ir(vista === 'inicio' ? 'lienzo' : vista === 'lienzo' ? 'llevar' : 'inicio');
+$('#descargar').onclick = () => ($('#aviso').textContent = 'Esto es una maqueta: en la versión real acá baja el archivo.');
+$('#copiar').onclick = () => navigator.clipboard.writeText(archivo()).then(
+  () => ($('#aviso').textContent = 'Copiado.'),
+  () => { getSelection().selectAllChildren($('#hoja')); $('#aviso').textContent = 'Quedó seleccionado: copialo con Ctrl+C.'; });
+addEventListener('hashchange', () => ir(location.hash.slice(1) || 'inicio'));
+
+pintar();
+if (location.hash.length > 1) ir(location.hash.slice(1)); else girar();
+</script>
