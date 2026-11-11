@@ -323,8 +323,28 @@ describe('galería de componentes', () => {
 describe('límites del código de combinación', () => {
   it('cada lista entra en un solo carácter del código (máximo 36)', async () => {
     const { ESTILOS, LAYOUTS } = await import('../estilos-visuales');
-    for (const [nombre, n] of Object.entries({ estilos: Object.keys(ESTILOS).length, layouts: Object.keys(LAYOUTS).length, fuentes: Object.keys(FUENTES).length }))
+    for (const [nombre, n] of Object.entries({ estilos: Object.keys(ESTILOS).length, fuentes: Object.keys(FUENTES).length }))
       expect(n, nombre).toBeLessThanOrEqual(36);
+    // Los layouts y las paletas pueden pasar de 36 (dos caracteres, con prefijo), pero no de 36 × 36.
+    expect(Object.keys(LAYOUTS).length).toBeLessThanOrEqual(36 * 36);
+  });
+
+  it('los layouts pasan de 36: los nuevos van al final y sus códigos (con «~») se decodifican igual', async () => {
+    const { LAYOUTS } = await import('../estilos-visuales');
+    const { codigo, decodificar } = await import('../rapido/combinar');
+    const lista = Object.keys(LAYOUTS);
+    // El orden de los 34 primeros no cambia: los códigos compartidos siguen apuntando al mismo layout.
+    expect(lista.indexOf('horizontal')).toBe(11);
+    expect(lista.indexOf('autor_gimnasio')).toBe(33);
+    expect(lista.slice(34)).toEqual(['linea_tiempo', 'antes_despues', 'mapa_lista', 'carta', 'agenda_semanal', 'tablero', 'muro', 'documentacion', 'link_bio', 'compra_unica', 'portada_buscador', 'partida_scroll']);
+    for (const fondo of ['ninguno', 'grano'] as const) {
+      const k = { estilo: 'editorial' as const, layout: 'partida_scroll' as const, paleta: 'frutal_mandarina' as const, titulos: 'inter' as const, texto: 'inter' as const, fondo };
+      expect(codigo(k).startsWith('~')).toBe(true);
+      expect(decodificar(codigo(k))).toEqual(k);
+    }
+    const viejo = { estilo: 'suizo' as const, layout: 'bento' as const, paleta: 'suizo_rojo' as const, titulos: 'inter' as const, texto: 'inter' as const, fondo: 'ninguno' as const };
+    expect(codigo(viejo)).toHaveLength(5);
+    expect(decodificar(codigo(viejo))).toEqual(viejo);
   });
 
   it('las paletas pasan de 36: sus códigos largos se decodifican igual', async () => {

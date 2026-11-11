@@ -564,7 +564,24 @@ export const LAYOUTS: Record<LayoutId, Layout> = {
   autor_curso: { nombre: 'De autor: curso online', descripcion: 'El reproductor con la clase avanzando y un antes y después que se desliza' },
   autor_restaurante: { nombre: 'De autor: restaurante', descripcion: 'Un celular reservando mesa en tres toques y la carta como lista con precios' },
   autor_gimnasio: { nombre: 'De autor: estudio de entrenamiento', descripcion: 'La grilla de clases con cupos: se reserva la de las 19 y se llena' },
+  linea_tiempo: { nombre: 'Línea de tiempo', descripcion: 'Una línea que baja por la página y termina en el botón' },
+  antes_despues: { nombre: 'Antes y después', descripcion: 'Dos versiones superpuestas y una barra que se arrastra para compararlas' },
+  mapa_lista: { nombre: 'Mapa con lista', descripcion: 'La lista de lugares a un lado y el mapa con sus marcas al otro' },
+  carta: { nombre: 'Carta de restaurante', descripcion: 'Una hoja impresa con nombres, precios y un talón para reservar' },
+  agenda_semanal: { nombre: 'Agenda semanal', descripcion: 'La semana en columnas, los turnos como bloques y la hora de ahora marcada' },
+  tablero: { nombre: 'Tablero de columnas', descripcion: 'Tarjetas que pasan de una columna a otra, con una a medio mover' },
+  muro: { nombre: 'Muro de publicaciones', descripcion: 'Publicaciones de la gente en columnas, con una caja para escribir arriba' },
+  documentacion: { nombre: 'Documentación con índice', descripcion: 'Menú de temas, la nota al medio y el índice de la página al costado' },
+  link_bio: { nombre: 'Link en bio', descripcion: 'Quién sos y una pila de links grandes para tocar con el pulgar' },
+  compra_unica: { nombre: 'Compra en una sola página', descripcion: 'Datos, entrega y pago en una columna, con el pedido siempre a la vista' },
+  portada_buscador: { nombre: 'Portada con buscador', descripcion: 'El buscador es el protagonista y los resultados cuelgan de él' },
+  partida_scroll: { nombre: 'Pantalla partida', descripcion: 'Dos mitades que se recorren por separado: el texto de un lado, las imágenes del otro' },
 };
+
+/** Layouts que son una pantalla de app o una página de un solo fin: no llevan el argumento de landing. */
+const SIN_ARGUMENTO: LayoutId[] = ['app_lateral', 'mapa_lista', 'agenda_semanal', 'tablero', 'documentacion', 'link_bio', 'compra_unica'];
+/** Si el layout lleva, después de su composición, la frase, el testimonio y las preguntas (§19 `layout_argumento`). */
+export const llevaArgumento = (l: LayoutId) => !l.startsWith('autor_') && !SIN_ARGUMENTO.includes(l);
 
 /** CSS de un estilo con `&` reemplazado por el selector de raíz dado. */
 export const cssDeEstilo = (id: EstiloId, raiz: string) =>

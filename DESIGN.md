@@ -1,6 +1,6 @@
 # DESIGN.md: especificación del formato
 
-> **Versión del formato:** 0.8.8 (borrador)
+> **Versión del formato:** 0.8.9 (borrador)
 > **Última actualización:** 2026-11-06
 > **Estado:** configurador en v0.2 (10 pasos + export): 8 direcciones, 13 paletas + personalizada, 23 fuentes, botones y movimiento detallados. Falta la primera ronda de pruebas con IA (§9).
 
@@ -134,7 +134,7 @@ Todo archivo exportado empieza con este bloque, que permite saber con qué versi
 
 ```yaml
 formato: design-md
-version_formato: 0.8.8
+version_formato: 0.8.9
 generado_por: configurador-diseno
 fecha: 2026-11-06
 idioma: es
@@ -721,6 +721,8 @@ layout: bento                     # hero_partido | bento | revista | tipografico
 layout_estructura: "Grilla de 4 columnas: el bloque principal ocupa 3×2…"   # descripción para reproducirlo
 # También admite autor_concesionario: vehículo recortado, selector UTV/Adventure/Enduro,
 # ficha desplegable y consulta simulada; incluye el CSS real de la composición.
+# Desde 0.8.9 también: linea_tiempo | antes_despues | mapa_lista | carta | agenda_semanal | tablero |
+# muro | documentacion | link_bio | compra_unica | portada_buscador | partida_scroll
 estilo: bauhaus                   # clasico | suizo | bauhaus | memphis | neobrutalismo | vidrio | clay | retro_os | terminal | editorial | art_deco | y2k | organico
 estilo_palabras_clave: [geométrico, constructivo, primario]
 estilo_reglas:
@@ -730,7 +732,8 @@ estilo_reglas:
 Si hay estilo, sigue un bloque `css` con **el CSS real** del estilo. Las clases `.pg-*` son nombres de referencia (`.pg` es la raíz de la página; `.pg-card`, `.pg-titulo`, `.pg-boton`, `.pg-deco` con hijos `.a .b .c`…): la IA las usa tal cual o las mapea a sus componentes. Ese CSS solo usa los tokens de §16 y colores decorativos propios (`--deco-1/2/3`, nunca para texto).
 
 - Fuente de verdad: `src/estilos-visuales.ts`. Cada estilo trae sus **reglas de compatibilidad**: paletas, pares de fuentes, forma, sombras, bordes, botón y movimiento que lo sostienen.
-- En el modo rápido, cada combinación (estilo × layout × paleta × tipografía) tiene un **código de 5 caracteres** (por ejemplo `11E71`) que se puede compartir como link (`#c=11E71`). Las paletas pasan de 36: las de la 37 en adelante usan 2 caracteres y el código empieza con `+` (por ejemplo `+110AE71`); los códigos viejos siguen valiendo.
+- En el modo rápido, cada combinación (estilo × layout × paleta × tipografía) tiene un **código de 5 caracteres** (por ejemplo `11E71`) que se puede compartir como link (`#c=11E71`). Las paletas pasan de 36: las de la 37 en adelante usan 2 caracteres y el código empieza con `+` (por ejemplo `+110AE71`); los códigos viejos siguen valiendo. Los layouts también pasan de 36 (desde 0.8.9): con uno de los nuevos, layout y paleta van con 2 caracteres cada uno y el código empieza con `~` (por ejemplo `~1190AE7`).
+- `layout_argumento` no se escribe en los layouts de autor ni en los que son una pantalla de app o una página de un solo fin: `app_lateral`, `mapa_lista`, `agenda_semanal`, `tablero`, `documentacion`, `link_bio` y `compra_unica` (`llevaArgumento` en `src/estilos-visuales.ts`).
 
 ---
 
@@ -1221,6 +1224,7 @@ Formato: fecha · decisión · por qué · alternativas descartadas.
 | D86 | 2026-11-11 | **Scroll combinable:** se puede elegir más de un efecto de scroll, uno por zona (`PLAN.md` §7.4) | Los efectos de zonas distintas no se pisan y dan más combinaciones | Un único efecto por página |
 | D87 | 2026-11-11 | **Portada:** casi en blanco, con piezas en movimiento; al bajar se arman páginas al azar y «Empezar» sube y queda fijo | Mostrar el producto en acción sin texto de más | Portada con explicación larga |
 | D88 | 2026-11-11 | **Descarga:** `DESIGN.md` y, además, la página armada en HTML. Orden de rondas: Proyecto → Rubro → Color → Layout → Estilo (obligatorias), luego Piezas · Letra · Entrada · rondas de la rama (opcionales), y Ajustar → Descargar | La persona se lleva algo que ya puede abrir, y puede terminar cuando quiera | Solo `DESIGN.md` |
+| D89 | 2026-11-11 | 12 layouts genéricos más (46 en total, 33 genéricos), cada uno con una idea propia: línea de tiempo que se pinta al bajar y termina en el botón, antes y después con una barra que se arrastra, mapa que responde a la lista, carta impresa con talón, agenda semanal con la hora de ahora, tablero con una tarjeta a medio mover, muro de publicaciones, documentación con índice, link en bio, compra en una sola página, portada con buscador y pantalla partida con scroll independiente. Van al final de la lista; los códigos de combinación suman el prefijo `~` para los layouts de índice 36 o más. Las pantallas de app y las páginas de un solo fin no llevan el argumento de landing, y link en bio tampoco lleva pie | Tarea D3 de `PLAN.md`: las ramas de Molde (tienda, app, blog, sitio) necesitan estructuras propias, no variaciones del hero partido | Reordenar la lista (rompe los códigos ya compartidos); un carácter más para todos los códigos (rompe los viejos) |
 | D43 | 2026-11-06 | Si la persona no describe un proyecto, el archivo se exporta como sistema de diseño (`modo: sistema_de_diseno`): sirve para mejorar una app existente o para construir lo que se explique junto con el archivo; la pantalla final ofrece un mensaje para copiar para cada caso | El modo rápido no pide detalles del proyecto; tratar las pantallas de ejemplo como obligatorias llevaba a la IA a construir una app genérica | Obligar a completar el proyecto antes de exportar |
 
 | D67 | 2026-11-07 | Se amplían las categorías existentes con 12 composiciones propias para formularios, navegación y productos; las muestras permiten validar, adjuntar y probar una compra simulada | Mejorar la calidad y la variedad visible conservando el recorrido actual | Agregar un panel de decisiones transversales |
@@ -1342,6 +1346,7 @@ Lo que todavía no tiene lugar en §5. Se mueve allá cuando se decide hacerlo.
 
 | Versión | Fecha | Cambios |
 |---|---|---|
+| 0.8.9 | 2026-11-11 | §19 acepta 12 layouts genéricos más (`linea_tiempo`, `antes_despues`, `mapa_lista`, `carta`, `agenda_semanal`, `tablero`, `muro`, `documentacion`, `link_bio`, `compra_unica`, `portada_buscador`, `partida_scroll`), cada uno con su `layout_estructura`. `layout_argumento` no se escribe en los que son una pantalla de app o una página de un solo fin. Sin campos nuevos; un archivo 0.8.8 sigue siendo válido. |
 | 0.8.8 | 2026-11-09 | §19 suma `layout_argumento` (opcional) en los layouts de página que no son de autor: prueba bajo los botones, hero con el producto en acción, frase que se enciende al bajar, testimonio y preguntas frecuentes. Compatible. |
 | 0.8.7 | 2026-11-09 | §19 acepta 4 layouts de autor más: `autor_turnos`, `autor_curso`, `autor_restaurante` y `autor_gimnasio` (landings con demo animada del producto). Sin campos nuevos. |
 | 0.8.6 | 2026-11-08 | §19 admite autor_concesionario e incluye el CSS real de su composición. Sin campos obligatorios nuevos. |
