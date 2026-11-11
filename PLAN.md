@@ -552,3 +552,52 @@ probar con personas y recién después sumar cosas. Cada tarea trae el pedido li
 
 **Arreglo chico pendiente** (cualquiera, de paso): el aviso de lint en `src/rapido/demo.tsx:32`
 (`useEffect` sin la dependencia `bucle`).
+
+---
+
+## 10. Recorrido corto (tanda I) — propuesta, falta el OK de quien dirige
+
+**Por qué (2026-11-11):** quien dirige probó Molde publicado. El punto de partida le gusta, pero una
+landing recorre 14 rondas (10 comunes + 3 de la rama + densidad) y son demasiadas. Pedido: menos
+pasos, más englobados, y que cada persona vea solo lo que le sirve según su proyecto y su layout.
+La portada sigue verde pero queda como está por ahora (H7 espera).
+
+**Qué cambia respecto de §4:** las decisiones 1 a 6 y 8 a 10 siguen igual. Cambia el orden de las
+rondas y se refuerza la 7 (ramas): ya no alcanza con el tipo de proyecto, también filtra el layout.
+
+### Los pasos nuevos (5 como máximo, 4 para la mayoría)
+
+| Paso | Engloba (rondas de hoy) | Quién lo ve |
+|---|---|---|
+| 1 · Qué es | Proyecto + Rubro (el rubro aparece en la misma pantalla al elegir el tipo) | todos |
+| 2 · Estructura | Layout + Secciones | todos; Secciones solo landing, sitio y portfolio |
+| 3 · Estilo | Estilo, que deja puestos letra, piezas, iconos, entrada y densidad coherentes | todos |
+| 4 · Color | Color | todos |
+| 5 · Lo propio | Las rondas de la rama juntas en una sola pantalla (landing: fondo animado + scroll; tienda: producto, compra y buscador…) | solo si el tipo **y el layout** tienen algo para mostrar |
+
+Después: `Descargar`. Letra, Piezas, Iconos, Tono, Entrada y Densidad **dejan de ser pasos**: salen
+resueltos del estilo, el tipo y el rubro (los recomendados que ya existen) y se cambian desde las
+fichas, como hoy los ajustes finos. No se borra ningún catálogo ni cambia el export.
+
+### Tareas
+
+- [ ] **I1 · Datos: pasos agrupados y filtro por layout** — Opus 5.5 · ChatGPT: Astra
+  - `src/rondas/`: un tipo `Paso` que agrupa rondas, y `pasosDe(config)` que devuelve solo los que aplican.
+    `Layout` hoy solo tiene nombre y descripción: sumar qué admite cada uno (fondo, scroll, secciones)
+    en un archivo aparte que no entre en la carga inicial. Tests: ningún tipo pasa de 5 pasos; un layout
+    sin fondo no ofrece fondo animado.
+  - Listo cuando: `pasosDe` cubre los 8 tipos y los 46 layouts, y `rondasDe` sigue andando para las fichas.
+- [ ] **I2 · Valores por defecto de lo que ya no se pregunta** — Sonnet 5.5 · ChatGPT: Sol · depende de I1
+  - Al elegir estilo, tipo o rubro se llenan letra, piezas, iconos, tono, entrada y densidad con el primer
+    recomendado, sin pisar lo que la persona cambió a mano (`ContextoRonda.elegidas`). Test: el export de
+    un recorrido de 4 pasos no deja ninguna sección vacía.
+- [ ] **I3 · Interfaz del recorrido corto** — Fable 5.2 (u Opus 5.5) · ChatGPT: no (criterio visual) · depende de I1
+  - `src/molde/Molde.tsx`: recorrer `pasosDe`, mostrar «paso 2 de 4», pasos con más de una ronda en una
+    sola pantalla, y las fichas de lo no preguntado bajo «Ajustar». Rutas viejas (`#/letra`…) siguen
+    abriendo su ficha (`navegacion.ts`). Revisar `npm run peso`.
+- [ ] **I4 · Cierre** — Sonnet 5.5 · ChatGPT: Sol · depende de I2 e I3
+  - e2e táctil con el recorrido nuevo; `DESIGN.md` §5, §8 (decisión) y §12; `CLAUDE.md` (estructura).
+
+**Orden con la tanda H:** I1 → I2 e I3 en paralelo → I4. H3 (celulares) y H5 (el archivo con otras IA)
+pueden ir ya. **H4 (pruebas con personas) va después de I4**: no tiene sentido probar un recorrido
+que se va a cambiar. H7 (fondos de la portada) y el resto del backlog, después de H6.
