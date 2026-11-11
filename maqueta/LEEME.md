@@ -8,3 +8,6 @@ catálogo real (traen datos de muestra). Para verlas, abrí el archivo en un nav
   ideas (proyecto, color, layout, piezas y una ronda propia de cada tipo de proyecto). Pasar el
   mouse muestra la idea en la página; tocarla o arrastrarla al centro la deja elegida. Lo
   elegido queda como fichas abajo y se puede volver a abrir. Al final: DESIGN.md y HTML.
+  La portada se baja y arma páginas al azar, con el botón fijo arriba. Las opciones van de a 6
+  con flechas. Rondas de entrada, fondo animado y scroll interactivo (este último solo en
+  landing y portfolio; la página se baja sola para mostrarlo).
