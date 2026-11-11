@@ -209,6 +209,7 @@ Estado: `[ ]` pendiente · `[x]` hecha. Marcala al terminar.
 - [ ] **E1 · Portada: más vida y scroll fluido (en la maqueta)** — Fable 5.2 · sin dependencias
   - Rehacer la portada de `maqueta/molde-2.html` según la sección 8. Se aprueba en la maqueta antes de portarla.
   - Listo cuando: quien dirige el proyecto la aprueba.
+  - Estado: hecha en la maqueta (scroll cuadro a cuadro, 15 capas armadas una sola vez, piezas que vuelan al lienzo, título que cambia, botón que se acerca al mouse y cierre con el botón latiendo). Falta la aprobación.
 
 - [ ] **E2 · Portar la portada** — Opus 5.5 · depende de E1 y C2
   - Llevar la portada aprobada a `src/molde/`, con páginas reales del catálogo.
@@ -351,6 +352,6 @@ se despliega desde el botón.
 4. **Tres páginas distintas en un recorrido corto** (unas cuatro pantallas de alto), y al final el lienzo queda en blanco de nuevo con el botón latiendo.
 5. **El primer pantallazo tiene que tener gracia sin bajar:** el título cambia una palabra sola («tu tienda», «tu landing», «tu sistema»), las piezas se apartan del cursor, y el botón se acerca un poco cuando el mouse está cerca.
 6. **«Empezar» sube y queda fijo** apenas se empieza a bajar, como ahora.
-7. **Con `prefers-reduced-motion`:** una sola página armada, sin recorrido.
+7. **Con `prefers-reduced-motion`:** la portada queda quieta, sin recorrido ni piezas en movimiento.
 
 **Listo cuando:** bajar despacio y bajar rápido se sienten igual de continuos, y en celular funciona con el dedo.
