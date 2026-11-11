@@ -730,7 +730,7 @@ estilo_reglas:
 Si hay estilo, sigue un bloque `css` con **el CSS real** del estilo. Las clases `.pg-*` son nombres de referencia (`.pg` es la raíz de la página; `.pg-card`, `.pg-titulo`, `.pg-boton`, `.pg-deco` con hijos `.a .b .c`…): la IA las usa tal cual o las mapea a sus componentes. Ese CSS solo usa los tokens de §16 y colores decorativos propios (`--deco-1/2/3`, nunca para texto).
 
 - Fuente de verdad: `src/estilos-visuales.ts`. Cada estilo trae sus **reglas de compatibilidad**: paletas, pares de fuentes, forma, sombras, bordes, botón y movimiento que lo sostienen.
-- En el modo rápido, cada combinación (estilo × layout × paleta × tipografía) tiene un **código de 5 caracteres** (por ejemplo `11E71`) que se puede compartir como link (`#c=11E71`).
+- En el modo rápido, cada combinación (estilo × layout × paleta × tipografía) tiene un **código de 5 caracteres** (por ejemplo `11E71`) que se puede compartir como link (`#c=11E71`). Las paletas pasan de 36: las de la 37 en adelante usan 2 caracteres y el código empieza con `+` (por ejemplo `+110AE71`); los códigos viejos siguen valiendo.
 
 ---
 
@@ -1246,13 +1246,13 @@ validación/limpieza de formulario, comparación y límite de tres, navegación,
 color/talle/favoritos/carrito simulado y descarga con las elecciones. Estas pruebas
 no reemplazan las pruebas con IA de P1–P3 ni una auditoría WCAG completa.
 
-Auditoría paleta × estilo (2026-11-11, `src/compatibilidad.test.ts`): 47 de 640 pares no pasan
-AA (32 paletas × 20 estilos). Se arma el sistema de `sistema.ts` para cada par y se mide texto y
+Auditoría paleta × estilo (2026-11-11, `src/compatibilidad.test.ts`): 92 de 1200 pares no pasan
+AA (60 paletas × 20 estilos). Se arma el sistema de `sistema.ts` para cada par y se mide texto y
 texto suave sobre fondo y tarjetas, y el texto del botón principal, con los colores que el CSS
-de cada estilo pone debajo del texto. Fallan: Sistema retro con las 32 (pinta la página de
+de cada estilo pone debajo del texto. Fallan: Sistema retro con las 60 (pinta la página de
 `#008080` y el texto de las secciones fuera del hero y las tarjetas queda encima: 4.40:1 el texto
-y 2.65:1 el suave con `retro_gris`, su única paleta declarada) y Neobrutalismo con las 15 paletas
-oscuras (texto suave claro sobre sus tarjetas amarillas, celestes y verdes). Los demás pares
+y 2.65:1 el suave con `retro_gris`, su única paleta declarada) y Neobrutalismo con las 24 paletas
+oscuras y 8 claras (azul eléctrico, bosque, papel, arcilla, cielo, pastel celeste, marina espuma y marina costa: texto suave sobre sus tarjetas amarillas, celestes y verdes). Los demás pares
 declarados en `ESTILOS[id].paletas` pasan. `estilosPara(paleta)` ordena los estilos (los que
 declaran la paleta primero) y saca los que no pasan; hasta que se arregle, Sistema retro no se
 ofrece con ninguna paleta. No mide el brillo del botón Y2K ni los fondos con textura.

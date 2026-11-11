@@ -166,6 +166,118 @@ export const PALETAS: Record<PaletaId, Paleta> = {
     fondo: '#170B0F', superficie: '#241318', superficie_alta: '#301A21', borde: '#4A2A34',
     texto: '#F6E8EC', texto_suave: '#BFA3AB', acento: '#F472B6', sobre_acento: '#2A0A18',
   }),
+  pastel_rosa: claro('Pastel rosa', {
+    fondo: '#FFF7FA', superficie: '#FCE8F0', superficie_alta: '#FFFFFF', borde: '#EFC3D5',
+    texto: '#2E1A24', texto_suave: '#6A4A58', acento: '#B03A74', sobre_acento: '#FFFFFF',
+  }),
+  pastel_celeste: claro('Pastel celeste', {
+    fondo: '#F4F9FF', superficie: '#E2EEFB', superficie_alta: '#FFFFFF', borde: '#BCD3EE',
+    texto: '#14243A', texto_suave: '#4C5F78', acento: '#2F6FB5', sobre_acento: '#FFFFFF',
+  }),
+  pastel_lila: oscuro('Pastel lila de noche', {
+    fondo: '#181422', superficie: '#231D33', superficie_alta: '#2D2642', borde: '#433A60',
+    texto: '#F0EBFA', texto_suave: '#B5ABCF', acento: '#D8B4FE', sobre_acento: '#26123F',
+  }),
+  pastel_menta: oscuro('Pastel menta de noche', {
+    fondo: '#0F1A18', superficie: '#172926', superficie_alta: '#1F3632', borde: '#2F4F49',
+    texto: '#E4F5F1', texto_suave: '#9CBDB6', acento: '#99F6E4', sobre_acento: '#08251F',
+  }),
+  tierra_ocre: claro('Tierra ocre', {
+    fondo: '#FBF6EC', superficie: '#F0E4CE', superficie_alta: '#FFFFFF', borde: '#DAC59E',
+    texto: '#2C2010', texto_suave: '#695539', acento: '#9A5B0E', sobre_acento: '#FFFFFF',
+  }),
+  tierra_cuero: claro('Tierra cuero', {
+    fondo: '#F7F1EA', superficie: '#E9DDCF', superficie_alta: '#FFFFFF', borde: '#CDB8A0',
+    texto: '#261A12', texto_suave: '#64503F', acento: '#7A3E1D', sobre_acento: '#FFFFFF',
+  }),
+  tierra_barro: oscuro('Tierra barro', {
+    fondo: '#16110D', superficie: '#231B15', superficie_alta: '#2E241C', borde: '#4A3B2E',
+    texto: '#F2E8DC', texto_suave: '#B8A48E', acento: '#E0A56B', sobre_acento: '#24140A',
+  }),
+  tierra_musgo: oscuro('Tierra musgo', {
+    fondo: '#12150E', superficie: '#1D2217', superficie_alta: '#272E1F', borde: '#3F4A33',
+    texto: '#EAF0DC', texto_suave: '#A9B58F', acento: '#B5D46B', sobre_acento: '#1A2208',
+  }),
+  neon_rosa: oscuro('Neón rosa', {
+    fondo: '#0C0612', superficie: '#170C22', superficie_alta: '#21122F', borde: '#4A2266',
+    texto: '#FBEFFF', texto_suave: '#C9A6E0', acento: '#FF3DCB', sobre_acento: '#0C0612',
+  }),
+  neon_cian: oscuro('Neón cian', {
+    fondo: '#040D12', superficie: '#081A22', superficie_alta: '#0D2530', borde: '#14485A',
+    texto: '#E6FBFF', texto_suave: '#8FC9D6', acento: '#22E3FF', sobre_acento: '#04121A',
+  }),
+  neon_limon: claro('Neón limón', {
+    fondo: '#FDFFF0', superficie: '#F0F6CC', superficie_alta: '#FFFFFF', borde: '#C9D87A',
+    texto: '#1A2000', texto_suave: '#4F5A14', acento: '#3F5F00', sobre_acento: '#FFFFFF',
+  }),
+  neon_magenta: claro('Neón magenta', {
+    fondo: '#FFF5FD', superficie: '#FBE0F5', superficie_alta: '#FFFFFF', borde: '#E9A6DA',
+    texto: '#260A24', texto_suave: '#6A3A66', acento: '#A8068A', sobre_acento: '#FFFFFF',
+  }),
+  mono_rojo: claro('Monocromo y rojo', {
+    fondo: '#FAFAFA', superficie: '#EFEFEF', superficie_alta: '#FFFFFF', borde: '#D0D0D0',
+    texto: '#141414', texto_suave: '#555555', acento: '#D40000', sobre_acento: '#FFFFFF',
+  }),
+  mono_azul: claro('Monocromo y azul', {
+    fondo: '#F8F8F8', superficie: '#ECECEC', superficie_alta: '#FFFFFF', borde: '#CFCFCF',
+    texto: '#111111', texto_suave: '#565656', acento: '#0A4FD6', sobre_acento: '#FFFFFF',
+  }),
+  mono_verde: oscuro('Monocromo y verde', {
+    fondo: '#0A0A0A', superficie: '#161616', superficie_alta: '#202020', borde: '#3A3A3A',
+    texto: '#F2F2F2', texto_suave: '#A6A6A6', acento: '#4ADE80', sobre_acento: '#04200E',
+  }),
+  mono_naranja: oscuro('Monocromo y naranja', {
+    fondo: '#101010', superficie: '#1B1B1B', superficie_alta: '#262626', borde: '#404040',
+    texto: '#F5F5F5', texto_suave: '#A8A8A8', acento: '#FF8A1F', sobre_acento: '#1F0E00',
+  }),
+  contraste_amarillo: oscuro('Contraste amarillo', {
+    fondo: '#000000', superficie: '#111111', superficie_alta: '#1A1A1A', borde: '#FFFFFF',
+    texto: '#FFFFFF', texto_suave: '#D0D0D0', acento: '#FFE600', sobre_acento: '#000000',
+  }),
+  contraste_cian: oscuro('Contraste cian', {
+    fondo: '#000000', superficie: '#0A0A0A', superficie_alta: '#141414', borde: '#FFFFFF',
+    texto: '#FFFFFF', texto_suave: '#CFCFCF', acento: '#00E5FF', sobre_acento: '#000000',
+  }),
+  contraste_azul: claro('Contraste azul', {
+    fondo: '#FFFFFF', superficie: '#EEF2FF', superficie_alta: '#FFFFFF', borde: '#000000',
+    texto: '#000000', texto_suave: '#3A3A3A', acento: '#0033CC', sobre_acento: '#FFFFFF',
+  }),
+  contraste_magenta: claro('Contraste magenta', {
+    fondo: '#FFFFFF', superficie: '#F5F0F5', superficie_alta: '#FFFFFF', borde: '#000000',
+    texto: '#000000', texto_suave: '#3A3A3A', acento: '#B3005E', sobre_acento: '#FFFFFF',
+  }),
+  marina_espuma: claro('Marina espuma', {
+    fondo: '#F3FAFA', superficie: '#DDEFEF', superficie_alta: '#FFFFFF', borde: '#A9D1D2',
+    texto: '#0A2A33', texto_suave: '#3F6068', acento: '#0B7285', sobre_acento: '#FFFFFF',
+  }),
+  marina_costa: claro('Marina costa', {
+    fondo: '#F6F9FB', superficie: '#E4EDF3', superficie_alta: '#FFFFFF', borde: '#B7C9D6',
+    texto: '#0B2236', texto_suave: '#475D70', acento: '#1C5D99', sobre_acento: '#FFFFFF',
+  }),
+  marina_abismo: oscuro('Marina abismo', {
+    fondo: '#06141F', superficie: '#0C2233', superficie_alta: '#12304A', borde: '#1F4A6B',
+    texto: '#E3F1FB', texto_suave: '#8FB3CF', acento: '#5EEAD4', sobre_acento: '#04221D',
+  }),
+  marina_naval: oscuro('Marina naval', {
+    fondo: '#0A1226', superficie: '#111D3A', superficie_alta: '#182850', borde: '#29407A',
+    texto: '#E8EEFF', texto_suave: '#9CAEDB', acento: '#7DA2FF', sobre_acento: '#0A1530',
+  }),
+  frutal_sandia: claro('Frutal sandía', {
+    fondo: '#FFF6F6', superficie: '#FFE0E3', superficie_alta: '#FFFFFF', borde: '#F5B0B8',
+    texto: '#2E0E14', texto_suave: '#6E3E47', acento: '#C2203F', sobre_acento: '#FFFFFF',
+  }),
+  frutal_limon: claro('Frutal limón', {
+    fondo: '#FFFDF0', superficie: '#FFF4B8', superficie_alta: '#FFFFFF', borde: '#E6D560',
+    texto: '#2A2400', texto_suave: '#5F5410', acento: '#7A5C00', sobre_acento: '#FFFFFF',
+  }),
+  frutal_arandano: oscuro('Frutal arándano', {
+    fondo: '#120C20', superficie: '#1E1433', superficie_alta: '#2A1C46', borde: '#43305F',
+    texto: '#F1EBFF', texto_suave: '#B7A6DB', acento: '#8B7CFF', sobre_acento: '#120C20',
+  }),
+  frutal_mandarina: oscuro('Frutal mandarina', {
+    fondo: '#170D06', superficie: '#251509', superficie_alta: '#321D0D', borde: '#5A3517',
+    texto: '#FFEFE0', texto_suave: '#D1A67A', acento: '#FF9F40', sobre_acento: '#2A1200',
+  }),
 };
 
 // ---------- Tipografía ----------
