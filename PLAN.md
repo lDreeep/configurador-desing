@@ -160,7 +160,7 @@ Estado: `[ ]` pendiente · `[x]` hecha. Marcala al terminar.
   - Listo cuando: un test verifica que cada tipo tiene al menos 4 rubros y que ningún texto supera el largo de los actuales en `src/rapido/contenido-tipo.ts`.
   - Hecho en `src/rubros.ts` (`RUBROS`, `rubrosDe`, `rubroPorId`) con `src/rubros.test.ts`. Todavía no se conecta a la ronda Rubro (sale de `rondasPendientes()` en otra tarea).
 
-- [ ] **D2 · 28 paletas nuevas** — Sonnet 5.5
+- [x] **D2 · 28 paletas nuevas** — Sonnet 5.5
   - Sumar a `PALETAS` en `src/catalogo.ts` hasta llegar a 60, repartidas como en la sección 7.3. Cada una tiene que pasar el test de contraste AA de `src/export/generarDesignMd.test.ts`.
   - Listo cuando: el test de contraste pasa y cada paleta nueva está en al menos un estilo compatible.
 
