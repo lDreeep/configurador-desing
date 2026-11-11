@@ -251,7 +251,7 @@ Estado: `[ ]` pendiente · `[x]` hecha. Marcala al terminar.
   - Ojo: el JS inicial está en 249,7 kB (límite 250, `npm run peso`). Lo que sume la portada tiene que bajar aparte.
   - Llevar la portada aprobada a `src/molde/`, con páginas reales del catálogo.
   - Listo cuando: el scroll va a 60 cuadros por segundo y «Empezar» funciona en cualquier punto.
-  - Hecha en `#/molde/inicio` con la linterna de la maqueta revisada y tres páginas reales (tienda, dashboard y blog). El módulo de portada se carga aparte. Prueba sobre el build con `node e2e/portada.e2e.mjs` (Playwright): «Empezar» al inicio, en el medio, al final y con movimiento reducido. En Chrome, 59,7 fps a 1440 × 900 y 60,0 fps a 390 × 844 emulado. JS inicial: 249,7 kB.
+  - Hecha en `#/molde/inicio` con la linterna de la maqueta revisada y tres páginas reales (tienda, dashboard y blog). El módulo de portada se carga aparte. Prueba sobre el build con `node e2e/portada.e2e.mjs` (Playwright): «Empezar» al inicio, en el medio, al final y con movimiento reducido. En Chrome, 59,7 fps a 1440 × 900 y 60,0 fps a 390 × 844 emulado. JS inicial: 249,2 kB.
 
 - [x] **F1 · Formato 0.9.1: campos nuevos en el export** — Sonnet 5.5 · ChatGPT: Sol · depende de D1, D6, D7 y D8
   - La 0.9.0 ya la usaron D11 y D12: esta tarea sube a **0.9.1**.
