@@ -1,22 +1,25 @@
 // Recorrido táctil de Molde (PLAN.md C3): a 390 px, con toques, las rondas obligatorias
 // Proyecto → Color → Layout → Estilo, con y sin `prefers-reduced-motion`.
-// Uso: `npm run test:e2e` (levanta vite solo). Pide Playwright instalado (viene en el entorno de Claude Code).
+// Uso: `npm run test:e2e` (levanta vite solo). Instalar Chromium con `npx playwright install chromium`.
 import { spawn } from 'node:child_process';
 import { createRequire } from 'node:module';
+import { dirname, join } from 'node:path';
 import assert from 'node:assert/strict';
 
-const { chromium } = createRequire(import.meta.url)('playwright');
+const require = createRequire(import.meta.url);
+const { chromium } = require('playwright');
 const PUERTO = 5199;
 const URL_BASE = `http://localhost:${PUERTO}/`;
 
-const servidor = spawn(process.execPath, ['node_modules/vite/bin/vite.js', '--port', String(PUERTO), '--strictPort'], { stdio: 'ignore' });
+const vite = join(dirname(require.resolve('vite/package.json')), 'bin/vite.js');
+const servidor = spawn(process.execPath, [vite, '--port', String(PUERTO), '--strictPort'], { stdio: 'ignore', windowsHide: true });
 const cerrar = () => servidor.kill();
 process.on('exit', cerrar);
 
 async function esperarServidor() {
   for (let i = 0; i < 100; i++) {
     try {
-      if ((await fetch(URL_BASE)).ok) return;
+      if ((await fetch(URL_BASE, { signal: AbortSignal.timeout(1000) })).ok) return;
     } catch {}
     await new Promise((r) => setTimeout(r, 300));
   }
