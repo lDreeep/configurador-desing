@@ -1,5 +1,5 @@
-// Recorrido táctil de Molde (PLAN.md C3): a 390 px, con toques, las rondas obligatorias
-// Proyecto → Color → Layout → Estilo, con y sin `prefers-reduced-motion`.
+// Recorrido táctil de Molde (PLAN.md C3 e I3): a 390 px, con toques, el recorrido corto
+// (Qué es → Estructura → Estilo → Color → Lo propio), con y sin `prefers-reduced-motion`.
 // Uso: `npm run test:e2e` (levanta vite solo). Instalar Chromium con `npx playwright install chromium`.
 import { spawn } from 'node:child_process';
 import { createRequire } from 'node:module';
@@ -34,16 +34,16 @@ async function recorrer(browser, reducedMotion) {
   await page.goto(URL_BASE);
   await page.getByRole('button', { name: 'Empezar', exact: true }).tap();
 
-  for (const ronda of ['proyecto', 'rubro', 'color', 'layout', 'estilo']) {
-    await page.waitForFunction((r) => location.hash.endsWith('/' + r), ronda);
+  const rondas = [];
+  for (let i = 0; i < 12 && !page.url().endsWith('/listo'); i++) {
+    const ronda = await page.evaluate(() => location.hash.replace('#/', ''));
+    rondas.push(ronda);
     const ideas = page.locator('.molde-idea');
     await ideas.first().waitFor();
-    // Esperar a que terminen de salir (con movimiento reducido es inmediato).
-    await page.waitForFunction(() => document.querySelector('.molde-ideas.abiertas'));
-    await page.waitForTimeout(reducedMotion ? 50 : 900);
+    await page.waitForTimeout(reducedMotion ? 50 : 500);
 
-    // Áreas táctiles de al menos 44 px.
-    for (const caja of await page.locator('.molde button:visible').evaluateAll((bs) => bs.map((b) => [b.textContent.trim().slice(0, 20), b.getBoundingClientRect().height, b.getBoundingClientRect().width]))) {
+    // Áreas táctiles de al menos 44 px (los botones de la página de muestra son el diseño, no la interfaz).
+    for (const caja of await page.locator('.molde button:visible').evaluateAll((bs) => bs.filter((b) => !b.closest('.pg')).map((b) => [b.textContent.trim().slice(0, 20), b.getBoundingClientRect().height, b.getBoundingClientRect().width]))) {
       assert.ok(caja[1] >= 44 && caja[2] >= 44 || caja[0] === '', `botón chico en ${ronda}: ${caja}`);
     }
 
@@ -57,13 +57,21 @@ async function recorrer(browser, reducedMotion) {
     // «Ver otras» descarta la vista y deja ver más ideas; se vuelve a tocar y se usa.
     await page.getByRole('button', { name: 'Ver otras', exact: true }).tap();
     assert.equal(await page.getByRole('button', { name: 'Usar', exact: true }).count(), 0);
-    await page.waitForTimeout(reducedMotion ? 50 : 900);
+    await page.waitForTimeout(reducedMotion ? 50 : 300);
     await page.locator('.molde-idea').first().tap();
     await page.getByRole('button', { name: 'Usar', exact: true }).tap();
+    await page.waitForTimeout(300);
+    // Las rondas de elegir varias (secciones, scroll) quedan abiertas: sigue el botón de la bandeja.
+    if (page.url().endsWith('/' + ronda)) await page.locator('.molde-final .molde-btn').last().tap();
+    await page.waitForFunction((r) => !location.hash.endsWith('/' + r), ronda);
   }
-  await page.waitForFunction(() => location.hash.endsWith('/piezas') || location.hash.endsWith('/listo'));
-  assert.equal(await page.locator('.molde-ficha').count(), 5); // Proyecto, Rubro, Color, Layout y Estilo
-  await page.getByRole('button', { name: 'Terminar', exact: true }).tap();
+  // I3: el recorrido corto tiene 5 pasos como máximo, y arranca por Proyecto, Rubro y Layout.
+  assert.deepEqual(rondas.slice(0, 3), ['proyecto', 'rubro', 'layout']);
+  assert.ok(rondas.includes('estilo') && rondas.includes('color'), rondas.join());
+  await page.waitForFunction(() => location.hash.endsWith('/listo'));
+  // Final: la página entera y «Descargar» en la esquina, que abre la ventana de descarga.
+  assert.equal(await page.locator('.molde-bandeja').count(), 0);
+  await page.getByRole('button', { name: 'Descargar', exact: true }).tap();
   await page.getByRole('button', { name: 'Descargar DESIGN.md' }).waitFor();
   // F3: ambas descargas completas dentro del primer pantallazo, en celular y escritorio.
   for (const width of [390, 1440]) {

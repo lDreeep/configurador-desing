@@ -11,5 +11,9 @@ catálogo real (traen datos de muestra). Para verlas, abrí el archivo en un nav
   La portada se baja y arma páginas al azar, con el botón fijo arriba. Las opciones van de a 6
   con flechas. Rondas de entrada, fondo animado y scroll interactivo (este último solo en
   landing y portfolio; la página se baja sola para mostrarlo).
+- `molde-3.html`: bandeja y final del recorrido corto (PLAN.md §10, tarea I3). La página se usa
+  mientras se elige; las ideas van en una bandeja al costado (abajo en celular) que se achica a una
+  barra, y al final queda la página entera con «Descargar» y «Seguir editando» en una esquina. Los
+  botones de arriba cambian de estado. Mirala a 1440 y a 390 px. Es la opción que quedó programada.
 
 El plan para llevar `molde-2.html` a la web real está en `PLAN.md`, en la raíz.

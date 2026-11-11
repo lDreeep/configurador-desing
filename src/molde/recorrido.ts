@@ -3,7 +3,7 @@
 // para que las fichas y la página sobrevivan a recargar.
 
 import { useEffect, useState } from 'react';
-import { faltanObligatorias, rondasDe, type ClaveRonda, type Ronda } from '../rondas';
+import { faltanObligatorias, pasosDe, rondasDe, type ClaveRonda, type Ronda } from '../rondas';
 import type { Config, PasoId } from '../tipos';
 
 export const CLAVE_ELEGIDAS = 'molde:elegidas';
@@ -48,9 +48,19 @@ export function useElegidas() {
   return [elegidas, setElegidas] as const;
 }
 
-/** La primera ronda sin elegir (las obligatorias van primero en `rondasDe`), o `listo` si no queda ninguna. */
+/** Las rondas del recorrido corto (PLAN.md §10), en orden: las de cada paso de `pasosDe`, una tras otra. */
+export const rondasDelRecorrido = (c: Config): Ronda[] => pasosDe(c).flatMap((p) => p.rondas);
+
+/** La primera ronda del recorrido sin elegir, o `listo` si no queda ninguna. Las de «Ajustar» no se piden. */
 export function siguiente(c: Config, elegidas: ReadonlySet<ClaveRonda>): string {
-  return rondasDe(c).find((r) => !elegidas.has(r.clave))?.clave ?? LISTO_MOLDE;
+  return rondasDelRecorrido(c).find((r) => !elegidas.has(r.clave))?.clave ?? LISTO_MOLDE;
+}
+
+/** La ronda que viene después de `clave` en el recorrido, o `listo` tras la última. Una de «Ajustar» se queda donde está. */
+export function despuesDe(c: Config, clave: ClaveRonda): string {
+  const rondas = rondasDelRecorrido(c);
+  const i = rondas.findIndex((r) => r.clave === clave);
+  return i < 0 ? clave : (rondas[i + 1]?.clave ?? LISTO_MOLDE);
 }
 
 /** Qué se muestra para un paso de la URL: una ronda, el inicio o el final. Un paso que no corresponde se corrige. */
@@ -69,7 +79,7 @@ export function resolverPaso(c: Config, elegidas: ReadonlySet<ClaveRonda>, paso:
 }
 
 /**
- * Elegir una opción: aplica la ronda, la marca como elegida y dice qué ronda sigue.
+ * Elegir una opción: aplica la ronda, la marca como elegida y dice qué ronda sigue (la misma, si es de «Ajustar»).
  * Cambiar de proyecto conserva color, estilo, piezas y letra; las rondas de la rama anterior se vuelven a elegir.
  */
 export function elegir(c: Config, elegidas: ReadonlySet<ClaveRonda>, ronda: Ronda, id: string) {
@@ -77,7 +87,7 @@ export function elegir(c: Config, elegidas: ReadonlySet<ClaveRonda>, ronda: Rond
   const disponibles = new Set(rondasDe(config).map((r) => r.clave));
   const nuevas = new Set([...elegidas, ronda.clave].filter((k) => disponibles.has(k)));
   if (!config.proyecto.rubro) nuevas.delete('rubro');
-  return { config, elegidas: nuevas as ReadonlySet<ClaveRonda>, siguiente: siguiente(config, nuevas) };
+  return { config, elegidas: nuevas as ReadonlySet<ClaveRonda>, siguiente: despuesDe(config, ronda.clave) };
 }
 
 /** El nombre de lo elegido en una ronda, para su ficha. */
@@ -87,28 +97,6 @@ export function valorDeFicha(c: Config, ronda: Ronda): string {
   if (ronda.marcadas) return ronda.marcadas(c).map((id) => ops.find((o) => o.id === id)?.nombre ?? id).join(' + ') || 'A tu medida';
   const id = ronda.elegida(c);
   return (id && ops.find((o) => o.id === id)?.nombre) || 'A tu medida';
-}
-
-/**
- * Dónde se acomoda cada idea alrededor del centro (px desde el centro).
- * En pantallas anchas, en óvalo; en angostas, de a dos por fila arriba y abajo del botón.
- */
-export function posiciones(n: number, ancho: number, alto: number): [number, number][] {
-  if (ancho < 760) {
-    return Array.from({ length: n }, (_, i) => {
-      const fila = Math.floor(i / 2);
-      const arriba = fila % 2 === 0;
-      const k = Math.floor(fila / 2);
-      const solo = n % 2 === 1 && i === n - 1;
-      return [solo ? 0 : (i % 2 ? 1 : -1) * ancho * 0.24, (arriba ? -1 : 1) * (108 + k * 62)];
-    });
-  }
-  const rx = Math.min(ancho * 0.33, 470);
-  const ry = Math.min((alto - 150) * 0.36, 270);
-  return Array.from({ length: n }, (_, i) => {
-    const a = -Math.PI / 2 + (i / n) * Math.PI * 2 + (n % 2 ? 0 : Math.PI / n);
-    return [Math.cos(a) * rx, Math.sin(a) * ry];
-  });
 }
 
 /**
