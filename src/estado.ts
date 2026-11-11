@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
-import { DIRECCIONES, FUENTES, MOVIMIENTOS, NAV_SUGERIDA, PALETAS, PLANTILLAS_PANTALLAS } from './catalogo';
+import { DENSIDADES, DIRECCIONES, FUENTES, ICONOS, TONOS, MOVIMIENTOS, NAV_SUGERIDA, PALETAS, PLANTILLAS_PANTALLAS } from './catalogo';
 import { ESTILOS, LAYOUTS } from './estilos-visuales';
 import { FONDOS } from './fondos';
-import { limpiarScroll } from './scroll';
+import { limpiarScroll } from './scroll-base';
+import { limpiarSecciones } from './secciones-base';
 import type { Config, DireccionId, FuenteId, MovimientoId, Pantalla, TipoProyecto } from './tipos';
 
 const CLAVE = 'configurador-diseno:v1';
@@ -68,11 +69,15 @@ export function configInicial(): Config {
       ambosModos: false,
       fondo: 'ninguno',
       scroll: [],
+      densidad: null,
+      secciones: [],
       layout: 'hero_partido',
       antiReferencias: [],
       paletaPersonalizada: { fondo: r.fondo, texto: r.texto, acento: r.acento, manual: {} },
     },
     botones: { estilo: DIRECCIONES.calmo.boton, tamano: 'normal', mayusculas: false, icono: 'ninguno', diseno: 'ninguno', color: 'acento', efecto: 'del_diseno' },
+    iconos: null,
+    tono: null,
     cajas: { preset: 'ninguno', ajustes: {} },
     componentes: {},
     notas: {},
@@ -125,7 +130,9 @@ export function normalizar(guardado: Partial<Config>): Config {
   if (visual.estilo !== 'clasico' && !(visual.estilo in ESTILOS)) visual.estilo = 'clasico';
   if (!(visual.layout in LAYOUTS)) visual.layout = base.visual.layout;
   if (visual.fondo !== 'ninguno' && !(visual.fondo in FONDOS)) visual.fondo = 'ninguno';
+  if (visual.densidad !== null && !(visual.densidad in DENSIDADES)) visual.densidad = null;
   visual.scroll = limpiarScroll(Array.isArray(visual.scroll) ? visual.scroll : []);
+  visual.secciones = limpiarSecciones(Array.isArray(visual.secciones) ? visual.secciones : []);
   visual.paletaPersonalizada = { ...base.visual.paletaPersonalizada, ...visual.paletaPersonalizada };
   return {
     ...base,
@@ -134,6 +141,8 @@ export function normalizar(guardado: Partial<Config>): Config {
     estructura: { ...base.estructura, ...guardado.estructura },
     funciones: { ...base.funciones, ...guardado.funciones },
     visual,
+    iconos: guardado.iconos && Object.values(ICONOS).some((o) => o.libreria === guardado.iconos?.libreria && o.estilo === guardado.iconos?.estilo) ? { ...guardado.iconos } : null,
+    tono: guardado.tono && Object.values(TONOS).some((o) => o.voz === guardado.tono?.voz && o.tratamiento === guardado.tono?.tratamiento && o.largo === guardado.tono?.largo) ? { ...guardado.tono } : null,
     botones: { ...base.botones, ...guardado.botones },
     cajas: { ...base.cajas, ...guardado.cajas },
     componentes: { ...guardado.componentes },

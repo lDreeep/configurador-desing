@@ -4,7 +4,7 @@
 
 import type { FamiliaId } from './familias';
 import type { CategoriaId } from './galeria/base';
-import type { BotonDisenoId, CajaPresetId, EstiloId, LayoutId, PaletaId, TipoProyecto } from './tipos';
+import type { BotonDisenoId, CajaPresetId, Densidad, EstiloId, LayoutId, PaletaId, TipoProyecto } from './tipos';
 
 export interface Recomendados {
   /** Cómo se nombra el proyecto en frases como «Recomendados para tu …». */
@@ -328,3 +328,15 @@ export function recomendadosDeRubro(rubro: string | null | undefined): Recomenda
 export function conRubro<T extends string>(delRubro: readonly T[] | undefined, delTipo: readonly T[]): T[] {
   return [...new Set([...(delRubro ?? []), ...delTipo])];
 }
+
+/** Rondas D11: qué opciones van primero para cada tipo de proyecto (ids de `ICONOS`, `TONOS` y `DENSIDADES`). */
+export const RECOMENDADOS_D11: Record<TipoProyecto, { iconos: string[]; tonos: string[]; densidades: Densidad[] }> = {
+  landing: { iconos: ['lucide_trazo', 'phosphor_duotono'], tonos: ['cercano', 'divertido'], densidades: ['aireada'] },
+  sitio: { iconos: ['lucide_trazo', 'heroicons_trazo'], tonos: ['neutro', 'cercano'], densidades: ['aireada', 'normal'] },
+  portfolio: { iconos: ['lucide_trazo', 'phosphor_trazo'], tonos: ['cercano', 'neutro'], densidades: ['aireada'] },
+  tienda: { iconos: ['lucide_trazo', 'phosphor_relleno'], tonos: ['cercano', 'divertido'], densidades: ['normal'] },
+  app_web: { iconos: ['lucide_trazo', 'heroicons_trazo'], tonos: ['neutro', 'formal'], densidades: ['normal', 'compacta'] },
+  app_movil: { iconos: ['material_relleno', 'phosphor_relleno'], tonos: ['cercano', 'neutro'], densidades: ['normal'] },
+  dashboard: { iconos: ['lucide_trazo', 'heroicons_trazo'], tonos: ['neutro', 'formal'], densidades: ['compacta'] },
+  blog: { iconos: ['lucide_trazo', 'phosphor_trazo'], tonos: ['cercano', 'explicativo'], densidades: ['aireada'] },
+};

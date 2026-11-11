@@ -10,6 +10,7 @@ import { useFuentes } from '../fuentes';
 import { Esquema } from '../rapido/esquemas';
 import { EstilosVisualesGlobales, Pagina } from '../rapido/Pagina';
 import { faltanObligatorias, rondasDe, type ClaveRonda, type OpcionRonda, type Ronda } from '../rondas';
+import { esDisenoSeccion, seccionDe } from '../secciones';
 import type { Config, LayoutId } from '../tipos';
 import { AJUSTES, elegir, INICIO_MOLDE, LISTO_MOLDE, POR_VEZ, posiciones, resolverPaso, siguiente, useElegidas, valorDeFicha } from './recorrido';
 import './molde.css';
@@ -57,8 +58,25 @@ const sinMovimiento = () => typeof window.matchMedia === 'function' && window.ma
  * Una capa del lienzo. Con `bajar`, la página se baja sola y vuelve, en un ciclo que comparten las
  * dos capas (base y vista previa van parejas). Con movimiento reducido no se mueve.
  */
-function Capa({ clase, bajar, children }: { clase: string; bajar: boolean; children: React.ReactNode }) {
+function Capa({ clase, bajar, mostrar, marca, children }: { clase: string; bajar: boolean; mostrar?: string; marca?: string; children: React.ReactNode }) {
   const ref = useRef<HTMLDivElement>(null);
+  // Con `mostrar` (un selector), la capa trae esa parte de la página a la vista: en la ronda de secciones,
+  // la que se está mirando o la última elegida. '' vuelve arriba; si el selector no está, no se mueve.
+  const mostraba = useRef(false);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    if (mostrar === undefined) {
+      if (mostraba.current) el.scrollTop = 0;
+      mostraba.current = false;
+      return;
+    }
+    mostraba.current = true;
+    const destino = mostrar ? el.querySelector<HTMLElement>(mostrar) : null;
+    if (mostrar && !destino) return;
+    const top = destino ? destino.getBoundingClientRect().top - el.getBoundingClientRect().top + el.scrollTop - 88 : 0;
+    el.scrollTo?.({ top: Math.max(0, top), behavior: sinMovimiento() ? 'auto' : 'smooth' });
+  }, [mostrar, marca]);
   useEffect(() => {
     const el = ref.current;
     if (!bajar || !el || typeof requestAnimationFrame === 'undefined' || sinMovimiento()) return;
@@ -154,6 +172,10 @@ export function Molde({ config, setConfig, reiniciar, paso: pasoUrl, ir }: Props
   const fichas = rondas.filter((r) => elegidas.has(r.clave));
   // En la ronda de scroll la página se baja sola, para que se vea qué hace cada efecto.
   const bajaSola = ronda?.clave === 'scroll';
+  // En la ronda de secciones la página va sola hasta la sección que se mira (o la última elegida).
+  const idSeccion = ronda?.clave === 'secciones' ? (vista?.id ?? ronda.elegida(config)) : undefined;
+  const mostrar = idSeccion === undefined ? undefined : esDisenoSeccion(idSeccion) ? `[data-seccion="${seccionDe(idSeccion)}"]` : '';
+  const marca = `${vista?.id ?? ''}|${config.visual.secciones.join()}`;
   const sigOpcional = siguiente(config, elegidas);
   // Ajustes finos: solo en una ronda ya elegida (se llega tocando su ficha) que tenga pasos del modo avanzado.
   const conAjustes = ronda && elegidas.has(ronda.clave) && AJUSTES[ronda.clave] ? ronda : null;
@@ -183,10 +205,10 @@ export function Molde({ config, setConfig, reiniciar, paso: pasoUrl, ir }: Props
       <main className="molde-main">
         {/* El lienzo: la página real. Es una muestra, así que no se navega por dentro. */}
         <div className={`molde-lienzo ${hayPagina ? 'hay' : ''}`} aria-hidden="true" {...{ inert: '' }}>
-          <Capa clase="molde-base" bajar={bajaSola}>
+          <Capa clase="molde-base" bajar={bajaSola} mostrar={mostrar} marca={marca}>
             {hayPagina && <Pagina key={config.visual.aparicion} config={config} />}
           </Capa>
-          <Capa clase={`molde-prev ${vista ? 'on' : ''}`} bajar={bajaSola && !!vista}>
+          <Capa clase={`molde-prev ${vista ? 'on' : ''}`} bajar={bajaSola && !!vista} mostrar={mostrar} marca={marca}>
             {vista && <Pagina key={vista.id} config={vista.config} />}
           </Capa>
         </div>

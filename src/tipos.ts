@@ -339,6 +339,11 @@ export type BotonEstiloId = 'relleno' | 'contorno' | 'tonal' | 'elevado' | 'somb
 export type BotonTamano = 'compacto' | 'normal' | 'grande';
 export type BotonIcono = 'ninguno' | 'izquierda' | 'derecha';
 export type Densidad = 'compacta' | 'normal' | 'aireada';
+export type LibreriaIconos = 'lucide' | 'heroicons' | 'phosphor' | 'material_symbols';
+export type EstiloIconos = 'trazo' | 'relleno' | 'duotono';
+export type VozTexto = 'formal' | 'neutra' | 'cercana' | 'divertida';
+export type Tratamiento = 'vos' | 'tu' | 'usted';
+export type LargoTextos = 'corto' | 'medio' | 'detallado';
 export type NivelTecnico = 'bajo' | 'medio' | 'alto';
 export type SiNo = 'si' | 'no' | 'opcional';
 
@@ -429,9 +434,17 @@ export interface Config {
     fondo: import('./fondos').FondoId | 'ninguno';
     /** Efectos de scroll combinados: hasta 3, uno por zona (`scroll.ts`). Vacío = la página no reacciona al bajar. */
     scroll: import('./scroll').ScrollId[];
+    /** Secciones de la página, en orden, con el diseño de cada una (`secciones.ts`). Solo landing, sitio y portfolio. Vacío = el argumento del layout. */
+    secciones: import('./secciones').SeccionDisenoId[];
     /** true: el archivo incluye también la versión opuesta de la paleta (claro ↔ oscuro). */
     ambosModos: boolean;
+    /** Densidad elegida (ronda D11); null = la de la dirección visual. */
+    densidad: Densidad | null;
   };
+  /** Iconos (ronda D11, §11 del export); null = no se eligió y la sección no se exporta. */
+  iconos: { libreria: LibreriaIconos; estilo: EstiloIconos; grosor: number } | null;
+  /** Tono de los textos (ronda D11, §13 del export); null = no se eligió y la sección no se exporta. */
+  tono: { voz: VozTexto; tratamiento: Tratamiento; largo: LargoTextos } | null;
   botones: {
     estilo: BotonEstiloId;
     tamano: BotonTamano;

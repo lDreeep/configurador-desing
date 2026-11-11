@@ -10,7 +10,8 @@
     "test": "vitest run",
     "test:e2e": "node e2e/molde-tactil.e2e.mjs",
     "typecheck": "tsc --noEmit",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "peso": "npm run build && node scripts/peso-inicial.mjs"
   },
   "dependencies": {
     "react": "^18.3.1",

@@ -6,7 +6,7 @@ import { ordenar } from '../recomendados';
 import type { Config } from '../tipos';
 
 /** Las rondas comunes a todos los tipos, en el orden en que aparecen. */
-export type ClaveComun = 'proyecto' | 'rubro' | 'color' | 'layout' | 'estilo' | 'piezas' | 'letra' | 'entrada';
+export type ClaveComun = 'proyecto' | 'rubro' | 'color' | 'layout' | 'estilo' | 'piezas' | 'letra' | 'entrada' | 'iconos' | 'tono';
 /** Rondas propias de una rama: una categoría de la galería o una ronda que todavía no existe. */
 export type ClaveRama = `galeria:${CategoriaId}` | 'fondo_animado' | 'scroll' | 'secciones' | 'densidad' | 'lectura';
 export type ClaveRonda = ClaveComun | ClaveRama;

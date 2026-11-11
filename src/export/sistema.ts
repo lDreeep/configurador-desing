@@ -77,7 +77,8 @@ export function sistemaDeDiseno(c: Config) {
   };
 
   const espacios = [4, 8, 12, 16, 24, 32, 48, 64, 96];
-  const factor = FACTOR_DENSIDAD[dir.densidad];
+  const densidad = v.densidad ?? dir.densidad;
+  const factor = FACTOR_DENSIDAD[densidad];
   const sombra = esOscuro(r.fondo) ? '0,0,0' : rgbDe(r.texto);
   const elevacion = {
     plana: { nivel_1: 'none', nivel_2: 'none', nivel_3: `0 12px 32px rgba(${sombra},.24)` },
@@ -153,7 +154,7 @@ export function sistemaDeDiseno(c: Config) {
 
   return {
     dir, paleta, radio, mov, titulos, texto, pesoTitulos, pesoSubtitulos, espaciadoTitulos, proporcion,
-    boton, colorBoton, caja, escala, espacios, factor, elevacion, bordeBloque, tokens,
+    boton, colorBoton, caja, escala, espacios, factor, densidad, elevacion, bordeBloque, tokens,
     contrastes: paresDeContraste(r),
     alterna: (v.ambosModos ? alternaDe(c, tokens) : null) as Alterna | null,
   };

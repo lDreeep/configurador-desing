@@ -10,13 +10,59 @@ import type { Config } from '../tipos';
 import { ordenar, RECOMENDADOS } from '../recomendados';
 import { SelloRecomendado, TituloRecomendados, TituloResto } from './Recomendados';
 
+/** Los pasos del modo rápido que usan este panel. */
+export type PasoGaleria = 'botones_mas' | 'formularios' | 'navegacion' | 'elementos' | 'datos';
+
+/** Título, bajada, categorías y texto de «volver» de cada paso (el orden de los pasos está en App.tsx). */
+function textosDelPaso(paso: PasoGaleria, c: Config): { titulo: string; bajada: string; categorias: CategoriaId[]; atras: string } {
+  // En dashboards y apps web, los datos van antes que los formularios (igual que en App.tsx).
+  const esDatos = c.proyecto.tipo === 'dashboard' || c.proyecto.tipo === 'app_web';
+  const movil = c.proyecto.tipo === 'app_movil';
+  switch (paso) {
+    case 'botones_mas':
+      return {
+        titulo: 'Combiná tus botones',
+        bajada: 'Casi nunca hay un solo botón: al lado del principal suele ir uno secundario, y en toda app hay botones de icono. Cada secundario aparece junto a tu principal para que veas cuál combina.',
+        categorias: ['boton_sec', 'boton_icono'],
+        atras: 'Volver al botón principal',
+      };
+    case 'formularios':
+      return {
+        titulo: 'Elegí tus formularios',
+        bajada: 'Primero el formulario completo (cómo se ve una pantalla para cargar datos), después cada pieza: campos, selectores, menús, buscadores, calendarios, interruptores, casillas, deslizadores y subida de archivos.',
+        categorias: ['formulario', 'acceso', 'wizard', 'reserva', 'campo', 'selector', 'desplegable', 'buscador', 'calendario', 'interruptor', 'casilla', 'deslizador', 'subir'],
+        atras: esDatos ? 'Volver a los datos' : 'Volver a las cajas',
+      };
+    case 'navegacion':
+      return {
+        titulo: 'Elegí tu navegación',
+        bajada: movil
+          ? 'Como es una app para celular, arrancamos por las barras inferiores. Tocá las pestañas para ver cómo marcan la activa.'
+          : 'Barras superiores, flotantes y menús laterales, y también las barras inferiores para cuando se vea en el celular.',
+        categorias: [...(movil ? (['nav_movil', 'nav_web'] as const) : (['nav_web', 'nav_movil'] as const)), 'migas', 'paginacion', 'pasos', 'notificaciones', 'usuario', 'pie'],
+        atras: 'Volver a los formularios',
+      };
+    case 'elementos':
+      return {
+        titulo: 'Elegí los detalles',
+        bajada: 'Las piezas chicas que aparecen en toda app: etiquetas, avisos, cargas, progreso, preguntas frecuentes, avatares, ayudas y ventanas.',
+        categorias: ['etiqueta', 'aviso', 'cargando', 'progreso', 'acordeon', 'avatar', 'tooltip', 'modal', 'vacio', 'carrusel', 'producto'],
+        atras: 'Volver a la navegación',
+      };
+    case 'datos':
+      return {
+        titulo: 'Elegí cómo mostrar datos',
+        bajada: 'Tarjetas de métricas, gráficos y tablas para dashboards y estadísticas. Pasá el mouse por los gráficos para ver cada dato.',
+        categorias: ['metrica', 'grafico', 'tabla'],
+        atras: esDatos ? 'Volver a las cajas' : 'Volver a los detalles',
+      };
+  }
+}
+
 export function PanelGaleria(props: {
   config: Config;
   setConfig: (fn: (c: Config) => Config) => void;
-  titulo: string;
-  bajada: string;
-  categorias: CategoriaId[];
-  atras: string;
+  paso: PasoGaleria;
   onAtras: () => void;
   onSeguir: () => void;
   /** Entrar por la última pestaña (cuando se vuelve desde el paso siguiente). */
@@ -24,10 +70,11 @@ export function PanelGaleria(props: {
 }) {
   const c = props.config;
   const paso = usePaso();
+  const { titulo, bajada, categorias, atras } = textosDelPaso(props.paso, c);
   const s = sistemaDeDiseno(c);
-  const [pestana, setPestana] = useState<CategoriaId>(props.alFinal ? props.categorias[props.categorias.length - 1] : props.categorias[0]);
-  const indice = props.categorias.indexOf(pestana);
-  const ultima = indice === props.categorias.length - 1;
+  const [pestana, setPestana] = useState<CategoriaId>(props.alFinal ? categorias[categorias.length - 1] : categorias[0]);
+  const indice = categorias.indexOf(pestana);
+  const ultima = indice === categorias.length - 1;
   const pestanas = useRef<HTMLDivElement>(null);
   const cambiarPestana = (id: CategoriaId) => {
     setPestana(id);
@@ -45,7 +92,7 @@ export function PanelGaleria(props: {
   const elegido = (id: CategoriaId) => c.componentes[id];
   const estilo = c.visual.estilo !== 'clasico' ? `estilo-${c.visual.estilo}` : '';
   const elegir = (d: string) => props.setConfig((x) => ({ ...x, componentes: { ...x.componentes, [pestana]: d } }));
-  const listos = props.categorias.filter((id) => elegido(id)).length;
+  const listos = categorias.filter((id) => elegido(id)).length;
   const orden = ordenar(Object.keys(cat.disenos), RECOMENDADOS[c.proyecto.tipo].componentes[pestana]);
   const celda = (id: string, rec: boolean) => {
     const d = cat.disenos[id];
@@ -77,15 +124,15 @@ export function PanelGaleria(props: {
         <header className="pb-cabecera">
           <span className="pg-etiqueta">
             {paso}
-            {props.categorias.length > 1 && ` · ${indice + 1} de ${props.categorias.length}: ${cat.nombre}`}
+            {categorias.length > 1 && ` · ${indice + 1} de ${categorias.length}: ${cat.nombre}`}
           </span>
-          <h1 className="pg-titulo">{props.titulo}</h1>
-          <p className="pg-bajada">{props.bajada}</p>
+          <h1 className="pg-titulo">{titulo}</h1>
+          <p className="pg-bajada">{bajada}</p>
         </header>
 
-        {props.categorias.length > 1 && (
+        {categorias.length > 1 && (
           <div className="pg-pestanas" ref={pestanas} role="tablist" aria-label="Tipos de componente">
-            {props.categorias.map((id) => (
+            {categorias.map((id) => (
               <button key={id} type="button" role="tab" aria-selected={pestana === id} onClick={() => cambiarPestana(id)}>
                 {CATEGORIAS[id].nombre}
                 {elegido(id) && <span className="pg-pestana-ok" aria-label="(elegido)">✓</span>}
@@ -114,13 +161,13 @@ export function PanelGaleria(props: {
       </div>
 
       <footer className="pb-pie">
-        <button type="button" className="pb-pie-atras" onClick={() => (indice > 0 ? cambiarPestana(props.categorias[indice - 1]) : props.onAtras())}>
-          <span className="solo-ancho">{indice > 0 ? `Volver a ${CATEGORIAS[props.categorias[indice - 1]].nombre.toLowerCase()}` : props.atras}</span>
+        <button type="button" className="pb-pie-atras" onClick={() => (indice > 0 ? cambiarPestana(categorias[indice - 1]) : props.onAtras())}>
+          <span className="solo-ancho">{indice > 0 ? `Volver a ${CATEGORIAS[categorias[indice - 1]].nombre.toLowerCase()}` : atras}</span>
           <span className="solo-angosto">‹ Volver</span>
         </button>
         <span className="pb-pie-estado" aria-live="polite">
           {elegido(pestana) ? `Elegido: ${cat.disenos[elegido(pestana)!]?.nombre}` : 'Si no elegís, queda el primero recomendado'}
-          {props.categorias.length > 1 && ` · ${listos} de ${props.categorias.length} listos`}
+          {categorias.length > 1 && ` · ${listos} de ${categorias.length} listos`}
         </span>
         <BotonPrincipal
           config={c}
@@ -132,13 +179,13 @@ export function PanelGaleria(props: {
                   ...x,
                   componentes: { ...x.componentes, [pestana]: x.componentes[pestana] ?? RECOMENDADOS[x.proyecto.tipo].componentes[pestana]?.[0] ?? DISENO_INICIAL[pestana] },
                 }));
-                cambiarPestana(props.categorias[indice + 1]);
+                cambiarPestana(categorias[indice + 1]);
                 return;
               }
               // Lo que no se eligió queda con el primer diseño, así el archivo siempre lo define.
               props.setConfig((x) => ({
                 ...x,
-                componentes: Object.fromEntries(props.categorias.map((id) => [id, x.componentes[id] ?? RECOMENDADOS[x.proyecto.tipo].componentes[id]?.[0] ?? DISENO_INICIAL[id]]).concat(Object.entries(x.componentes))),
+                componentes: Object.fromEntries(categorias.map((id) => [id, x.componentes[id] ?? RECOMENDADOS[x.proyecto.tipo].componentes[id]?.[0] ?? DISENO_INICIAL[id]]).concat(Object.entries(x.componentes))),
               }));
               props.onSeguir();
             }, 220)
@@ -148,7 +195,7 @@ export function PanelGaleria(props: {
             'Seguir'
           ) : (
             <>
-              <span className="solo-ancho">Siguiente: {CATEGORIAS[props.categorias[indice + 1]].nombre.toLowerCase()}</span>
+              <span className="solo-ancho">Siguiente: {CATEGORIAS[categorias[indice + 1]].nombre.toLowerCase()}</span>
               <span className="solo-angosto">Siguiente ›</span>
             </>
           )}

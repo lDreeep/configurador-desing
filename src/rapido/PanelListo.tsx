@@ -3,7 +3,7 @@
 import { usePaso } from './BarraPasos';
 import { useMemo, useState, type CSSProperties } from 'react';
 import { BOTONES } from '../botones-disenos';
-import { CAJAS } from '../cajas';
+import { CAJAS } from '../cajas-disenos';
 import { BotonPrincipal } from '../componentes/BotonPrincipal';
 import { ESTILOS, LAYOUTS } from '../estilos-visuales';
 import { esSistemaDeDiseno, generarDesignMd } from '../export/generarDesignMd';

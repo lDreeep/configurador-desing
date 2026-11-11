@@ -1,5 +1,6 @@
 import { useId, useState, type ReactNode } from 'react';
 import { fuenteDePila, useFuentes } from '../fuentes';
+import { animarToque } from './toque';
 
 export interface Opcion<T extends string> {
   id: T;
@@ -271,27 +272,6 @@ export function CampoColor(props: { etiqueta: string; valor: string; onCambiar: 
 }
 
 /**
- * Reinicia la animación de "toque" en los botones que haya dentro de `el` (o en `el` mismo).
- * Con `evento`, la onda sale desde el punto tocado.
- */
-export function animarToque(el: HTMLElement, evento?: { clientX: number; clientY: number; detail?: number }) {
-  const botones = el.matches('.pv-boton, .bt') ? [el] : Array.from(el.querySelectorAll<HTMLElement>('.pv-boton, .bt'));
-  for (const b of botones) {
-    if (evento && evento.detail !== 0) {
-      const r = b.getBoundingClientRect();
-      b.style.setProperty('--x', `${evento.clientX - r.left}px`);
-      b.style.setProperty('--y', `${evento.clientY - r.top}px`);
-    } else {
-      b.style.removeProperty('--x');
-      b.style.removeProperty('--y');
-    }
-    b.classList.remove('toque');
-    void b.offsetWidth; // fuerza el reinicio de la animación
-    b.classList.add('toque');
-  }
-}
-
-/**
  * Opciones avanzadas plegables. Devuelve si están abiertas y el botón para abrirlas.
  * Recuerda la elección por paso en este navegador.
  */
@@ -326,11 +306,5 @@ export function useAvanzado(clave: string) {
   return { abierto, boton };
 }
 
-/** Flecha → para botones y links. */
-export function IconoFlecha() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <path d="M5 12h14M13 6l6 6-6 6" />
-    </svg>
-  );
-}
+// Viven en toque.tsx (chico) para que la carga inicial no se lleve todo ui.tsx.
+export { animarToque, IconoFlecha } from './toque';

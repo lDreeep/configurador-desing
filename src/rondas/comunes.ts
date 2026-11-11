@@ -2,13 +2,13 @@
 // y Piezas · Letra · Entrada (opcionales). Las propias de cada tipo están en ramas.ts.
 
 import { DISENO_POR_ESTILO } from '../botones-por-estilo';
-import { APARICIONES, COMBINACIONES, FUENTES, MOVIMIENTOS, PALETAS, TIPOS_PROYECTO } from '../catalogo';
+import { APARICIONES, COMBINACIONES, DENSIDADES, DIRECCIONES, FUENTES, ICONOS, MOVIMIENTOS, PALETAS, TIPOS_PROYECTO, TONOS } from '../catalogo';
 import { estilosPara, LISTA_ESTILOS } from '../compatibilidad';
 import { aplicarTipo } from '../estado';
 import { ESTILOS, LAYOUTS } from '../estilos-visuales';
 import { aplicarPaquete, FAMILIAS, paqueteN } from '../familias';
-import { RECOMENDADOS } from '../recomendados';
-import type { AparicionId, Config, EstiloId, FuenteId, LayoutId, PaletaId, TipoProyecto } from '../tipos';
+import { RECOMENDADOS, RECOMENDADOS_D11 } from '../recomendados';
+import type { AparicionId, Config, Densidad, EstiloId, FuenteId, LayoutId, PaletaId, TipoProyecto } from '../tipos';
 import { primeroRecomendados, type Ronda, type RondaPendiente } from './ronda';
 
 const LISTA_PALETAS = Object.keys(PALETAS) as PaletaId[];
@@ -193,4 +193,58 @@ export const ENTRADA: Ronda = {
     })),
   aplicar: (c, id) => ({ ...c, visual: { ...c.visual, aparicion: id as AparicionId } }),
   elegida: (c) => c.visual.aparicion,
+};
+
+// ---------- Rondas opcionales de D11 (iconos, tono y densidad: DESIGN.md §11, §13 y §8) ----------
+
+export const ICONOS_RONDA: Ronda = {
+  clave: 'iconos',
+  ficha: 'Iconos',
+  pregunta: '¿Qué iconos?',
+  obligatoria: false,
+  opciones: (c) =>
+    primeroRecomendados(Object.keys(ICONOS), RECOMENDADOS_D11[c.proyecto.tipo].iconos).map(({ id, recomendada }) => ({
+      id,
+      nombre: ICONOS[id].nombre,
+      descripcion: ICONOS[id].descripcion,
+      recomendada,
+    })),
+  aplicar: (c, id) => ({ ...c, iconos: { libreria: ICONOS[id].libreria, estilo: ICONOS[id].estilo, grosor: ICONOS[id].grosor } }),
+  elegida: (c) => (c.iconos ? (Object.keys(ICONOS).find((k) => ICONOS[k].libreria === c.iconos!.libreria && ICONOS[k].estilo === c.iconos!.estilo) ?? null) : null),
+};
+
+export const TONO: Ronda = {
+  clave: 'tono',
+  ficha: 'Tono',
+  pregunta: '¿Cómo se escriben los textos?',
+  obligatoria: false,
+  // La descripción es una frase de ejemplo, para que se vea cómo suena.
+  opciones: (c) =>
+    primeroRecomendados(Object.keys(TONOS), RECOMENDADOS_D11[c.proyecto.tipo].tonos).map(({ id, recomendada }) => ({
+      id,
+      nombre: TONOS[id].nombre,
+      descripcion: `«${TONOS[id].ejemplo}»`,
+      recomendada,
+    })),
+  aplicar: (c, id) => ({ ...c, tono: { voz: TONOS[id].voz, tratamiento: TONOS[id].tratamiento, largo: TONOS[id].largo } }),
+  elegida: (c) => (c.tono ? (Object.keys(TONOS).find((k) => TONOS[k].voz === c.tono!.voz && TONOS[k].tratamiento === c.tono!.tratamiento && TONOS[k].largo === c.tono!.largo) ?? null) : null),
+};
+
+const LISTA_DENSIDADES = Object.keys(DENSIDADES) as Densidad[];
+
+export const DENSIDAD: Ronda = {
+  clave: 'densidad',
+  ficha: 'Densidad',
+  pregunta: '¿Cuánta información entra en pantalla?',
+  obligatoria: false,
+  // Van primero las del tipo de proyecto y la que ya trae la dirección del estilo.
+  opciones: (c) =>
+    primeroRecomendados(LISTA_DENSIDADES, [...RECOMENDADOS_D11[c.proyecto.tipo].densidades, DIRECCIONES[c.visual.direccion].densidad]).map(({ id, recomendada }) => ({
+      id,
+      nombre: DENSIDADES[id].nombre,
+      descripcion: DENSIDADES[id].descripcion,
+      recomendada,
+    })),
+  aplicar: (c, id) => ({ ...c, visual: { ...c.visual, densidad: id as Densidad } }),
+  elegida: (c) => c.visual.densidad,
 };

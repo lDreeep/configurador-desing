@@ -1,22 +1,27 @@
 // Genera el DESIGN.md exportado según la especificación (DESIGN.md §3, versión del formato abajo).
 // Si cambiás la salida, actualizá la especificación y su historial de cambios.
 
-import { ESTILOS_BOTON, INTEGRACIONES, PATRONES_NAV, TAMANOS_BOTON } from '../catalogo';
+import { ESTILOS_BOTON, INTEGRACIONES, LIBRERIAS_ICONOS, PATRONES_NAV, TAMANOS_BOTON } from '../catalogo';
 import type { BotonEstiloId } from '../tipos';
 import type { Config } from '../tipos';
 import { paresDeContraste } from '../color';
 import { ESTRUCTURA_LAYOUT } from './estructuras-layout';
 import { BOTONES, clasesDeBoton, cssDeBoton, EFECTOS_TOQUE, efectoDe } from '../botones-disenos';
-import { CAJAS, clasesDeCaja, CSS_CAJA, paramsDe } from '../cajas';
-import { cssDeEstilo, ESTILOS, LAYOUTS, llevaArgumento } from '../estilos-visuales';
+import { clasesDeCaja, CSS_CAJA, paramsDe } from '../cajas';
+import { CAJAS } from '../cajas-disenos';
+import { cssDeEstilo } from '../estilos-css';
+import { REGLAS_ESTILOS } from '../estilos-reglas';
+import { ESTILOS, LAYOUTS, llevaArgumento } from '../estilos-visuales';
 import { CATEGORIAS, type CategoriaId } from '../galeria';
 import { cssBaseDe, cssDisenoDe } from '../galeria/base';
 import { paletaActiva, sistemaDeDiseno, tokensCss } from './sistema';
-import { cssDeFondo, FONDOS, type FondoId } from '../fondos';
+import { cssDeFondo } from '../fondos-css';
+import { FONDOS, type FondoId } from '../fondos';
+import { DISENOS_SECCION, limpiarSecciones, llevaSecciones, SECCIONES, seccionDe } from '../secciones';
 
 import { CSS_CONCESIONARIO as cssConcesionario } from '../rapido/concesionario-estilos';
 
-export const VERSION_FORMATO = '0.8.9';
+export const VERSION_FORMATO = '0.9.0';
 
 /** Lo que agregan todas las páginas que no son de autor ni app (D77): el argumento de una landing. */
 export const ARGUMENTO_LANDING =
@@ -336,7 +341,7 @@ largo_de_linea_max: 70ch${nota(c, 'tipografia')}`,
     `
 unidad_base: 4px
 escala: [${s.espacios.join(', ')}]
-densidad: ${s.dir.densidad}
+densidad: ${s.densidad}
 padding_componente: ${Math.round(16 * s.factor)}px
 ancho_maximo_contenido: 1200px
 grilla:
@@ -408,6 +413,22 @@ estados_especiales:
       cssDeBoton(b.diseno as keyof typeof BOTONES, '.boton-principal') +
       '\n```';
 
+  // §11 y §13 solo se exportan si la persona las eligió (rondas D11).
+  if (c.iconos) {
+    const i = c.iconos;
+    add(
+      11,
+      'Iconos e imágenes',
+      `Iconos ${LIBRERIAS_ICONOS[i.libreria]} en estilo ${i.estilo}. Un solo juego de iconos en toda la interfaz: no mezclar librerías.`,
+      `
+iconos:
+  libreria: ${i.libreria}
+  estilo: ${i.estilo}${i.estilo === 'relleno' ? '' : `\n  grosor: ${i.grosor}`}
+  tamano: 20px
+  regla: "un icono solo lleva aria-label; con texto al lado es decorativo (aria-hidden)"`,
+    );
+  }
+
   add(
     12,
     'Movimiento',
@@ -428,6 +449,20 @@ que_se_anima:
   cambio_de_pantalla: ${c.visual.cambio}
 respetar_movimiento_reducido: si${nota(c, 'movimiento')}`,
   );
+
+  if (c.tono) {
+    const t = c.tono;
+    add(
+      13,
+      'Contenido y tono',
+      `Los textos de la interfaz suenan ${t.voz}, tratan a la persona de ${t.tratamiento} y son de largo ${t.largo}.`,
+      `
+voz: ${t.voz}
+tratamiento: ${t.tratamiento}
+largo_de_textos: ${t.largo}
+idioma: es`,
+    );
+  }
 
   add(
     14,
@@ -480,8 +515,10 @@ preguntas_sugeridas:${lista(preguntas)}`,
   );
 
   const v = c.visual;
+  // Las secciones elegidas (§22) reemplazan al argumento genérico del layout.
+  const seccionesElegidas = llevaSecciones(p.tipo) ? limpiarSecciones(v.secciones) : [];
   const lay = LAYOUTS[v.layout];
-  const estV = v.estilo !== 'clasico' ? ESTILOS[v.estilo] : null;
+  const estV = v.estilo !== 'clasico' ? { ...ESTILOS[v.estilo], ...REGLAS_ESTILOS[v.estilo] } : null;
   const fondoV = v.fondo && v.fondo !== 'ninguno' ? FONDOS[v.fondo] : null;
   secciones.push(
     [
@@ -492,7 +529,7 @@ preguntas_sugeridas:${lista(preguntas)}`,
       yaml(`
 layout: ${v.layout}
 layout_estructura: ${q(ESTRUCTURA_LAYOUT[v.layout])}${
-        llevaArgumento(v.layout)
+        llevaArgumento(v.layout) && !seccionesElegidas.length
           ? `
 layout_argumento: ${q(ARGUMENTO_LANDING)}`
           : ''
@@ -576,6 +613,27 @@ ajustado_a_mano: ${ids(ajustadas)}`),
         '\n```',
     );
     secciones.push(partes.join('\n\n'));
+  }
+
+  if (seccionesElegidas.length) {
+    secciones.push(
+      [
+        '## 22. Secciones de la página',
+        `Debajo de la portada (el layout de la sección 19), la página lleva ${seccionesElegidas.length === 1 ? 'esta sección' : `estas ${seccionesElegidas.length} secciones, en este orden`}: ${seccionesElegidas
+          .map((id) => SECCIONES[seccionDe(id)].nombre.toLowerCase())
+          .join(', ')}. Después va el cierre con el pie. No agregues ni saques secciones, y respetá el orden.`,
+        yaml(
+          `orden: ${ids(seccionesElegidas.map(seccionDe))}\nsecciones:\n` +
+            seccionesElegidas
+              .map((id) => {
+                const d = DISENOS_SECCION[id];
+                return `  - id: ${d.seccion}\n    nombre: ${q(SECCIONES[d.seccion].nombre)}\n    para_que: ${q(SECCIONES[d.seccion].descripcion)}\n    diseno: ${id}\n    diseno_nombre: ${q(d.nombre)}\n    estructura: ${q(d.estructura)}`;
+              })
+              .join('\n'),
+        ),
+        'Reglas para todas: cada sección es un `<section>` con su título (`<h2>` o `<h3>`, según la jerarquía de la página) y usa solo los tokens de la sección 16; entre una sección y la siguiente va bastante más espacio que dentro de cada una (de 56 px en celular a 128 px en pantallas anchas); ninguna aparece con animación de entrada propia. Los textos de muestra del configurador no se exportan: escribí el contenido real del proyecto y, si falta un dato (precios, nombres, testimonios), pedilo en vez de inventarlo.',
+      ].join('\n\n'),
+    );
   }
 
   const encabezado = yaml(`

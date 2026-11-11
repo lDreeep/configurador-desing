@@ -27,7 +27,7 @@ export interface ParAuditado {
 }
 
 /**
- * Lo que el CSS de un estilo (`ESTILOS[id].css`) cambia debajo del texto. Si un estilo nuevo pinta
+ * Lo que el CSS de un estilo (`CSS_ESTILOS[id]` en estilos-css.ts) cambia debajo del texto. Si un estilo nuevo pinta
  * un fondo detrás de texto con un color que no sale de los tokens, se anota acá para que la auditoría lo vea.
  */
 interface SuperficiesDeEstilo {

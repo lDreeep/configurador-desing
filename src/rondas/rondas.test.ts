@@ -14,9 +14,10 @@ describe('rondas de Molde (C1)', () => {
   it('cada tipo devuelve las comunes en orden y después las de su rama', () => {
     for (const tipo of TIPOS) {
       const claves = rondasDe(conTipo(tipo)).map((r) => r.clave);
-      expect(claves.slice(0, COMUNES.length), tipo).toEqual(['proyecto', 'color', 'layout', 'estilo', 'piezas', 'letra', 'entrada']);
+      expect(claves.slice(0, COMUNES.length), tipo).toEqual(['proyecto', 'color', 'layout', 'estilo', 'piezas', 'letra', 'entrada', 'iconos', 'tono']);
       const deRama = RAMAS[tipo].map((e) => ('galeria' in e ? `galeria:${e.galeria}` : 'ronda' in e ? e.ronda.clave : null)).filter(Boolean);
-      expect(claves.slice(COMUNES.length), tipo).toEqual(deRama);
+      // La densidad (D11) es para todos: va al final si la rama no la trae.
+      expect(claves.slice(COMUNES.length), tipo).toEqual(deRama.includes('densidad') ? deRama : [...deRama, 'densidad']);
       expect(new Set(claves).size, `${tipo}: claves repetidas`).toBe(claves.length);
     }
   });
@@ -28,7 +29,8 @@ describe('rondas de Molde (C1)', () => {
     expect(fichas('dashboard')).toEqual(['Métricas', 'Gráficos', 'Tablas', 'Densidad']);
     for (const t of TIPOS) expect(RAMAS[t].length, t).toBeGreaterThanOrEqual(2);
     // Lo que todavía no existe queda anotado con su tarea.
-    expect(rondasPendientes(conTipo('landing')).map((p) => p.tarea)).toEqual(['D1', 'D6', 'D12']);
+    expect(fichas('portfolio')).toEqual(['Fondo animado', 'Scroll', 'Secciones', 'Galería de trabajos']);
+    expect(rondasPendientes(conTipo('landing')).map((p) => p.tarea)).toEqual(['D1', 'D6']);
     expect(rondasPendientes(conTipo('tienda')).map((p) => p.clave)).toEqual(['rubro']);
   });
 
@@ -122,5 +124,22 @@ describe('rondas de Molde (C1)', () => {
       // Las rondas cambian con el tipo; las elegidas de antes siguen ahí.
       expect(rondasDe(d).map((r) => r.clave)).toContain('estilo');
     }
+  });
+
+  it('iconos, tono y densidad (D11): están en todos los tipos, son opcionales y cambian solo su campo', () => {
+    for (const tipo of TIPOS) {
+      const base = conTipo(tipo);
+      for (const clave of ['iconos', 'tono', 'densidad'] as const) {
+        const r = rondasDe(base).find((x) => x.clave === clave);
+        expect(r, `${tipo}/${clave}`).toBeDefined();
+        expect(r!.obligatoria).toBe(false);
+        expect(r!.opciones(base).some((o) => o.recomendada), `${tipo}/${clave}: sin recomendadas`).toBe(true);
+      }
+    }
+    const base = conTipo('app_web');
+    const c = rondasDe(base).find((x) => x.clave === 'tono')!.aplicar(base, 'formal');
+    expect(c.tono).toEqual({ voz: 'formal', tratamiento: 'usted', largo: 'medio' });
+    expect({ ...c, tono: null }).toEqual(base);
+    expect(rondasPendientes(conTipo('dashboard')).map((p) => p.clave)).toEqual(['rubro']);
   });
 });
