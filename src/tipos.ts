@@ -389,6 +389,7 @@ export interface Config {
   proyecto: {
     nombre: string;
     tipo: TipoProyecto;
+    rubro?: string;
     descripcion: string;
     objetivo: string;
     publicoQuienes: string;
@@ -436,6 +437,7 @@ export interface Config {
     scroll: import('./scroll').ScrollId[];
     /** Secciones de la página, en orden, con el diseño de cada una (`secciones.ts`). Solo landing, sitio y portfolio. Vacío = el argumento del layout. */
     secciones: import('./secciones').SeccionDisenoId[];
+    fondoAnimado?: import('./fondos-animados').FondoAnimadoId | 'ninguno';
     /** true: el archivo incluye también la versión opuesta de la paleta (claro ↔ oscuro). */
     ambosModos: boolean;
     /** Densidad elegida (ronda D11); null = la de la dirección visual. */

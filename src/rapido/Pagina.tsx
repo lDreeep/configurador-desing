@@ -50,8 +50,10 @@ export function EstilosVisualesGlobales() {
 /** El contenido de la página. El de muestra baja con la hoja (hoja.ts): si no llegó, suspende. */
 export function contenido(c: Config) {
   const p = c.proyecto;
-  const { CONTENIDO_TIPO } = datosDeHoja();
-  const base = CONTENIDO_TIPO[p.tipo] ?? CONTENIDO_TIPO.landing;
+  const { CONTENIDO_TIPO, rubroPorId } = datosDeHoja();
+  const delTipo = CONTENIDO_TIPO[p.tipo] ?? CONTENIDO_TIPO.landing;
+  const rubro = p.rubro ? rubroPorId(p.rubro) : undefined;
+  const base = rubro?.tipo === p.tipo ? { ...delTipo, ...rubro.contenido } : delTipo;
   const pantallas = c.estructura.pantallas;
   const propios = c.funciones.acciones.map((a, i) => ({ titulo: a, texto: pantallas[i]?.proposito || '' }));
   // Lo que la persona escribió gana; si no escribió nada, el contenido de muestra de su tipo de proyecto.

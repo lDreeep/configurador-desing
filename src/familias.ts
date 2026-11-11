@@ -317,11 +317,11 @@ export interface Paquete {
 const existe = (cat: CategoriaId, id: string) => id in CATEGORIAS[cat].disenos;
 
 /** El paquete número `n` para un estilo: recorre sus familias y, al dar la vuelta, la siguiente variante. */
-export function paqueteN(estilo: EstiloId | 'clasico', n: number): Paquete {
-  const fams = familiasPara(estilo);
+export function paqueteN(estilo: EstiloId | 'clasico', n: number, familias?: readonly FamiliaId[]): Paquete {
+  const fams = familias ?? familiasPara(estilo);
   // Las 3 familias que mejor le quedan al estilo se repiten más (con otra variante) antes que el resto.
   const preferidas = fams.slice(0, 3);
-  const orden = [...preferidas, ...preferidas, ...fams.slice(3), ...preferidas];
+  const orden = familias ? [...fams] : [...preferidas, ...preferidas, ...fams.slice(3), ...preferidas];
   const familia = orden[n % orden.length];
   const variante = Math.floor(n / orden.length) + orden.slice(0, n % orden.length).filter((f) => f === familia).length;
   const f = FAMILIAS[familia];

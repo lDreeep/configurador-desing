@@ -3,15 +3,15 @@
 // «Ajustar» y «Descargar» no son rondas de elegir: las arman C4 y F3.
 
 import type { Config } from '../tipos';
-import { COLOR, DENSIDAD, ENTRADA, ESTILO, ICONOS_RONDA, LAYOUT, LETRA, PIEZAS, PROYECTO, RUBRO_PENDIENTE, TONO } from './comunes';
+import { COLOR, DENSIDAD, ENTRADA, ESTILO, ICONOS_RONDA, LAYOUT, LETRA, PIEZAS, PROYECTO, RUBRO, TONO } from './comunes';
 import { pendientesDeRama, rondasDeRama } from './ramas';
 import type { ClaveRonda, Ronda, RondaPendiente } from './ronda';
 
 export type { ClaveRonda, ContextoRonda, OpcionRonda, Ronda, RondaPendiente } from './ronda';
 export { RAMAS, RONDA_SCROLL, RONDA_SECCIONES, rondaDeGaleria, SIN_SCROLL, SIN_SECCIONES } from './ramas';
 
-/** Rondas comunes, en orden. Rubro va entre Proyecto y Color cuando exista (D1). La densidad (D11) va al final de la rama. */
-export const COMUNES: Ronda[] = [PROYECTO, COLOR, LAYOUT, ESTILO, PIEZAS, LETRA, ENTRADA, ICONOS_RONDA, TONO];
+/** Rondas comunes, en orden. Rubro va entre Proyecto y Color (D13). La densidad (D11) va al final de la rama. */
+export const COMUNES: Ronda[] = [PROYECTO, RUBRO, COLOR, LAYOUT, ESTILO, PIEZAS, LETRA, ENTRADA, ICONOS_RONDA, TONO];
 
 /** Las rondas que ve esta config, en orden. Cambia con el tipo de proyecto. */
 export function rondasDe(c: Config): Ronda[] {
@@ -22,7 +22,7 @@ export function rondasDe(c: Config): Ronda[] {
 
 /** Las rondas que el plan pide para esta config y todavía no tienen catálogo (con la tarea que las trae). */
 export function rondasPendientes(c: Config): RondaPendiente[] {
-  return [RUBRO_PENDIENTE, ...pendientesDeRama(c.proyecto.tipo)];
+  return pendientesDeRama(c.proyecto.tipo);
 }
 
 export const rondaPorClave = (c: Config, clave: ClaveRonda) => rondasDe(c).find((r) => r.clave === clave);

@@ -76,6 +76,7 @@ export function elegir(c: Config, elegidas: ReadonlySet<ClaveRonda>, ronda: Rond
   const config = ronda.aplicar(c, id, { elegidas });
   const disponibles = new Set(rondasDe(config).map((r) => r.clave));
   const nuevas = new Set([...elegidas, ronda.clave].filter((k) => disponibles.has(k)));
+  if (!config.proyecto.rubro) nuevas.delete('rubro');
   return { config, elegidas: nuevas as ReadonlySet<ClaveRonda>, siguiente: siguiente(config, nuevas) };
 }
 

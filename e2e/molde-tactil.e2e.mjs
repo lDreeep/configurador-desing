@@ -31,7 +31,7 @@ async function recorrer(browser, reducedMotion) {
   await page.goto(URL_BASE + '#/molde/inicio');
   await page.getByRole('button', { name: 'Empezar', exact: true }).tap();
 
-  for (const ronda of ['proyecto', 'color', 'layout', 'estilo']) {
+  for (const ronda of ['proyecto', 'rubro', 'color', 'layout', 'estilo']) {
     await page.waitForFunction((r) => location.hash.endsWith('/' + r), ronda);
     const ideas = page.locator('.molde-idea');
     await ideas.first().waitFor();

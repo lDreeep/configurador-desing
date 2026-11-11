@@ -12,6 +12,8 @@ import { claseScroll, cssDeScroll, EFECTOS_SCROLL, type ScrollId } from '../scro
 import type { EstiloId } from '../tipos';
 import { FONDOS_AUTO } from './Pagina';
 
+export { rubroPorId } from '../rubros';
+
 export { CONTENIDO_TIPO } from './contenido-tipo';
 
 export function cssDePagina(): string {

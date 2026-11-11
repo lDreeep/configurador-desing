@@ -229,9 +229,10 @@ Estado: `[ ]` pendiente · `[x]` hecha. Marcala al terminar.
   - Listo cuando: hay 8 secciones con 2 variantes cada una y el export las describe en §3.
   - Hecha: catálogo en `src/secciones.ts` (8 secciones × 2 diseños, con su `estructura`), contenido de muestra en `src/rapido/contenido-secciones.ts` y dibujo en `src/rapido/secciones.tsx` + `secciones.css`. `visual.secciones` en `Config` (lo limpia `normalizar`). La ronda `RONDA_SECCIONES` (`src/rondas/ramas.ts`) elige varias: el orden de la página es el orden en que se eligen; en Molde la página va sola hasta la sección que se mira. Las secciones reemplazan al argumento del layout. Export: §22, formato 0.9.0, decisión D92. Tests en `src/secciones.test.tsx`. Pendiente: no se pueden reordenar sin sacar y volver a elegir; el export a HTML (F1) tiene que incluir `secciones.css`; de los 20 estilos solo se revisaron a ojo tres (sin estilo, neobrutalismo y terminal), a 1440 y 390 px.
 
-- [ ] **D13 · Ronda Rubro** — Sonnet 5.5 · ChatGPT: Sol · depende de D1 y D10 (conviene en la misma sesión que F1)
+- [x] **D13 · Ronda Rubro** — Sonnet 5.5 · ChatGPT: Sol · depende de D1 y D10 (conviene en la misma sesión que F1)
   - Guardar el rubro en `Config` (lo limpia `normalizar`), sacar «Rubro» de `rondasPendientes()` y ponerla después de Proyecto (decisión D88). Con el rubro en `Config`, `COLOR`, `LAYOUT`, `ESTILO` y `PIEZAS` de `src/rondas/comunes.ts` pasan `conRubro(…)` a `primeroRecomendados` (lo que dejó pendiente D10). La página usa el contenido de muestra del rubro.
   - Listo cuando: elegir un rubro cambia las 6 primeras opciones de esas rondas y el contenido de la página, con test.
+  - Hecha: ronda obligatoria Rubro, persistencia y limpieza al cambiar de tipo, recomendaciones y contenido de muestra. Los estilos conservan el filtro de contraste AA. Pruebas para los 39 rubros y recorrido actualizado.
 
 - [ ] **D14 · Ronda de lectura del blog** — Sonnet 5.5 · ChatGPT: Sol · depende de D11
   - La ronda «Lectura (ancho y tamaño)» de la tabla 7.1, que D11 dejó afuera. Seguir el patrón de Densidad (`src/rondas/comunes.ts`).
@@ -251,11 +252,12 @@ Estado: `[ ]` pendiente · `[x]` hecha. Marcala al terminar.
   - Llevar la portada aprobada a `src/molde/`, con páginas reales del catálogo.
   - Listo cuando: el scroll va a 60 cuadros por segundo y «Empezar» funciona en cualquier punto.
 
-- [ ] **F1 · Formato 0.9.1: campos nuevos en el export** — Sonnet 5.5 · ChatGPT: Sol · depende de D1, D6, D7 y D8
+- [x] **F1 · Formato 0.9.1: campos nuevos en el export** — Sonnet 5.5 · ChatGPT: Sol · depende de D1, D6, D7 y D8
   - La 0.9.0 ya la usaron D11 y D12: esta tarea sube a **0.9.1**.
   - Sumar al export, como campos opcionales: `rubro` (§2), fondo animado (§19), efectos de scroll y su combinación (§12) y las entradas nuevas (§12), cada uno con su CSS.
   - Seguir la regla de `CLAUDE.md`: actualizar `DESIGN.md` §3, §5 y §12, `VERSION_FORMATO` en `src/export/generarDesignMd.ts`, y tests.
   - Listo cuando: un archivo 0.9.0 sigue siendo válido y el ejemplo de `DESIGN.md` §6 está en 0.9.1.
+  - Hecha: campos opcionales, CSS real de entradas y scroll, 16 fondos y JS solo para luz_cursor. Configuraciones anteriores conservan sus valores por defecto. La selección de fondo animado en la interfaz sigue pendiente.
 
 - [ ] **F2 · Descargar la página en HTML** — Opus 5.5 · ChatGPT: Astra · depende de C2 y F1
   - Generar un `.html` autocontenido con la página armada: tokens, CSS del estilo, layout, piezas, fondo, entrada y scroll. Es el «`preview.html`» pendiente en `DESIGN.md` §5.

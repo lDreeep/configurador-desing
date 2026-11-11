@@ -18,10 +18,13 @@ import { paletaActiva, sistemaDeDiseno, tokensCss } from './sistema';
 import { cssDeFondo } from '../fondos-css';
 import { FONDOS, type FondoId } from '../fondos';
 import { DISENOS_SECCION, limpiarSecciones, llevaSecciones, SECCIONES, seccionDe } from '../secciones';
+import { cssDeFondoAnimado, FONDOS_ANIMADOS, JS_LUZ_CURSOR } from '../fondos-animados';
+import { claseScroll, cssDeScroll, EFECTOS_SCROLL, limpiarScroll } from '../scroll';
+import { cssDeAparicion } from './aparicion';
 
 import { CSS_CONCESIONARIO as cssConcesionario } from '../rapido/concesionario-estilos';
 
-export const VERSION_FORMATO = '0.9.0';
+export const VERSION_FORMATO = '0.9.1';
 
 /** Lo que agregan todas las páginas que no son de autor ni app (D77): el argumento de una landing. */
 export const ARGUMENTO_LANDING =
@@ -202,7 +205,7 @@ export function generarDesignMd(c: Config, fecha = new Date().toISOString().slic
 modo: ${sistema ? 'sistema_de_diseno' : 'proyecto'}
 nombre: ${valor(p.nombre)}
 tipo: ${p.tipo}
-descripcion: ${valor(p.descripcion)}
+${p.rubro ? `rubro: ${q(p.rubro)}\n` : ''}descripcion: ${valor(p.descripcion)}
 objetivo_principal: ${valor(p.objetivo)}
 publico:
   quienes: ${valor(p.publicoQuienes)}
@@ -450,6 +453,17 @@ que_se_anima:
 respetar_movimiento_reducido: si${nota(c, 'movimiento')}`,
   );
 
+  const efectos = limpiarScroll(c.visual.scroll);
+  if (efectos.length) secciones[secciones.length - 1] += '\n\n' + yaml(`scroll:
+  maximo: 3
+  uno_por_zona: si
+  efectos:
+${efectos.map((id) => `    - id: ${id}
+      zona: ${EFECTOS_SCROLL[id].zona}
+      clase: ${claseScroll(id)}
+      objetivo: ${q(EFECTOS_SCROLL[id].objetivo)}${EFECTOS_SCROLL[id].elemento ? `\n      elemento: ${EFECTOS_SCROLL[id].elemento}` : ''}`).join('\n')}`);
+  const movimientoCss = [cssDeAparicion(c.visual.aparicion), ...efectos.map((id) => cssDeScroll(id, `.pg.${claseScroll(id)}`))].filter(Boolean).join('\n');
+  if (movimientoCss) secciones[secciones.length - 1] += '\n\nLa entrada usa `pv-aparicion-' + c.visual.aparicion + '` en la raíz y `pv-bloque` en cada pieza. El scroll usa las clases declaradas en la raíz `.pg`, dentro de un contenedor desplazable. La barra requiere `<div class="scroll-barra" aria-hidden="true"></div>` como primer hijo.\n\n```css\n' + movimientoCss + '\n```';
   if (c.tono) {
     const t = c.tono;
     add(
@@ -519,6 +533,7 @@ preguntas_sugeridas:${lista(preguntas)}`,
   const seccionesElegidas = llevaSecciones(p.tipo) ? limpiarSecciones(v.secciones) : [];
   const lay = LAYOUTS[v.layout];
   const estV = v.estilo !== 'clasico' ? { ...ESTILOS[v.estilo], ...REGLAS_ESTILOS[v.estilo] } : null;
+  const animado = v.fondoAnimado && v.fondoAnimado !== 'ninguno' ? v.fondoAnimado : null;
   const fondoV = v.fondo && v.fondo !== 'ninguno' ? FONDOS[v.fondo] : null;
   secciones.push(
     [
@@ -549,6 +564,12 @@ estilo_palabras_clave: [${estV.palabrasClave.join(', ')}]
 estilo_reglas:${lista(estV.reglas)}`
           : ''
       }`),
+      animado ? yaml(`fondo_animado: ${animado}
+fondo_animado_clases: ${q(`fondo-animado fa-${animado}`)}
+fondo_animado_descripcion: ${q(FONDOS_ANIMADOS[animado].descripcion)}
+fondo_animado_uso: "Capa decorativa vacía aria-hidden dentro de un contenedor relativo. Texto sobre velo o tarjeta sólida."`) : '',
+      animado ? '```css\n' + cssDeFondoAnimado(animado) + '\n```' : '',
+      animado === 'luz_cursor' ? '```js\n' + JS_LUZ_CURSOR + '\n```' : '',
       v.layout === 'autor_concesionario'
         ? '```css\n/* Composición Tracción: misma hoja que usa la vista previa. */\n' + cssConcesionario + '\n```'
         : '',

@@ -4,6 +4,8 @@ import { ESTILOS, LAYOUTS } from './estilos-visuales';
 import { FONDOS } from './fondos';
 import { limpiarScroll } from './scroll-base';
 import { limpiarSecciones } from './secciones-base';
+import { IDS_FONDOS_ANIMADOS } from './fondos-animados-base';
+import { TIPOS_RUBRO } from './rubros-base';
 import type { Config, DireccionId, FuenteId, MovimientoId, Pantalla, TipoProyecto } from './tipos';
 
 const CLAVE = 'configurador-diseno:v1';
@@ -71,6 +73,7 @@ export function configInicial(): Config {
       scroll: [],
       densidad: null,
       secciones: [],
+      fondoAnimado: 'ninguno',
       layout: 'hero_partido',
       antiReferencias: [],
       paletaPersonalizada: { fondo: r.fondo, texto: r.texto, acento: r.acento, manual: {} },
@@ -112,7 +115,7 @@ export function aplicarMovimiento(c: Config, id: MovimientoId): Config {
 
 /** Cambiar el tipo de proyecto sugiere pantallas y navegación, salvo que ya se hayan editado. */
 export function aplicarTipo(c: Config, tipo: TipoProyecto): Config {
-  const proyecto = { ...c.proyecto, tipo };
+  const proyecto = { ...c.proyecto, tipo, rubro: c.proyecto.rubro && TIPOS_RUBRO[c.proyecto.rubro] === tipo ? c.proyecto.rubro : undefined };
   if (c.estructura.editadas) return { ...c, proyecto };
   const [patron, patronMovil] = NAV_SUGERIDA[tipo];
   return { ...c, proyecto, estructura: { patron, patronMovil, pantallas: pantallasDePlantilla(tipo), editadas: false } };
@@ -133,11 +136,14 @@ export function normalizar(guardado: Partial<Config>): Config {
   if (visual.densidad !== null && !(visual.densidad in DENSIDADES)) visual.densidad = null;
   visual.scroll = limpiarScroll(Array.isArray(visual.scroll) ? visual.scroll : []);
   visual.secciones = limpiarSecciones(Array.isArray(visual.secciones) ? visual.secciones : []);
+  if (!visual.fondoAnimado || !IDS_FONDOS_ANIMADOS.some((id) => id === visual.fondoAnimado)) visual.fondoAnimado = 'ninguno';
   visual.paletaPersonalizada = { ...base.visual.paletaPersonalizada, ...visual.paletaPersonalizada };
+  const proyecto = { ...base.proyecto, ...guardado.proyecto };
+  if (proyecto.rubro && TIPOS_RUBRO[proyecto.rubro] !== proyecto.tipo) proyecto.rubro = undefined;
   return {
     ...base,
     ...guardado,
-    proyecto: { ...base.proyecto, ...guardado.proyecto },
+    proyecto,
     estructura: { ...base.estructura, ...guardado.estructura },
     funciones: { ...base.funciones, ...guardado.funciones },
     visual,

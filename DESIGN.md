@@ -1,7 +1,7 @@
 # DESIGN.md: especificación del formato
 
-> **Versión del formato:** 0.9.0 (borrador)
-> **Última actualización:** 2026-11-06
+> **Versión del formato:** 0.9.1 (borrador)
+> **Última actualización:** 2026-11-11
 > **Estado:** configurador en v0.2 (10 pasos + export): 8 direcciones, 13 paletas + personalizada, 23 fuentes, botones y movimiento detallados. Falta la primera ronda de pruebas con IA (§9).
 
 Este documento define **qué archivo exporta el configurador** y **cómo lo tiene que leer una IA** para construir una web o una app. Es también el documento vivo del proyecto: acá se registran las decisiones, lo que aprendemos en las pruebas y lo que falta hacer.
@@ -134,7 +134,7 @@ Todo archivo exportado empieza con este bloque, que permite saber con qué versi
 
 ```yaml
 formato: design-md
-version_formato: 0.9.0
+version_formato: 0.9.1
 generado_por: configurador-diseno
 fecha: 2026-11-06
 idioma: es
@@ -230,6 +230,8 @@ por un configurador visual a partir de decisiones de una persona.
 ---
 
 ### §2. Proyecto
+
+Desde 0.9.1, `rubro` es opcional y guarda el id de `src/rubros.ts` correspondiente al tipo elegido. Si falta, queda sin rubro.
 
 **Responde:** qué es, para quién y para qué.
 
@@ -535,6 +537,10 @@ nota: ""
 
 ### §12. Movimiento
 
+Desde 0.9.1, `aparicion_listas` también admite enfoque, rebote, destape, giro, maquina, costados y desde_boton. Se incluye su CSS real, con la clase `pv-aparicion-<id>` en la raíz y `pv-bloque` en cada pieza, y la versión sin movimiento.
+
+El bloque opcional `scroll` contiene `maximo: 3`, `uno_por_zona: si` y una lista `efectos` con id, zona, clase, objetivo y elemento auxiliar cuando corresponda. Solo se exportan combinaciones válidas del catálogo, con su CSS dentro de @supports y prefers-reduced-motion. Las clases van en `.pg` dentro de un contenedor desplazable. `elemento: barra` requiere un primer hijo `<div class="scroll-barra" aria-hidden="true"></div>`. Si el campo falta, no hay efectos de scroll.
+
 ```yaml
 nivel: sutil                      # minimo | rapido | sutil | expresivo (precarga los efectos de abajo)
 duraciones:
@@ -715,6 +721,8 @@ preguntas_sugeridas:
 
 ### §19. Estilo visual y layout
 
+Desde 0.9.1, los campos opcionales `fondo_animado`, `fondo_animado_clases`, `fondo_animado_descripcion` y `fondo_animado_uso` describen uno de los 16 fondos de `src/fondos-animados.ts`. Se incluye el CSS con keyframes y movimiento reducido. La capa es decorativa, aria-hidden, dentro de un contenedor relativo. El texto lleva velo o tarjeta sólida. `luz_cursor` incluye además el JS del cursor. Si falta el campo, no se aplica fondo animado.
+
 **Responde:** cómo se arma la página y qué textura tiene. Es lo que más aleja el resultado del diseño "promedio".
 
 ```yaml
@@ -875,6 +883,8 @@ Ejemplo: §12 dice `hover_botones: elevar` pero la nota dice "nada que se mueva 
 
 ## 5. Del configurador al archivo: qué paso llena cada sección
 
+F1 implementa la salida opcional de rubro (§2), fondo animado (§19), scroll y entradas nuevas (§12). D13 conecta Rubro después de Proyecto y aplica sus recomendaciones y contenido de muestra. La selección del fondo animado en rondas sigue pendiente de conexión.
+
 Este es el plan de construcción. Estados: `[MVP]` primera versión · `[v0.2]` siguiente · `[futuro]` más adelante · `[idea]` sin decidir.
 
 | Paso del configurador | Llena | Estado | Cómo se elige |
@@ -921,7 +931,7 @@ Así se vería un archivo real generado por el MVP. Las secciones `[v0.2]` apare
 ````markdown
 ```yaml
 formato: design-md
-version_formato: 0.8.1
+version_formato: 0.9.1
 generado_por: configurador-diseno
 fecha: 2026-11-06
 idioma: es
@@ -1399,6 +1409,7 @@ Lo que todavía no tiene lugar en §5. Se mueve allá cuando se decide hacerlo.
 
 | Versión | Fecha | Cambios |
 |---|---|---|
+| 0.9.1 | 2026-11-11 | F1 agrega rubro y fondo animado opcionales, exporta la combinación de scroll y el CSS real de las entradas. Incluye JS solo para luz_cursor. Los campos ausentes conservan el comportamiento anterior, por lo que un archivo 0.9.0 sigue siendo válido. |
 | 0.9.0 | 2026-11-11 | Secciones nuevas opcionales: §11 (`iconos`: `libreria`, `estilo`, `grosor`, `tamano`) y §13 (`voz`, `tratamiento`, `largo_de_textos`), solo si se eligieron; §8 `densidad` puede venir de la ronda Densidad. Sección nueva §22 «Secciones de la página» (opcional; solo landing, sitio y portfolio): `orden` y, por cada sección, `id`, `nombre`, `para_que`, `diseno`, `diseno_nombre` y `estructura`; con §22, §19 no escribe `layout_argumento`. Un archivo 0.8.9 sigue siendo válido. |
 | 0.8.9 | 2026-11-11 | §19 acepta 12 layouts genéricos más (`linea_tiempo`, `antes_despues`, `mapa_lista`, `carta`, `agenda_semanal`, `tablero`, `muro`, `documentacion`, `link_bio`, `compra_unica`, `portada_buscador`, `partida_scroll`), cada uno con su `layout_estructura`. `layout_argumento` no se escribe en los que son una pantalla de app o una página de un solo fin. Sin campos nuevos; un archivo 0.8.8 sigue siendo válido. |
 | 0.8.8 | 2026-11-09 | §19 suma `layout_argumento` (opcional) en los layouts de página que no son de autor: prueba bajo los botones, hero con el producto en acción, frase que se enciende al bajar, testimonio y preguntas frecuentes. Compatible. |

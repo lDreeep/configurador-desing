@@ -14,7 +14,7 @@ describe('rondas de Molde (C1)', () => {
   it('cada tipo devuelve las comunes en orden y después las de su rama', () => {
     for (const tipo of TIPOS) {
       const claves = rondasDe(conTipo(tipo)).map((r) => r.clave);
-      expect(claves.slice(0, COMUNES.length), tipo).toEqual(['proyecto', 'color', 'layout', 'estilo', 'piezas', 'letra', 'entrada', 'iconos', 'tono']);
+      expect(claves.slice(0, COMUNES.length), tipo).toEqual(['proyecto', 'rubro', 'color', 'layout', 'estilo', 'piezas', 'letra', 'entrada', 'iconos', 'tono']);
       const deRama = RAMAS[tipo].map((e) => ('galeria' in e ? `galeria:${e.galeria}` : 'ronda' in e ? e.ronda.clave : null)).filter(Boolean);
       // La densidad (D11) es para todos: va al final si la rama no la trae.
       expect(claves.slice(COMUNES.length), tipo).toEqual(deRama.includes('densidad') ? deRama : [...deRama, 'densidad']);
@@ -30,14 +30,14 @@ describe('rondas de Molde (C1)', () => {
     for (const t of TIPOS) expect(RAMAS[t].length, t).toBeGreaterThanOrEqual(2);
     // Lo que todavía no existe queda anotado con su tarea.
     expect(fichas('portfolio')).toEqual(['Fondo animado', 'Scroll', 'Secciones', 'Galería de trabajos']);
-    expect(rondasPendientes(conTipo('landing')).map((p) => p.tarea)).toEqual(['D1', 'D6']);
-    expect(rondasPendientes(conTipo('tienda')).map((p) => p.clave)).toEqual(['rubro']);
+    expect(rondasPendientes(conTipo('landing')).map((p) => p.tarea)).toEqual(['D6']);
+    expect(rondasPendientes(conTipo('tienda')).map((p) => p.clave)).toEqual([]);
   });
 
   it('las cinco primeras son obligatorias y el resto opcional', () => {
     const c = conTipo('landing');
-    expect(rondasDe(c).filter((r) => r.obligatoria).map((r) => r.clave)).toEqual(['proyecto', 'color', 'layout', 'estilo']);
-    expect(faltanObligatorias(c, new Set<ClaveRonda>(['proyecto', 'color'])).map((r) => r.clave)).toEqual(['layout', 'estilo']);
+    expect(rondasDe(c).filter((r) => r.obligatoria).map((r) => r.clave)).toEqual(['proyecto', 'rubro', 'color', 'layout', 'estilo']);
+    expect(faltanObligatorias(c, new Set<ClaveRonda>(['proyecto', 'color'])).map((r) => r.clave)).toEqual(['rubro', 'layout', 'estilo']);
   });
 
   it('cada opción de cada ronda existe en el catálogo y, aplicada, queda elegida', () => {
@@ -140,6 +140,6 @@ describe('rondas de Molde (C1)', () => {
     const c = rondasDe(base).find((x) => x.clave === 'tono')!.aplicar(base, 'formal');
     expect(c.tono).toEqual({ voz: 'formal', tratamiento: 'usted', largo: 'medio' });
     expect({ ...c, tono: null }).toEqual(base);
-    expect(rondasPendientes(conTipo('dashboard')).map((p) => p.clave)).toEqual(['rubro']);
+    expect(rondasPendientes(conTipo('dashboard')).map((p) => p.clave)).toEqual([]);
   });
 });
