@@ -84,4 +84,17 @@ describe('recorrido de Molde (C2)', () => {
       }
     }
   });
+
+  it('scroll (D7): se eligen varios efectos, la ficha los nombra a todos y la ronda no se marca hasta elegir', () => {
+    let r = paso(configInicial(), new Set(), 'proyecto', 'landing');
+    for (const k of ['color', 'layout', 'estilo'] as ClaveRonda[]) r = paso(r.config, r.elegidas, k);
+    const scroll = rondaPorClave(r.config, 'scroll')!;
+    expect(scroll.maximo).toBe(3);
+    r = elegir(r.config, r.elegidas, scroll, 'se_aleja');
+    r = elegir(r.config, r.elegidas, scroll, 'barra_progreso');
+    expect(r.elegidas.has('scroll')).toBe(true);
+    expect(valorDeFicha(r.config, scroll)).toBe('Se aleja + Barra de progreso');
+    r = elegir(r.config, r.elegidas, scroll, 'ninguno');
+    expect(valorDeFicha(r.config, scroll)).toBe('Sin efectos');
+  });
 });

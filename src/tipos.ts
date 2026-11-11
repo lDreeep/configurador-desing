@@ -415,6 +415,8 @@ export interface Config {
     cambio: CambioId;
     /** Fondo con textura para los visuales y las composiciones ('ninguno' = el de cada estilo). */
     fondo: import('./fondos').FondoId | 'ninguno';
+    /** Efectos de scroll combinados: hasta 3, uno por zona (`scroll.ts`). Vacío = la página no reacciona al bajar. */
+    scroll: import('./scroll').ScrollId[];
     /** true: el archivo incluye también la versión opuesta de la paleta (claro ↔ oscuro). */
     ambosModos: boolean;
   };

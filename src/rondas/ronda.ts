@@ -40,6 +40,12 @@ export interface Ronda {
   aplicar: (c: Config, id: string, ctx?: ContextoRonda) => Config;
   /** La opción que la config tiene hoy (para marcarla y para la ficha), o null si no corresponde a ninguna. */
   elegida: (c: Config) => string | null;
+  /**
+   * Rondas de elegir varias (scroll): cuántas como máximo. Elegir una la suma o la saca y la ronda
+   * queda abierta; `marcadas` dice cuáles están puestas. Sin esto, se elige una y se pasa a la siguiente.
+   */
+  maximo?: number;
+  marcadas?: (c: Config) => string[];
 }
 
 /** Una ronda que el plan pide pero todavía no tiene catálogo: queda anotada y `rondasDe` no la devuelve. */

@@ -81,8 +81,11 @@ export function elegir(c: Config, elegidas: ReadonlySet<ClaveRonda>, ronda: Rond
 
 /** El nombre de lo elegido en una ronda, para su ficha. */
 export function valorDeFicha(c: Config, ronda: Ronda): string {
+  const ops = ronda.opciones(c);
+  // Rondas de elegir varias: todas las marcadas, en el orden en que se eligieron.
+  if (ronda.marcadas) return ronda.marcadas(c).map((id) => ops.find((o) => o.id === id)?.nombre ?? id).join(' + ') || 'A tu medida';
   const id = ronda.elegida(c);
-  return (id && ronda.opciones(c).find((o) => o.id === id)?.nombre) || 'A tu medida';
+  return (id && ops.find((o) => o.id === id)?.nombre) || 'A tu medida';
 }
 
 /**

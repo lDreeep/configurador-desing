@@ -7,16 +7,43 @@
 import { CATEGORIAS } from '../galeria';
 import type { CategoriaId } from '../galeria/base';
 import { RECOMENDADOS } from '../recomendados';
+import { combinarScroll, EFECTOS_SCROLL, esScrollId, MAX_SCROLL, ZONAS_SCROLL, type ScrollId } from '../scroll';
 import type { TipoProyecto } from '../tipos';
 import { primeroRecomendados, type ClaveRama, type Ronda, type RondaPendiente } from './ronda';
 
 /** Una ronda de rama: de la galería (ya hay catálogo) o pendiente de una tarea del plan. */
 export type EntradaRama =
   | { galeria: CategoriaId; ficha: string; pregunta: string }
+  | { ronda: Ronda; ficha: string; pregunta: string }
   | { pendiente: Exclude<ClaveRama, `galeria:${string}`>; ficha: string; pregunta: string; tarea: string };
 
 const FONDO_ANIMADO: EntradaRama = { pendiente: 'fondo_animado', ficha: 'Fondo animado', pregunta: '¿Se mueve el fondo?', tarea: 'D6' };
-const SCROLL: EntradaRama = { pendiente: 'scroll', ficha: 'Scroll', pregunta: '¿Qué pasa al bajar?', tarea: 'D7' };
+/** «Sin efectos»: la página no reacciona al bajar. */
+export const SIN_SCROLL = 'ninguno';
+
+/** Scroll (D7): se combinan hasta 3 efectos, uno por zona; elegir uno de una zona ocupada reemplaza al anterior. */
+export const RONDA_SCROLL: Ronda = {
+  clave: 'scroll',
+  ficha: 'Scroll',
+  pregunta: '¿Qué pasa al bajar?',
+  obligatoria: false,
+  maximo: MAX_SCROLL,
+  opciones: () => [
+    ...(Object.keys(EFECTOS_SCROLL) as ScrollId[]).map((id) => ({
+      id,
+      nombre: EFECTOS_SCROLL[id].nombre,
+      descripcion: `${ZONAS_SCROLL[EFECTOS_SCROLL[id].zona].nombre}: uno por zona`,
+      recomendada: false,
+    })),
+    { id: SIN_SCROLL, nombre: 'Sin efectos', descripcion: 'La página no reacciona al bajar', recomendada: false },
+  ],
+  aplicar: (c, id) => ({ ...c, visual: { ...c.visual, scroll: esScrollId(id) ? combinarScroll(c.visual.scroll, id) : [] } }),
+  // El último que se sumó: es el que la ficha nombra primero y el que acaba de elegirse.
+  elegida: (c) => c.visual.scroll[c.visual.scroll.length - 1] ?? SIN_SCROLL,
+  marcadas: (c) => (c.visual.scroll.length ? [...c.visual.scroll] : [SIN_SCROLL]),
+};
+
+const SCROLL: EntradaRama = { ronda: RONDA_SCROLL, ficha: RONDA_SCROLL.ficha, pregunta: RONDA_SCROLL.pregunta };
 const SECCIONES: EntradaRama = { pendiente: 'secciones', ficha: 'Secciones', pregunta: '¿Qué secciones lleva y en qué orden?', tarea: 'D12' };
 
 export const RAMAS: Record<TipoProyecto, EntradaRama[]> = {
@@ -75,7 +102,7 @@ export function rondaDeGaleria(cat: CategoriaId, ficha: string, pregunta: string
 
 /** Las rondas de la rama de un tipo que ya se pueden usar. */
 export function rondasDeRama(tipo: TipoProyecto): Ronda[] {
-  return RAMAS[tipo].flatMap((e) => ('galeria' in e ? [rondaDeGaleria(e.galeria, e.ficha, e.pregunta)] : []));
+  return RAMAS[tipo].flatMap((e) => ('galeria' in e ? [rondaDeGaleria(e.galeria, e.ficha, e.pregunta)] : 'ronda' in e ? [e.ronda] : []));
 }
 
 /** Las rondas de la rama que todavía esperan su catálogo. */

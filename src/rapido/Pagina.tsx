@@ -9,6 +9,7 @@ import { clasesDeCaja, CSS_CAJA, paramsDe } from '../cajas';
 import { cssDeEstilo, ESTILOS } from '../estilos-visuales';
 import { cssDeFondo, FONDOS, type FondoId, SELECTOR_FONDO } from '../fondos';
 import { sistemaDeDiseno } from '../export/sistema';
+import { claseScroll, cssDeScroll, EFECTOS_SCROLL, type ScrollId } from '../scroll';
 import { useFuentes } from '../fuentes';
 import { CONTENIDO_TIPO } from './contenido-tipo';
 import { PlantillaAutor, PLANTILLAS_AUTOR } from './autores';
@@ -23,10 +24,12 @@ export function EstilosVisualesGlobales() {
   // Los fondos van después de los estilos: si se elige uno, gana sobre el visual del estilo.
   const auto = FONDOS_AUTO.map((id) => cssDeFondo(id, `.pg.pg .pg-media.fa-${id}`));
   const fondos = (Object.keys(FONDOS) as FondoId[]).map((id) => cssDeFondo(id, SELECTOR_FONDO(id)));
+  // Los efectos de scroll, cada uno limitado a su clase en la raíz (scroll.ts).
+  const scroll = (Object.keys(EFECTOS_SCROLL) as ScrollId[]).map((id) => cssDeScroll(id, `.pg.${claseScroll(id)}`));
   // Los diseños de botón llegan aparte (botones-carga.tsx) y van antes que las cajas, como siempre.
   return (
     <>
-      <style>{[...estilos, ...auto, ...fondos].join('\n')}</style>
+      <style>{[...estilos, ...auto, ...fondos, ...scroll].join('\n')}</style>
       <EstilosBotones />
       <style>{cajas}</style>
     </>
@@ -838,9 +841,12 @@ export function Pagina({ config, contenido: propio }: { config: Config; contenid
     conDiseno ? '' : `pv-presionar-${v.presionar}`,
     `pv-aparicion-${v.aparicion}`,
     v.fondo && v.fondo !== 'ninguno' ? `fondo-${v.fondo}` : '',
+    ...(v.scroll ?? []).map(claseScroll),
   ].join(' ');
+  const conBarra = (v.scroll ?? []).some((id) => EFECTOS_SCROLL[id]?.elemento === 'barra');
   return (
     <div className={clases} style={s.tokens as CSSProperties}>
+      {conBarra && <div className="scroll-barra" aria-hidden="true" />}
       <div className="pg-deco" aria-hidden="true">
         <span className="a" />
         <span className="b" />
