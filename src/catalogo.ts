@@ -366,6 +366,16 @@ export const COMBINACIONES: { nombre: string; titulos: FuenteId; texto: FuenteId
   { nombre: 'Amigable', titulos: 'rubik', texto: 'lexend' },
   { nombre: 'A mano', titulos: 'caveat', texto: 'nunito' },
   { nombre: 'Videojuego', titulos: 'silkscreen', texto: 'space_mono' },
+  { nombre: 'Tecnológica', titulos: 'sora', texto: 'dm_sans' },
+  { nombre: 'Afiche', titulos: 'bebas_neue', texto: 'work_sans' },
+  { nombre: 'Con estilo', titulos: 'dm_serif', texto: 'manrope' },
+  { nombre: 'Para leer', titulos: 'lora', texto: 'lexend' },
+  { nombre: 'Art déco', titulos: 'poiret_one', texto: 'quicksand' },
+  { nombre: 'Revista', titulos: 'playfair', texto: 'work_sans' },
+  { nombre: 'Sans con cuerpo serif', titulos: 'outfit', texto: 'lora' },
+  { nombre: 'Terminal', titulos: 'vt323', texto: 'jetbrains_mono' },
+  { nombre: 'Fina y moderna', titulos: 'cormorant', texto: 'manrope' },
+  { nombre: 'Ancha y limpia', titulos: 'unbounded', texto: 'inter' },
 ];
 
 export const ESCALAS: Record<EscalaId, { nombre: string; descripcion: string; proporcion: number }> = {

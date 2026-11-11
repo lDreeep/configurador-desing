@@ -173,9 +173,10 @@ Estado: `[ ]` pendiente · `[x]` hecha. Marcala al terminar.
   - Sumar a `src/familias.ts` las de la sección 7.6, armadas **solo con diseños que ya existen** (botones, cajas y galería). No escribir CSS nuevo.
   - Listo cuando: pasa el test que verifica que todos los ids existen.
 
-- [ ] **D5 · 10 combinaciones de letra nuevas** — Haiku 5.5 · apta para Codex
+- [x] **D5 · 10 combinaciones de letra nuevas** — Haiku 5.5 · apta para Codex
   - Sumar a `COMBINACIONES` en `src/catalogo.ts` diez pares con las 33 fuentes que ya están cargadas. Consultar `python3 .claude/skills/ui-ux-pro-max/scripts/search.py "consulta" --domain typography` para elegir pares.
   - Listo cuando: no hay pares repetidos y cada par usa pesos que la fuente tiene.
+  - Hecha: 10 pares nuevos al final de `COMBINACIONES` (14 → 24), sin fuentes nuevas ni cambios en el export. Test en `src/export/generarDesignMd.test.ts` (sin pares ni nombres repetidos; ambas fuentes tienen peso 400).
 
 - [ ] **D6 · Fondos animados** — Opus 5.5 (motor y 4 fondos) y después Sonnet 5.5 (los otros 12)
   - Crear `src/fondos-animados.ts` con los 16 de la sección 7.7. Solo CSS, salvo «luz que sigue al cursor». Los seis de `maqueta/molde-2.html` sirven de referencia.

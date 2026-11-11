@@ -105,6 +105,17 @@ describe('catálogo', () => {
     for (const x of COMBINACIONES) expect(FUENTES[x.titulos] && FUENTES[x.texto]).toBeTruthy();
   });
 
+  it('las combinaciones no se repiten (ni el par ni el nombre) y ambas fuentes tienen peso normal (400)', () => {
+    const pares = COMBINACIONES.map((x) => `${x.titulos}+${x.texto}`);
+    const nombres = COMBINACIONES.map((x) => x.nombre);
+    expect(new Set(pares).size).toBe(pares.length);
+    expect(new Set(nombres).size).toBe(nombres.length);
+    for (const x of COMBINACIONES) {
+      expect(FUENTES[x.titulos].pesos, `${x.nombre}: títulos`).toContain(400);
+      expect(FUENTES[x.texto].pesos, `${x.nombre}: texto`).toContain(400);
+    }
+  });
+
   it('cada dirección genera un export válido', () => {
     for (const id of Object.keys(DIRECCIONES) as (keyof typeof DIRECCIONES)[]) {
       const md = generarDesignMd(aplicarDireccion(configCompleta(), id));
