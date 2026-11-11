@@ -167,7 +167,7 @@ Estado: `[ ]` pendiente · `[x]` hecha. Marcala al terminar.
   - Cada layout nuevo va **al final** de la lista para no romper los códigos compartidos.
   - Listo cuando: cada layout se ve bien con los 20 estilos a 1440 px y a 390 px, y tiene su `estructura` escrita para el export.
 
-- [ ] **D4 · 8 familias de UI nuevas** — Sonnet 5.5
+- [x] **D4 · 8 familias de UI nuevas** — Sonnet 5.5
   - Sumar a `src/familias.ts` las de la sección 7.6, armadas **solo con diseños que ya existen** (botones, cajas y galería). No escribir CSS nuevo.
   - Listo cuando: pasa el test que verifica que todos los ids existen.
 
