@@ -119,7 +119,7 @@ Estado: `[ ]` pendiente · `[x]` hecha. Marcala al terminar.
 
 ### Tanda 2: base técnica y motor (en este orden)
 
-- [ ] **B1 · Paso en la URL y guardado** — Opus 5.5 · sin dependencias
+- [x] **B1 · Paso en la URL y guardado** — Opus 5.5 · sin dependencias
   - El paso actual vive solo en memoria (`src/App.tsx`): Atrás del navegador saca del sitio y recargar vuelve al inicio. Llevarlo a `location.hash` y a `localStorage`.
   - Listo cuando: Atrás y Adelante del navegador mueven entre pasos, y recargar deja a la persona donde estaba. Con test.
 

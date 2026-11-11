@@ -1,10 +1,11 @@
-import { lazy, Suspense, useEffect, useState } from 'react';
+import { lazy, Suspense, useEffect } from 'react';
 import { DISENO_POR_ESTILO } from './botones-disenos';
 import { useConfig } from './estado';
 import { BarraPasos, PasoContexto } from './rapido/BarraPasos';
 import { aplicarCombinacion } from './rapido/combinar';
 import { Inicio } from './rapido/Inicio';
 import { EstilosVisualesGlobales } from './rapido/Pagina';
+import { useUbicacion, type PasoRapido } from './navegacion';
 
 // La portada carga sola; el resto se descarga aparte (y en segundo plano mientras se mira la portada).
 const cargar = {
@@ -38,47 +39,21 @@ function Cargando() {
   );
 }
 
-type Modo = 'rapido' | 'avanzado';
-type PasoRapido = 'inicio' | 'tipo' | 'botones' | 'botones_mas' | 'cajas' | 'formularios' | 'navegacion' | 'elementos' | 'datos' | 'movimiento' | 'paquete' | 'prototipo' | 'listo';
-const CLAVE_MODO = 'configurador-diseno:modo';
-
-function leerModo(): Modo {
-  try {
-    return localStorage.getItem(CLAVE_MODO) === 'avanzado' ? 'avanzado' : 'rapido';
-  } catch {
-    return 'rapido';
-  }
-}
-
 export function App() {
   const { config, setConfig, reiniciar } = useConfig();
-  const [modo, setModoEstado] = useState<Modo>(leerModo);
-  const [pasoAvanzado, setPasoAvanzado] = useState('proyecto');
-  const [pasoRapido, setPasoRapido] = useState<PasoRapido>('inicio');
+  // Modo, paso y recorrido viven en la URL (#/rapido/tipo) y en localStorage: ver navegacion.ts.
+  const { ubicacion, atras: volviendo, ir } = useUbicacion();
+  const modo = ubicacion.modo;
+  const pasoRapido = (modo === 'rapido' ? ubicacion.paso : 'inicio') as PasoRapido;
   // Recorrido simple (diseño → proyecto → tu UI → prototipo) o detallado (pieza por pieza).
-  const [detallado, setDetallado] = useState(false);
-
-  const setModo = (m: Modo) => {
-    setModoEstado(m);
-    try {
-      localStorage.setItem(CLAVE_MODO, m);
-    } catch {
-      // sin almacenamiento: el modo dura la sesión
-    }
-  };
-
+  const detallado = ubicacion.detallado;
 
   // Al volver a un paso con pestañas, se entra por la última (la que se vio justo antes).
-  const [volviendo, setVolviendo] = useState(false);
-  const irRapido = (p: PasoRapido, atras = false) => {
-    setVolviendo(atras);
-    setPasoRapido(p);
+  const irRapido = (p: PasoRapido, atras = false, conDetalle = detallado) => {
+    ir({ modo: 'rapido', paso: p, detallado: p === 'inicio' ? false : conDetalle }, atras);
     window.scrollTo({ top: 0 });
   };
-  const alAvanzado = (paso: string) => {
-    setPasoAvanzado(paso);
-    setModo('avanzado');
-  };
+  const alAvanzado = (paso: string) => ir({ modo: 'avanzado', paso, detallado: false });
 
   // Mientras se mira la portada, se bajan en segundo plano los pasos siguientes.
   useEffect(() => {
@@ -118,7 +93,7 @@ export function App() {
         {pasoRapido === 'inicio' && (
           <Inicio
             config={config}
-            onAvanzado={() => setModo('avanzado')}
+            onAvanzado={() => alAvanzado('proyecto')}
             onElegir={(k) => {
               // El diseño elegido pasa a ser el de la página, con un botón que combina.
               setConfig((c) => {
@@ -135,10 +110,7 @@ export function App() {
             {...comun}
             onAtras={() => irRapido('tipo', true)}
             onSeguir={() => irRapido('prototipo')}
-            onDetallado={() => {
-              setDetallado(true);
-              irRapido('botones');
-            }}
+            onDetallado={() => irRapido('botones', false, true)}
           />
         )}
         {pasoRapido === 'botones' && <PanelBotones {...comun} onAtras={() => irRapido('tipo', true)} onSeguir={() => irRapido('botones_mas')} />}
@@ -229,11 +201,9 @@ export function App() {
         config={config}
         setConfig={setConfig}
         reiniciar={reiniciar}
-        pasoInicial={pasoAvanzado}
-        onRapido={() => {
-          setPasoRapido('inicio');
-          setModo('rapido');
-        }}
+        paso={ubicacion.paso}
+        onPaso={alAvanzado}
+        onRapido={() => irRapido('inicio')}
       />
     </Suspense>
   );
