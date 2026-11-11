@@ -106,7 +106,7 @@ Estado: `[ ]` pendiente · `[x]` hecha. Marcala al terminar.
   - Crear `AGENTS.md` en la raíz: tres líneas que manden a leer `CLAUDE.md`, `DESIGN.md` y `PLAN.md`, más los comandos de `CLAUDE.md`.
   - Listo cuando: el archivo existe y no duplica contenido de `CLAUDE.md`.
 
-- [ ] **A2 · Anotar las decisiones en `DESIGN.md`** — Sonnet 5.5 · sin dependencias
+- [x] **A2 · Anotar las decisiones en `DESIGN.md`** — Sonnet 5.5 · sin dependencias
   - Pasar las 10 decisiones de la sección 4 a `DESIGN.md` §8 (una fila cada una, con el formato de la tabla), y a §10 un resumen de este plan con link a `PLAN.md`.
   - No tocar §3 ni la versión del formato: todavía no cambia la salida.
   - Listo cuando: §8 tiene las filas nuevas numeradas a continuación de D78.
