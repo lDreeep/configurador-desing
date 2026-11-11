@@ -32,13 +32,20 @@ sección 5. Las tareas de una misma tanda (sección 6) no se pisan y pueden ir e
 La regla general: **cuanto más ambigua es la tarea y más caro es equivocarse, más capaz el modelo.**
 Si la tarea tiene una lista cerrada y un test que la verifica, alcanza con uno barato.
 
-| Modelo | Usalo para | No lo uses para |
-|---|---|---|
-| **Fable 5.2** | Decidir cómo se ve y cómo se mueve algo que todavía no existe: la portada, el lenguaje de movimiento, layouts nuevos, el árbol de ramas. Tareas donde el resultado se juzga a ojo. | Cargar datos, tareas con receta. Es el más caro. |
-| **Opus 5.5** | Arquitectura y cambios que cruzan muchos archivos: el motor de rondas, el estado, el export a HTML, rendimiento. Revisión final de lo que hicieron otros. | Sumar entradas a un catálogo siguiendo un patrón. |
-| **Sonnet 5.5** | Implementar algo bien especificado: un catálogo nuevo con su CSS siguiendo ejemplos, una ronda nueva sobre el motor ya hecho, tests, arreglos de accesibilidad y celular. | Decidir diseño desde cero o reestructurar el estado. |
-| **Haiku 5.5** | Trabajo mecánico con lista cerrada: cargar datos de una tabla, etiquetar, renombrar, actualizar documentación, correr verificaciones. | Cualquier cosa que pida criterio visual o que no tenga un test que la frene. |
-| **Codex** (u otro agente de código) | Las tareas marcadas **«apta para Codex»**: especificación cerrada, verificación automática y sin criterio visual. | Tareas que piden cargar una skill de `.claude/skills/` (Codex no las usa) o juzgar a ojo. |
+| Modelo | Equivalente en ChatGPT | Usalo para | No lo uses para |
+|---|---|---|---|
+| **Fable 5.2** | ninguno: dejala en Claude | Decidir cómo se ve y cómo se mueve algo que todavía no existe: la portada, el lenguaje de movimiento, layouts nuevos, el árbol de ramas. Tareas donde el resultado se juzga a ojo. | Cargar datos, tareas con receta. Es el más caro. |
+| **Opus 5.5** | **Astra** | Arquitectura y cambios que cruzan muchos archivos: el motor de rondas, el estado, el export a HTML, rendimiento. Revisión final de lo que hicieron otros. | Sumar entradas a un catálogo siguiendo un patrón. |
+| **Sonnet 5.5** | **Sol** | Implementar algo bien especificado: un catálogo nuevo con su CSS siguiendo ejemplos, una ronda nueva sobre el motor ya hecho, tests, arreglos de accesibilidad y celular. | Decidir diseño desde cero o reestructurar el estado. |
+| **Haiku 5.5** | **Terra** (o **Luna** si es solo texto o datos) | Trabajo mecánico con lista cerrada: cargar datos de una tabla, etiquetar, renombrar, actualizar documentación, correr verificaciones. | Cualquier cosa que pida criterio visual o que no tenga un test que la frene. |
+| **Codex** (u otro agente de código) | corre con Astra, Sol, Terra o Luna: usá la columna de al lado | Las tareas marcadas **«apta para Codex»**: especificación cerrada, verificación automática y sin criterio visual. | Tareas que piden cargar una skill de `.claude/skills/` (Codex no las usa) o juzgar a ojo. |
+
+**Equivalentes en ChatGPT (2026-11-11):** de más a menos capaz, Astra → Sol → Terra → Luna
+(precios de referencia por millón de tokens, entrada/salida: Astra $10/$50, Sol $2/$10, Terra $1/$5,
+Luna $0,10/$0,50). Los datos salen mayormente de sitios que no son de OpenAI: revisá qué modelos
+tiene tu plan antes de repartir. Para ahorrar Claude, las tareas de Sonnet y Haiku pueden ir a Sol y
+Terra; las de Fable y la revisión final (G5) quedan en Claude. Cada tarea pendiente de la sección 5
+dice «ChatGPT: …» con el que alcanza.
 
 Nota sobre Codex: no lo probé en este repo. La tarea A1 le deja un `AGENTS.md` que apunta a
 `CLAUDE.md` y a este plan, que es el archivo que ese agente lee al arrancar.
@@ -153,7 +160,8 @@ Estado: `[ ]` pendiente · `[x]` hecha. Marcala al terminar.
   - Listo cuando: todo lo que se podía ajustar en `src/ModoAvanzado.tsx` se puede ajustar desde alguna ficha. Entregar una tabla de equivalencias en el PR.
   - Hecho en `src/molde/Ajustes.tsx` (se carga aparte) y `AJUSTES` en `src/molde/recorrido.ts`. En una ronda ya elegida, el pie muestra «Ajustes finos»: abre al costado (abajo en celular) los pasos de `PASOS` de ese tema con su nota, y la página queda entera a la vista y cambia en vivo. Un test verifica que cada paso de `PASOS` está en una sola ficha. Dirección va en una versión para Molde (`AjustesDireccion`: sensación y anti-referencias, sin pisar color, letra ni forma) y de Exportar solo las notas generales (`NotasGenerales`). Equivalencias: Proyecto → proyecto (tipo, nombre, descripción, objetivo, público, plataformas), qué hace y notas generales · Layout → pantallas y navegación · Color → paleta, personalizada, cada color a mano, contraste · Estilo → dirección, anti-referencias y forma (esquinas, sombras, bordes) · Piezas → botones (estilo, tamaño, mayúsculas, icono) · Letra → combinación, escala, fuentes, peso y espaciado · Entrada → movimiento (nivel, hover, presionar, aparición, cambio de pantalla). Lo que el modo avanzado elegía en Dirección y ya es ronda (estilo y layout) se elige en su ronda.
 
-- [ ] **C5 · Reemplazar el recorrido y retirar lo viejo** — Sonnet 5.5 · depende de C3, C4 y E2
+- [ ] **C5 · Reemplazar el recorrido y retirar lo viejo** — Sonnet 5.5 · ChatGPT: Sol · depende de C3, C4 y E2
+  - Antes de borrar, que liste qué va a borrar y lo apruebe quien dirige.
   - `src/App.tsx` pasa a montar Molde. Borrar los paneles del modo rápido y `ModoAvanzado.tsx` que ya no se usen; conservar `Prototipo.tsx` si C4 lo reutiliza.
   - Listo cuando: no quedan imports muertos y el build pasa.
 
@@ -221,41 +229,51 @@ Estado: `[ ]` pendiente · `[x]` hecha. Marcala al terminar.
   - Listo cuando: hay 8 secciones con 2 variantes cada una y el export las describe en §3.
   - Hecha: catálogo en `src/secciones.ts` (8 secciones × 2 diseños, con su `estructura`), contenido de muestra en `src/rapido/contenido-secciones.ts` y dibujo en `src/rapido/secciones.tsx` + `secciones.css`. `visual.secciones` en `Config` (lo limpia `normalizar`). La ronda `RONDA_SECCIONES` (`src/rondas/ramas.ts`) elige varias: el orden de la página es el orden en que se eligen; en Molde la página va sola hasta la sección que se mira. Las secciones reemplazan al argumento del layout. Export: §22, formato 0.9.0, decisión D92. Tests en `src/secciones.test.tsx`. Pendiente: no se pueden reordenar sin sacar y volver a elegir; el export a HTML (F1) tiene que incluir `secciones.css`; de los 20 estilos solo se revisaron a ojo tres (sin estilo, neobrutalismo y terminal), a 1440 y 390 px.
 
+- [ ] **D13 · Ronda Rubro** — Sonnet 5.5 · ChatGPT: Sol · depende de D1 y D10 (conviene en la misma sesión que F1)
+  - Guardar el rubro en `Config` (lo limpia `normalizar`), sacar «Rubro» de `rondasPendientes()` y ponerla después de Proyecto (decisión D88). Con el rubro en `Config`, `COLOR`, `LAYOUT`, `ESTILO` y `PIEZAS` de `src/rondas/comunes.ts` pasan `conRubro(…)` a `primeroRecomendados` (lo que dejó pendiente D10). La página usa el contenido de muestra del rubro.
+  - Listo cuando: elegir un rubro cambia las 6 primeras opciones de esas rondas y el contenido de la página, con test.
+
+- [ ] **D14 · Ronda de lectura del blog** — Sonnet 5.5 · ChatGPT: Sol · depende de D11
+  - La ronda «Lectura (ancho y tamaño)» de la tabla 7.1, que D11 dejó afuera. Seguir el patrón de Densidad (`src/rondas/comunes.ts`).
+  - Listo cuando: cambia el ancho y el tamaño del texto en la página en vivo y llena su lugar en el export.
+
 ### Tanda 4: portada y descarga
 
-- [ ] **E1 · Portada: más vida y scroll fluido (en la maqueta)** — Fable 5.2 · sin dependencias
+- [ ] **E1 · Portada: más vida y scroll fluido (en la maqueta)** — Fable 5.2 · ChatGPT: no (falta solo la aprobación) · sin dependencias
   - Rehacer la portada de `maqueta/molde-2.html` según la sección 8. Se aprueba en la maqueta antes de portarla.
   - Listo cuando: quien dirige el proyecto la aprueba.
   - Estado: hecha en la maqueta (scroll cuadro a cuadro, 15 capas armadas una sola vez, piezas que vuelan al lienzo, título que cambia, botón que se acerca al mouse y cierre con el botón latiendo). Falta la aprobación.
 
-- [ ] **E2 · Portar la portada** — Opus 5.5 · depende de E1 y C2
+- [ ] **E2 · Portar la portada** — Opus 5.5 · ChatGPT: Astra, con revisión a ojo · depende de E1 y C2
+  - Ojo: el JS inicial está en 249,7 kB (límite 250, `npm run peso`). Lo que sume la portada tiene que bajar aparte.
   - Llevar la portada aprobada a `src/molde/`, con páginas reales del catálogo.
   - Listo cuando: el scroll va a 60 cuadros por segundo y «Empezar» funciona en cualquier punto.
 
-- [ ] **F1 · Formato 0.9.0: campos nuevos en el export** — Sonnet 5.5 · depende de D1, D6, D7 y D8
+- [ ] **F1 · Formato 0.9.1: campos nuevos en el export** — Sonnet 5.5 · ChatGPT: Sol · depende de D1, D6, D7 y D8
+  - La 0.9.0 ya la usaron D11 y D12: esta tarea sube a **0.9.1**.
   - Sumar al export, como campos opcionales: `rubro` (§2), fondo animado (§19), efectos de scroll y su combinación (§12) y las entradas nuevas (§12), cada uno con su CSS.
   - Seguir la regla de `CLAUDE.md`: actualizar `DESIGN.md` §3, §5 y §12, `VERSION_FORMATO` en `src/export/generarDesignMd.ts`, y tests.
-  - Listo cuando: un archivo 0.8.8 sigue siendo válido y el ejemplo de `DESIGN.md` §6 está en 0.9.0.
+  - Listo cuando: un archivo 0.9.0 sigue siendo válido y el ejemplo de `DESIGN.md` §6 está en 0.9.1.
 
-- [ ] **F2 · Descargar la página en HTML** — Opus 5.5 · depende de C2 y F1
+- [ ] **F2 · Descargar la página en HTML** — Opus 5.5 · ChatGPT: Astra · depende de C2 y F1
   - Generar un `.html` autocontenido con la página armada: tokens, CSS del estilo, layout, piezas, fondo, entrada y scroll. Es el «`preview.html`» pendiente en `DESIGN.md` §5.
   - Listo cuando: el archivo abre sin internet (salvo las fuentes) y se ve igual que el lienzo. Con test.
 
-- [ ] **F3 · Pantalla de descarga** — Sonnet 5.5 · depende de F2
+- [ ] **F3 · Pantalla de descarga** — Sonnet 5.5 · ChatGPT: Sol · depende de F2
   - Los dos botones arriba, el archivo como protagonista y el resumen plegado, como en `maqueta/molde.html`.
   - Listo cuando: «Descargar» se ve sin scrollear a 1440 px y a 390 px.
 
 ### Tanda 5: calidad y cierre
 
-- [ ] **G1 · Tests del recorrido en el CI** — Sonnet 5.5 · apta para Codex · depende de C5
+- [ ] **G1 · Tests del recorrido en el CI** — Sonnet 5.5 · ChatGPT: Terra · apta para Codex · depende de C5
   - Playwright: una landing y un dashboard de punta a punta, en escritorio y celular, más axe en cada ronda. Sumarlo a `.github/workflows/`.
-- [ ] **G2 · Accesibilidad y celular** — Sonnet 5.5 · depende de C5
+- [ ] **G2 · Accesibilidad y celular** — Sonnet 5.5 · ChatGPT: Sol (pegale la lista: no carga la skill `impeccable`) · depende de C5
   - Pasada con la skill `impeccable` («audit»): 44 px, foco visible, un solo `h1`, un solo `main`, contraste del marco en claro y oscuro.
 - [x] **G3 · Red de seguridad** — Sonnet 5.5 · apta para Codex · sin dependencias
   - `ErrorBoundary` en la raíz, ESLint con la configuración recomendada de React y TypeScript, y arreglar el error de consola `ERR_INVALID_URL` que aparece después de elegir el tipo de proyecto.
-- [ ] **G4 · Documentación al día** — Haiku 5.5 · apta para Codex · depende de C5
+- [ ] **G4 · Documentación al día** — Haiku 5.5 · ChatGPT: Terra o Luna · apta para Codex · depende de C5
   - `README.md` (habla de «9 pasos»), `CLAUDE.md` (estructura nueva y cantidades reales), orden cronológico de `DESIGN.md` §12, favicon y metadatos en `index.html`, y pasar `public/fotos/traccion-vehiculos.png` (1,8 MB) a webp.
-- [ ] **G5 · Revisión final** — Opus 5.5 · depende de todo
+- [ ] **G5 · Revisión final** — Opus 5.5 · ChatGPT: no (queda en Claude) · depende de todo
   - `/code-review` sobre el diff completo antes de mergear a `main`.
 
 ---
@@ -267,10 +285,28 @@ Estado: `[ ]` pendiente · `[x]` hecha. Marcala al terminar.
 | 1 | A1, A2, A3, G3, E1 | todas | Haiku, Sonnet, Opus, Fable |
 | 2 | B1 → B2 → C1 → C2 → C3 y C4 | solo C3 con C4 | Opus, Sonnet |
 | 3 | D1 a D12 | todas (D10 después de D1 y D2; D11 después de C4; D12 después de D3) | Sonnet, Haiku, Opus, Fable |
-| 4 | E2, F1 → F2 → F3 | E2 con F1 | Opus, Sonnet |
+| 4 | E2, F1 → F2 → F3 (D13 con F1, D14 cuando quieras) | E2 con F1 | Opus, Sonnet |
 | 5 | C5, G1, G2, G4 → G5 | G1, G2 y G4 | Sonnet, Haiku, Opus |
 
 La tanda 3 puede arrancar apenas termina C1, sin esperar al resto de la tanda 2.
+
+### Lo que falta, en orden (2026-11-11)
+
+| Paso | Tarea | Claude | ChatGPT | Va en paralelo con |
+|---|---|---|---|---|
+| 1 | E1 · aprobar la portada en la maqueta | quien dirige | quien dirige | 2 y 3 |
+| 2 | F1 + D13 · export 0.9.1 y ronda Rubro | Sonnet 5.5 | Sol | 1 y 3 |
+| 3 | D14 · ronda de lectura del blog | Sonnet 5.5 | Sol | 1 y 2 (después de F1 si las dos tocan el export a la vez) |
+| 4 | E2 · portar la portada (después de E1) | Opus 5.5 | Astra, con revisión a ojo | 5 |
+| 5 | F2 · página en HTML (después de F1) | Opus 5.5 | Astra | 4 |
+| 6 | F3 · pantalla de descarga (después de F2) | Sonnet 5.5 | Sol | — |
+| 7 | C5 · Molde en la raíz y borrar lo viejo (después de E2) | Sonnet 5.5 | Sol | — |
+| 8 | G1 · tests en el CI (después de C5) | Sonnet 5.5 | Terra | 9 y 10 |
+| 9 | G2 · accesibilidad y celular (después de C5) | Sonnet 5.5 | Sol | 8 y 10 |
+| 10 | G4 · documentación al día (después de C5) | Haiku 5.5 | Terra o Luna | 8 y 9 |
+| 11 | G5 · revisión final | Opus 5.5 | — (queda en Claude) | — |
+
+Entre paso y paso, el merge de las ramas y su revisión van con Claude (Opus 5.5).
 
 ---
 
