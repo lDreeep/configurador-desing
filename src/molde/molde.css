@@ -64,9 +64,9 @@
 .molde-sello { color: var(--molde-silicona); font-weight: 600; }
 .molde .molde-idea[aria-pressed='true'] { box-shadow: 0 0 0 2px var(--molde-tinta), 0 14px 30px -14px var(--molde-sombra); }
 .molde .molde-idea.arrastra { transition: none; cursor: grabbing; z-index: 2; }
-/* La idea que estás mirando se vuelve translúcida para no tapar la página */
-.molde-ideas.abiertas .molde-idea.viva { opacity: .5; box-shadow: 0 0 0 2px var(--molde-silicona); }
-.molde-ideas.abiertas .molde-idea.viva.arrastra { opacity: .9; }
+/* La idea que estás mirando se marca con un anillo. Antes se atenuaba con opacity: .5, y el texto
+   quedaba por debajo de 4.5:1 (axe, color-contrast). Ahora el texto queda opaco. */
+.molde-ideas.abiertas .molde-idea.viva { box-shadow: 0 0 0 2px var(--molde-silicona); }
 .viendo .molde-ideas .molde-idea:not(.viva) { opacity: 0; }
 .viendo .molde-pregunta, .viendo .molde-paginas { opacity: 0; }
 .molde-muestras { display: flex; flex: none; }
@@ -75,7 +75,7 @@
 .molde-idea .esquema { width: 54px; height: 35px; flex: none; border-radius: 6px; box-shadow: 0 0 0 1px var(--molde-linea); }
 
 /* Más ideas: flechas debajo de la pregunta, de a 6 por vez */
-.molde-paginas { position: absolute; left: 50%; top: calc(50% + 44px); translate: -50% -50%; z-index: 7; display: flex; align-items: center; gap: 4px; font-size: 14px; color: var(--molde-tinta-2); font-variant-numeric: tabular-nums; transition: opacity var(--molde-toque); }
+.molde-paginas { position: absolute; left: 50%; top: calc(50% + 44px); translate: -50% -50%; z-index: 7; display: flex; align-items: center; gap: 4px; padding: 2px 4px; border-radius: 999px; background: var(--molde-superficie); font-size: 14px; color: var(--molde-tinta-2); font-variant-numeric: tabular-nums; transition: opacity var(--molde-toque); }
 .molde .molde-flecha { width: 44px; height: 44px; border-radius: 50%; background: var(--molde-superficie); box-shadow: inset 0 0 0 1px var(--molde-linea); font-size: 20px; line-height: 1; transition: scale var(--molde-toque); }
 .molde .molde-flecha:active { scale: .9; }
 

@@ -20,6 +20,15 @@ jobs:
       - run: npm run typecheck
       - run: npm test
       - run: npm run build
+      # Recorrido de Molde de punta a punta (landing y dashboard, escritorio y celular, con axe en cada ronda).
+      # Va antes del npm install --no-save de abajo, así corre con la versión de Playwright del lockfile.
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:e2e
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: capturas-punta-a-punta
+          path: screenshots/punta-a-punta/
       - run: npm install --no-save --package-lock=false playwright@1.56.1 @axe-core/playwright@4.10.2
       - run: npx playwright install --with-deps chromium
       - run: node scripts/comprobar-concesionario.mjs

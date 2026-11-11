@@ -110,7 +110,7 @@ async function recorrer(browser, reducedMotion) {
 
 try {
   await esperarServidor();
-  const browser = await chromium.launch();
+  const browser = await chromium.launch({ executablePath: process.env.CHROMIUM_PATH || undefined });
   await recorrer(browser, false);
   console.log('ok: recorrido táctil a 390 px');
   await recorrer(browser, true);

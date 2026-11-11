@@ -30,7 +30,7 @@ Dale el DESIGN.md a tu IA con la instrucción: «Construí esta app siguiendo el
 - `npm run dev`: servidor local.
 - `npm test`: tests (Vitest).
 - `npm run typecheck` y `npm run lint`: TypeScript y ESLint.
-- `npm run test:e2e`: prueba de Molde en celular (Playwright).
+- `npm run test:e2e`: pruebas de Molde en Playwright: recorrido táctil a 390 px y recorrido de landing y dashboard en escritorio y celular, con axe en cada ronda.
 - `npm run build`: build de producción en `dist/`.
 - `npm run peso`: build y control del JS inicial (tiene que quedar debajo de 250 kB).
 
