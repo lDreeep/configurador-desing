@@ -3,6 +3,7 @@
 // Cualquier cambio de ids o valores tiene que reflejarse en DESIGN.md (§3, §5).
 
 import { ESTADOS_CLAROS, ESTADOS_OSCUROS, type Roles } from './color';
+export { LECTURAS } from './catalogo-lectura';
 import type {
   AparicionId,
   BordesId,

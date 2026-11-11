@@ -1,6 +1,6 @@
 # DESIGN.md: especificación del formato
 
-> **Versión del formato:** 0.9.1 (borrador)
+> **Versión del formato:** 0.9.2 (borrador)
 > **Última actualización:** 2026-11-11
 > **Estado:** configurador en v0.2 (10 pasos + export): 8 direcciones, 13 paletas + personalizada, 23 fuentes, botones y movimiento detallados. Falta la primera ronda de pruebas con IA (§9).
 
@@ -134,7 +134,7 @@ Todo archivo exportado empieza con este bloque, que permite saber con qué versi
 
 ```yaml
 formato: design-md
-version_formato: 0.9.1
+version_formato: 0.9.2
 generado_por: configurador-diseno
 fecha: 2026-11-06
 idioma: es
@@ -155,7 +155,7 @@ Orden fijo. Las marcadas **(obligatoria)** siempre aparecen, aunque sea con valo
 | 4 | Funcionalidades | Qué hace | obligatoria |
 | 5 | Dirección visual | Qué sensación transmite | obligatoria |
 | 6 | Color | Paleta y roles | obligatoria |
-| 7 | Tipografía | Familias y escala | obligatoria |
+| 7 | Tipografía | Familias y escala; lectura opcional del blog (desde 0.9.2) | obligatoria |
 | 8 | Espaciado y layout | Ritmo, grilla, anchos (desde 0.9.0 la `densidad` puede elegirse en la ronda Densidad) | |
 | 9 | Forma | Radios, bordes, sombras | obligatoria |
 | 10 | Componentes | Cómo es cada pieza de UI | |
@@ -422,6 +422,25 @@ nota: "títulos más grandes de lo normal"
 - Catálogo: 23 fuentes de Google Fonts en 6 categorías (sans, geométricas, serif, display, mono, redondeadas) y 10 combinaciones recomendadas. Cualquier par se puede combinar.
 - Si la fuente de títulos no tiene el peso pedido, se usa el más cercano disponible y se exporta ese.
 - El cuerpo nunca baja de 16px en pantallas móviles.
+
+Desde 0.9.2, si el proyecto es un blog y se eligió la ronda Lectura, §7 suma un bloque opcional:
+
+```yaml
+lectura:
+  ancho_maximo: 60ch
+  tamano: 20px
+  interlineado: 1.6
+```
+
+El catálogo `LECTURAS` combina anchos de 50, 60 y 70ch con tamaños de 16 y 20px.
+`largo_de_linea_max` toma el ancho elegido. §16 suma `--ancho-lectura` y `--texto-lectura`;
+§7 incluye el CSS compartido con la página (`CSS_LECTURA`), con interlineado fijo de 1.6.
+La clase raíz `pg-lectura` aplica esos tokens a las bajadas, los textos de tarjetas y los
+párrafos del recorrido; también limita el ancho de la lista de artículos. El ancho nunca
+supera el espacio disponible en celular. Títulos, navegación, botones y escala general
+conservan sus tamaños. Sin elección, o en otro tipo de proyecto, no se exporta el bloque
+ni sus tokens y `largo_de_linea_max` conserva 70ch. Las configuraciones anteriores siguen
+siendo válidas (`visual.lectura: null` al normalizar).
 
 ---
 
@@ -894,7 +913,7 @@ Este es el plan de construcción. Estados: `[MVP]` primera versión · `[v0.2]` 
 | 3. Qué hace | §4 | `[MVP]` hecho | Acciones clave como texto; integraciones con casillas; "fuera de alcance" |
 | 4. Dirección visual | §5, precarga §6–§12 | `[MVP]` hecho | 4 direcciones con vista previa; anti-referencias como texto |
 | 5. Color | §6 | `[v0.2]` hecho | 13 paletas (claras y oscuras) · paleta personalizada (fondo, texto, acento + ajuste a mano) con contraste en vivo · `[futuro]` modo claro y oscuro a la vez |
-| 6. Tipografía | §7 | `[v0.2]` hecho | 23 fuentes con filtro por categoría, 10 combinaciones, peso y espaciado de títulos, contraste de tamaños (4 niveles) |
+| 6. Tipografía | §7 | `[v0.2]` hecho | 23 fuentes con filtro por categoría, 10 combinaciones, peso y espaciado de títulos, contraste de tamaños (4 niveles). Ronda opcional Lectura del blog: ancho y tamaño, en vivo y en el export (D14) |
 | 7. Forma | §9 | `[v0.2]` hecho | 4 radios, 4 sombras (incluida la dura), 3 bordes, con mini vista previa |
 | 7b. Botones | §10 (botones) | `[v0.2]` hecho | 5 estilos, 3 tamaños, mayúsculas, icono; cada opción con su botón de muestra |
 | 8. Espaciado | §8 | `[v0.2]` hecho | Densidad (compacta, normal, aireada) como ronda opcional de Molde: cambia la página en vivo y llena `densidad` y `padding_componente` |
@@ -931,7 +950,7 @@ Así se vería un archivo real generado por el MVP. Las secciones `[v0.2]` apare
 ````markdown
 ```yaml
 formato: design-md
-version_formato: 0.9.1
+version_formato: 0.9.2
 generado_por: configurador-diseno
 fecha: 2026-11-06
 idioma: es
@@ -1409,6 +1428,7 @@ Lo que todavía no tiene lugar en §5. Se mueve allá cuando se decide hacerlo.
 
 | Versión | Fecha | Cambios |
 |---|---|---|
+| 0.9.2 | 2026-11-11 | D14: §7 suma `lectura` opcional para blogs (`ancho_maximo`, `tamano`, `interlineado`) y su CSS compartido con la página; `largo_de_linea_max` toma el ancho elegido. §16 suma dos tokens de lectura solo con elección activa. La escala general de la UI se conserva. Un archivo 0.9.1 sigue siendo válido. |
 | 0.9.1 | 2026-11-11 | F1 agrega rubro y fondo animado opcionales, exporta la combinación de scroll y el CSS real de las entradas. Incluye JS solo para luz_cursor. Los campos ausentes conservan el comportamiento anterior, por lo que un archivo 0.9.0 sigue siendo válido. |
 | 0.9.0 | 2026-11-11 | Secciones nuevas opcionales: §11 (`iconos`: `libreria`, `estilo`, `grosor`, `tamano`) y §13 (`voz`, `tratamiento`, `largo_de_textos`), solo si se eligieron; §8 `densidad` puede venir de la ronda Densidad. Sección nueva §22 «Secciones de la página» (opcional; solo landing, sitio y portfolio): `orden` y, por cada sección, `id`, `nombre`, `para_que`, `diseno`, `diseno_nombre` y `estructura`; con §22, §19 no escribe `layout_argumento`. Un archivo 0.8.9 sigue siendo válido. |
 | 0.8.9 | 2026-11-11 | §19 acepta 12 layouts genéricos más (`linea_tiempo`, `antes_despues`, `mapa_lista`, `carta`, `agenda_semanal`, `tablero`, `muro`, `documentacion`, `link_bio`, `compra_unica`, `portada_buscador`, `partida_scroll`), cada uno con su `layout_estructura`. `layout_argumento` no se escribe en los que son una pantalla de app o una página de un solo fin. Sin campos nuevos; un archivo 0.8.8 sigue siendo válido. |

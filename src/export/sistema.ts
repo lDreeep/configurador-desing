@@ -17,6 +17,7 @@ import { asegurarContraste, derivarRoles, ESTADOS_CLAROS, ESTADOS_OSCUROS, esHex
 import { pesoDisponible } from '../estado';
 import { paramsDe, tokensDeCaja } from '../cajas';
 import type { Config } from '../tipos';
+import { lecturaDe } from '../lectura-base';
 
 export { contraste } from '../color';
 
@@ -52,6 +53,7 @@ const rgbDe = (hex: string) => [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2)
 
 export function sistemaDeDiseno(c: Config) {
   const v = c.visual;
+  const lectura = c.proyecto.tipo === 'blog' ? lecturaDe(v.lectura) : null;
   const dir = DIRECCIONES[v.direccion];
   const paleta = paletaActiva(c);
   const r = paleta.roles;
@@ -128,6 +130,7 @@ export function sistemaDeDiseno(c: Config) {
     ...Object.fromEntries(espacios.map((e, i) => [`--espacio-${i + 1}`, `${e}px`])),
     '--padding-componente': `${Math.round(16 * factor)}px`,
     '--ancho-max': '1200px',
+    ...lectura,
     '--radio-pequeno': `${radio.pequeno}px`,
     '--radio-medio': `${radio.medio}px`,
     '--radio-grande': `${radio.grande}px`,
@@ -154,7 +157,7 @@ export function sistemaDeDiseno(c: Config) {
 
   return {
     dir, paleta, radio, mov, titulos, texto, pesoTitulos, pesoSubtitulos, espaciadoTitulos, proporcion,
-    boton, colorBoton, caja, escala, espacios, factor, densidad, elevacion, bordeBloque, tokens,
+    lectura, boton, colorBoton, caja, escala, espacios, factor, densidad, elevacion, bordeBloque, tokens,
     contrastes: paresDeContraste(r),
     alterna: (v.ambosModos ? alternaDe(c, tokens) : null) as Alterna | null,
   };

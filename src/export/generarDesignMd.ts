@@ -2,6 +2,7 @@
 // Si cambiás la salida, actualizá la especificación y su historial de cambios.
 
 import { ESTILOS_BOTON, INTEGRACIONES, LIBRERIAS_ICONOS, PATRONES_NAV, TAMANOS_BOTON } from '../catalogo';
+import { CSS_LECTURA } from '../lectura';
 import type { BotonEstiloId } from '../tipos';
 import type { Config } from '../tipos';
 import { paresDeContraste } from '../color';
@@ -24,7 +25,7 @@ import { cssDeAparicion } from './aparicion';
 
 import { CSS_CONCESIONARIO as cssConcesionario } from '../rapido/concesionario-estilos';
 
-export const VERSION_FORMATO = '0.9.1';
+export const VERSION_FORMATO = '0.9.2';
 
 /** Lo que agregan todas las páginas que no son de autor ni app (D77): el argumento de una landing. */
 export const ARGUMENTO_LANDING =
@@ -334,8 +335,14 @@ peso_titulos: ${s.pesoTitulos}
 espaciado_titulos: ${c.visual.espaciadoTitulos}   # ${s.espaciadoTitulos}
 contraste_tamanos: ${c.visual.escala}
 proporcion_escala: ${s.proporcion}
-largo_de_linea_max: 70ch${nota(c, 'tipografia')}`,
+largo_de_linea_max: ${s.lectura ? s.lectura['--ancho-lectura'] : '70ch'}${s.lectura ? `
+lectura:
+  ancho_maximo: ${s.lectura['--ancho-lectura']}
+  tamano: ${s.lectura['--texto-lectura']}
+  interlineado: 1.6` : ''}${nota(c, 'tipografia')}`,
   );
+
+  if (s.lectura) secciones[secciones.length - 1] += '\n\nAplicá la clase `pg-lectura` a la raíz de la página. Estas reglas afectan los textos de lectura y la columna de artículos; en celular el ancho se limita al espacio disponible. Los tokens están en §16.\n\n```css\n' + CSS_LECTURA + '\n```';
 
   add(
     8,

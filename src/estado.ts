@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { DENSIDADES, DIRECCIONES, FUENTES, ICONOS_VALIDOS, TONOS_VALIDOS, MOVIMIENTOS, NAV_SUGERIDA, PALETAS, PLANTILLAS_PANTALLAS } from './catalogo';
+import { lecturaDe } from './lectura-base';
 import { ESTILOS, LAYOUTS } from './estilos-visuales';
 import { FONDOS } from './fondos';
 import { limpiarScroll } from './scroll-base';
@@ -72,6 +73,7 @@ export function configInicial(): Config {
       fondo: 'ninguno',
       scroll: [],
       densidad: null,
+      lectura: null,
       secciones: [],
       fondoAnimado: 'ninguno',
       layout: 'hero_partido',
@@ -134,6 +136,7 @@ export function normalizar(guardado: Partial<Config>): Config {
   if (!(visual.layout in LAYOUTS)) visual.layout = base.visual.layout;
   if (visual.fondo !== 'ninguno' && !(visual.fondo in FONDOS)) visual.fondo = 'ninguno';
   if (visual.densidad !== null && !(visual.densidad in DENSIDADES)) visual.densidad = null;
+  if (!lecturaDe(visual.lectura)) visual.lectura = null;
   visual.scroll = limpiarScroll(Array.isArray(visual.scroll) ? visual.scroll : []);
   visual.secciones = limpiarSecciones(Array.isArray(visual.secciones) ? visual.secciones : []);
   if (!visual.fondoAnimado || !IDS_FONDOS_ANIMADOS.some((id) => id === visual.fondoAnimado)) visual.fondoAnimado = 'ninguno';

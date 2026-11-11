@@ -3,14 +3,14 @@ import { rubrosDe, rubroPorId } from '../rubros';
 // y Piezas · Letra · Entrada (opcionales). Las propias de cada tipo están en ramas.ts.
 
 import { DISENO_POR_ESTILO } from '../botones-por-estilo';
-import { APARICIONES, COMBINACIONES, DENSIDADES, DIRECCIONES, FUENTES, MOVIMIENTOS, PALETAS, TIPOS_PROYECTO } from '../catalogo';
+import { APARICIONES, LECTURAS, COMBINACIONES, DENSIDADES, DIRECCIONES, FUENTES, MOVIMIENTOS, PALETAS, TIPOS_PROYECTO } from '../catalogo';
 import { ICONOS, TONOS } from '../catalogo-textos';
 import { estilosPara, LISTA_ESTILOS } from '../compatibilidad';
 import { aplicarTipo } from '../estado';
 import { ESTILOS, LAYOUTS } from '../estilos-visuales';
 import { aplicarPaquete, FAMILIAS, familiasPara, paqueteN } from '../familias';
 import { conRubro, recomendadosDeRubro, RECOMENDADOS, RECOMENDADOS_D11 } from '../recomendados';
-import type { AparicionId, Config, Densidad, EstiloId, FuenteId, LayoutId, PaletaId, TipoProyecto } from '../tipos';
+import type { AparicionId, Config, Densidad, EstiloId, FuenteId, LayoutId, LecturaId, PaletaId, TipoProyecto } from '../tipos';
 import { primeroRecomendados, type Ronda } from './ronda';
 
 const LISTA_PALETAS = Object.keys(PALETAS) as PaletaId[];
@@ -239,6 +239,23 @@ export const TONO: Ronda = {
 };
 
 const LISTA_DENSIDADES = Object.keys(DENSIDADES) as Densidad[];
+
+/** Lectura (D14): seis combinaciones de ancho y tamaño, solo en la rama Blog. */
+export const LECTURA: Ronda = {
+  clave: 'lectura',
+  ficha: 'Lectura',
+  pregunta: '¿Qué ancho y tamaño de letra para leer?',
+  obligatoria: false,
+  opciones: () =>
+    primeroRecomendados(Object.keys(LECTURAS) as LecturaId[], ['60_16', '60_20']).map(({ id, recomendada }) => ({
+      id,
+      nombre: LECTURAS[id].nombre,
+      descripcion: `Hasta ${LECTURAS[id].ancho} caracteres por línea · texto de ${LECTURAS[id].tamano} px`,
+      recomendada,
+    })),
+  aplicar: (c, id) => Object.prototype.hasOwnProperty.call(LECTURAS, id) ? { ...c, visual: { ...c.visual, lectura: id as LecturaId } } : c,
+  elegida: (c) => c.visual.lectura,
+};
 
 export const DENSIDAD: Ronda = {
   clave: 'densidad',

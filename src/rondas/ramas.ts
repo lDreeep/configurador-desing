@@ -19,7 +19,7 @@ import {
   SECCIONES_RECOMENDADAS,
 } from '../secciones';
 import type { TipoProyecto } from '../tipos';
-import { DENSIDAD } from './comunes';
+import { DENSIDAD, LECTURA } from './comunes';
 import { primeroRecomendados, type ClaveRama, type Ronda, type RondaPendiente } from './ronda';
 
 /** Una ronda de rama: de la galería (ya hay catálogo) o pendiente de una tarea del plan. */
@@ -113,7 +113,7 @@ export const RAMAS: Record<TipoProyecto, EntradaRama[]> = {
     { ronda: DENSIDAD, ficha: DENSIDAD.ficha, pregunta: DENSIDAD.pregunta },
   ],
   blog: [
-    { pendiente: 'lectura', ficha: 'Lectura', pregunta: '¿Qué ancho y tamaño de letra para leer?', tarea: 'D11' },
+    { ronda: LECTURA, ficha: LECTURA.ficha, pregunta: LECTURA.pregunta },
     { galeria: 'migas', ficha: 'Índice', pregunta: '¿Cómo se ubica quien lee?' },
     { galeria: 'acceso', ficha: 'Suscripción', pregunta: '¿Cómo se suscriben?' },
   ],
