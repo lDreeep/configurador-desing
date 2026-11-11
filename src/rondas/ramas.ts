@@ -9,6 +9,7 @@ import type { CategoriaId } from '../galeria/base';
 import { RECOMENDADOS } from '../recomendados';
 import { combinarScroll, EFECTOS_SCROLL, esScrollId, MAX_SCROLL, ZONAS_SCROLL, type ScrollId } from '../scroll';
 import type { TipoProyecto } from '../tipos';
+import { DENSIDAD } from './comunes';
 import { primeroRecomendados, type ClaveRama, type Ronda, type RondaPendiente } from './ronda';
 
 /** Una ronda de rama: de la galería (ya hay catálogo) o pendiente de una tarea del plan. */
@@ -70,7 +71,7 @@ export const RAMAS: Record<TipoProyecto, EntradaRama[]> = {
     { galeria: 'metrica', ficha: 'Métricas', pregunta: '¿Cómo se muestran los números clave?' },
     { galeria: 'grafico', ficha: 'Gráficos', pregunta: '¿Qué gráficos?' },
     { galeria: 'tabla', ficha: 'Tablas', pregunta: '¿Cómo se ven las tablas?' },
-    { pendiente: 'densidad', ficha: 'Densidad', pregunta: '¿Cuánta información entra en pantalla?', tarea: 'D11' },
+    { ronda: DENSIDAD, ficha: DENSIDAD.ficha, pregunta: DENSIDAD.pregunta },
   ],
   blog: [
     { pendiente: 'lectura', ficha: 'Lectura', pregunta: '¿Qué ancho y tamaño de letra para leer?', tarea: 'D11' },

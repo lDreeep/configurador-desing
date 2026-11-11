@@ -1,6 +1,6 @@
 # DESIGN.md: especificación del formato
 
-> **Versión del formato:** 0.8.9 (borrador)
+> **Versión del formato:** 0.9.0 (borrador)
 > **Última actualización:** 2026-11-06
 > **Estado:** configurador en v0.2 (10 pasos + export): 8 direcciones, 13 paletas + personalizada, 23 fuentes, botones y movimiento detallados. Falta la primera ronda de pruebas con IA (§9).
 
@@ -134,7 +134,7 @@ Todo archivo exportado empieza con este bloque, que permite saber con qué versi
 
 ```yaml
 formato: design-md
-version_formato: 0.8.9
+version_formato: 0.9.0
 generado_por: configurador-diseno
 fecha: 2026-11-06
 idioma: es
@@ -156,12 +156,12 @@ Orden fijo. Las marcadas **(obligatoria)** siempre aparecen, aunque sea con valo
 | 5 | Dirección visual | Qué sensación transmite | obligatoria |
 | 6 | Color | Paleta y roles | obligatoria |
 | 7 | Tipografía | Familias y escala | obligatoria |
-| 8 | Espaciado y layout | Ritmo, grilla, anchos | |
+| 8 | Espaciado y layout | Ritmo, grilla, anchos (desde 0.9.0 la `densidad` puede elegirse en la ronda Densidad) | |
 | 9 | Forma | Radios, bordes, sombras | obligatoria |
 | 10 | Componentes | Cómo es cada pieza de UI | |
-| 11 | Iconos e imágenes | Estilo visual de apoyo | |
+| 11 | Iconos e imágenes | Estilo visual de apoyo | solo si se eligió la ronda Iconos (desde 0.9.0) |
 | 12 | Movimiento | Animaciones y transiciones | obligatoria |
-| 13 | Contenido y tono | Cómo se escribe | |
+| 13 | Contenido y tono | Cómo se escribe | solo si se eligió la ronda Tono (desde 0.9.0) |
 | 14 | Accesibilidad | Mínimos que no se negocian | obligatoria |
 | 15 | Responsive | Cómo se adapta | obligatoria |
 | 16 | Tokens | Todo lo anterior como variables CSS | obligatoria |
@@ -846,11 +846,11 @@ Este es el plan de construcción. Estados: `[MVP]` primera versión · `[v0.2]` 
 | 6. Tipografía | §7 | `[v0.2]` hecho | 23 fuentes con filtro por categoría, 10 combinaciones, peso y espaciado de títulos, contraste de tamaños (4 niveles) |
 | 7. Forma | §9 | `[v0.2]` hecho | 4 radios, 4 sombras (incluida la dura), 3 bordes, con mini vista previa |
 | 7b. Botones | §10 (botones) | `[v0.2]` hecho | 5 estilos, 3 tamaños, mayúsculas, icono; cada opción con su botón de muestra |
-| 8. Espaciado | §8 | `[v0.2]` | Densidad con vista previa |
+| 8. Espaciado | §8 | `[v0.2]` hecho | Densidad (compacta, normal, aireada) como ronda opcional de Molde: cambia la página en vivo y llena `densidad` y `padding_componente` |
 | 9. Componentes | §10 | `[v0.3]` | Estilo de inputs, cards, indicador de navegación · `[futuro]` estados especiales con vista previa |
 | 10. Movimiento | §12 | `[v0.2]` hecho | 4 niveles + hover (7), al presionar (2), aparición (5) y cambio de pantalla (5), cada uno por separado; «Repetir animación» en la vista previa |
-| 11. Iconos e imágenes | §11 | `[v0.2]` | Librerías con muestra |
-| 12. Contenido y tono | §13 | `[v0.2]` | Voz y tratamiento con frases de ejemplo |
+| 11. Iconos e imágenes | §11 | `[v0.2]` hecho | Ronda opcional Iconos: 8 opciones (librería + estilo) que llenan `iconos` (`libreria`, `estilo`, `grosor`, `tamano`). `imagenes`, `emojis_en_ui` y `logo` quedan `[futuro]` |
+| 12. Contenido y tono | §13 | `[v0.2]` hecho | Ronda opcional Tono: 6 opciones con una frase de ejemplo (voz, tratamiento y largo de los textos). `formato` (fecha, moneda) y `ejemplos_de_microcopy` quedan `[futuro]` |
 | 13. Revisar y exportar | §17, §18, genera §1, §14, §15, §16 | `[MVP]` hecho | Resumen, notas generales, lista de pendientes, descarga |
 
 **Funciones transversales:**
@@ -1148,7 +1148,7 @@ Formato: fecha · decisión · por qué · alternativas descartadas.
 | D9 | 2026-11-06 | Las opciones del configurador viven en un catálogo de datos | Agregar opciones no requiere programar pantallas | Opciones escritas a mano en cada componente |
 | D10 | 2026-11-06 | Stack: Vite + React + TypeScript, sin backend; web estática | Gratis de publicar, rápido, sin servidor que mantener | Next.js (no hace falta servidor) |
 | D11 | 2026-11-06 | La vista previa y el export derivan de la misma función (`sistemaDeDiseno`) | Garantiza que lo que se ve es lo que se exporta | Calcular la vista previa por separado |
-| D12 | 2026-11-06 | En el MVP, §8 y §10 se exportan con valores derivados o por defecto; §11 y §13 no se exportan todavía | Le dan contexto útil a la IA sin agregar pasos; §11 y §13 necesitan su propio paso | Exportar todas las secciones con `sin_definir` |
+| D12 | 2026-11-06 | En el MVP, §8 y §10 se exportan con valores derivados o por defecto; §11 y §13 no se exportan todavía (desde 0.9.0 se exportan si se eligieron: D91) | Le dan contexto útil a la IA sin agregar pasos; §11 y §13 necesitan su propio paso | Exportar todas las secciones con `sin_definir` |
 | D13 | 2026-11-06 | El paso de color muestra el contraste de los pares principales; las paletas del catálogo se verifican en los tests | Adelanta parte de la verificación `[v0.2]` sin costo | Esperar a tener paleta personalizada |
 | D14 | 2026-11-06 | Paleta personalizada con 3 colores base (fondo, texto, acento) y el resto calculado, con ajuste a mano opcional | Elegir 8 colores desde cero casi siempre termina en algo que no combina o no se lee | Pedir los 8 roles siempre |
 | D15 | 2026-11-06 | Un contraste que no pasa no bloquea el export: se avisa y se anota en §18 | Bloquear frustra; la IA puede corregirlo con §14 como regla | Bloquear el export (lo que decía la v0.1.0) |
@@ -1226,6 +1226,7 @@ Formato: fecha · decisión · por qué · alternativas descartadas.
 | D88 | 2026-11-11 | **Descarga:** `DESIGN.md` y, además, la página armada en HTML. Orden de rondas: Proyecto → Rubro → Color → Layout → Estilo (obligatorias), luego Piezas · Letra · Entrada · rondas de la rama (opcionales), y Ajustar → Descargar | La persona se lleva algo que ya puede abrir, y puede terminar cuando quiera | Solo `DESIGN.md` |
 | D89 | 2026-11-11 | Motor de scroll combinable (`src/scroll.ts`, tarea D7): cada efecto tiene zona, CSS y versión quieta; se combinan hasta 3, uno por zona. Elegir uno de una zona ocupada lo reemplaza, elegir uno ya puesto lo saca y, si pasan de 3, sale el más viejo. Solo animan `opacity`, `translate`, `scale`, `filter` y `clip-path` como propiedades sueltas, dentro de @supports y prefers-reduced-motion. En Molde la ronda Scroll queda abierta para sumar efectos («Seguir» pasa a la siguiente) y la página se baja sola. Por ahora 4 efectos (uno por zona); el export los suma en F1 | Con propiedades sueltas, un efecto no pisa el `transform` del estilo ni la animación de la entrada, y dos efectos de zonas distintas nunca animan el mismo elemento (lo verifica un test) | Rechazar el clic cuando la zona está ocupada (obliga a sacar a mano); librerías de scroll (D72) |
 | D90 | 2026-11-11 | 12 layouts genéricos más (46 en total, 33 genéricos), cada uno con una idea propia: línea de tiempo que se pinta al bajar y termina en el botón, antes y después con una barra que se arrastra, mapa que responde a la lista, carta impresa con talón, agenda semanal con la hora de ahora, tablero con una tarjeta a medio mover, muro de publicaciones, documentación con índice, link en bio, compra en una sola página, portada con buscador y pantalla partida con scroll independiente. Van al final de la lista; los códigos de combinación suman el prefijo `~` para los layouts de índice 36 o más. Las pantallas de app y las páginas de un solo fin no llevan el argumento de landing, y link en bio tampoco lleva pie | Tarea D3 de `PLAN.md`: las ramas de Molde (tienda, app, blog, sitio) necesitan estructuras propias, no variaciones del hero partido | Reordenar la lista (rompe los códigos ya compartidos); un carácter más para todos los códigos (rompe los viejos) |
+| D91 | 2026-11-11 | Rondas opcionales de iconos, tono y densidad (tarea D11, `src/rondas/comunes.ts`). `Config` suma `iconos`, `tono` y `visual.densidad` (todos `null` hasta elegir). Iconos (8 opciones, `ICONOS`) llena §11; Tono (6 opciones con frase de ejemplo, `TONOS`) llena §13; Densidad (`DENSIDADES`) reemplaza a la de la dirección en §8 y en `--espacio-*` de la vista previa. §11 y §13 se exportan solo si se eligieron, para no inventar lo que la persona no decidió. La densidad va en todos los tipos (al final de la rama; en dashboard, en su lugar de la tabla 7.1). La ronda de lectura del blog sigue pendiente | Tenían formato definido pero nunca se habían implementado; son ideas chicas que todos pueden querer | Exportar §11 y §13 siempre con valores por defecto |
 | D43 | 2026-11-06 | Si la persona no describe un proyecto, el archivo se exporta como sistema de diseño (`modo: sistema_de_diseno`): sirve para mejorar una app existente o para construir lo que se explique junto con el archivo; la pantalla final ofrece un mensaje para copiar para cada caso | El modo rápido no pide detalles del proyecto; tratar las pantallas de ejemplo como obligatorias llevaba a la IA a construir una app genérica | Obligar a completar el proyecto antes de exportar |
 
 | D67 | 2026-11-07 | Se amplían las categorías existentes con 12 composiciones propias para formularios, navegación y productos; las muestras permiten validar, adjuntar y probar una compra simulada | Mejorar la calidad y la variedad visible conservando el recorrido actual | Agregar un panel de decisiones transversales |
@@ -1347,6 +1348,7 @@ Lo que todavía no tiene lugar en §5. Se mueve allá cuando se decide hacerlo.
 
 | Versión | Fecha | Cambios |
 |---|---|---|
+| 0.9.0 | 2026-11-11 | Secciones nuevas opcionales: §11 (`iconos`: `libreria`, `estilo`, `grosor`, `tamano`) y §13 (`voz`, `tratamiento`, `largo_de_textos`), solo si se eligieron. §8 `densidad` puede venir de la ronda Densidad. Compatible. |
 | 0.8.9 | 2026-11-11 | §19 acepta 12 layouts genéricos más (`linea_tiempo`, `antes_despues`, `mapa_lista`, `carta`, `agenda_semanal`, `tablero`, `muro`, `documentacion`, `link_bio`, `compra_unica`, `portada_buscador`, `partida_scroll`), cada uno con su `layout_estructura`. `layout_argumento` no se escribe en los que son una pantalla de app o una página de un solo fin. Sin campos nuevos; un archivo 0.8.8 sigue siendo válido. |
 | 0.8.8 | 2026-11-09 | §19 suma `layout_argumento` (opcional) en los layouts de página que no son de autor: prueba bajo los botones, hero con el producto en acción, frase que se enciende al bajar, testimonio y preguntas frecuentes. Compatible. |
 | 0.8.7 | 2026-11-09 | §19 acepta 4 layouts de autor más: `autor_turnos`, `autor_curso`, `autor_restaurante` y `autor_gimnasio` (landings con demo animada del producto). Sin campos nuevos. |

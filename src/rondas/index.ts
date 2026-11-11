@@ -3,19 +3,21 @@
 // «Ajustar» y «Descargar» no son rondas de elegir: las arman C4 y F3.
 
 import type { Config } from '../tipos';
-import { COLOR, ENTRADA, ESTILO, LAYOUT, LETRA, PIEZAS, PROYECTO, RUBRO_PENDIENTE } from './comunes';
+import { COLOR, DENSIDAD, ENTRADA, ESTILO, ICONOS_RONDA, LAYOUT, LETRA, PIEZAS, PROYECTO, RUBRO_PENDIENTE, TONO } from './comunes';
 import { pendientesDeRama, rondasDeRama } from './ramas';
 import type { ClaveRonda, Ronda, RondaPendiente } from './ronda';
 
 export type { ClaveRonda, ContextoRonda, OpcionRonda, Ronda, RondaPendiente } from './ronda';
 export { RAMAS, RONDA_SCROLL, rondaDeGaleria, SIN_SCROLL } from './ramas';
 
-/** Rondas comunes, en orden. Rubro va entre Proyecto y Color cuando exista (D1). */
-export const COMUNES: Ronda[] = [PROYECTO, COLOR, LAYOUT, ESTILO, PIEZAS, LETRA, ENTRADA];
+/** Rondas comunes, en orden. Rubro va entre Proyecto y Color cuando exista (D1). La densidad (D11) va al final de la rama. */
+export const COMUNES: Ronda[] = [PROYECTO, COLOR, LAYOUT, ESTILO, PIEZAS, LETRA, ENTRADA, ICONOS_RONDA, TONO];
 
 /** Las rondas que ve esta config, en orden. Cambia con el tipo de proyecto. */
 export function rondasDe(c: Config): Ronda[] {
-  return [...COMUNES, ...rondasDeRama(c.proyecto.tipo)];
+  const rama = rondasDeRama(c.proyecto.tipo);
+  // La densidad es para todos; si la rama ya la trae (dashboard), no se repite.
+  return [...COMUNES, ...rama, ...(rama.some((r) => r.clave === DENSIDAD.clave) ? [] : [DENSIDAD])];
 }
 
 /** Las rondas que el plan pide para esta config y todavía no tienen catálogo (con la tarea que las trae). */

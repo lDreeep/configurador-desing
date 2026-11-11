@@ -539,4 +539,28 @@ describe('paquetes de UI', () => {
       for (const [cat, ids] of Object.entries(f.piezas)) for (const id of ids!) if (!(id in CATEGORIAS[cat as keyof typeof CATEGORIAS].disenos)) faltan.push(`${fid}.${cat}.${id}`);
     expect(faltan).toEqual([]);
   });
+
+  it('iconos, tono y densidad (D11) llenan §11, §13 y §8; sin elegirlos, §11 y §13 no se exportan', () => {
+    const base = configCompleta();
+    const sin = titulos(generarDesignMd(base));
+    expect(sin).not.toContain(11);
+    expect(sin).not.toContain(13);
+
+    const c: Config = {
+      ...base,
+      visual: { ...base.visual, densidad: 'compacta' },
+      iconos: { libreria: 'phosphor', estilo: 'duotono', grosor: 1.5 },
+      tono: { voz: 'formal', tratamiento: 'usted', largo: 'medio' },
+    };
+    const md = generarDesignMd(c);
+    const n = titulos(md);
+    expect(n).toContain(11);
+    expect(n).toContain(13);
+    expect([...n].sort((a, b) => a - b)).toEqual(n);
+    const bloques = bloquesYaml(md).map((b) => parse(b));
+    expect(bloques.find((b) => b?.iconos)?.iconos).toMatchObject({ libreria: 'phosphor', estilo: 'duotono', grosor: 1.5 });
+    expect(bloques.find((b) => b?.voz)).toMatchObject({ voz: 'formal', tratamiento: 'usted', largo_de_textos: 'medio' });
+    const espaciado = bloques.find((b) => b?.unidad_base);
+    expect(espaciado).toMatchObject({ densidad: 'compacta', padding_componente: '12px' });
+  });
 });
