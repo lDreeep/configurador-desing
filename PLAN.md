@@ -60,7 +60,7 @@ es conectar lo que existe al recorrido nuevo; el resto es catálogo que hoy no e
 | **Rubros** (para qué es) | 0 | 39 | nuevo `src/rubros.ts` |
 | Paletas | 32 | 60 | `src/catalogo.ts` |
 | Estilos visuales | 20 | 20 | `src/estilos-visuales.ts` |
-| Layouts genéricos | 21 | 33 | `src/estilos-visuales.ts`, `src/rapido/Pagina.tsx` |
+| Layouts genéricos | 33 | 33 | `src/estilos-visuales.ts`, `src/rapido/Pagina.tsx` |
 | Plantillas de autor | 13 | 13 | `src/rapido/autor*.tsx` |
 | Familias de UI (botón + caja + piezas) | 10 | 18 | `src/familias.ts` |
 | Combinaciones de letra | 10 (33 fuentes) | 20 | `src/catalogo.ts` |
@@ -166,10 +166,11 @@ Estado: `[ ]` pendiente · `[x]` hecha. Marcala al terminar.
   - Sumar a `PALETAS` en `src/catalogo.ts` hasta llegar a 60, repartidas como en la sección 7.3. Cada una tiene que pasar el test de contraste AA de `src/export/generarDesignMd.test.ts`.
   - Listo cuando: el test de contraste pasa y cada paleta nueva está en al menos un estilo compatible.
 
-- [ ] **D3 · 12 layouts genéricos nuevos** — Fable 5.2
+- [x] **D3 · 12 layouts genéricos nuevos** — Fable 5.2
   - Diseñar e implementar los 12 de la sección 7.5 en `src/estilos-visuales.ts` y `src/rapido/Pagina.tsx`. Cargar antes la skill `frontend-design`; cada uno necesita una idea propia, no una variación de `hero_partido`.
   - Cada layout nuevo va **al final** de la lista para no romper los códigos compartidos.
   - Listo cuando: cada layout se ve bien con los 20 estilos a 1440 px y a 390 px, y tiene su `estructura` escrita para el export.
+  - Hecho en `src/rapido/layouts2.tsx` + `layouts2.css` (los monta `Pagina.tsx`), con su esquema, su `estructura` y recomendados por tipo. Como los layouts pasan de 36, los códigos de combinación suman el prefijo `~` (los viejos siguen valiendo). Formato 0.8.9. Suman 32 KB de JS y 34 KB de CSS a la carga inicial (queda en 334 y 123 KB): B2 puede pasarlos a `lazy` como hizo con las plantillas de autor.
 
 - [x] **D4 · 8 familias de UI nuevas** — Sonnet 5.5
   - Sumar a `src/familias.ts` las de la sección 7.6, armadas **solo con diseños que ya existen** (botones, cajas y galería). No escribir CSS nuevo.

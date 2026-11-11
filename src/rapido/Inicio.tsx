@@ -26,7 +26,7 @@ const reducido = () => {
 
 function codigoDeLaUrl(): Combinacion | null {
   try {
-    const m = window.location.hash.match(/c=([0-9a-z]{5})/i);
+    const m = window.location.hash.match(/c=([+~]?[0-9a-z]{5,8})/i);
     return m ? decodificar(m[1]) : null;
   } catch {
     return null;

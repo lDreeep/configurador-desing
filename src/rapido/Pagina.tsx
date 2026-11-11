@@ -6,7 +6,7 @@ import { animarToque, IconoFlecha } from '../componentes/ui';
 import { EstilosBotones } from '../botones-carga';
 import { BotonPrincipal } from '../componentes/BotonPrincipal';
 import { clasesDeCaja, CSS_CAJA, paramsDe } from '../cajas';
-import { cssDeEstilo, ESTILOS } from '../estilos-visuales';
+import { cssDeEstilo, ESTILOS, llevaArgumento } from '../estilos-visuales';
 import { cssDeFondo, FONDOS, type FondoId, SELECTOR_FONDO } from '../fondos';
 import { sistemaDeDiseno } from '../export/sistema';
 import { claseScroll, cssDeScroll, EFECTOS_SCROLL, type ScrollId } from '../scroll';
@@ -14,6 +14,7 @@ import { useFuentes } from '../fuentes';
 import { CONTENIDO_TIPO } from './contenido-tipo';
 import { PlantillaAutor, PLANTILLAS_AUTOR } from './autores';
 import { Cursor, FraseRevelada, Preguntas, useGuion, type Beat } from './demo';
+import { LayoutNuevo } from './layouts2';
 import type { Config, EstiloId } from '../tipos';
 
 /** Hoja con el CSS de todos los estilos, cada uno limitado a su clase. Se monta una sola vez. */
@@ -64,7 +65,7 @@ export function contenido(c: Config) {
 
 export type Contenido = ReturnType<typeof contenido>;
 
-function Botones({ c, k, prueba = true }: { c: Config; k: Contenido; prueba?: boolean }) {
+export function Botones({ c, k, prueba = true }: { c: Config; k: Contenido; prueba?: boolean }) {
   return (
     <div className="pg-acciones">
       <BotonPrincipal config={c} clase="pg-boton" onClick={k.onPrincipal}>
@@ -81,7 +82,7 @@ function Botones({ c, k, prueba = true }: { c: Config; k: Contenido; prueba?: bo
   );
 }
 
-function Nav({ k, simple = false }: { k: Contenido; simple?: boolean }) {
+export function Nav({ k, simple = false }: { k: Contenido; simple?: boolean }) {
   return (
     <nav className="pg-nav" aria-label="Navegación de ejemplo">
       <span className="pg-marca">{k.marca}</span>
@@ -110,11 +111,11 @@ const Card = ({ i, item, cc = '', children }: { i: number; item: { titulo: strin
   </div>
 );
 
-const Titulo = ({ k }: { k: Contenido }) => <h2 className="pg-titulo">{k.titular}</h2>;
-const Bajada = ({ k }: { k: Contenido }) => <p className="pg-bajada">{k.bajada}</p>;
+export const Titulo = ({ k }: { k: Contenido }) => <h2 className="pg-titulo">{k.titular}</h2>;
+export const Bajada = ({ k }: { k: Contenido }) => <p className="pg-bajada">{k.bajada}</p>;
 /** Fondos que usan los visuales cuando la persona no eligió uno: nunca queda un bloque de color vacío. */
 export const FONDOS_AUTO: FondoId[] = ['paisaje', 'desenfocado', 'curvas_nivel', 'grano', 'semitono', 'punteado', 'pixeles', 'vidrio_acanalado'];
-const Media = ({ clase = '', escena, f }: { clase?: string; escena?: Contenido; f?: number }) => (
+export const Media = ({ clase = '', escena, f }: { clase?: string; escena?: Contenido; f?: number }) => (
   <div className={`pg-media ${clase} ${escena ? 'con-escena' : ''} ${f !== undefined ? `fa-${FONDOS_AUTO[f % FONDOS_AUTO.length]}` : ''}`} aria-hidden="true">
     {escena && <Escena k={escena} />}
   </div>
@@ -767,6 +768,9 @@ function Layout({ c, k }: { c: Config; k: Contenido }) {
           </div>
         </>
       );
+    default:
+      // Los 12 layouts de la tanda D3 viven en layouts2.tsx.
+      return <LayoutNuevo c={c} k={k} cc={cc} />;
   }
 }
 
@@ -855,8 +859,8 @@ export function Pagina({ config, contenido: propio }: { config: Config; contenid
       <div className="pg-contenido">
         <Layout c={config} k={k} />
       </div>
-      {!v.layout.startsWith('autor_') && v.layout !== 'app_lateral' && <Argumento k={k} />}
-      <Cierre c={config} k={k} />
+      {llevaArgumento(v.layout) && <Argumento k={k} />}
+      {v.layout !== 'link_bio' && <Cierre c={config} k={k} />}
     </div>
   );
 }

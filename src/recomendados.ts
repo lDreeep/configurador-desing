@@ -65,7 +65,7 @@ export const RECOMENDADOS: Record<TipoProyecto, Recomendados> = {
   landing: {
     para: 'página web',
     porque: 'Una página que presenta algo vive del primer impacto: título grande, un botón que se note y secciones claras.',
-    layouts: ['autor_turnos', 'autor_curso', 'autor_gimnasio', 'autor_concesionario', 'autor_festival', 'autor_panaderia', 'autor_refugio', 'fondo_protagonista', 'hero_partido', 'tarjeta_sobre_fondo', 'portada_video', 'precios', 'equipo', 'cinta', 'bento'],
+    layouts: ['autor_turnos', 'autor_curso', 'autor_gimnasio', 'autor_concesionario', 'autor_festival', 'autor_panaderia', 'autor_refugio', 'fondo_protagonista', 'hero_partido', 'tarjeta_sobre_fondo', 'portada_video', 'precios', 'equipo', 'cinta', 'bento', 'antes_despues', 'linea_tiempo', 'partida_scroll', 'link_bio'],
     estilos: ['producto_amable', 'neobrutalismo', 'suizo', 'vidrio', 'minimal_tecnico'],
     botones: ['flecha', 'pildora', 'degradado', 'brillo_barrido', 'sombra_dura', 'circulo_flecha'],
     cajas: ['elevada', 'contorno', 'acento', 'degradado', 'sombra_color'],
@@ -80,7 +80,7 @@ export const RECOMENDADOS: Record<TipoProyecto, Recomendados> = {
   sitio: {
     para: 'sitio institucional',
     porque: 'Un sitio con varias secciones necesita orden: navegación clara, textos que se lean bien y botones sobrios.',
-    layouts: ['autor_restaurante', 'autor_gimnasio', 'autor_concesionario', 'autor_refugio', 'autor_cafeteria', 'hero_partido', 'equipo', 'revista', 'indice', 'precios', 'apiladas'],
+    layouts: ['autor_restaurante', 'autor_gimnasio', 'autor_concesionario', 'autor_refugio', 'autor_cafeteria', 'hero_partido', 'equipo', 'revista', 'indice', 'precios', 'apiladas', 'carta', 'mapa_lista', 'linea_tiempo', 'portada_buscador'],
     estilos: ['editorial', 'suizo', 'organico', 'minimal_tecnico'],
     botones: ['solido', 'contorno', 'flecha', 'subrayado', 'link_flecha', 'tonal'],
     cajas: ['contorno', 'superficie', 'editorial', 'cabecera', 'barra'],
@@ -94,7 +94,7 @@ export const RECOMENDADOS: Record<TipoProyecto, Recomendados> = {
   tienda: {
     para: 'tienda',
     porque: 'En una tienda manda el producto: botones de compra que inviten a tocar, cards de producto limpias y avisos de «agregado».',
-    layouts: ['autor_concesionario', 'autor_floreria', 'autor_cafeteria', 'autor_panaderia', 'galeria', 'editorial_fondo', 'mosaico', 'hero_partido', 'fondo_protagonista', 'bento'],
+    layouts: ['autor_concesionario', 'autor_floreria', 'autor_cafeteria', 'autor_panaderia', 'galeria', 'editorial_fondo', 'mosaico', 'hero_partido', 'fondo_protagonista', 'bento', 'compra_unica', 'portada_buscador', 'carta'],
     estilos: ['producto_amable', 'editorial', 'lujo', 'dopamina', 'clay', 'neobrutalismo'],
     botones: ['pildora', 'solido', 'relleno_abajo', 'sombra_suave_color', 'almohada', 'deslizar_icono'],
     cajas: ['elevada', 'superficie', 'flotante', 'ticket', 'sombra_color'],
@@ -121,7 +121,7 @@ export const RECOMENDADOS: Record<TipoProyecto, Recomendados> = {
   app_web: {
     para: 'app web',
     porque: 'Una herramienta se usa todos los días: tiene que ser clara y rápida, con formularios cómodos y estados bien marcados.',
-    layouts: ['autor_turnos', 'autor_finanzas', 'app_lateral', 'panel_fijo', 'bento', 'indice'],
+    layouts: ['autor_turnos', 'autor_finanzas', 'app_lateral', 'panel_fijo', 'bento', 'indice', 'agenda_semanal', 'tablero', 'mapa_lista'],
     estilos: ['minimal_tecnico', 'oscuro_precision', 'vidrio', 'producto_amable'],
     botones: ['solido', 'tonal', 'contorno', 'teclado', 'plano_cuadrado', 'flecha'],
     cajas: ['contorno', 'superficie', 'cabecera', 'elevada', 'hundida'],
@@ -144,7 +144,7 @@ export const RECOMENDADOS: Record<TipoProyecto, Recomendados> = {
   app_movil: {
     para: 'app de celular',
     porque: 'En el celular todo se toca con el pulgar: barra de abajo, botones grandes, controles que respondan al toque y hojas que suben.',
-    layouts: ['autor_correr', 'autor_finanzas', 'widgets_fondo', 'apiladas', 'minimo', 'bento', 'hero_partido'],
+    layouts: ['autor_correr', 'autor_finanzas', 'widgets_fondo', 'apiladas', 'minimo', 'bento', 'hero_partido', 'link_bio', 'muro'],
     estilos: ['producto_amable', 'dopamina', 'clay', 'vidrio', 'oscuro_precision'],
     botones: ['pildora', 'almohada', 'empujable', 'acuoso', 'clay', 'respira'],
     cajas: ['elevada', 'flotante', 'superficie', 'vidrio', 'neumorfica'],
@@ -177,7 +177,7 @@ export const RECOMENDADOS: Record<TipoProyecto, Recomendados> = {
   dashboard: {
     para: 'dashboard',
     porque: 'Un dashboard es para leer números rápido: menú lateral, métricas arriba, gráficos sobrios y tablas fáciles de escanear.',
-    layouts: ['app_lateral', 'bento', 'panel_fijo'],
+    layouts: ['app_lateral', 'bento', 'panel_fijo', 'tablero', 'agenda_semanal'],
     estilos: ['oscuro_precision', 'minimal_tecnico', 'vidrio', 'suizo'],
     botones: ['solido', 'tonal', 'plano_cuadrado', 'contorno', 'teclado', 'flecha'],
     cajas: ['contorno', 'superficie', 'cabecera', 'barra', 'vidrio'],
@@ -203,7 +203,7 @@ export const RECOMENDADOS: Record<TipoProyecto, Recomendados> = {
   portfolio: {
     para: 'portfolio',
     porque: 'En un portfolio lo importante es el trabajo: tipografía con carácter, mucho aire, imágenes grandes y botones discretos.',
-    layouts: ['autor_portfolio', 'editorial_fondo', 'tipografico', 'galeria', 'revista', 'mosaico', 'tarjeta_sobre_fondo', 'minimo'],
+    layouts: ['autor_portfolio', 'editorial_fondo', 'tipografico', 'galeria', 'revista', 'mosaico', 'tarjeta_sobre_fondo', 'minimo', 'partida_scroll', 'link_bio', 'linea_tiempo'],
     estilos: ['suizo', 'editorial', 'japones', 'art_deco', 'bauhaus', 'cyber'],
     botones: ['subrayado', 'link_flecha', 'texto_sube', 'minimal_texto', 'circulo_flecha', 'contorno'],
     cajas: ['editorial', 'contorno', 'papel', 'invertida', 'gruesa'],
@@ -223,7 +223,7 @@ export const RECOMENDADOS: Record<TipoProyecto, Recomendados> = {
   blog: {
     para: 'blog',
     porque: 'Un blog es para leer: buena tipografía, columnas cómodas, etiquetas de tema y autores visibles.',
-    layouts: ['blog_lateral', 'revista', 'indice', 'tipografico', 'minimo'],
+    layouts: ['blog_lateral', 'revista', 'indice', 'tipografico', 'minimo', 'documentacion', 'muro', 'portada_buscador'],
     estilos: ['editorial', 'periodico', 'organico', 'japones', 'suizo'],
     botones: ['subrayado', 'link_flecha', 'contorno', 'solido', 'tinta', 'subrayado_relleno'],
     cajas: ['editorial', 'papel', 'contorno', 'cuaderno', 'barra'],

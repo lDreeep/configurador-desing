@@ -5,6 +5,7 @@ import { ErrorBoundary } from './ErrorBoundary';
 import { FUENTES_BASE, pedirFuentes } from './fuentes';
 import './estilos.css';
 import './rapido/pagina.css';
+import './rapido/layouts2.css';
 import './rapido/demo.css';
 
 // Las fuentes de la interfaz van ya; las del catálogo se piden cuando algo las muestra (fuentes.ts).

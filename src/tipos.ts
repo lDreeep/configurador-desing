@@ -181,7 +181,19 @@ export type LayoutId =
   | 'autor_turnos'
   | 'autor_curso'
   | 'autor_restaurante'
-  | 'autor_gimnasio';
+  | 'autor_gimnasio'
+  | 'linea_tiempo'
+  | 'antes_despues'
+  | 'mapa_lista'
+  | 'carta'
+  | 'agenda_semanal'
+  | 'tablero'
+  | 'muro'
+  | 'documentacion'
+  | 'link_bio'
+  | 'compra_unica'
+  | 'portada_buscador'
+  | 'partida_scroll';
 
 export type EscalaId = 'sutil' | 'medio' | 'dramatico' | 'extremo';
 export type EspaciadoTitulos = 'apretado' | 'normal' | 'amplio';
