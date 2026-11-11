@@ -22,6 +22,9 @@ html, body { height: 100%; overflow: hidden }
 body { background: var(--yeso); color: var(--tinta); font: 16px/1.45 var(--f-texto) }
 button { font: inherit; color: inherit; cursor: pointer; border: 0; background: none }
 :focus-visible { outline: 3px solid var(--silicona); outline-offset: 3px }
+/* Lo que tiene `hidden` no se ve nunca, aunque su clase le ponga display (flechas, «Usar», descargas). */
+[hidden] { display: none !important }
+
 #app { position: relative; height: 100%; overflow: hidden; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)) }
 
 .barra { position: absolute; inset: 0 0 auto; height: 64px; display: flex; align-items: center; z-index: 8; pointer-events: none;
