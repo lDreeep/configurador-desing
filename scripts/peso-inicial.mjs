@@ -1,10 +1,11 @@
 // Revisa cuánto JS baja la primera visita (PLAN.md B2): el que pide dist/index.html, más lo que
 // ese archivo importa sin `import()`. Correr después de `npm run build`. Falla si pasa el límite.
 import { readFileSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
 import { join } from 'node:path';
 
 const LIMITE = 250_000;
-const dist = new URL('../dist/', import.meta.url).pathname;
+const dist = fileURLToPath(new URL('../dist/', import.meta.url));
 const html = readFileSync(join(dist, 'index.html'), 'utf8');
 const entrada = html.match(/<script[^>]+src="\.\/(assets\/[^"]+\.js)"/)?.[1];
 if (!entrada) throw new Error('No encontré el JS de entrada en dist/index.html (¿corriste npm run build?).');

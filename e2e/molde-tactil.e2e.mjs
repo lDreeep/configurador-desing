@@ -9,7 +9,7 @@ const { chromium } = createRequire(import.meta.url)('playwright');
 const PUERTO = 5199;
 const URL_BASE = `http://localhost:${PUERTO}/`;
 
-const servidor = spawn('npx', ['vite', '--port', String(PUERTO), '--strictPort'], { stdio: 'ignore' });
+const servidor = spawn(process.execPath, ['node_modules/vite/bin/vite.js', '--port', String(PUERTO), '--strictPort'], { stdio: 'ignore' });
 const cerrar = () => servidor.kill();
 process.on('exit', cerrar);
 
