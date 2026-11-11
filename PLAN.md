@@ -264,9 +264,10 @@ Estado: `[ ]` pendiente · `[x]` hecha. Marcala al terminar.
   - Listo cuando: el archivo abre sin internet (salvo las fuentes) y se ve igual que el lienzo. Con test.
   - Implementada en Molde. «Descargar HTML» guarda el lienzo con sus estilos y fotos incorporadas. Verificado en Chrome sin conexión con la plantilla de concesionario y con test de exportación.
 
-- [ ] **F3 · Pantalla de descarga** — Sonnet 5.5 · ChatGPT: Sol · depende de F2
+- [x] **F3 · Pantalla de descarga** — Sonnet 5.5 · ChatGPT: Sol · depende de F2
   - Los dos botones arriba, el archivo como protagonista y el resumen plegado, como en `maqueta/molde.html`.
   - Listo cuando: «Descargar» se ve sin scrollear a 1440 px y a 390 px.
+  - Hecha: ambas descargas arriba, DESIGN.md con scroll propio y resumen plegado con acceso a cada ronda. Verificada visualmente a 1440 × 900 y 390 × 844. El e2e comprueba visibilidad, ambas descargas y regreso a editar, con y sin movimiento reducido. TypeScript, 192 tests, lint y peso (249,2 kB) pasan. La rama incorpora los commits de F2, todavía ausentes de main.
 
 ### Tanda 5: calidad y cierre
 

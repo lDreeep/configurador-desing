@@ -114,6 +114,8 @@ export function Molde({ config, setConfig, reiniciar, paso: pasoUrl, ir }: Props
   const [vista, setVista] = useState<Vista | null>(null);
   const [nueva, setNueva] = useState<ClaveRonda | null>(null);
   const [aviso, setAviso] = useState('');
+  const tituloDescarga = useRef<HTMLHeadingElement>(null);
+  const archivo = useMemo(() => pasoUrl === LISTO_MOLDE ? generarDesignMd(config) : '', [config, pasoUrl]);
   const [ajustando, setAjustando] = useState(false);
   const botonAjustes = useRef<HTMLButtonElement>(null);
   const tamano = useTamano(raiz);
@@ -139,6 +141,10 @@ export function Molde({ config, setConfig, reiniciar, paso: pasoUrl, ir }: Props
     const activo = document.activeElement;
     if (ronda && (!activo || activo === document.body || !raiz.current?.contains(activo))) nucleo.current?.focus({ preventScroll: true });
   }, [ronda?.clave]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    if (paso === LISTO_MOLDE) tituloDescarga.current?.focus({ preventScroll: true });
+  }, [paso]);
 
   const alElegir = (r: Ronda, id: string) => {
     const res = elegir(config, elegidas, r, id);
@@ -266,7 +272,31 @@ export function Molde({ config, setConfig, reiniciar, paso: pasoUrl, ir }: Props
           </>
         )}
 
-        {paso === LISTO_MOLDE && <h1 className="solo-lectores">Tu página está lista</h1>}
+        {paso === LISTO_MOLDE && (
+          <section className="molde-descarga" aria-labelledby="molde-descarga-titulo">
+            <h1 id="molde-descarga-titulo" ref={tituloDescarga} tabIndex={-1}>Tu molde está listo</h1>
+            <p>Descargá el archivo y pasáselo a tu IA junto con lo que querés construir. El HTML te sirve para ver la página en tu navegador.</p>
+            <div className="molde-descarga-acciones">
+              <button type="button" className="molde-btn molde-btn-1" onClick={descargar}>Descargar DESIGN.md</button>
+              <button type="button" className="molde-btn molde-btn-2" onClick={descargarHtml}>Descargar HTML</button>
+            </div>
+            <div className="molde-archivo">
+              <h2>DESIGN.md</h2>
+              <pre tabIndex={0} aria-label="Contenido de DESIGN.md">{archivo}</pre>
+            </div>
+            <details className="molde-resumen">
+              <summary>Lo que elegiste · {fichas.length} decisiones</summary>
+              <div className="molde-resumen-fichas">
+                {fichas.map((r) => (
+                  <button key={r.clave} type="button" className="molde-ficha" onClick={() => ir(r.clave)}>
+                    {r.ficha}<b>{valorDeFicha(config, r)}</b>
+                  </button>
+                ))}
+              </div>
+            </details>
+            {sigOpcional !== LISTO_MOLDE && <button type="button" className="molde-enlace" onClick={() => ir(sigOpcional)}>Más ideas</button>}
+          </section>
+        )}
       </main>
 
       {abiertos && (
@@ -275,69 +305,55 @@ export function Molde({ config, setConfig, reiniciar, paso: pasoUrl, ir }: Props
         </Suspense>
       )}
 
-      <footer className="molde-pie">
-        <div className="molde-fichas" aria-label="Lo que elegiste">
-          {fichas.length === 0 ? (
-            <p className="molde-pista">
-              {paso === INICIO_MOLDE
-                ? 'Gratis y sin cuenta. Lo que elegís queda en tu navegador.'
-                : 'Pasá el mouse o el foco por una idea para verla en la página. Elegila con un clic, con Enter o arrastrándola al centro.'}
-            </p>
-          ) : (
-            fichas.map((r) => (
-              <button
-                key={r.clave}
-                type="button"
-                className={`molde-ficha ${r.clave === nueva ? 'nueva' : ''}`}
-                aria-current={r.clave === paso ? 'step' : undefined}
-                onClick={() => ir(r.clave)}
-              >
-                {r.ficha}
-                <b>{valorDeFicha(config, r)}</b>
-              </button>
-            ))
-          )}
-        </div>
-        <div className="molde-final">
-          {paso === LISTO_MOLDE ? (
-            <>
-              {sigOpcional !== LISTO_MOLDE && (
-                <button type="button" className="molde-btn molde-btn-2" onClick={() => ir(sigOpcional)}>
-                  Más ideas
-                </button>
-              )}
-              <button type="button" className="molde-btn molde-btn-2" onClick={descargarHtml}>Descargar HTML</button>
-              <button type="button" className="molde-btn molde-btn-1" onClick={descargar}>
-                Descargar DESIGN.md
-              </button>
-            </>
-          ) : (
-            <>
-              {conAjustes && (
+      {paso !== LISTO_MOLDE && (
+        <footer className="molde-pie">
+          <div className="molde-fichas" aria-label="Lo que elegiste">
+            {fichas.length === 0 ? (
+              <p className="molde-pista">
+                {paso === INICIO_MOLDE
+                  ? 'Gratis y sin cuenta. Lo que elegís queda en tu navegador.'
+                  : 'Pasá el mouse o el foco por una idea para verla en la página. Elegila con un clic, con Enter o arrastrándola al centro.'}
+              </p>
+            ) : (
+              fichas.map((r) => (
                 <button
-                  ref={botonAjustes}
+                  key={r.clave}
                   type="button"
-                  className="molde-btn molde-btn-2"
-                  aria-expanded={ajustando}
-                  onClick={() => (ajustando ? cerrarAjustes() : setAjustando(true))}
+                  className={`molde-ficha ${r.clave === nueva ? 'nueva' : ''}`}
+                  aria-current={r.clave === paso ? 'step' : undefined}
+                  onClick={() => ir(r.clave)}
                 >
-                  Ajustes finos
+                  {r.ficha}
+                  <b>{valorDeFicha(config, r)}</b>
                 </button>
-              )}
-              {ronda?.maximo && (
-                <button type="button" className="molde-btn molde-btn-2" onClick={() => ir(siguiente(config, new Set([...elegidas, ronda.clave])))}>
-                  Seguir
-                </button>
-              )}
-              {ronda && faltan.length === 0 && (
-                <button type="button" className="molde-btn molde-btn-1" onClick={() => ir(LISTO_MOLDE)}>
-                  Terminar
-                </button>
-              )}
-            </>
-          )}
-        </div>
-      </footer>
+              ))
+            )}
+          </div>
+          <div className="molde-final">
+                {conAjustes && (
+                  <button
+                    ref={botonAjustes}
+                    type="button"
+                    className="molde-btn molde-btn-2"
+                    aria-expanded={ajustando}
+                    onClick={() => (ajustando ? cerrarAjustes() : setAjustando(true))}
+                  >
+                    Ajustes finos
+                  </button>
+                )}
+                {ronda?.maximo && (
+                  <button type="button" className="molde-btn molde-btn-2" onClick={() => ir(siguiente(config, new Set([...elegidas, ronda.clave])))}>
+                    Seguir
+                  </button>
+                )}
+                {ronda && faltan.length === 0 && (
+                  <button type="button" className="molde-btn molde-btn-1" onClick={() => ir(LISTO_MOLDE)}>
+                    Terminar
+                  </button>
+                )}
+          </div>
+        </footer>
+      )}
       <p className="molde-aviso" role="status" hidden={!aviso}>
         {aviso}
       </p>
