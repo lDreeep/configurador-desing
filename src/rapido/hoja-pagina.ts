@@ -6,6 +6,7 @@
 import '../cajas-disenos';
 import { cssDeEstilo } from '../estilos-css';
 import { ESTILOS } from '../estilos-visuales';
+import { CSS_LECTURA } from '../lectura';
 import { cssDeFondo } from '../fondos-css';
 import { FONDOS, type FondoId, SELECTOR_FONDO } from '../fondos';
 import { claseScroll, cssDeScroll, EFECTOS_SCROLL, type ScrollId } from '../scroll';
@@ -23,5 +24,5 @@ export function cssDePagina(): string {
   const fondos = (Object.keys(FONDOS) as FondoId[]).map((id) => cssDeFondo(id, SELECTOR_FONDO(id)));
   // Los efectos de scroll, cada uno limitado a su clase en la raíz (scroll.ts).
   const scroll = (Object.keys(EFECTOS_SCROLL) as ScrollId[]).map((id) => cssDeScroll(id, `.pg.${claseScroll(id)}`));
-  return [...estilos, ...auto, ...fondos, ...scroll].join('\n');
+  return [...estilos, ...auto, ...fondos, ...scroll, CSS_LECTURA].join('\n');
 }

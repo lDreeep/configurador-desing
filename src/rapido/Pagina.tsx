@@ -437,6 +437,7 @@ function PaginaConHoja({ config, contenido: propio }: { config: Config; contenid
   const conDiseno = config.botones.diseno !== 'ninguno';
   const clases = [
     'pg pgp',
+    s.lectura ? 'pg-lectura' : '',
     `pg-l-${v.layout}`,
     v.layout.startsWith('autor_') ? 'pg-autor' : '',
     v.estilo !== 'clasico' ? `estilo-${v.estilo}` : '',

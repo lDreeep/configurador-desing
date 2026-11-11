@@ -442,6 +442,8 @@ export interface Config {
     ambosModos: boolean;
     /** Densidad elegida (ronda D11); null = la de la dirección visual. */
     densidad: Densidad | null;
+    /** Preset de lectura del blog (D14); null = sin elección. */
+    lectura: LecturaId | null;
   };
   /** Iconos (ronda D11, §11 del export); null = no se eligió y la sección no se exporta. */
   iconos: { libreria: LibreriaIconos; estilo: EstiloIconos; grosor: number } | null;
@@ -469,3 +471,5 @@ export interface Config {
   notas: Partial<Record<PasoId, string>>;
   notasGenerales: string;
 }
+
+export type LecturaId = '50_16' | '60_16' | '70_16' | '50_20' | '60_20' | '70_20';

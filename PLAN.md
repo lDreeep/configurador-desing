@@ -234,9 +234,10 @@ Estado: `[ ]` pendiente · `[x]` hecha. Marcala al terminar.
   - Listo cuando: elegir un rubro cambia las 6 primeras opciones de esas rondas y el contenido de la página, con test.
   - Hecha: ronda obligatoria Rubro, persistencia y limpieza al cambiar de tipo, recomendaciones y contenido de muestra. Los estilos conservan el filtro de contraste AA. Pruebas para los 39 rubros y recorrido actualizado.
 
-- [ ] **D14 · Ronda de lectura del blog** — Sonnet 5.5 · ChatGPT: Sol · depende de D11
+- [x] **D14 · Ronda de lectura del blog** — Sonnet 5.5 · ChatGPT: Sol · depende de D11
   - La ronda «Lectura (ancho y tamaño)» de la tabla 7.1, que D11 dejó afuera. Seguir el patrón de Densidad (`src/rondas/comunes.ts`).
   - Listo cuando: cambia el ancho y el tamaño del texto en la página en vivo y llena su lugar en el export.
+  - Hecha: `LECTURA` sigue el patrón de Densidad, con seis combinaciones en `LECTURAS` (50/60/70ch × 16/20px). `visual.lectura` se normaliza y solo se aplica a blogs. Página y export §7 comparten los tokens de `sistemaDeDiseno` y `CSS_LECTURA`; el ancho se adapta al celular. Formato 0.9.2. Tests en `src/lectura.test.tsx`.
 
 ### Tanda 4: portada y descarga
 
