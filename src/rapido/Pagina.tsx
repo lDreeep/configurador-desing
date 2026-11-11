@@ -15,6 +15,7 @@ import { CONTENIDO_TIPO } from './contenido-tipo';
 import { PlantillaAutor, PLANTILLAS_AUTOR } from './autores';
 import { Cursor, FraseRevelada, Preguntas, useGuion, type Beat } from './demo';
 import { LayoutNuevo } from './layouts2';
+import { Secciones, seccionesDe } from './secciones';
 import type { Config, EstiloId } from '../tipos';
 
 /** Hoja con el CSS de todos los estilos, cada uno limitado a su clase. Se monta una sola vez. */
@@ -847,6 +848,7 @@ export function Pagina({ config, contenido: propio }: { config: Config; contenid
     v.fondo && v.fondo !== 'ninguno' ? `fondo-${v.fondo}` : '',
     ...(v.scroll ?? []).map(claseScroll),
   ].join(' ');
+  const conSecciones = seccionesDe(config).length > 0;
   const conBarra = (v.scroll ?? []).some((id) => EFECTOS_SCROLL[id]?.elemento === 'barra');
   return (
     <div className={clases} style={s.tokens as CSSProperties}>
@@ -859,7 +861,8 @@ export function Pagina({ config, contenido: propio }: { config: Config; contenid
       <div className="pg-contenido">
         <Layout c={config} k={k} />
       </div>
-      {llevaArgumento(v.layout) && <Argumento k={k} />}
+      {/* Las secciones elegidas reemplazan al argumento genérico del layout. */}
+      {conSecciones ? <Secciones c={config} k={k} /> : llevaArgumento(v.layout) && <Argumento k={k} />}
       {v.layout !== 'link_bio' && <Cierre c={config} k={k} />}
     </div>
   );

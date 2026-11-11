@@ -3,6 +3,7 @@ import { DIRECCIONES, FUENTES, MOVIMIENTOS, NAV_SUGERIDA, PALETAS, PLANTILLAS_PA
 import { ESTILOS, LAYOUTS } from './estilos-visuales';
 import { FONDOS } from './fondos';
 import { limpiarScroll } from './scroll';
+import { limpiarSecciones } from './secciones';
 import type { Config, DireccionId, FuenteId, MovimientoId, Pantalla, TipoProyecto } from './tipos';
 
 const CLAVE = 'configurador-diseno:v1';
@@ -68,6 +69,7 @@ export function configInicial(): Config {
       ambosModos: false,
       fondo: 'ninguno',
       scroll: [],
+      secciones: [],
       layout: 'hero_partido',
       antiReferencias: [],
       paletaPersonalizada: { fondo: r.fondo, texto: r.texto, acento: r.acento, manual: {} },
@@ -126,6 +128,7 @@ export function normalizar(guardado: Partial<Config>): Config {
   if (!(visual.layout in LAYOUTS)) visual.layout = base.visual.layout;
   if (visual.fondo !== 'ninguno' && !(visual.fondo in FONDOS)) visual.fondo = 'ninguno';
   visual.scroll = limpiarScroll(Array.isArray(visual.scroll) ? visual.scroll : []);
+  visual.secciones = limpiarSecciones(Array.isArray(visual.secciones) ? visual.secciones : []);
   visual.paletaPersonalizada = { ...base.visual.paletaPersonalizada, ...visual.paletaPersonalizada };
   return {
     ...base,

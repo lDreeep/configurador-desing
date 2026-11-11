@@ -213,9 +213,10 @@ Estado: `[ ]` pendiente · `[x]` hecha. Marcala al terminar.
   - Sumar las rondas de la sección 7.9 que ya tienen formato definido en `DESIGN.md` §3 y nunca se implementaron: iconos (§11), tono de los textos (§13) y densidad (§8).
   - Listo cuando: cada una llena su sección del export y `DESIGN.md` §5 pasa su estado a hecho.
 
-- [ ] **D12 · Secciones de la página** — Fable 5.2 · depende de D3
+- [x] **D12 · Secciones de la página** — Fable 5.2 · depende de D3
   - Ronda nueva para landing, sitio y portfolio: elegir qué secciones lleva la página (precios, testimonios, preguntas frecuentes, contacto, equipo) y en qué orden. Es la idea «catálogo de secciones» de `DESIGN.md` §10.
   - Listo cuando: hay 8 secciones con 2 variantes cada una y el export las describe en §3.
+  - Hecha: catálogo en `src/secciones.ts` (8 secciones × 2 diseños, con su `estructura`), contenido de muestra en `src/rapido/contenido-secciones.ts` y dibujo en `src/rapido/secciones.tsx` + `secciones.css`. `visual.secciones` en `Config` (lo limpia `normalizar`). La ronda `RONDA_SECCIONES` (`src/rondas/ramas.ts`) elige varias: el orden de la página es el orden en que se eligen; en Molde la página va sola hasta la sección que se mira. Las secciones reemplazan al argumento del layout. Export: §22, formato 0.9.0, decisión D91. Tests en `src/secciones.test.tsx`. Pendiente: no se pueden reordenar sin sacar y volver a elegir; el export a HTML (F1) tiene que incluir `secciones.css`; de los 20 estilos solo se revisaron a ojo tres (sin estilo, neobrutalismo y terminal), a 1440 y 390 px.
 
 ### Tanda 4: portada y descarga
 
@@ -278,7 +279,7 @@ La tanda 3 puede arrancar apenas termina C1, sin esperar al resto de la tanda 2.
 |---|---|---|
 | Landing | Fondo animado · Scroll · Secciones | D6, D7, D12 |
 | Sitio con secciones | Fondo animado · Scroll · Secciones · Pie de página | D6, D7, D12, galería `pie` |
-| Portfolio | Fondo animado · Scroll · Galería de trabajos | D6, D7, galería `carrusel` |
+| Portfolio | Fondo animado · Scroll · Secciones · Galería de trabajos | D6, D7, D12, galería `carrusel` |
 | Tienda | Tarjeta de producto · Carrito y compra · Buscador y filtros | galería `producto`, `formulario`, `buscador` |
 | App web | Navegación · Formularios · Tablas · Pantallas vacías | galería `nav_web`, `formulario`, `tabla`, `vacio` |
 | App para celular | Barra inferior · Formularios · Avisos | galería `nav_movil`, `campo`, `aviso` |
