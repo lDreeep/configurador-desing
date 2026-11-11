@@ -15,6 +15,19 @@ const NOMBRES_CAMPO: Record<string, string> = {
   logo: 'Logo',
 };
 
+/** Las notas generales (§17 del archivo). También se editan desde la ficha Proyecto de Molde. */
+export function NotasGenerales({ config, setConfig }: PropsPaso) {
+  return (
+    <Campo
+      etiqueta="Notas generales (una por línea)"
+      valor={config.notasGenerales}
+      onCambiar={(v) => setConfig((x) => ({ ...x, notasGenerales: v }))}
+      multilinea
+      placeholder="Ej.: Quiero que se sienta rápida, más que linda."
+    />
+  );
+}
+
 export function PasoExportar({ config, setConfig }: PropsPaso) {
   const md = useMemo(() => generarDesignMd(config), [config]);
   const { sinDefinir } = useMemo(() => calcularPendientes(config), [config]);
@@ -57,13 +70,7 @@ export function PasoExportar({ config, setConfig }: PropsPaso) {
           </ul>
         </div>
       )}
-      <Campo
-        etiqueta="Notas generales (una por línea)"
-        valor={config.notasGenerales}
-        onCambiar={(v) => setConfig((x) => ({ ...x, notasGenerales: v }))}
-        multilinea
-        placeholder="Ej.: Quiero que se sienta rápida, más que linda."
-      />
+      <NotasGenerales config={config} setConfig={setConfig} />
       <div className="fila">
         <button type="button" className="boton primario" onClick={descargar}>
           Descargar DESIGN.md

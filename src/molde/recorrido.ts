@@ -4,7 +4,7 @@
 
 import { useEffect, useState } from 'react';
 import { faltanObligatorias, rondasDe, type ClaveRonda, type Ronda } from '../rondas';
-import type { Config } from '../tipos';
+import type { Config, PasoId } from '../tipos';
 
 export const CLAVE_ELEGIDAS = 'molde:elegidas';
 /** Pasos de Molde que no son rondas. */
@@ -106,3 +106,18 @@ export function posiciones(n: number, ancho: number, alto: number): [number, num
     return [Math.cos(a) * rx, Math.sin(a) * ry];
   });
 }
+
+/**
+ * Ajustes finos de cada ficha (PLAN.md C4): qué pasos del modo avanzado (`PASOS`) se abren desde cada ronda.
+ * Entre todas cubren todos los pasos: lo verifica `recorrido.test.ts`. Las rondas de galería no tienen ajustes.
+ * `direccion` y `exportar` se muestran en una versión para Molde (ver `Ajustes.tsx`).
+ */
+export const AJUSTES: Partial<Record<ClaveRonda, PasoId[]>> = {
+  proyecto: ['proyecto', 'funciones', 'exportar'],
+  color: ['color'],
+  layout: ['estructura'],
+  estilo: ['direccion', 'forma'],
+  piezas: ['botones'],
+  letra: ['tipografia'],
+  entrada: ['movimiento'],
+};
