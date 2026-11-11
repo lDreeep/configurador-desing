@@ -210,9 +210,10 @@ Estado: `[ ]` pendiente · `[x]` hecha. Marcala al terminar.
   - Listo cuando: un test verifica que cada rubro tiene al menos 6 recomendados por ronda y que todos existen.
   - Hecha: `RECOMENDADOS_RUBRO` (6 paletas, 6 layouts, 6 estilos y 6 familias por rubro), `recomendadosDeRubro` y `conRubro` al final de `src/recomendados.ts`; tests en `src/rubros.test.ts`. Pendiente (lo cierra la tarea que sume la ronda Rubro): `Config` todavía no guarda el rubro, así que `COLOR`, `LAYOUT`, `ESTILO` y `PIEZAS` en `src/rondas/comunes.ts` aún no leen estas listas; con el rubro en `Config` alcanza con pasar `conRubro(rec.paletas, …)` a `primeroRecomendados`.
 
-- [ ] **D11 · Ideas nuevas como rondas opcionales** — Sonnet 5.5 · depende de C4
+- [x] **D11 · Ideas nuevas como rondas opcionales** — Sonnet 5.5 · depende de C4
   - Sumar las rondas de la sección 7.9 que ya tienen formato definido en `DESIGN.md` §3 y nunca se implementaron: iconos (§11), tono de los textos (§13) y densidad (§8).
   - Listo cuando: cada una llena su sección del export y `DESIGN.md` §5 pasa su estado a hecho.
+  - Hecha: rondas `iconos`, `tono` y `densidad` en `src/rondas/comunes.ts` (opciones en `catalogo.ts`: `ICONOS`, `TONOS`, `DENSIDADES`; recomendadas en `RECOMENDADOS_D11`). `Config` suma `iconos`, `tono` y `visual.densidad`; el export llena §11, §13 (solo si se eligieron) y §8. Formato 0.9.0, decisión D91. La ronda `lectura` del blog sigue pendiente (no era parte de esta tarea).
 
 - [ ] **D12 · Secciones de la página** — Fable 5.2 · depende de D3
   - Ronda nueva para landing, sitio y portfolio: elegir qué secciones lleva la página (precios, testimonios, preguntas frecuentes, contacto, equipo) y en qué orden. Es la idea «catálogo de secciones» de `DESIGN.md` §10.

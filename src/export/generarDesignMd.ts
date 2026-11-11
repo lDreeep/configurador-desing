@@ -1,7 +1,7 @@
 // Genera el DESIGN.md exportado según la especificación (DESIGN.md §3, versión del formato abajo).
 // Si cambiás la salida, actualizá la especificación y su historial de cambios.
 
-import { ESTILOS_BOTON, INTEGRACIONES, PATRONES_NAV, TAMANOS_BOTON } from '../catalogo';
+import { ESTILOS_BOTON, INTEGRACIONES, LIBRERIAS_ICONOS, PATRONES_NAV, TAMANOS_BOTON } from '../catalogo';
 import type { BotonEstiloId } from '../tipos';
 import type { Config } from '../tipos';
 import { paresDeContraste } from '../color';
@@ -20,7 +20,7 @@ import { FONDOS, type FondoId } from '../fondos';
 
 import { CSS_CONCESIONARIO as cssConcesionario } from '../rapido/concesionario-estilos';
 
-export const VERSION_FORMATO = '0.8.9';
+export const VERSION_FORMATO = '0.9.0';
 
 /** Lo que agregan todas las páginas que no son de autor ni app (D77): el argumento de una landing. */
 export const ARGUMENTO_LANDING =
@@ -340,7 +340,7 @@ largo_de_linea_max: 70ch${nota(c, 'tipografia')}`,
     `
 unidad_base: 4px
 escala: [${s.espacios.join(', ')}]
-densidad: ${s.dir.densidad}
+densidad: ${s.densidad}
 padding_componente: ${Math.round(16 * s.factor)}px
 ancho_maximo_contenido: 1200px
 grilla:
@@ -412,6 +412,22 @@ estados_especiales:
       cssDeBoton(b.diseno as keyof typeof BOTONES, '.boton-principal') +
       '\n```';
 
+  // §11 y §13 solo se exportan si la persona las eligió (rondas D11).
+  if (c.iconos) {
+    const i = c.iconos;
+    add(
+      11,
+      'Iconos e imágenes',
+      `Iconos ${LIBRERIAS_ICONOS[i.libreria]} en estilo ${i.estilo}. Un solo juego de iconos en toda la interfaz: no mezclar librerías.`,
+      `
+iconos:
+  libreria: ${i.libreria}
+  estilo: ${i.estilo}${i.estilo === 'relleno' ? '' : `\n  grosor: ${i.grosor}`}
+  tamano: 20px
+  regla: "un icono solo lleva aria-label; con texto al lado es decorativo (aria-hidden)"`,
+    );
+  }
+
   add(
     12,
     'Movimiento',
@@ -432,6 +448,20 @@ que_se_anima:
   cambio_de_pantalla: ${c.visual.cambio}
 respetar_movimiento_reducido: si${nota(c, 'movimiento')}`,
   );
+
+  if (c.tono) {
+    const t = c.tono;
+    add(
+      13,
+      'Contenido y tono',
+      `Los textos de la interfaz suenan ${t.voz}, tratan a la persona de ${t.tratamiento} y son de largo ${t.largo}.`,
+      `
+voz: ${t.voz}
+tratamiento: ${t.tratamiento}
+largo_de_textos: ${t.largo}
+idioma: es`,
+    );
+  }
 
   add(
     14,
