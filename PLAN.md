@@ -455,7 +455,7 @@ probar con personas y recién después sumar cosas. Cada tarea trae el pedido li
     > después de C5 (que retiró el recorrido viejo). **No borres nada**: pasame la lista con tu recomendación
     > y esperá mi OK.
 
-- [ ] **H2 · Publicar el sitio** — Sonnet 5.5 · ChatGPT: Sol
+- [x] **H2 · Publicar el sitio** — Sonnet 5.5 · ChatGPT: Sol
   - Molde online con una URL fija, que se actualice sola con cada merge a `main`. `vite.config.ts` ya usa `base: './'`.
   - Pedido:
     > Leé `CLAUDE.md` y `PLAN.md`. Hacé H2: sumá un workflow en `.github/workflows/` que, en cada push a
