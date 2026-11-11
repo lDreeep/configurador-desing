@@ -29,7 +29,8 @@ describe('rondas de Molde (C1)', () => {
     expect(fichas('dashboard')).toEqual(['Métricas', 'Gráficos', 'Tablas', 'Densidad']);
     for (const t of TIPOS) expect(RAMAS[t].length, t).toBeGreaterThanOrEqual(2);
     // Lo que todavía no existe queda anotado con su tarea.
-    expect(rondasPendientes(conTipo('landing')).map((p) => p.tarea)).toEqual(['D1', 'D6', 'D12']);
+    expect(fichas('portfolio')).toEqual(['Fondo animado', 'Scroll', 'Secciones', 'Galería de trabajos']);
+    expect(rondasPendientes(conTipo('landing')).map((p) => p.tarea)).toEqual(['D1', 'D6']);
     expect(rondasPendientes(conTipo('tienda')).map((p) => p.clave)).toEqual(['rubro']);
   });
 

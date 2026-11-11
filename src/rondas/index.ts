@@ -8,7 +8,7 @@ import { pendientesDeRama, rondasDeRama } from './ramas';
 import type { ClaveRonda, Ronda, RondaPendiente } from './ronda';
 
 export type { ClaveRonda, ContextoRonda, OpcionRonda, Ronda, RondaPendiente } from './ronda';
-export { RAMAS, RONDA_SCROLL, rondaDeGaleria, SIN_SCROLL } from './ramas';
+export { RAMAS, RONDA_SCROLL, RONDA_SECCIONES, rondaDeGaleria, SIN_SCROLL, SIN_SECCIONES } from './ramas';
 
 /** Rondas comunes, en orden. Rubro va entre Proyecto y Color cuando exista (D1). La densidad (D11) va al final de la rama. */
 export const COMUNES: Ronda[] = [PROYECTO, COLOR, LAYOUT, ESTILO, PIEZAS, LETRA, ENTRADA, ICONOS_RONDA, TONO];

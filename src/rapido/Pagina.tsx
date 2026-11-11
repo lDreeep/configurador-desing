@@ -1,7 +1,7 @@
 // Renderiza una página completa con el layout y el estilo de la config.
 // Usa solo los tokens de sistemaDeDiseno y el CSS de cada estilo: lo que se ve es lo que se exporta.
 
-import { Suspense, type CSSProperties, type ReactNode } from 'react';
+import { lazy, Suspense, type CSSProperties, type ReactNode } from 'react';
 import { animarToque } from '../componentes/toque';
 import { EstilosBotones } from '../botones-carga';
 import { BotonPrincipal } from '../componentes/BotonPrincipal';
@@ -9,12 +9,27 @@ import { clasesDeCaja, CSS_CAJA, paramsDe } from '../cajas';
 import { llevaArgumento } from '../estilos-visuales';
 import type { FondoId } from '../fondos';
 import { sistemaDeDiseno } from '../export/sistema';
-import { claseScroll, EFECTOS_SCROLL } from '../scroll';
+import { claseScroll, ELEMENTO_SCROLL } from '../scroll-base';
 import { cargarHojaPagina, datosDeHoja, useHojaPagina } from './hoja';
 import { useFuentes } from '../fuentes';
 import { LayoutAparte, PlantillaAutor, PLANTILLAS_AUTOR } from './autores';
 import { Cursor, FraseRevelada, Preguntas, useGuion, type Beat } from './demo';
+import { esDisenoSeccion, llevaSecciones } from '../secciones-base';
 import type { Config } from '../tipos';
+
+// Las secciones (D12) bajan aparte, con su CSS, recién cuando se elige la primera.
+// Si ya están cargadas se dibujan de una, sin pasar por Suspense.
+let moduloSecciones: typeof import('./secciones') | null = null;
+export const precargarSecciones = () => import('./secciones').then((m) => (moduloSecciones = m));
+const SeccionesDiferidas = lazy(() => precargarSecciones().then((m) => ({ default: m.Secciones })));
+function Secciones(props: { c: Config; k: Contenido }) {
+  if (moduloSecciones) return <moduloSecciones.Secciones {...props} />;
+  return (
+    <Suspense fallback={null}>
+      <SeccionesDiferidas {...props} />
+    </Suspense>
+  );
+}
 
 /**
  * Las hojas de la página. El CSS de los estilos, los fondos y el scroll baja aparte (hoja.ts);
@@ -429,7 +444,9 @@ function PaginaConHoja({ config, contenido: propio }: { config: Config; contenid
     v.fondo && v.fondo !== 'ninguno' ? `fondo-${v.fondo}` : '',
     ...(v.scroll ?? []).map(claseScroll),
   ].join(' ');
-  const conBarra = (v.scroll ?? []).some((id) => EFECTOS_SCROLL[id]?.elemento === 'barra');
+  const conSecciones =
+    llevaSecciones(config.proyecto.tipo) && (v.secciones ?? []).some(esDisenoSeccion);
+  const conBarra = (v.scroll ?? []).some((id) => ELEMENTO_SCROLL[id] === 'barra');
   return (
     <div className={clases} style={s.tokens as CSSProperties}>
       {conBarra && <div className="scroll-barra" aria-hidden="true" />}
@@ -441,7 +458,8 @@ function PaginaConHoja({ config, contenido: propio }: { config: Config; contenid
       <div className="pg-contenido">
         <Layout c={config} k={k} />
       </div>
-      {llevaArgumento(v.layout) && <Argumento k={k} />}
+      {/* Las secciones elegidas reemplazan al argumento genérico del layout. */}
+      {conSecciones ? <Secciones c={config} k={k} /> : llevaArgumento(v.layout) && <Argumento k={k} />}
       {v.layout !== 'link_bio' && <Cierre c={config} k={k} />}
     </div>
   );

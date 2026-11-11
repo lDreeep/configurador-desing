@@ -434,6 +434,8 @@ export interface Config {
     fondo: import('./fondos').FondoId | 'ninguno';
     /** Efectos de scroll combinados: hasta 3, uno por zona (`scroll.ts`). Vacío = la página no reacciona al bajar. */
     scroll: import('./scroll').ScrollId[];
+    /** Secciones de la página, en orden, con el diseño de cada una (`secciones.ts`). Solo landing, sitio y portfolio. Vacío = el argumento del layout. */
+    secciones: import('./secciones').SeccionDisenoId[];
     /** true: el archivo incluye también la versión opuesta de la paleta (claro ↔ oscuro). */
     ambosModos: boolean;
     /** Densidad elegida (ronda D11); null = la de la dirección visual. */

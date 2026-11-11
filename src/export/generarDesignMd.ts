@@ -17,6 +17,7 @@ import { cssBaseDe, cssDisenoDe } from '../galeria/base';
 import { paletaActiva, sistemaDeDiseno, tokensCss } from './sistema';
 import { cssDeFondo } from '../fondos-css';
 import { FONDOS, type FondoId } from '../fondos';
+import { DISENOS_SECCION, limpiarSecciones, llevaSecciones, SECCIONES, seccionDe } from '../secciones';
 
 import { CSS_CONCESIONARIO as cssConcesionario } from '../rapido/concesionario-estilos';
 
@@ -514,6 +515,8 @@ preguntas_sugeridas:${lista(preguntas)}`,
   );
 
   const v = c.visual;
+  // Las secciones elegidas (§22) reemplazan al argumento genérico del layout.
+  const seccionesElegidas = llevaSecciones(p.tipo) ? limpiarSecciones(v.secciones) : [];
   const lay = LAYOUTS[v.layout];
   const estV = v.estilo !== 'clasico' ? { ...ESTILOS[v.estilo], ...REGLAS_ESTILOS[v.estilo] } : null;
   const fondoV = v.fondo && v.fondo !== 'ninguno' ? FONDOS[v.fondo] : null;
@@ -526,7 +529,7 @@ preguntas_sugeridas:${lista(preguntas)}`,
       yaml(`
 layout: ${v.layout}
 layout_estructura: ${q(ESTRUCTURA_LAYOUT[v.layout])}${
-        llevaArgumento(v.layout)
+        llevaArgumento(v.layout) && !seccionesElegidas.length
           ? `
 layout_argumento: ${q(ARGUMENTO_LANDING)}`
           : ''
@@ -610,6 +613,27 @@ ajustado_a_mano: ${ids(ajustadas)}`),
         '\n```',
     );
     secciones.push(partes.join('\n\n'));
+  }
+
+  if (seccionesElegidas.length) {
+    secciones.push(
+      [
+        '## 22. Secciones de la página',
+        `Debajo de la portada (el layout de la sección 19), la página lleva ${seccionesElegidas.length === 1 ? 'esta sección' : `estas ${seccionesElegidas.length} secciones, en este orden`}: ${seccionesElegidas
+          .map((id) => SECCIONES[seccionDe(id)].nombre.toLowerCase())
+          .join(', ')}. Después va el cierre con el pie. No agregues ni saques secciones, y respetá el orden.`,
+        yaml(
+          `orden: ${ids(seccionesElegidas.map(seccionDe))}\nsecciones:\n` +
+            seccionesElegidas
+              .map((id) => {
+                const d = DISENOS_SECCION[id];
+                return `  - id: ${d.seccion}\n    nombre: ${q(SECCIONES[d.seccion].nombre)}\n    para_que: ${q(SECCIONES[d.seccion].descripcion)}\n    diseno: ${id}\n    diseno_nombre: ${q(d.nombre)}\n    estructura: ${q(d.estructura)}`;
+              })
+              .join('\n'),
+        ),
+        'Reglas para todas: cada sección es un `<section>` con su título (`<h2>` o `<h3>`, según la jerarquía de la página) y usa solo los tokens de la sección 16; entre una sección y la siguiente va bastante más espacio que dentro de cada una (de 56 px en celular a 128 px en pantallas anchas); ninguna aparece con animación de entrada propia. Los textos de muestra del configurador no se exportan: escribí el contenido real del proyecto y, si falta un dato (precios, nombres, testimonios), pedilo en vez de inventarlo.',
+      ].join('\n\n'),
+    );
   }
 
   const encabezado = yaml(`

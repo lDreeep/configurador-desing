@@ -2,6 +2,7 @@ import { renderToStaticMarkup } from 'react-dom/server';
 import { configInicial, normalizar } from './estado';
 import { Pagina } from './rapido/Pagina';
 import { RONDA_SCROLL, SIN_SCROLL } from './rondas';
+import { ELEMENTO_SCROLL, ZONA_DE_SCROLL } from './scroll-base';
 import {
   combinarScroll,
   cssDeScroll,
@@ -124,5 +125,13 @@ describe('efectos de scroll (D7)', () => {
     c = RONDA_SCROLL.aplicar(c, SIN_SCROLL);
     expect(c.visual.scroll).toEqual([]);
     expect(RONDA_SCROLL.elegida(c)).toBe(SIN_SCROLL);
+  });
+
+  it('la base liviana (scroll-base.ts, la que usa la portada) coincide con el catálogo', () => {
+    expect(Object.keys(ZONA_DE_SCROLL).sort()).toEqual(Object.keys(EFECTOS_SCROLL).sort());
+    for (const [id, e] of Object.entries(EFECTOS_SCROLL)) {
+      expect(ZONA_DE_SCROLL[id as ScrollId], id).toBe(e.zona);
+      expect(ELEMENTO_SCROLL[id as ScrollId], id).toBe(e.elemento);
+    }
   });
 });

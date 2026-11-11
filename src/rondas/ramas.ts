@@ -8,6 +8,16 @@ import { CATEGORIAS } from '../galeria';
 import type { CategoriaId } from '../galeria/base';
 import { RECOMENDADOS } from '../recomendados';
 import { combinarScroll, EFECTOS_SCROLL, esScrollId, MAX_SCROLL, ZONAS_SCROLL, type ScrollId } from '../scroll';
+import {
+  combinarSecciones,
+  DISENOS_SECCION,
+  esDisenoSeccion,
+  LISTA_DISENOS_SECCION,
+  LISTA_SECCIONES,
+  llevaSecciones,
+  nombreDeDiseno,
+  SECCIONES_RECOMENDADAS,
+} from '../secciones';
 import type { TipoProyecto } from '../tipos';
 import { DENSIDAD } from './comunes';
 import { primeroRecomendados, type ClaveRama, type Ronda, type RondaPendiente } from './ronda';
@@ -45,12 +55,41 @@ export const RONDA_SCROLL: Ronda = {
 };
 
 const SCROLL: EntradaRama = { ronda: RONDA_SCROLL, ficha: RONDA_SCROLL.ficha, pregunta: RONDA_SCROLL.pregunta };
-const SECCIONES: EntradaRama = { pendiente: 'secciones', ficha: 'Secciones', pregunta: '¿Qué secciones lleva y en qué orden?', tarea: 'D12' };
+/** «Sin secciones»: la página queda con lo que trae su layout. */
+export const SIN_SECCIONES = 'ninguna';
+
+/**
+ * Secciones (D12): qué secciones lleva la página y en qué orden. Cada opción es una sección con uno de
+ * sus dos diseños. El orden de la página es el orden en que se eligen; elegir el otro diseño de una
+ * sección ya puesta lo cambia sin moverla, y elegir el mismo la saca.
+ */
+export const RONDA_SECCIONES: Ronda = {
+  clave: 'secciones',
+  ficha: 'Secciones',
+  pregunta: '¿Qué secciones lleva y en qué orden?',
+  obligatoria: false,
+  maximo: LISTA_SECCIONES.length,
+  opciones: (c) => [
+    ...primeroRecomendados(LISTA_DISENOS_SECCION, llevaSecciones(c.proyecto.tipo) ? SECCIONES_RECOMENDADAS[c.proyecto.tipo] : []).map(({ id, recomendada }) => ({
+      id,
+      nombre: nombreDeDiseno(id),
+      descripcion: DISENOS_SECCION[id].descripcion,
+      recomendada,
+    })),
+    { id: SIN_SECCIONES, nombre: 'Sin secciones', descripcion: 'La página queda con lo que trae su layout', recomendada: false },
+  ],
+  aplicar: (c, id) => ({ ...c, visual: { ...c.visual, secciones: esDisenoSeccion(id) ? combinarSecciones(c.visual.secciones, id) : [] } }),
+  // La última que se sumó o cambió no se puede saber de la lista (cambiar de diseño no mueve): la ficha nombra todas.
+  elegida: (c) => c.visual.secciones[c.visual.secciones.length - 1] ?? SIN_SECCIONES,
+  marcadas: (c) => (c.visual.secciones.length ? [...c.visual.secciones] : [SIN_SECCIONES]),
+};
+
+const SECCIONES: EntradaRama = { ronda: RONDA_SECCIONES, ficha: RONDA_SECCIONES.ficha, pregunta: RONDA_SECCIONES.pregunta };
 
 export const RAMAS: Record<TipoProyecto, EntradaRama[]> = {
   landing: [FONDO_ANIMADO, SCROLL, SECCIONES],
   sitio: [FONDO_ANIMADO, SCROLL, SECCIONES, { galeria: 'pie', ficha: 'Pie de página', pregunta: '¿Cómo cierra cada página?' }],
-  portfolio: [FONDO_ANIMADO, SCROLL, { galeria: 'carrusel', ficha: 'Galería de trabajos', pregunta: '¿Cómo se muestran tus trabajos?' }],
+  portfolio: [FONDO_ANIMADO, SCROLL, SECCIONES, { galeria: 'carrusel', ficha: 'Galería de trabajos', pregunta: '¿Cómo se muestran tus trabajos?' }],
   tienda: [
     { galeria: 'producto', ficha: 'Tarjeta de producto', pregunta: '¿Cómo se ve cada producto?' },
     { galeria: 'formulario', ficha: 'Carrito y compra', pregunta: '¿Cómo se completa la compra?' },

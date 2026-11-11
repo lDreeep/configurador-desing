@@ -14,24 +14,19 @@
 //   página real, la capa del lienzo en Molde): ningún ancestro del elemento animado puede tener
 //   `overflow: hidden` (usar `clip`).
 
-export type ZonaScroll = 'portada' | 'texto' | 'galeria' | 'pagina';
+import { esScrollId, MAX_SCROLL, type ScrollId, type ZonaScroll } from './scroll-base';
 
-/** Los 14 efectos de PLAN.md §7.4. Los nuevos se suman al final, sin cambiar estos ids. */
-export type ScrollId =
-  | 'se_aleja'
-  | 'se_enciende'
-  | 'de_costado'
-  | 'barra_progreso'
-  | 'queda_fija'
-  | 'capas'
-  | 'titulo_partido'
-  | 'palabras_suben'
-  | 'numero_cuenta'
-  | 'subrayado'
-  | 'apilan'
-  | 'zoom_imagen'
-  | 'de_a_una'
-  | 'fondo_cambia';
+export {
+  claseScroll,
+  combinarScroll,
+  ELEMENTO_SCROLL,
+  esScrollId,
+  limpiarScroll,
+  MAX_SCROLL,
+  ZONA_DE_SCROLL,
+  type ScrollId,
+  type ZonaScroll,
+} from './scroll-base';
 
 export interface EfectoScroll {
   nombre: string;
@@ -53,9 +48,6 @@ export const ZONAS_SCROLL: Record<ZonaScroll, { nombre: string; descripcion: str
   galeria: { nombre: 'Galería', descripcion: 'Las filas de tarjetas o imágenes' },
   pagina: { nombre: 'Página', descripcion: 'Toda la página a la vez' },
 };
-
-/** Cuántos efectos se pueden combinar (PLAN.md decisión 8). */
-export const MAX_SCROLL = 3;
 
 export const EFECTOS_SCROLL: Record<ScrollId, EfectoScroll> = {
   se_aleja: {
@@ -220,8 +212,6 @@ export const EFECTOS_SCROLL: Record<ScrollId, EfectoScroll> = {
 /** Los efectos de PLAN.md §7.4 que todavía no existen (ya están los 14: queda vacía). */
 export const SCROLL_PENDIENTES: { nombre: string; zona: ZonaScroll }[] = [];
 
-export const esScrollId = (id: string): id is ScrollId => id in EFECTOS_SCROLL;
-
 /** null si la combinación vale; si no, por qué no. */
 export function problemaScroll(ids: readonly string[]): string | null {
   if (ids.length > MAX_SCROLL) return `Se combinan hasta ${MAX_SCROLL} efectos.`;
@@ -237,35 +227,9 @@ export function problemaScroll(ids: readonly string[]): string | null {
 
 export const scrollValido = (ids: readonly string[]): ids is ScrollId[] => problemaScroll(ids) === null;
 
-/**
- * Elegir un efecto: si ya estaba, se saca; si no, entra y reemplaza al de su zona. Si con él pasan
- * de `MAX_SCROLL`, sale el más viejo. El último elegido queda al final. Siempre devuelve una combinación válida.
- */
-export function combinarScroll(actual: readonly ScrollId[], id: ScrollId): ScrollId[] {
-  const limpio = limpiarScroll(actual);
-  if (limpio.includes(id)) return limpio.filter((x) => x !== id);
-  const sinZona = limpio.filter((x) => EFECTOS_SCROLL[x].zona !== EFECTOS_SCROLL[id].zona);
-  return [...sinZona, id].slice(-MAX_SCROLL);
-}
-
-/** Deja una lista guardada (quizás de otra versión) en una combinación válida: ids que existen, uno por zona, hasta 3. */
-export function limpiarScroll(ids: readonly unknown[] | undefined): ScrollId[] {
-  const salida: ScrollId[] = [];
-  for (const id of ids ?? []) {
-    if (typeof id !== 'string' || !esScrollId(id)) continue;
-    const i = salida.findIndex((x) => EFECTOS_SCROLL[x].zona === EFECTOS_SCROLL[id].zona);
-    if (i >= 0) salida.splice(i, 1);
-    salida.push(id);
-  }
-  return salida.slice(-MAX_SCROLL);
-}
-
 /** El CSS de un efecto para una raíz dada, dentro de @supports y prefers-reduced-motion (sin eso, queda quieto). */
 export function cssDeScroll(id: ScrollId, raiz: string): string {
   const css = EFECTOS_SCROLL[id].css.trim().replace(/&/g, raiz);
   // Los @keyframes no pueden quedar con la raíz adentro: no la tienen, así que el reemplazo no los toca.
   return `@supports (animation-timeline: view()) {\n@media (prefers-reduced-motion: no-preference) {\n${css}\n}\n}`;
 }
-
-/** Clase que lleva la raíz de la página por cada efecto elegido. */
-export const claseScroll = (id: ScrollId) => `scroll-${id}`;

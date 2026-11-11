@@ -170,6 +170,7 @@ Orden fijo. Las marcadas **(obligatoria)** siempre aparecen, aunque sea con valo
 | 19 | Estilo visual y layout | Estructura de la página y textura del estilo, con su CSS | obligatoria (desde 0.3.0) |
 | 20 | Cajas y contenedores | Cómo son todas las cards, paneles y bloques, con su CSS | solo si se eligió una caja |
 | 21 | Componentes de interfaz | Campos, controles y navegación, con estructura HTML y CSS | solo si se eligió alguno |
+| 22 | Secciones de la página | Qué secciones van debajo de la portada, en qué orden y con qué diseño | solo en landing, sitio y portfolio, si se eligió alguna (desde 0.9.0) |
 
 ---
 
@@ -280,7 +281,7 @@ flujos:
 ```
 
 - **Una sola `accion_principal` por pantalla.** Es la que lleva el botón primario (ver §10).
-- Para landings y sitios, `pantallas` son páginas y `secciones` son los bloques (hero, beneficios, precios, testimonios, preguntas frecuentes, contacto…). El catálogo de secciones de landing es un ítem del backlog (§10).
+- Para landings y sitios, `pantallas` son páginas y `secciones` son los bloques (hero, beneficios, precios, testimonios, preguntas frecuentes, contacto…). Las secciones que la persona elige para su página, con su orden y su diseño, van en §22.
 
 ---
 
@@ -733,6 +734,7 @@ Si hay estilo, sigue un bloque `css` con **el CSS real** del estilo. Las clases 
 
 - Fuente de verdad: `src/estilos-visuales.ts`. Cada estilo trae sus **reglas de compatibilidad**: paletas, pares de fuentes, forma, sombras, bordes, botón y movimiento que lo sostienen.
 - En el modo rápido, cada combinación (estilo × layout × paleta × tipografía) tiene un **código de 5 caracteres** (por ejemplo `11E71`) que se puede compartir como link (`#c=11E71`). Las paletas pasan de 36: las de la 37 en adelante usan 2 caracteres y el código empieza con `+` (por ejemplo `+110AE71`); los códigos viejos siguen valiendo. Los layouts también pasan de 36 (desde 0.8.9): con uno de los nuevos, layout y paleta van con 2 caracteres cada uno y el código empieza con `~` (por ejemplo `~1190AE7`).
+- `layout_argumento` tampoco se escribe cuando el archivo trae §22: las secciones elegidas lo reemplazan.
 - `layout_argumento` no se escribe en los layouts de autor ni en los que son una pantalla de app o una página de un solo fin: `app_lateral`, `mapa_lista`, `agenda_semanal`, `tablero`, `documentacion`, `link_bio` y `compra_unica` (`llevaArgumento` en `src/estilos-visuales.ts`).
 
 ---
@@ -817,6 +819,45 @@ Los gráficos siguen la guía de visualización del proyecto: una serie por colo
 
 ---
 
+### §22. Secciones de la página
+
+**Responde:** qué secciones lleva la página debajo de su portada, en qué orden y cómo se arma cada una. Solo aparece en proyectos `landing`, `sitio` y `portfolio`, y solo si la persona eligió al menos una sección.
+
+```yaml
+orden: [beneficios, precios, contacto]     # el orden de la página, de arriba hacia abajo
+secciones:
+  - id: beneficios                         # beneficios | pasos | precios | testimonios | preguntas | equipo | numeros | contacto
+    nombre: "Beneficios"
+    para_que: "Qué se lleva la persona, punto por punto."
+    diseno: beneficios_renglones           # uno de los dos diseños de esa sección (tabla de abajo)
+    diseno_nombre: "En renglones"
+    estructura: "Título de la sección arriba a la izquierda. Debajo, una lista…"   # descripción para reproducirla, con lo que pasa en celular
+  - id: precios
+    diseno: precios_tabla
+    …
+```
+
+Las 8 secciones y sus 2 diseños (fuente de verdad: `src/secciones.ts`):
+
+| Sección (`id`) | Diseños (`diseno`) |
+|---|---|
+| `beneficios` Beneficios | `beneficios_renglones` (una lista a todo el ancho) · `beneficios_destacado` (uno grande adelante y el resto al costado) |
+| `pasos` Cómo funciona | `pasos_fila` (en fila, unidos por una línea) · `pasos_escalera` (cada paso más a la derecha, con el número enorme) |
+| `precios` Precios | `precios_planes` (tres tarjetas, la más elegida marcada) · `precios_tabla` (tabla comparativa) |
+| `testimonios` Testimonios | `testimonios_cita` (una cita grande) · `testimonios_tres` (tres cortos lado a lado) |
+| `preguntas` Preguntas frecuentes | `preguntas_acordeon` (se abren al tocar) · `preguntas_abiertas` (todas a la vista, en dos columnas) |
+| `equipo` Equipo | `equipo_retratos` (grilla de retratos) · `equipo_lista` (nombres grandes, sin fotos) |
+| `numeros` Números | `numeros_fila` (tres cifras iguales) · `numeros_protagonista` (una cifra gigante y dos chicas) |
+| `contacto` Contacto | `contacto_formulario` (datos y formulario corto) · `contacto_datos` (el mail enorme y los datos debajo) |
+
+- Va un diseño por sección y cada sección aparece una sola vez. `orden` repite los `id` de `secciones`, en el mismo orden.
+- Las secciones van después de la composición del layout (§19) y antes del cierre con el pie. Cuando hay §22, reemplaza a `layout_argumento`.
+- El archivo no trae CSS de las secciones: `estructura` las describe y se construyen con los tokens de §16 y las cajas, botones y campos de §10, §20 y §21.
+- Los textos de muestra del configurador no se exportan. La IA usa el contenido del proyecto y pide lo que falte (precios, nombres, testimonios) en vez de inventarlo.
+- `por_defecto`: sin §22, la página lleva solo lo que describe §19.
+
+---
+
 ## 4. Prioridades y resolución de conflictos
 
 Cuando dos cosas se contradicen, la IA sigue este orden (gana la de arriba):
@@ -851,6 +892,7 @@ Este es el plan de construcción. Estados: `[MVP]` primera versión · `[v0.2]` 
 | 10. Movimiento | §12 | `[v0.2]` hecho | 4 niveles + hover (7), al presionar (2), aparición (5) y cambio de pantalla (5), cada uno por separado; «Repetir animación» en la vista previa |
 | 11. Iconos e imágenes | §11 | `[v0.2]` hecho | Ronda opcional Iconos: 8 opciones (librería + estilo) que llenan `iconos` (`libreria`, `estilo`, `grosor`, `tamano`). `imagenes`, `emojis_en_ui` y `logo` quedan `[futuro]` |
 | 12. Contenido y tono | §13 | `[v0.2]` hecho | Ronda opcional Tono: 6 opciones con una frase de ejemplo (voz, tratamiento y largo de los textos). `formato` (fecha, moneda) y `ejemplos_de_microcopy` quedan `[futuro]` |
+| 14. Secciones de la página (ronda de Molde, solo landing, sitio y portfolio) | §22 | `[v0.9]` hecho | 8 secciones con 2 diseños cada una; se eligen varias y el orden de la página es el orden en que se eligen. Elegir el otro diseño de una sección la cambia sin moverla; elegir el mismo la saca |
 | 13. Revisar y exportar | §17, §18, genera §1, §14, §15, §16 | `[MVP]` hecho | Resumen, notas generales, lista de pendientes, descarga |
 
 **Funciones transversales:**
@@ -1227,6 +1269,7 @@ Formato: fecha · decisión · por qué · alternativas descartadas.
 | D89 | 2026-11-11 | Motor de scroll combinable (`src/scroll.ts`, tarea D7): cada efecto tiene zona, CSS y versión quieta; se combinan hasta 3, uno por zona. Elegir uno de una zona ocupada lo reemplaza, elegir uno ya puesto lo saca y, si pasan de 3, sale el más viejo. Solo animan `opacity`, `translate`, `scale`, `filter` y `clip-path` como propiedades sueltas, dentro de @supports y prefers-reduced-motion. En Molde la ronda Scroll queda abierta para sumar efectos («Seguir» pasa a la siguiente) y la página se baja sola. Los 14 efectos de §7.4 de PLAN.md (4 portada, 4 texto, 4 galería, 2 página); tres usan `background-size`, `background-color` o un `@property` entero porque no hay otra forma; el export los suma en F1 | Con propiedades sueltas, un efecto no pisa el `transform` del estilo ni la animación de la entrada, y dos efectos de zonas distintas nunca animan el mismo elemento (lo verifica un test) | Rechazar el clic cuando la zona está ocupada (obliga a sacar a mano); librerías de scroll (D72) |
 | D90 | 2026-11-11 | 12 layouts genéricos más (46 en total, 33 genéricos), cada uno con una idea propia: línea de tiempo que se pinta al bajar y termina en el botón, antes y después con una barra que se arrastra, mapa que responde a la lista, carta impresa con talón, agenda semanal con la hora de ahora, tablero con una tarjeta a medio mover, muro de publicaciones, documentación con índice, link en bio, compra en una sola página, portada con buscador y pantalla partida con scroll independiente. Van al final de la lista; los códigos de combinación suman el prefijo `~` para los layouts de índice 36 o más. Las pantallas de app y las páginas de un solo fin no llevan el argumento de landing, y link en bio tampoco lleva pie | Tarea D3 de `PLAN.md`: las ramas de Molde (tienda, app, blog, sitio) necesitan estructuras propias, no variaciones del hero partido | Reordenar la lista (rompe los códigos ya compartidos); un carácter más para todos los códigos (rompe los viejos) |
 | D91 | 2026-11-11 | Rondas opcionales de iconos, tono y densidad (tarea D11, `src/rondas/comunes.ts`). `Config` suma `iconos`, `tono` y `visual.densidad` (todos `null` hasta elegir). Iconos (8 opciones, `ICONOS`) llena §11; Tono (6 opciones con frase de ejemplo, `TONOS`) llena §13; Densidad (`DENSIDADES`) reemplaza a la de la dirección en §8 y en `--espacio-*` de la vista previa. §11 y §13 se exportan solo si se eligieron, para no inventar lo que la persona no decidió. La densidad va en todos los tipos (al final de la rama; en dashboard, en su lugar de la tabla 7.1). La ronda de lectura del blog sigue pendiente | Tenían formato definido pero nunca se habían implementado; son ideas chicas que todos pueden querer | Exportar §11 y §13 siempre con valores por defecto |
+| D92 | 2026-11-11 | Secciones de la página (`src/secciones.ts`, tarea D12): 8 secciones (beneficios, cómo funciona, precios, testimonios, preguntas, equipo, números, contacto) con 2 diseños cada una, para landing, sitio y portfolio. Una sola ronda donde cada opción es «sección + diseño»; el orden de la página es el orden en que se eligen. Las secciones elegidas reemplazan al argumento genérico del layout (`layout_argumento`). El export las describe con `estructura` (§22), sin CSS | Una sola ronda alcanza para elegir, ordenar y cambiar de diseño sin sumar una interfaz de reordenar; describir en vez de exportar CSS mantiene el archivo corto y deja que el estilo, las cajas y los botones elegidos vistan las secciones | Dos rondas (qué secciones y después qué diseño); arrastrar para ordenar; exportar el CSS de cada sección como en §21 |
 | D43 | 2026-11-06 | Si la persona no describe un proyecto, el archivo se exporta como sistema de diseño (`modo: sistema_de_diseno`): sirve para mejorar una app existente o para construir lo que se explique junto con el archivo; la pantalla final ofrece un mensaje para copiar para cada caso | El modo rápido no pide detalles del proyecto; tratar las pantallas de ejemplo como obligatorias llevaba a la IA a construir una app genérica | Obligar a completar el proyecto antes de exportar |
 
 | D67 | 2026-11-07 | Se amplían las categorías existentes con 12 composiciones propias para formularios, navegación y productos; las muestras permiten validar, adjuntar y probar una compra simulada | Mejorar la calidad y la variedad visible conservando el recorrido actual | Agregar un panel de decisiones transversales |
@@ -1318,7 +1361,7 @@ Convertir el configurador en **Molde**: página en blanco, un botón que explota
 
 Lo que todavía no tiene lugar en §5. Se mueve allá cuando se decide hacerlo.
 
-- **Catálogo de secciones de landing**: hero, beneficios, precios, testimonios, preguntas frecuentes, contacto, cada una con variantes visuales.
+- ~~**Catálogo de secciones de landing**~~: hecho (D92, formato 0.9.0, §22). Queda como idea reordenar arrastrando y sumar más diseños por sección.
 - **Plantillas de estructura por tipo de proyecto**: que elegir "tienda" ya proponga pantallas típicas.
 - **Más direcciones visuales**: lujoso, juguetón, editorial.
 - **Catálogo de animaciones** con vista previa de cada una.
@@ -1348,7 +1391,7 @@ Lo que todavía no tiene lugar en §5. Se mueve allá cuando se decide hacerlo.
 
 | Versión | Fecha | Cambios |
 |---|---|---|
-| 0.9.0 | 2026-11-11 | Secciones nuevas opcionales: §11 (`iconos`: `libreria`, `estilo`, `grosor`, `tamano`) y §13 (`voz`, `tratamiento`, `largo_de_textos`), solo si se eligieron. §8 `densidad` puede venir de la ronda Densidad. Compatible. |
+| 0.9.0 | 2026-11-11 | Secciones nuevas opcionales: §11 (`iconos`: `libreria`, `estilo`, `grosor`, `tamano`) y §13 (`voz`, `tratamiento`, `largo_de_textos`), solo si se eligieron; §8 `densidad` puede venir de la ronda Densidad. Sección nueva §22 «Secciones de la página» (opcional; solo landing, sitio y portfolio): `orden` y, por cada sección, `id`, `nombre`, `para_que`, `diseno`, `diseno_nombre` y `estructura`; con §22, §19 no escribe `layout_argumento`. Un archivo 0.8.9 sigue siendo válido. |
 | 0.8.9 | 2026-11-11 | §19 acepta 12 layouts genéricos más (`linea_tiempo`, `antes_despues`, `mapa_lista`, `carta`, `agenda_semanal`, `tablero`, `muro`, `documentacion`, `link_bio`, `compra_unica`, `portada_buscador`, `partida_scroll`), cada uno con su `layout_estructura`. `layout_argumento` no se escribe en los que son una pantalla de app o una página de un solo fin. Sin campos nuevos; un archivo 0.8.8 sigue siendo válido. |
 | 0.8.8 | 2026-11-09 | §19 suma `layout_argumento` (opcional) en los layouts de página que no son de autor: prueba bajo los botones, hero con el producto en acción, frase que se enciende al bajar, testimonio y preguntas frecuentes. Compatible. |
 | 0.8.7 | 2026-11-09 | §19 acepta 4 layouts de autor más: `autor_turnos`, `autor_curso`, `autor_restaurante` y `autor_gimnasio` (landings con demo animada del producto). Sin campos nuevos. |
