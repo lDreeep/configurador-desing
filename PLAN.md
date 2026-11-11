@@ -155,9 +155,10 @@ Estado: `[ ]` pendiente · `[x]` hecha. Marcala al terminar.
 
 ### Tanda 3: más opciones (en paralelo, todas dependen de C1)
 
-- [ ] **D1 · Rubros** — Sonnet 5.5
+- [x] **D1 · Rubros** — Sonnet 5.5
   - Crear `src/rubros.ts` con los 39 rubros de la sección 7.2: id, nombre, tipo al que pertenece y contenido de muestra (marca inventada, título, bajada, dos botones, tres ítems), en español rioplatense y con datos creíbles.
   - Listo cuando: un test verifica que cada tipo tiene al menos 4 rubros y que ningún texto supera el largo de los actuales en `src/rapido/contenido-tipo.ts`.
+  - Hecho en `src/rubros.ts` (`RUBROS`, `rubrosDe`, `rubroPorId`) con `src/rubros.test.ts`. Todavía no se conecta a la ronda Rubro (sale de `rondasPendientes()` en otra tarea).
 
 - [ ] **D2 · 28 paletas nuevas** — Sonnet 5.5
   - Sumar a `PALETAS` en `src/catalogo.ts` hasta llegar a 60, repartidas como en la sección 7.3. Cada una tiene que pasar el test de contraste AA de `src/export/generarDesignMd.test.ts`.
