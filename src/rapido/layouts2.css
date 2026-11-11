@@ -227,7 +227,7 @@
 .pgp .pg-co-opcion span { display: flex; flex-direction: column; gap: 2px; font-size: 14px; color: var(--color-texto-suave); }
 .pgp .pg-co-opcion b { font-size: 16px; color: var(--color-texto); }
 .pgp .pg-co-form > .pv-boton { align-self: stretch; justify-content: center; min-height: 56px; font-size: 18px; }
-.pgp .pg-co-form .pg-prueba { margin: -12px 0 0; text-align: center; }
+.pgp .pg-co-form .pg-prueba { margin: -12px 0 0; text-align: center; color: var(--color-texto); }
 .pg.pgp .pg-card.pg-co-pedido { align-items: stretch; text-align: left; }
 .pg.pgp .pg-co-pedido { grid-column: 2; grid-row: 1 / span 2; position: sticky; top: 24px; gap: 16px; padding: clamp(18px, 2.6cqw, 32px); }
 .pgp .pg-co-item { display: grid; grid-template-columns: 56px minmax(0, 1fr) auto; gap: 12px; align-items: center; font-size: 14px; }
@@ -257,7 +257,7 @@
 .pgp .pg-bq-panel li em { grid-column: 2; grid-row: 1 / span 2; align-self: center; font-style: normal; font-size: 13px; color: var(--color-texto-suave); font-variant-numeric: tabular-nums; }
 .pgp .pg-bq-nada { margin: 12px 0; }
 .pgp .pg-bq-categorias { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
-.pgp .pg-bq-categoria { display: flex; flex-direction: column; gap: 4px; }
+.pg.pgp .pg-bq-categoria { gap: 4px; padding: 10px 10px 16px; }
 .pgp .pg-bq-categoria .pg-media { aspect-ratio: 4 / 3; min-height: 0; margin-bottom: 8px; }
 
 /* ---------- Pantalla partida: cada mitad con su scroll ---------- */

@@ -644,7 +644,7 @@ function CompraUnica({ c, k, cc }: Props) {
 /* ---------- Portada con buscador ---------- */
 const sinTildes = (s: string) => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
 
-function PortadaBuscador({ c, k }: Props) {
+function PortadaBuscador({ c, k, cc }: Props) {
   const id = useId();
   const [q, setQ] = useState('');
   const items = cuatro(k);
@@ -686,7 +686,7 @@ function PortadaBuscador({ c, k }: Props) {
       </section>
       <section className="pg-bq-categorias" aria-label="Categorías de ejemplo">
         {items.map((it, i) => (
-          <div key={i} className="pg-bq-categoria">
+          <div key={i} className={`pg-card pg-bq-categoria ${cc}`}>
             <Media f={i + 4} />
             <span className="pg-card-titulo">{it.titulo}</span>
             <span className="pg-card-texto">{cantidades[i]} resultados</span>
