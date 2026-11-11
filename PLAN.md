@@ -102,7 +102,7 @@ Estado: `[ ]` pendiente · `[x]` hecha. Marcala al terminar.
 
 ### Tanda 1: preparación
 
-- [ ] **A1 · `AGENTS.md` para otros agentes** — Haiku 5.5 · apta para Codex · sin dependencias
+- [x] **A1 · `AGENTS.md` para otros agentes** — Haiku 5.5 · apta para Codex · sin dependencias
   - Crear `AGENTS.md` en la raíz: tres líneas que manden a leer `CLAUDE.md`, `DESIGN.md` y `PLAN.md`, más los comandos de `CLAUDE.md`.
   - Listo cuando: el archivo existe y no duplica contenido de `CLAUDE.md`.
 
