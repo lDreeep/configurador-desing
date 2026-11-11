@@ -1,7 +1,8 @@
 import { configInicial } from '../estado';
 import { rondaPorClave, rondasDe, type ClaveRonda } from '../rondas';
 import type { Config } from '../tipos';
-import { CLAVE_ELEGIDAS, elegir, guardarElegidas, INICIO_MOLDE, leerElegidas, LISTO_MOLDE, posiciones, resolverPaso, siguiente, valorDeFicha } from './recorrido';
+import { PASOS } from '../pasos/pasos';
+import { AJUSTES, CLAVE_ELEGIDAS, elegir, guardarElegidas, INICIO_MOLDE, leerElegidas, LISTO_MOLDE, posiciones, resolverPaso, siguiente, valorDeFicha } from './recorrido';
 
 const memoria = () => {
   const m = new Map<string, string>();
@@ -83,5 +84,18 @@ describe('recorrido de Molde (C2)', () => {
         }
       }
     }
+  });
+});
+
+describe('ajustes finos de las fichas (C4)', () => {
+  it('todo paso del modo avanzado se ajusta desde alguna ficha, y una sola vez', () => {
+    const cubiertos = Object.values(AJUSTES).flat();
+    expect(new Set(cubiertos).size).toBe(cubiertos.length);
+    expect([...cubiertos].sort()).toEqual(PASOS.map((p) => p.id).sort());
+  });
+
+  it('cada ficha con ajustes es una ronda que todo proyecto ve', () => {
+    const comunes = rondasDe(configInicial()).map((r) => r.clave);
+    for (const clave of Object.keys(AJUSTES)) expect(comunes).toContain(clave);
   });
 });

@@ -130,6 +130,58 @@ describe('Molde (C2)', () => {
     expect(pasoActual()).toBe('inicio');
   });
 
+  it('tocar una ficha reabre su ronda con «Ajustes finos», que cambian la página en vivo', async () => {
+    await montar('proyecto');
+    await clic(idea('Tienda'));
+    await clic(ideas()[0]);
+    expect(pasoActual()).toBe('layout');
+    // En una ronda que todavía no se eligió no hay ajustes finos.
+    expect(conBoton('Ajustes finos')).toBeUndefined();
+
+    await clic([...caja.querySelectorAll<HTMLButtonElement>('.molde-ficha')].find((f) => f.textContent!.startsWith('Color'))!);
+    expect(pasoActual()).toBe('color');
+    await clic(conBoton('Ajustes finos'));
+    await act(() => new Promise((r) => setTimeout(r, 200)));
+    const panel = caja.querySelector('.molde-ajustes')!;
+    expect(panel.querySelector('[data-paso="color"]')).not.toBeNull();
+    expect(ideas()).toHaveLength(0);
+    expect(document.activeElement?.id).toBe('molde-ajustes-titulo');
+
+    // Paleta personalizada: la ficha pasa a «A tu medida» y la página la usa.
+    await clic([...panel.querySelectorAll<HTMLButtonElement>('.opcion')].find((b) => b.textContent!.startsWith('Personalizada'))!);
+    expect(JSON.parse(localStorage.getItem('configurador-diseno:v1')!).visual.paleta).toBe('personalizada');
+    expect(fichas().find((f) => f!.startsWith('Color'))).toBe('ColorA tu medida');
+
+    // La nota del paso se escribe acá también.
+    expect(panel.querySelector('.nota textarea')).not.toBeNull();
+
+    // Escape cierra y devuelve las ideas.
+    await act(async () => panel.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true })));
+    expect(caja.querySelector('.molde-ajustes')).toBeNull();
+    expect(ideas().length).toBeGreaterThan(0);
+  });
+
+  it('la ficha Estilo ajusta la sensación sin pisar el color elegido', async () => {
+    await montar('proyecto');
+    await clic(idea('Landing'));
+    await clic(ideas()[0]);
+    await clic(ideas()[0]);
+    await clic(ideas()[0]);
+    expect(pasoActual()).toBe('piezas');
+    await clic([...caja.querySelectorAll<HTMLButtonElement>('.molde-ficha')].find((f) => f.textContent!.startsWith('Estilo'))!);
+    const colorAntes = fichas().find((f) => f!.startsWith('Color'));
+    await clic(conBoton('Ajustes finos'));
+    await act(() => new Promise((r) => setTimeout(r, 200)));
+    const panel = caja.querySelector('.molde-ajustes')!;
+    expect(panel.querySelector('[data-paso="direccion"]')).not.toBeNull();
+    expect(panel.querySelector('[data-paso="forma"]')).not.toBeNull();
+    const opciones = [...panel.querySelectorAll<HTMLButtonElement>('[data-paso="direccion"] .opcion')];
+    await clic(opciones.find((b) => b.getAttribute('aria-pressed') !== 'true')!);
+    expect(fichas().find((f) => f!.startsWith('Color'))).toBe(colorAntes);
+    await clic(conBoton('Listo'));
+    expect(caja.querySelector('.molde-ajustes')).toBeNull();
+  });
+
   it('un paso sin proyecto vuelve a Proyecto', async () => {
     await montar('estilo');
     expect(pasoActual()).toBe('proyecto');

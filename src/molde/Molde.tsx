@@ -1,21 +1,24 @@
 // Molde (PLAN.md tarea C2): un lienzo con la página de la persona y un botón en el centro que
 // explota en ideas. Pasar el mouse (o el foco) muestra la idea en toda la página; clic, Enter o
-// arrastrarla al centro la elige. Lo elegido queda como fichas abajo; tocar una reabre su ronda.
+// arrastrarla al centro la elige. Lo elegido queda como fichas abajo; tocar una reabre su ronda
+// y ofrece «Ajustes finos» (C4): los controles del modo avanzado para ese tema, al costado.
 // La página es `Pagina` con la Config real: lo que se ve es lo que se exporta.
 
-import { useEffect, useLayoutEffect, useMemo, useRef, useState, type CSSProperties, type PointerEvent as PE } from 'react';
+import { lazy, Suspense, useEffect, useLayoutEffect, useMemo, useRef, useState, type CSSProperties, type Dispatch, type PointerEvent as PE, type SetStateAction } from 'react';
 import { generarDesignMd } from '../export/generarDesignMd';
 import { useFuentes } from '../fuentes';
 import { Esquema } from '../rapido/esquemas';
 import { EstilosVisualesGlobales, Pagina } from '../rapido/Pagina';
 import { faltanObligatorias, rondasDe, type ClaveRonda, type OpcionRonda, type Ronda } from '../rondas';
 import type { Config, LayoutId } from '../tipos';
-import { elegir, INICIO_MOLDE, LISTO_MOLDE, POR_VEZ, posiciones, resolverPaso, siguiente, useElegidas, valorDeFicha } from './recorrido';
+import { AJUSTES, elegir, INICIO_MOLDE, LISTO_MOLDE, POR_VEZ, posiciones, resolverPaso, siguiente, useElegidas, valorDeFicha } from './recorrido';
 import './molde.css';
+
+const Ajustes = lazy(() => import('./Ajustes'));
 
 interface Props {
   config: Config;
-  setConfig: (c: Config) => void;
+  setConfig: Dispatch<SetStateAction<Config>>;
   reiniciar: () => void;
   /** La ronda abierta (su clave), `inicio` o `listo`: viene de la URL (`#/molde/color`). */
   paso: string;
@@ -60,6 +63,8 @@ export function Molde({ config, setConfig, reiniciar, paso: pasoUrl, ir }: Props
   const [vista, setVista] = useState<Vista | null>(null);
   const [nueva, setNueva] = useState<ClaveRonda | null>(null);
   const [aviso, setAviso] = useState('');
+  const [ajustando, setAjustando] = useState(false);
+  const botonAjustes = useRef<HTMLButtonElement>(null);
   const tamano = useTamano(raiz);
   useFuentes(['bricolage']);
 
@@ -78,6 +83,7 @@ export function Molde({ config, setConfig, reiniciar, paso: pasoUrl, ir }: Props
   const primeraRonda = useRef(true);
   useEffect(() => {
     setVista(null);
+    setAjustando(false);
     if (primeraRonda.current) return void (primeraRonda.current = false);
     const activo = document.activeElement;
     if (ronda && (!activo || activo === document.body || !raiz.current?.contains(activo))) nucleo.current?.focus({ preventScroll: true });
@@ -97,6 +103,7 @@ export function Molde({ config, setConfig, reiniciar, paso: pasoUrl, ir }: Props
     reiniciar();
     setElegidas(new Set());
     setVista(null);
+    setAjustando(false);
     ir(INICIO_MOLDE);
   };
 
@@ -112,7 +119,14 @@ export function Molde({ config, setConfig, reiniciar, paso: pasoUrl, ir }: Props
 
   const fichas = rondas.filter((r) => elegidas.has(r.clave));
   const sigOpcional = siguiente(config, elegidas);
-  const clases = ['molde', ronda ? 'eligiendo' : '', vista ? 'viendo' : '', paso === LISTO_MOLDE ? 'terminado' : ''].join(' ');
+  // Ajustes finos: solo en una ronda ya elegida (se llega tocando su ficha) que tenga pasos del modo avanzado.
+  const conAjustes = ronda && elegidas.has(ronda.clave) && AJUSTES[ronda.clave] ? ronda : null;
+  const abiertos = ajustando && conAjustes;
+  const cerrarAjustes = () => {
+    setAjustando(false);
+    enDosCuadros(() => botonAjustes.current?.focus({ preventScroll: true }));
+  };
+  const clases = ['molde', ronda && !abiertos ? 'eligiendo' : '', abiertos ? 'ajustando' : '', vista ? 'viendo' : '', paso === LISTO_MOLDE ? 'terminado' : ''].join(' ');
 
   return (
     <div ref={raiz} className={clases}>
@@ -147,9 +161,11 @@ export function Molde({ config, setConfig, reiniciar, paso: pasoUrl, ir }: Props
           </div>
         )}
 
-        {ronda && (
+        {ronda && <h1 className="solo-lectores">Molde: armá el diseño de tu página</h1>}
+
+        {/* Con los ajustes finos abiertos se esconden las ideas: la página queda entera a la vista. */}
+        {ronda && !abiertos && (
           <>
-            <h1 className="solo-lectores">Molde: armá el diseño de tu página</h1>
             <h2 key={`pregunta-${ronda.clave}`} ref={nucleo} tabIndex={-1} className="molde-nucleo molde-pregunta">
               {ronda.pregunta}
             </h2>
@@ -169,6 +185,12 @@ export function Molde({ config, setConfig, reiniciar, paso: pasoUrl, ir }: Props
 
         {paso === LISTO_MOLDE && <h1 className="solo-lectores">Tu página está lista</h1>}
       </main>
+
+      {abiertos && (
+        <Suspense fallback={<div className="molde-ajustes molde-ajustes-cargando" role="status">Cargando…</div>}>
+          <Ajustes clave={abiertos.clave} titulo={abiertos.ficha} config={config} setConfig={setConfig} onCerrar={cerrarAjustes} />
+        </Suspense>
+      )}
 
       <footer className="molde-pie">
         <div className="molde-fichas" aria-label="Lo que elegiste">
@@ -206,12 +228,24 @@ export function Molde({ config, setConfig, reiniciar, paso: pasoUrl, ir }: Props
               </button>
             </>
           ) : (
-            ronda &&
-            faltan.length === 0 && (
-              <button type="button" className="molde-btn molde-btn-1" onClick={() => ir(LISTO_MOLDE)}>
-                Terminar
-              </button>
-            )
+            <>
+              {conAjustes && (
+                <button
+                  ref={botonAjustes}
+                  type="button"
+                  className="molde-btn molde-btn-2"
+                  aria-expanded={ajustando}
+                  onClick={() => (ajustando ? cerrarAjustes() : setAjustando(true))}
+                >
+                  Ajustes finos
+                </button>
+              )}
+              {ronda && faltan.length === 0 && (
+                <button type="button" className="molde-btn molde-btn-1" onClick={() => ir(LISTO_MOLDE)}>
+                  Terminar
+                </button>
+              )}
+            </>
           )}
         </div>
       </footer>
