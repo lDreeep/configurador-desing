@@ -4,12 +4,15 @@
 import { spawn } from 'node:child_process';
 import { createRequire } from 'node:module';
 import assert from 'node:assert/strict';
+import { fileURLToPath } from 'node:url';
 
-const { chromium } = createRequire(import.meta.url)('playwright');
+const require = createRequire(import.meta.url);
+const { chromium } = require('playwright');
 const PUERTO = 5199;
 const URL_BASE = `http://localhost:${PUERTO}/`;
 
-const servidor = spawn('npx', ['vite', '--port', String(PUERTO), '--strictPort'], { stdio: 'ignore' });
+const vite = fileURLToPath(new URL('../node_modules/vite/bin/vite.js', import.meta.url));
+const servidor = spawn(process.execPath, [vite, '--port', String(PUERTO), '--strictPort'], { stdio: 'ignore', windowsHide: true });
 const cerrar = () => servidor.kill();
 process.on('exit', cerrar);
 

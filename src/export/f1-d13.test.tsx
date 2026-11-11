@@ -9,7 +9,7 @@ import { RECOMENDADOS_RUBRO } from '../recomendados';
 import { RUBRO, COLOR, LAYOUT, ESTILO, PIEZAS } from '../rondas/comunes';
 import { contenido, Pagina } from '../rapido/Pagina';
 import { cargarHojaPagina } from '../rapido/hoja';
-import { generarDesignMd } from './generarDesignMd';
+import { generarDesignMd, VERSION_FORMATO } from './generarDesignMd';
 import { cssDeAparicion } from './aparicion';
 import { APARICIONES } from '../catalogo';
 import type { AparicionId } from '../tipos';
@@ -37,7 +37,7 @@ describe('F1 y D13', () => {
     expect(c.visual.fondoAnimado).toBe('ninguno');
     expect(() => generarDesignMd(c)).not.toThrow();
     const md = generarDesignMd(c);
-    expect(md).toContain('version_formato: 0.9.1');
+    expect(md).toContain(`version_formato: ${VERSION_FORMATO}`);
     expect(md).not.toContain('fondo_animado:');
     expect(md).not.toContain('\nrubro:');
   });

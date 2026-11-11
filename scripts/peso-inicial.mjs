@@ -2,9 +2,10 @@
 // ese archivo importa sin `import()`. Correr después de `npm run build`. Falla si pasa el límite.
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 const LIMITE = 250_000;
-const dist = new URL('../dist/', import.meta.url).pathname;
+const dist = fileURLToPath(new URL('../dist/', import.meta.url));
 const html = readFileSync(join(dist, 'index.html'), 'utf8');
 const entrada = html.match(/<script[^>]+src="\.\/(assets\/[^"]+\.js)"/)?.[1];
 if (!entrada) throw new Error('No encontré el JS de entrada en dist/index.html (¿corriste npm run build?).');
