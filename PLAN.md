@@ -233,7 +233,7 @@ Estado: `[ ]` pendiente · `[x]` hecha. Marcala al terminar.
   - Playwright: una landing y un dashboard de punta a punta, en escritorio y celular, más axe en cada ronda. Sumarlo a `.github/workflows/`.
 - [ ] **G2 · Accesibilidad y celular** — Sonnet 5.5 · depende de C5
   - Pasada con la skill `impeccable` («audit»): 44 px, foco visible, un solo `h1`, un solo `main`, contraste del marco en claro y oscuro.
-- [ ] **G3 · Red de seguridad** — Sonnet 5.5 · apta para Codex · sin dependencias
+- [x] **G3 · Red de seguridad** — Sonnet 5.5 · apta para Codex · sin dependencias
   - `ErrorBoundary` en la raíz, ESLint con la configuración recomendada de React y TypeScript, y arreglar el error de consola `ERR_INVALID_URL` que aparece después de elegir el tipo de proyecto.
 - [ ] **G4 · Documentación al día** — Haiku 5.5 · apta para Codex · depende de C5
   - `README.md` (habla de «9 pasos»), `CLAUDE.md` (estructura nueva y cantidades reales), orden cronológico de `DESIGN.md` §12, favicon y metadatos en `index.html`, y pasar `public/fotos/traccion-vehiculos.png` (1,8 MB) a webp.
