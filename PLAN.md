@@ -248,10 +248,11 @@ Estado: `[ ]` pendiente · `[x]` hecha. Marcala al terminar.
   - **Cambios por la revisión (2026-11-11):** (1) las flechas, «Ver otras» y las descargas se veían en la portada porque su `display` le ganaba a `hidden`: arreglado con `[hidden] { display: none !important }`. (2) Se sacaron las piezas que giraban alrededor del botón y se apartaban del mouse, y las ondas. En su lugar, **linterna de estilos**: de fondo, una página apagada del tamaño del lienzo; una lente que sigue al cursor la muestra con otro color y otras piezas (mismo tipo y layout), con su nombre abajo («Neobrutal · Durazno»). El estilo cambia junto con la palabra del título. En celular la lente pasea sola; con movimiento reducido queda quieta. El título y «Bajá…» llevan velo. Midió 60 cuadros por segundo a 1440 × 900. Las otras ideas de fondo quedan en `DESIGN.md` §10 (Ideas sueltas). Falta la aprobación.
   - Para E2: la lente en el sitio real tiene que usar `Pagina` con la `Config` de muestra y bajar aparte (el JS inicial está en el límite).
 
-- [ ] **E2 · Portar la portada** — Opus 5.5 · ChatGPT: Astra, con revisión a ojo · depende de E1 y C2
+- [x] **E2 · Portar la portada** — Opus 5.5 · ChatGPT: Astra, con revisión a ojo · depende de E1 y C2
   - Ojo: el JS inicial está en 249,7 kB (límite 250, `npm run peso`). Lo que sume la portada tiene que bajar aparte.
   - Llevar la portada aprobada a `src/molde/`, con páginas reales del catálogo.
   - Listo cuando: el scroll va a 60 cuadros por segundo y «Empezar» funciona en cualquier punto.
+  - Hecha en `#/molde/inicio` con la linterna de la maqueta revisada y tres páginas reales (tienda, dashboard y blog). El módulo de portada se carga aparte. Prueba sobre el build con `node e2e/portada.e2e.mjs` (Playwright): «Empezar» al inicio, en el medio, al final y con movimiento reducido. En Chrome, 59,7 fps a 1440 × 900 y 60,0 fps a 390 × 844 emulado. JS inicial: 249,2 kB.
 
 - [x] **F1 · Formato 0.9.1: campos nuevos en el export** — Sonnet 5.5 · ChatGPT: Sol · depende de D1, D6, D7 y D8
   - La 0.9.0 ya la usaron D11 y D12: esta tarea sube a **0.9.1**.
@@ -260,9 +261,10 @@ Estado: `[ ]` pendiente · `[x]` hecha. Marcala al terminar.
   - Listo cuando: un archivo 0.9.0 sigue siendo válido y el ejemplo de `DESIGN.md` §6 está en 0.9.1.
   - Hecha: campos opcionales, CSS real de entradas y scroll, 16 fondos y JS solo para luz_cursor. Configuraciones anteriores conservan sus valores por defecto. La selección de fondo animado en la interfaz sigue pendiente.
 
-- [ ] **F2 · Descargar la página en HTML** — Opus 5.5 · ChatGPT: Astra · depende de C2 y F1
+- [x] **F2 · Descargar la página en HTML** — Opus 5.5 · ChatGPT: Astra · depende de C2 y F1
   - Generar un `.html` autocontenido con la página armada: tokens, CSS del estilo, layout, piezas, fondo, entrada y scroll. Es el «`preview.html`» pendiente en `DESIGN.md` §5.
   - Listo cuando: el archivo abre sin internet (salvo las fuentes) y se ve igual que el lienzo. Con test.
+  - Implementada en Molde. «Descargar HTML» guarda el lienzo con sus estilos y fotos incorporadas. Verificado en Chrome sin conexión con la plantilla de concesionario y con test de exportación.
 
 - [ ] **F3 · Pantalla de descarga** — Sonnet 5.5 · ChatGPT: Sol · depende de F2
   - Los dos botones arriba, el archivo como protagonista y el resumen plegado, como en `maqueta/molde.html`.
