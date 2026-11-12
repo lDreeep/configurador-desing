@@ -616,14 +616,15 @@ fichas, como hoy los ajustes finos. No se borra ningún catálogo ni cambia el e
     «Seguir editando». El botón abre la ventana de descarga de hoy (`molde-descarga`).
   - Antes de programar: maqueta de la bandeja y del final en `maqueta/`, a 1440 y 390 px, para que
     quien dirige elija mirando.
-  - Hecho: `Molde.tsx` recorre `pasosDe` («Paso 2 de 5 · Estructura», pestañas cuando el paso tiene más de
-    una ronda) y `recorrido.ts` suma `rondasDelRecorrido` y `despuesDe`. Bandeja al costado (abajo en
-    celular), se achica a una barra; fichas de lo no preguntado bajo «Ajustar». El lienzo ya no es `inert`:
-    se scrollea y se toca, los links y formularios no navegan ni envían, y la vista previa se abre donde
-    está la página. Final: página entera, «Descargar» (abre `molde-descarga` como ventana) y «Seguir
-    editando». Se fue arrastrar la idea al centro (decisión 3: el centro ahora es la página).
-  - **Queda para quien dirige:** la maqueta (`maqueta/molde-3.html`) se hizo junto con el código, no antes:
-    muestra la opción programada. Si prefiere otra ubicación de la bandeja, es CSS de `molde.css`.
+  - Hecho: `Molde.tsx` recorre `pasosDe` (la pregunta dice «Paso 2 de 5 · Estructura») y `recorrido.ts`
+    suma `rondasDelRecorrido` y `despuesDe`; las fichas de lo no preguntado van bajo «Ajustar», en el pie.
+    El lienzo ya no es `inert`: se scrollea y se toca, los links y formularios no navegan ni envían, y la
+    vista previa se abre donde está la página. Final: página entera, «Descargar» (abre `molde-descarga`
+    como ventana) y «Seguir editando».
+  - **Decisión de quien dirige (2026-11-12), en vez de la bandeja:** la página queda siempre en grande y
+    las ideas siguen saliendo del centro, encima de ella (se mantiene la decisión 3, con arrastrar al
+    centro). Al scrollear o tocar la página, las ideas se recogen arriba, en el botón de la pregunta;
+    tocarlo las vuelve a abrir. No hubo maqueta en `maqueta/`: se eligió mirando la versión programada.
   - **Queda para I4:** `DESIGN.md` §5, §8 y §12 y `CLAUDE.md`; sumar al e2e scrollear la página y tocar un
     botón de la muestra. Con Estilo antes que Color, la ronda Color no filtra las paletas que no pasan AA
     con el estilo ya elegido (antes Estilo filtraba por paleta): revisarlo en los datos (`comunes.ts`).

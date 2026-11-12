@@ -2,7 +2,7 @@ import { configInicial } from '../estado';
 import { rondaPorClave, rondasDe, type ClaveRonda } from '../rondas';
 import type { Config } from '../tipos';
 import { PASOS } from '../pasos/pasos';
-import { AJUSTES, CLAVE_ELEGIDAS, elegir, guardarElegidas, INICIO_MOLDE, leerElegidas, LISTO_MOLDE, resolverPaso, rondasDelRecorrido, siguiente, valorDeFicha } from './recorrido';
+import { AJUSTES, CLAVE_ELEGIDAS, elegir, guardarElegidas, INICIO_MOLDE, leerElegidas, LISTO_MOLDE, posiciones, resolverPaso, rondasDelRecorrido, siguiente, valorDeFicha } from './recorrido';
 
 const memoria = () => {
   const m = new Map<string, string>();
@@ -74,6 +74,19 @@ describe('recorrido de Molde (C2)', () => {
   it('la ficha muestra el nombre de lo elegido', () => {
     const s = paso(configInicial(), new Set(), 'proyecto', 'tienda');
     expect(valorDeFicha(s.config, rondaPorClave(s.config, 'proyecto')!)).toBe('Tienda');
+  });
+
+  it('las ideas se acomodan alrededor del centro, sin pisarlo', () => {
+    for (const [w, h] of [[1440, 900], [390, 844]]) {
+      for (let n = 1; n <= 6; n++) {
+        const ps = posiciones(n, w, h);
+        expect(ps).toHaveLength(n);
+        for (const [x, y] of ps) {
+          expect(Math.abs(x)).toBeLessThan(w / 2);
+          expect(Math.hypot(x, y)).toBeGreaterThan(100);
+        }
+      }
+    }
   });
 
   it('scroll (D7): se eligen varios efectos, la ficha los nombra a todos y la ronda no se marca hasta elegir', () => {

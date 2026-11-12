@@ -1,11 +1,12 @@
-// Molde (PLAN.md C2 e I3): la página de la persona, usable mientras se arma, y una bandeja con las
-// ideas del paso (al costado en pantallas anchas, abajo en celular; se puede achicar). Pasar el mouse
-// o el foco por una idea la muestra en la página; clic o Enter la elige; con el dedo, un toque la
-// muestra y «Usar» la elige. El recorrido son los pasos de `pasosDe` (5 como máximo); lo que no se
+// Molde (PLAN.md C2 e I3): la página de la persona, siempre en grande y usable mientras se arma, y
+// encima un botón del que salen las ideas del paso. Pasar el mouse (o el foco) por una idea la muestra
+// en la página; clic, Enter o arrastrarla al centro la elige; con el dedo, un toque la muestra y «Usar»
+// la elige. Al scrollear o tocar la página, las ideas se recogen arriba, en el botón de la pregunta:
+// tocarlo las vuelve a abrir. El recorrido son los pasos de `pasosDe` (5 como máximo); lo que no se
 // pregunta queda como fichas bajo «Ajustar». Al final: la página entera y un botón «Descargar».
 // La página es `Pagina` con la Config real: lo que se ve es lo que se exporta.
 
-import { lazy, Suspense, useEffect, useLayoutEffect, useMemo, useRef, useState, type Dispatch, type MouseEvent as ME, type RefObject, type SetStateAction } from 'react';
+import { lazy, Suspense, useEffect, useLayoutEffect, useMemo, useRef, useState, type CSSProperties, type Dispatch, type MouseEvent as ME, type PointerEvent as PE, type RefObject, type SetStateAction } from 'react';
 import { generarDesignMd } from '../export/generarDesignMd';
 import { useFuentes } from '../fuentes';
 import { Esquema } from '../rapido/esquemas';
@@ -13,7 +14,7 @@ import { EstilosVisualesGlobales, Pagina } from '../rapido/Pagina';
 import { admiteRonda, faltanObligatorias, pasoDeRonda, pasosDe, rondasDeAjustar, type ClaveRonda, type OpcionRonda, type Ronda } from '../rondas';
 import { esDisenoSeccion, seccionDe } from '../secciones';
 import type { Config, LayoutId } from '../tipos';
-import { AJUSTES, despuesDe, elegir, INICIO_MOLDE, LISTO_MOLDE, POR_VEZ, resolverPaso, rondasDelRecorrido, siguiente, useElegidas, valorDeFicha } from './recorrido';
+import { AJUSTES, despuesDe, elegir, INICIO_MOLDE, LISTO_MOLDE, POR_VEZ, posiciones, resolverPaso, rondasDelRecorrido, siguiente, useElegidas, valorDeFicha } from './recorrido';
 import './molde.css';
 const Portada = lazy(() => import('./Portada').then((m) => ({ default: m.Portada })));
 
@@ -33,6 +34,25 @@ interface Props {
 interface Vista {
   id: string;
   config: Config;
+}
+
+/** Tamaño del área de Molde, para acomodar las ideas. */
+function useTamano(ref: React.RefObject<HTMLElement>) {
+  const [t, setT] = useState({ ancho: 1280, alto: 800 });
+  useLayoutEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const medir = () => setT({ ancho: el.clientWidth || window.innerWidth, alto: el.clientHeight || window.innerHeight });
+    medir();
+    if (typeof ResizeObserver === 'undefined') {
+      window.addEventListener('resize', medir);
+      return () => window.removeEventListener('resize', medir);
+    }
+    const ro = new ResizeObserver(medir);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [ref]);
+  return t;
 }
 
 const sinMovimiento = () => typeof window.matchMedia === 'function' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -115,14 +135,16 @@ function alTocarLaMuestra(e: ME<HTMLDivElement>) {
 
 export function Molde({ config, setConfig, reiniciar, paso: pasoUrl, ir }: Props) {
   const raiz = useRef<HTMLDivElement>(null);
-  const nucleo = useRef<HTMLHeadingElement>(null);
+  const nucleo = useRef<HTMLButtonElement>(null);
   const capaBase = useRef<HTMLDivElement>(null);
   const capaPrev = useRef<HTMLDivElement>(null);
   const [elegidas, setElegidas] = useElegidas();
   const [vista, setVista] = useState<Vista | null>(null);
   const [nueva, setNueva] = useState<ClaveRonda | null>(null);
   const [aviso, setAviso] = useState('');
-  const [achicada, setAchicada] = useState(false);
+  // Las ideas recogidas arriba, en el botón de la pregunta: la página queda libre para usarla.
+  const [recogidas, setRecogidas] = useState(false);
+  const tamano = useTamano(raiz);
   const [descargando, setDescargando] = useState(false);
   const tituloFinal = useRef<HTMLHeadingElement>(null);
   const tituloDescarga = useRef<HTMLHeadingElement>(null);
@@ -150,6 +172,7 @@ export function Molde({ config, setConfig, reiniciar, paso: pasoUrl, ir }: Props
   useEffect(() => {
     setVista(null);
     setAjustando(false);
+    setRecogidas(false);
     if (primeraRonda.current) return void (primeraRonda.current = false);
     const activo = document.activeElement;
     if (ronda && (!activo || activo === document.body || !raiz.current?.contains(activo))) nucleo.current?.focus({ preventScroll: true });
@@ -265,8 +288,10 @@ export function Molde({ config, setConfig, reiniciar, paso: pasoUrl, ir }: Props
     setAjustando(false);
     enDosCuadros(() => botonAjustes.current?.focus({ preventScroll: true }));
   };
-  const clases = ['molde', ronda && !abiertos ? 'eligiendo' : '', ronda && !abiertos && achicada ? 'achicada' : '', abiertos ? 'ajustando' : '', terminado ? 'terminado' : ''].join(' ');
-  const ficha = (r: Ronda, _i?: number, _t?: Ronda[], animar = true) => (
+  const clases = ['molde', ronda && !abiertos ? 'eligiendo' : '', ronda && !abiertos && recogidas ? 'recogidas' : '', vista ? 'viendo' : '', abiertos ? 'ajustando' : '', terminado ? 'terminado' : ''].join(' ');
+  // Scrollear o tocar la página recoge las ideas (sin soltar lo que se está mirando con el dedo).
+  const usarPagina = () => ronda && !abiertos && !recogidas && (hayPagina || vista) && setRecogidas(true);
+  const ficha = (r: Ronda, animar = true) => (
     <button key={r.clave} type="button" className={`molde-ficha ${animar && r.clave === nueva ? 'nueva' : ''}`} aria-current={r.clave === paso ? 'step' : undefined} onClick={() => ir(r.clave)}>
       {r.ficha}
       <b>{valorDeFicha(config, r)}</b>
@@ -299,73 +324,31 @@ export function Molde({ config, setConfig, reiniciar, paso: pasoUrl, ir }: Props
           </h1>
         )}
 
-        {/* La bandeja va antes que la página: con Tab se llega a las ideas sin cruzar toda la muestra.
-            Con los ajustes finos abiertos no se dibuja: ese panel ocupa su lugar. */}
+        {/* La pregunta y sus ideas van antes que la página: con Tab se llega a ellas sin cruzar toda la muestra.
+            Con los ajustes finos abiertos se esconden: la página queda entera a la vista. */}
         {ronda && !abiertos && (
-          <section className="molde-bandeja" aria-label="Ideas para tu página">
-            <div className="molde-bandeja-cabeza">
-              <p className="molde-paso">
-                {pasoActual ? `Paso ${pasos.findIndex((p) => p.id === pasoActual.id) + 1} de ${pasos.length}` : 'Ajustar'}
-                <b> · {pasoActual ? pasoActual.nombre : ronda.ficha}</b>
-              </p>
-              <button type="button" className="molde-flecha" aria-expanded={!achicada} aria-label={achicada ? 'Abrir las ideas' : 'Achicar las ideas'} onClick={() => setAchicada((a) => !a)}>
-                <span aria-hidden="true" className="molde-pliegue" />
+          <>
+            <h2 key={`pregunta-${ronda.clave}`} className="molde-nucleo">
+              <button ref={nucleo} type="button" className="molde-pregunta" aria-expanded={!recogidas} onClick={() => setRecogidas((r) => !r)}>
+                <small className="molde-paso">
+                  {recogidas ? 'Tocá para ver las ideas' : `${pasoActual ? `Paso ${pasos.findIndex((p) => p.id === pasoActual.id) + 1} de ${pasos.length} · ${pasoActual.nombre}` : `Ajustar · ${ronda.ficha}`}`}
+                </small>
+                {ronda.pregunta}
               </button>
-            </div>
-            {!achicada && (
-              <>
-                {pasoActual && pasoActual.rondas.length > 1 && (
-                  <div className="molde-tabs" role="group" aria-label={`Paso ${pasoActual.nombre}`}>
-                    {pasoActual.rondas.map((r) => (
-                      <button key={r.clave} type="button" className="molde-tab" aria-current={r.clave === ronda.clave ? 'true' : undefined} onClick={() => ir(r.clave)}>
-                        {r.ficha}
-                      </button>
-                    ))}
-                  </div>
-                )}
-                <RondaAbierta
-                  key={ronda.clave}
-                  ronda={ronda}
-                  config={config}
-                  elegidas={elegidas}
-                  nucleo={nucleo}
-                  vista={vista}
-                  onVer={(op) => setVista({ id: op.id, config: ronda.aplicar(config, op.id, { elegidas }) })}
-                  onDejar={(op) => setVista((v) => (v?.id === op.id ? null : v))}
-                  onElegir={(op) => alElegir(ronda, op.id)}
-                />
-              </>
-            )}
-            <div className="molde-final">
-              {conAjustes && !achicada && (
-                <button ref={botonAjustes} type="button" className="molde-btn molde-btn-2" aria-expanded={ajustando} onClick={() => setAjustando(true)}>
-                  Ajustes finos
-                </button>
-              )}
-              {puedeSeguir && destino !== LISTO_MOLDE && (
-                <button type="button" className={`molde-btn ${faltan.length ? 'molde-btn-1' : 'molde-btn-2'}`} onClick={() => ir(destino)}>
-                  {pasoActual ? 'Siguiente' : 'Seguir'}
-                </button>
-              )}
-              {faltan.length === 0 && (
-                <button type="button" className="molde-btn molde-btn-1" onClick={() => ir(LISTO_MOLDE)}>
-                  Terminar
-                </button>
-              )}
-            </div>
-            {!achicada && (
-              <div className="molde-fichas" aria-label="Lo que elegiste">
-                {fichas.length === 0 && <p className="molde-pista">Pasá el mouse o el foco por una idea para verla en la página. Elegila con un clic o con Enter.</p>}
-                {fichas.map(ficha)}
-                {ajustar.length > 0 && (
-                  <div className="molde-ajustar" role="group" aria-label="Ajustar">
-                    <span className="molde-ajustar-titulo">Ajustar</span>
-                    {ajustar.map(ficha)}
-                  </div>
-                )}
-              </div>
-            )}
-          </section>
+            </h2>
+            <RondaAbierta
+              key={ronda.clave}
+              ronda={ronda}
+              config={config}
+              elegidas={elegidas}
+              tamano={tamano}
+              recogidas={recogidas}
+              vista={vista}
+              onVer={(op) => setVista({ id: op.id, config: ronda.aplicar(config, op.id, { elegidas }) })}
+              onDejar={(op) => setVista((v) => (v?.id === op.id ? null : v))}
+              onElegir={(op) => alElegir(ronda, op.id)}
+            />
+          </>
         )}
 
         {/* El lienzo: la página real, que se scrollea y se toca. Es una muestra: no navega ni envía nada. */}
@@ -375,6 +358,9 @@ export function Molde({ config, setConfig, reiniciar, paso: pasoUrl, ir }: Props
           aria-label="Tu página, de muestra"
           hidden={paso === INICIO_MOLDE}
           onClick={alTocarLaMuestra}
+          onWheel={usarPagina}
+          onTouchMove={usarPagina}
+          onPointerDown={usarPagina}
           onSubmit={(e) => e.preventDefault()}
           {...(descargando ? { inert: '' } : {})}
         >
@@ -429,7 +415,7 @@ export function Molde({ config, setConfig, reiniciar, paso: pasoUrl, ir }: Props
               </div>
               <details className="molde-resumen">
                 <summary>Lo que elegiste · {fichas.length} decisiones</summary>
-                <div className="molde-resumen-fichas">{[...fichas, ...ajustar].map((r) => ficha(r, 0, [], false))}</div>
+                <div className="molde-resumen-fichas">{[...fichas, ...ajustar].map((r) => ficha(r, false))}</div>
               </details>
               <button type="button" className="molde-enlace" onClick={empezarDeCero}>Empezar de cero</button>
             </section>
@@ -443,9 +429,41 @@ export function Molde({ config, setConfig, reiniciar, paso: pasoUrl, ir }: Props
         </Suspense>
       )}
 
-      {paso === INICIO_MOLDE && (
+      {!terminado && (
         <footer className="molde-pie">
-          <p className="molde-pista">Gratis y sin cuenta. Lo que elegís queda en tu navegador.</p>
+          <div className="molde-fichas" aria-label="Lo que elegiste">
+            {fichas.length === 0 && (
+              <p className="molde-pista">
+                {paso === INICIO_MOLDE
+                  ? 'Gratis y sin cuenta. Lo que elegís queda en tu navegador.'
+                  : 'Pasá el mouse o el foco por una idea para verla en la página. Elegila con un clic, con Enter o arrastrándola al centro.'}
+              </p>
+            )}
+            {fichas.map((r) => ficha(r))}
+            {ajustar.length > 0 && (
+              <div className="molde-ajustar" role="group" aria-label="Ajustar">
+                <span className="molde-ajustar-titulo">Ajustar</span>
+                {ajustar.map((r) => ficha(r))}
+              </div>
+            )}
+          </div>
+          <div className="molde-final">
+            {conAjustes && (
+              <button ref={botonAjustes} type="button" className="molde-btn molde-btn-2" aria-expanded={ajustando} onClick={() => (ajustando ? cerrarAjustes() : setAjustando(true))}>
+                Ajustes finos
+              </button>
+            )}
+            {puedeSeguir && destino !== LISTO_MOLDE && (
+              <button type="button" className={`molde-btn ${faltan.length ? 'molde-btn-1' : 'molde-btn-2'}`} onClick={() => ir(destino)}>
+                {pasoActual ? 'Siguiente' : 'Seguir'}
+              </button>
+            )}
+            {ronda && faltan.length === 0 && (
+              <button type="button" className="molde-btn molde-btn-1" onClick={() => ir(LISTO_MOLDE)}>
+                Terminar
+              </button>
+            )}
+          </div>
         </footer>
       )}
       <p className="molde-aviso" role="status" hidden={!aviso}>
@@ -482,18 +500,30 @@ function ContenidoIdea({ ronda, op }: { ronda: Ronda; op: OpcionRonda }) {
 }
 
 
-/** Las ideas de una ronda, en la bandeja: de a 6, con flechas para ver más. */
+interface Arrastre {
+  id: string;
+  el: HTMLButtonElement;
+  x0: number;
+  y0: number;
+  ox: number;
+  oy: number;
+  movio: boolean;
+}
+
+/** Las ideas de una ronda: salen del centro, de a 6, con flechas para ver más. */
 function RondaAbierta(props: {
   ronda: Ronda;
   config: Config;
   elegidas: ReadonlySet<ClaveRonda>;
-  nucleo: RefObject<HTMLHeadingElement>;
+  tamano: { ancho: number; alto: number };
+  /** Recogidas arriba: siguen montadas (lo que se mira con el dedo no se pierde), pero no se ven ni se tocan. */
+  recogidas: boolean;
   vista: Vista | null;
   onVer: (op: OpcionRonda) => void;
   onDejar: (op: OpcionRonda) => void;
   onElegir: (op: OpcionRonda) => void;
 }) {
-  const { ronda, config, vista } = props;
+  const { ronda, config, tamano, vista } = props;
   const todas = useMemo(() => ronda.opciones(config), [ronda, config]);
   const hojas = Math.max(1, Math.ceil(todas.length / POR_VEZ));
   // Lo que la config trae de fábrica no cuenta como elegido: solo lo que la persona eligió en esta ronda.
@@ -505,10 +535,69 @@ function RondaAbierta(props: {
     return i < 0 ? 0 : Math.floor(i / POR_VEZ);
   });
   const ops = todas.slice(hoja * POR_VEZ, hoja * POR_VEZ + POR_VEZ);
+  const botones = useRef<(HTMLButtonElement | null)[]>([]);
+  const [pos, setPos] = useState<[number, number][]>([]);
+  const [abiertas, setAbiertas] = useState(false);
+  const arrastre = useRef<Arrastre | null>(null);
+  const recienArrastrada = useRef(false);
   // Cómo se tocó por última vez: con el dedo un toque muestra y «Usar» confirma; con mouse o teclado se elige directo.
   const ultimo = useRef<'mouse' | 'toque' | 'teclado'>('mouse');
   const [tocada, setTocada] = useState<OpcionRonda | null>(null);
   const confirmando = tocada !== null && vista?.id === tocada.id;
+
+  // Explosión: cada idea mide su ancho y se acomoda sin salirse de la pantalla; dos cuadros después sale del centro.
+  useLayoutEffect(() => {
+    setAbiertas(false);
+    const base = posiciones(ops.length, tamano.ancho, tamano.alto);
+    setPos(
+      base.map(([x, y], k) => {
+        const w = botones.current[k]?.offsetWidth ?? 0;
+        const tope = Math.max(0, tamano.ancho / 2 - w / 2 - 10);
+        return [Math.max(-tope, Math.min(tope, x)), y];
+      }),
+    );
+    let vivo = true;
+    enDosCuadros(() => vivo && setAbiertas(true));
+    return () => {
+      vivo = false;
+    };
+  }, [hoja, ops.length, tamano.ancho, tamano.alto]);
+
+  const mover = (el: HTMLElement, x: number, y: number) => {
+    el.style.setProperty('--x', `${x}px`);
+    el.style.setProperty('--y', `${y}px`);
+  };
+
+  const alApoyar = (e: PE<HTMLButtonElement>, op: OpcionRonda, k: number) => {
+    if (e.pointerType !== 'mouse' || e.button !== 0) return;
+    const [ox, oy] = pos[k] ?? [0, 0];
+    arrastre.current = { id: op.id, el: e.currentTarget, x0: e.clientX, y0: e.clientY, ox, oy, movio: false };
+    e.currentTarget.setPointerCapture?.(e.pointerId);
+  };
+  const alMover = (e: PE<HTMLButtonElement>, op: OpcionRonda) => {
+    const a = arrastre.current;
+    if (!a || a.id !== op.id) return;
+    const dx = e.clientX - a.x0;
+    const dy = e.clientY - a.y0;
+    if (!a.movio && Math.hypot(dx, dy) < 8) return;
+    a.movio = true;
+    a.el.classList.add('arrastra');
+    mover(a.el, a.ox + dx, a.oy + dy);
+  };
+  const alSoltar = (e: PE<HTMLButtonElement>, op: OpcionRonda) => {
+    const a = arrastre.current;
+    if (!a || a.id !== op.id) return;
+    arrastre.current = null;
+    a.el.classList.remove('arrastra');
+    if (!a.movio) return;
+    recienArrastrada.current = true;
+    setTimeout(() => (recienArrastrada.current = false), 50);
+    const x = a.ox + e.clientX - a.x0;
+    const y = a.oy + e.clientY - a.y0;
+    // Soltarla cerca del centro la elige; si no, vuelve a su lugar.
+    if (Math.hypot(x, y) < 130) props.onElegir(op);
+    else mover(a.el, a.ox, a.oy);
+  };
 
   const cambiarHoja = (d: number) => {
     setTocada(null);
@@ -523,53 +612,46 @@ function RondaAbierta(props: {
 
   return (
     <>
-      <div className="molde-pregunta-fila">
-        <h2 ref={props.nucleo} tabIndex={-1} className="molde-nucleo molde-pregunta">
-          {ronda.pregunta}
-        </h2>
-        {hojas > 1 && (
-          <div className="molde-paginas">
-            <button type="button" className="molde-flecha" aria-label="Ideas anteriores" onClick={() => cambiarHoja(-1)}>
-              ‹
+      <div key={hoja} className={`molde-ideas ${abiertas ? 'abiertas' : ''}`} {...(props.recogidas ? { inert: '' } : {})} role="group" aria-label={`Ideas: ${ronda.pregunta}`}>
+        {ops.map((op, k) => {
+          const [x, y] = abiertas ? (pos[k] ?? [0, 0]) : [0, 0];
+          const estilo = { '--x': `${x}px`, '--y': `${y}px`, transitionDelay: abiertas ? `${k * 40}ms` : '0ms' } as CSSProperties;
+          return (
+            <button
+              key={op.id}
+              ref={(el) => (botones.current[k] = el)}
+              type="button"
+              className={`molde-idea ${vista?.id === op.id ? 'viva' : ''}`}
+              aria-pressed={marcadas.includes(op.id)}
+              style={estilo}
+              onPointerEnter={(e) => e.pointerType === 'mouse' && !arrastre.current && props.onVer(op)}
+              onPointerLeave={(e) => e.pointerType === 'mouse' && !arrastre.current && tocada?.id !== op.id && props.onDejar(op)}
+              onFocus={() => props.onVer(op)}
+              onBlur={() => !(ultimo.current === 'toque' && tocada) && props.onDejar(op)}
+              onKeyDown={(e) => {
+                ultimo.current = 'teclado';
+                if (e.key === 'Escape') props.onDejar(op);
+              }}
+              onClick={(e) => {
+                if (recienArrastrada.current) return;
+                // Con el dedo (un clic real, no el de Enter): el toque muestra la idea y «Usar» la elige.
+                if (e.detail > 0 && ultimo.current === 'toque') {
+                  setTocada(op);
+                  props.onVer(op);
+                } else props.onElegir(op);
+              }}
+              onPointerDown={(e) => {
+                ultimo.current = e.pointerType === 'mouse' ? 'mouse' : 'toque';
+                alApoyar(e, op, k);
+              }}
+              onPointerMove={(e) => alMover(e, op)}
+              onPointerUp={(e) => alSoltar(e, op)}
+              onPointerCancel={() => (arrastre.current = null)}
+            >
+              <ContenidoIdea ronda={ronda} op={op} />
             </button>
-            <span aria-live="polite">
-              {hoja + 1} de {hojas}
-            </span>
-            <button type="button" className="molde-flecha" aria-label="Más ideas" onClick={() => cambiarHoja(1)}>
-              ›
-            </button>
-          </div>
-        )}
-      </div>
-      <div key={hoja} className="molde-ideas" role="group" aria-label={`Ideas: ${ronda.pregunta}`}>
-        {ops.map((op) => (
-          <button
-            key={op.id}
-            type="button"
-            className={`molde-idea ${vista?.id === op.id ? 'viva' : ''}`}
-            aria-pressed={marcadas.includes(op.id)}
-            onPointerEnter={(e) => e.pointerType === 'mouse' && props.onVer(op)}
-            onPointerLeave={(e) => e.pointerType === 'mouse' && tocada?.id !== op.id && props.onDejar(op)}
-            onFocus={() => props.onVer(op)}
-            onBlur={() => !(ultimo.current === 'toque' && tocada) && props.onDejar(op)}
-            onKeyDown={(e) => {
-              ultimo.current = 'teclado';
-              if (e.key === 'Escape') props.onDejar(op);
-            }}
-            onClick={(e) => {
-              // Con el dedo (un clic real, no el de Enter): el toque muestra la idea y «Usar» la elige.
-              if (e.detail > 0 && ultimo.current === 'toque') {
-                setTocada(op);
-                props.onVer(op);
-              } else props.onElegir(op);
-            }}
-            onPointerDown={(e) => {
-              ultimo.current = e.pointerType === 'mouse' ? 'mouse' : 'toque';
-            }}
-          >
-            <ContenidoIdea ronda={ronda} op={op} />
-          </button>
-        ))}
+          );
+        })}
       </div>
       {confirmando && tocada && (
         <div className="molde-confirmar" role="group" aria-label={`${tocada.nombre}: ¿la usás?`}>
@@ -578,6 +660,19 @@ function RondaAbierta(props: {
           </button>
           <button type="button" className="molde-btn molde-btn-1" onClick={() => props.onElegir(tocada)}>
             Usar
+          </button>
+        </div>
+      )}
+      {hojas > 1 && !props.recogidas && (
+        <div className="molde-paginas">
+          <button type="button" className="molde-flecha" aria-label="Ideas anteriores" onClick={() => cambiarHoja(-1)}>
+            ‹
+          </button>
+          <span aria-live="polite">
+            {hoja + 1} de {hojas}
+          </span>
+          <button type="button" className="molde-flecha" aria-label="Más ideas" onClick={() => cambiarHoja(1)}>
+            ›
           </button>
         </div>
       )}

@@ -100,6 +100,28 @@ export function valorDeFicha(c: Config, ronda: Ronda): string {
 }
 
 /**
+ * Dónde se acomoda cada idea alrededor del centro (px desde el centro).
+ * En pantallas anchas, en óvalo; en angostas, de a dos por fila arriba y abajo del botón.
+ */
+export function posiciones(n: number, ancho: number, alto: number): [number, number][] {
+  if (ancho < 760) {
+    return Array.from({ length: n }, (_, i) => {
+      const fila = Math.floor(i / 2);
+      const arriba = fila % 2 === 0;
+      const k = Math.floor(fila / 2);
+      const solo = n % 2 === 1 && i === n - 1;
+      return [solo ? 0 : (i % 2 ? 1 : -1) * ancho * 0.24, (arriba ? -1 : 1) * (108 + k * 62)];
+    });
+  }
+  const rx = Math.min(ancho * 0.33, 470);
+  const ry = Math.min((alto - 150) * 0.36, 270);
+  return Array.from({ length: n }, (_, i) => {
+    const a = -Math.PI / 2 + (i / n) * Math.PI * 2 + (n % 2 ? 0 : Math.PI / n);
+    return [Math.cos(a) * rx, Math.sin(a) * ry];
+  });
+}
+
+/**
  * Ajustes finos de cada ficha (PLAN.md C4): qué pasos del modo avanzado (`PASOS`) se abren desde cada ronda.
  * Entre todas cubren todos los pasos: lo verifica `recorrido.test.ts`. Las rondas de galería no tienen ajustes.
  * `direccion` y `exportar` se muestran en una versión para Molde (ver `Ajustes.tsx`).

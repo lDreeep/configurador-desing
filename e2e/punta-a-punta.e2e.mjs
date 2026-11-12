@@ -56,7 +56,8 @@ async function auditar(page, etiqueta) {
   // La página de muestra (.pg) trae sus propios títulos: son el diseño, no la interfaz.
   const marcas = await page.evaluate(() => { const fuera = (q) => [...document.querySelectorAll(q)].filter((e) => !e.closest('.pg')).length; return { h1: fuera('h1'), main: fuera('main, [role=main]') }; });
   assert.deepEqual(marcas, { h1: 1, main: 1 }, `h1 y main en «${etiqueta}»`);
-  const resultado = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa']).analyze();
+  // Las escenas decorativas de la muestra (aria-hidden, siempre en movimiento) no se miden: axe las agarra a mitad de un fundido.
+  const resultado = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa']).exclude('.pg [aria-hidden="true"]').analyze();
   const fallos = resultado.violations.map((v) => ({
     ronda: etiqueta,
     regla: v.id,

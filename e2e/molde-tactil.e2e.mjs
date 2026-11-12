@@ -70,7 +70,7 @@ async function recorrer(browser, reducedMotion) {
   assert.ok(rondas.includes('estilo') && rondas.includes('color'), rondas.join());
   await page.waitForFunction(() => location.hash.endsWith('/listo'));
   // Final: la página entera y «Descargar» en la esquina, que abre la ventana de descarga.
-  assert.equal(await page.locator('.molde-bandeja').count(), 0);
+  assert.equal(await page.locator('.molde-idea').count(), 0);
   await page.getByRole('button', { name: 'Descargar', exact: true }).tap();
   await page.getByRole('button', { name: 'Descargar DESIGN.md' }).waitFor();
   // F3: ambas descargas completas dentro del primer pantallazo, en celular y escritorio.

@@ -60,7 +60,7 @@ beforeEach(() => localStorage.clear());
 afterEach(desmontar);
 
 describe('Molde (C2)', () => {
-  it('con mouse: pasar muestra la idea en la página y clic la elige; la página se usa sin salir de Molde', async () => {
+  it('con mouse: pasar muestra la idea en la página, clic o arrastrar al centro la elige; la página se usa sin salir de Molde', async () => {
     await montar();
     await clic(conBoton('Empezar'));
     expect(pasoActual()).toBe('proyecto');
@@ -77,7 +77,13 @@ describe('Molde (C2)', () => {
     expect(pasoActual()).toBe('layout');
     expect(fichas()).toEqual(['ProyectoTienda', 'RubroRopa']);
     expect(caja.querySelector('.molde-paso')!.textContent).toMatch(/^Paso 2 de \d · Estructura$/);
-    await clic(ideas()[1]);
+    // Arrastrar una idea hasta el centro también la elige.
+    const b = ideas()[1];
+    const [ox, oy] = [parseFloat(b.style.getPropertyValue('--x')), parseFloat(b.style.getPropertyValue('--y'))];
+    puntero(b, 'pointerdown', { clientX: 500, clientY: 500, button: 0 });
+    puntero(b, 'pointermove', { clientX: 500 - ox / 2, clientY: 500 - oy / 2 });
+    puntero(b, 'pointerup', { clientX: 500 - ox, clientY: 500 - oy });
+    await act(() => new Promise((r) => setTimeout(r, 40)));
     expect(pasoActual()).toBe('estilo');
     expect(fichas()).toHaveLength(3);
 
@@ -95,11 +101,16 @@ describe('Molde (C2)', () => {
     act(() => void enlace.dispatchEvent(envio));
     expect(envio.defaultPrevented).toBe(true);
 
-    // La bandeja se achica y se vuelve a abrir.
-    await clic(caja.querySelector<HTMLButtonElement>('[aria-label="Achicar las ideas"]')!);
-    expect(ideas()).toHaveLength(0);
-    await clic(caja.querySelector<HTMLButtonElement>('[aria-label="Abrir las ideas"]')!);
-    expect(ideas().length).toBeGreaterThan(0);
+    // Tocar (o scrollear) la página recoge las ideas en el botón de la pregunta; tocarlo las vuelve a abrir.
+    const pregunta = caja.querySelector<HTMLButtonElement>('.molde-pregunta')!;
+    expect(pregunta.getAttribute('aria-expanded')).toBe('true');
+    puntero(lienzo, 'pointerdown');
+    expect(pregunta.getAttribute('aria-expanded')).toBe('false');
+    expect(caja.querySelector('.molde-ideas')!.hasAttribute('inert')).toBe(true);
+    expect(caja.querySelector('.molde')!.classList.contains('recogidas')).toBe(true);
+    await clic(pregunta);
+    expect(pregunta.getAttribute('aria-expanded')).toBe('true');
+    expect(caja.querySelector('.molde-ideas')!.hasAttribute('inert')).toBe(false);
   });
 
   it('con teclado: las ideas son botones, el foco muestra y Enter (clic del botón) elige', async () => {
@@ -122,7 +133,8 @@ describe('Molde (C2)', () => {
     // Con las obligatorias se puede terminar: queda la página entera, sin bandeja, y «Descargar» en la esquina.
     if (pasoActual() !== 'listo') await clic(conBoton('Terminar'));
     expect(pasoActual()).toBe('listo');
-    expect(caja.querySelector('.molde-bandeja')).toBeNull();
+    expect(caja.querySelector('.molde-pie')).toBeNull();
+    expect(ideas()).toHaveLength(0);
     expect(caja.querySelector('.molde-base .pg')).not.toBeNull();
     expect(conBoton('Seguir editando')).toBeTruthy();
     expect(caja.querySelector('.molde-descarga')).toBeNull();
