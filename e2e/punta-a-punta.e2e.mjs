@@ -53,9 +53,11 @@ async function esperarQuieto(page) {
 // Axe en la pantalla actual, más un solo h1 y un solo main (G2). Un fallo indica la ronda y las reglas que no pasan.
 async function auditar(page, etiqueta) {
   await esperarQuieto(page);
-  const marcas = await page.evaluate(() => ({ h1: document.querySelectorAll('h1').length, main: document.querySelectorAll('main, [role=main]').length }));
+  // La página de muestra (.pg) trae sus propios títulos: son el diseño, no la interfaz.
+  const marcas = await page.evaluate(() => { const fuera = (q) => [...document.querySelectorAll(q)].filter((e) => !e.closest('.pg')).length; return { h1: fuera('h1'), main: fuera('main, [role=main]') }; });
   assert.deepEqual(marcas, { h1: 1, main: 1 }, `h1 y main en «${etiqueta}»`);
-  const resultado = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa']).analyze();
+  // Las escenas decorativas de la muestra (aria-hidden, siempre en movimiento) no se miden: axe las agarra a mitad de un fundido.
+  const resultado = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa']).exclude('.pg [aria-hidden="true"]').analyze();
   const fallos = resultado.violations.map((v) => ({
     ronda: etiqueta,
     regla: v.id,
@@ -138,7 +140,6 @@ async function recorrer(browser, tipo, vp) {
   // Primera ronda: el tipo de proyecto. Después, cada ronda hasta la pantalla final.
   await page.waitForFunction(() => location.hash === '#/proyecto');
   await page.locator('.molde-idea').first().waitFor();
-  await page.waitForFunction(() => document.querySelector('.molde-ideas.abiertas'));
   await page.waitForTimeout(900);
   await auditar(page, `${etiquetaBase} · proyecto`);
   await elegirPrimeraIdea(page, vp.touch, tipo.nombre);
@@ -154,7 +155,6 @@ async function recorrer(browser, tipo, vp) {
     }
     rondas.push(ronda);
     await page.locator('.molde-idea').first().waitFor();
-    await page.waitForFunction(() => document.querySelector('.molde-ideas.abiertas'));
     await page.waitForTimeout(900);
     const etiqueta = `${etiquetaBase} · ${ronda}`;
     await auditar(page, etiqueta);
@@ -162,18 +162,21 @@ async function recorrer(browser, tipo, vp) {
     else if (rondas.length === 1) await revisarFoco(page, etiqueta);
 
     await elegirPrimeraIdea(page, vp.touch);
-    // Las rondas de elegir varias quedan abiertas y se cierran con «Seguir»; las demás pasan solas a la siguiente.
-    await page.waitForFunction(
-      (h) => location.hash !== h || [...document.querySelectorAll('button')].some((b) => b.textContent.trim() === 'Seguir'),
-      hashAntes,
-    );
+    // Las rondas de elegir varias quedan abiertas y sigue el botón de la bandeja («Siguiente» o «Terminar»);
+    // las demás pasan solas a la siguiente.
+    await page.waitForTimeout(400);
     if ((await page.evaluate(() => location.hash)) === hashAntes) {
-      await page.getByRole('button', { name: 'Seguir', exact: true }).click();
+      await page.locator('.molde-final .molde-btn').last().click();
       await page.waitForFunction((h) => location.hash !== h, hashAntes);
     }
   }
 
   assert.ok(page.url().endsWith('/listo'), `${etiquetaBase}: no llegó a la pantalla final en ${MAX_RONDAS} rondas (${rondas.join(', ')})`);
+  // I3: al final queda la página entera y «Descargar» en la esquina, que abre la ventana de descarga.
+  await page.getByRole('button', { name: 'Descargar', exact: true }).waitFor();
+  await page.waitForTimeout(900);
+  await auditar(page, `${etiquetaBase} · página terminada`);
+  await page.getByRole('button', { name: 'Descargar', exact: true }).click();
   await page.getByRole('heading', { name: 'Tu molde está listo', exact: true }).waitFor();
   await page.waitForTimeout(900);
   await auditar(page, `${etiquetaBase} · listo`);

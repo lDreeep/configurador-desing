@@ -30,10 +30,12 @@
 /* El lienzo: vacío al principio, después la página que se va armando */
 .molde-lienzo { position: absolute; inset: 64px 16px 88px; border-radius: 22px; overflow: hidden; transition: box-shadow var(--molde-cambio); }
 .molde-lienzo.hay { box-shadow: 0 0 0 1px var(--molde-linea), 0 30px 60px -30px var(--molde-sombra); }
-.molde-capa { position: absolute; inset: 0; overflow: hidden; }
+.molde-lienzo[hidden] { display: none; }
+/* La página trae sus propios z-index: se aíslan para que nada de ella quede encima de las ideas. */
+.molde-lienzo { isolation: isolate; }
+/* La página se usa mientras se arma (I3): cada capa se scrollea como una página. */
+.molde-capa { position: absolute; inset: 0; overflow: hidden auto; overscroll-behavior: contain; }
 .molde-capa > .pg { min-height: 100%; }
-.molde-base { transition: opacity var(--molde-cambio), filter var(--molde-cambio); }
-.eligiendo .molde-base { opacity: .3; filter: saturate(.55); }
 /* La vista previa se abre en círculo desde el centro, sobre la página */
 .molde-prev { clip-path: circle(0 at 50% 50%); transition: clip-path 220ms ease-in; }
 .molde-prev.on { clip-path: circle(120% at 50% 50%); transition: clip-path var(--molde-cambio) var(--molde-curva); }
@@ -47,9 +49,19 @@
 @keyframes molde-latir { from { box-shadow: 0 0 0 0 color-mix(in srgb, var(--molde-silicona) 55%, transparent); } to { box-shadow: 0 0 0 22px transparent; } }
 
 /* La pregunta de la ronda, en el centro: de acá salen las ideas */
-.molde-pregunta { position: absolute; left: 50%; top: calc(50% - 12px); translate: -50% -50%; z-index: 7; margin: 0; max-width: calc(100% - 32px);
-  display: flex; align-items: center; min-height: 52px; padding: 0 24px; border-radius: 999px; background: var(--molde-tinta); color: var(--molde-yeso);
-  font: 600 17px/1.2 Inter, system-ui, sans-serif; text-align: center; white-space: nowrap; animation: molde-pulso 480ms var(--molde-rebote); transition: opacity var(--molde-toque); }
+.molde-nucleo { margin: 0; font: inherit; }
+.molde .molde-pregunta { position: absolute; left: 50%; top: calc(50% - 12px); translate: -50% -50%; z-index: 7; max-width: calc(100% - 32px);
+  display: grid; justify-items: center; align-content: center; gap: 2px; min-height: 60px; padding: 6px 26px; border-radius: 999px; background: var(--molde-tinta); color: var(--molde-yeso);
+  box-shadow: 0 14px 30px -14px var(--molde-sombra);
+  font: 600 17px/1.2 Inter, system-ui, sans-serif; text-align: center; white-space: nowrap; animation: molde-pulso 480ms var(--molde-rebote);
+  transition: opacity var(--molde-toque), top var(--molde-cambio) var(--molde-curva), scale var(--molde-toque); }
+.molde .molde-pregunta:active { scale: .96; }
+.molde-paso { font-size: 12px; font-weight: 500; opacity: .78; font-variant-numeric: tabular-nums; }
+/* Recogidas (I3): al scrollear o tocar la página, las ideas suben al botón de la pregunta y la página queda libre */
+.recogidas .molde-pregunta { top: 32px; z-index: 9; }
+.molde-ideas { transition: top var(--molde-cambio) var(--molde-curva); }
+.recogidas .molde-ideas { top: 32px; }
+.molde.recogidas .molde-ideas.abiertas .molde-idea { transform: translate(-50%, -50%) scale(.2); opacity: 0; pointer-events: none; transition-delay: 0ms !important; }
 @keyframes molde-pulso { 40% { scale: 1.12; } }
 
 /* Ideas: salen del centro y se acomodan alrededor */
@@ -88,6 +100,8 @@
 .molde-pie { position: absolute; inset: auto 0 0; z-index: 8; height: 88px; display: flex; align-items: center; gap: 12px;
   padding: 0 max(20px, env(safe-area-inset-right, 0px)) env(safe-area-inset-bottom, 0px) max(20px, env(safe-area-inset-left, 0px)); }
 .molde-fichas { flex: 1; min-width: 0; display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; padding: 4px; }
+.molde-ajustar { display: contents; }
+.molde-ajustar-titulo { flex: none; align-self: center; margin: 0 2px 0 10px; font-size: 13px; font-weight: 600; color: var(--molde-tinta-2); }
 .molde-fichas::-webkit-scrollbar { display: none; }
 .molde .molde-ficha { flex: none; min-height: 48px; padding: 4px 14px; border-radius: 14px; background: var(--molde-superficie); box-shadow: inset 0 0 0 1px var(--molde-linea); text-align: left; font-size: 13px; color: var(--molde-tinta-2); line-height: 1.2; }
 .molde .molde-ficha.nueva { animation: molde-caer 420ms var(--molde-rebote) both; }
@@ -100,7 +114,7 @@
 .molde .molde-btn:active { scale: .96; }
 .molde .molde-btn-1 { background: var(--molde-silicona); color: var(--molde-sobre-silicona); }
 .molde .molde-btn-2 { background: var(--molde-superficie); box-shadow: inset 0 0 0 1.5px var(--molde-tinta); }
-.molde-aviso { position: absolute; left: 50%; bottom: 96px; transform: translateX(-50%); z-index: 9; margin: 0; background: var(--molde-tinta); color: var(--molde-yeso); padding: 10px 16px; border-radius: 12px; font-size: 14px; max-width: calc(100% - 32px); }
+.molde-aviso { position: absolute; left: 50%; bottom: 96px; transform: translateX(-50%); z-index: 11; margin: 0; background: var(--molde-tinta); color: var(--molde-yeso); padding: 10px 16px; border-radius: 12px; font-size: 14px; max-width: calc(100% - 32px); }
 .molde-aviso[hidden] { display: none; }
 
 /* Ajustes finos (C4): los controles del modo avanzado al costado; la página, entera y en vivo, al lado */
@@ -133,8 +147,11 @@
   .molde .molde-idea { min-height: 50px; padding: 8px 12px; font-size: 14px; gap: 8px; }
   .molde-idea small { display: none; }
   .molde-idea .esquema { width: 40px; height: 26px; }
-  .molde-pregunta { white-space: normal; font-size: 15px; }
+  .molde .molde-pregunta { white-space: normal; font-size: 15px; }
   .molde-paginas { top: calc(50% + 40px); }
+  /* En celular la barra de arriba no tiene lugar: el botón recogido queda sobre el borde de la página. */
+  .recogidas .molde-pregunta, .recogidas .molde-ideas { top: 96px; }
+  .molde .molde-pregunta { padding: 6px 20px; }
   .molde-centro p { font-size: 16px; }
   .molde-aviso { bottom: 144px; }
   .molde-confirmar { bottom: 148px; }
@@ -143,24 +160,30 @@
   .molde *, .molde *::before, .molde *::after { animation: none !important; transition: none !important; }
 }
 
-/* F3: descargas primero, archivo protagonista y decisiones plegadas. */
-.terminado .molde-main { top: 64px; overflow-y: auto; }
-.terminado .molde-lienzo { visibility: hidden; pointer-events: none; }
-.molde-descarga { position: relative; max-width: 960px; margin: 0 auto; padding: 24px 24px 32px; }
-.molde-descarga h1 { margin: 0; font: 700 36px/40px var(--molde-f-marca); text-wrap: balance; }
-.molde-descarga > p { max-width: 680px; margin: 12px 0 24px; color: var(--molde-tinta-2); text-wrap: pretty; }
-.molde-descarga-acciones { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 24px; }
+/* Final (I3): la página entera, sin bandeja, y en una esquina «Descargar» y «Seguir editando». Los
+   botones van sobre una pastilla con los colores del marco: se leen sobre cualquier estilo. */
+.terminado .molde-lienzo { inset: 0; border-radius: 0; box-shadow: none; }
+.molde-esquina { position: absolute; z-index: 8; right: max(16px, env(safe-area-inset-right, 0px)); bottom: max(16px, env(safe-area-inset-bottom, 0px));
+  display: flex; gap: 8px; padding: 8px; border-radius: 999px; background: var(--molde-superficie); box-shadow: 0 0 0 1px var(--molde-linea), 0 14px 34px -10px var(--molde-sombra), 0 2px 6px var(--molde-sombra); }
+/* La ventana de descarga (F3): descargas primero, archivo protagonista y decisiones plegadas. */
+.molde-velo { position: absolute; inset: 0; z-index: 10; display: grid; place-items: center; padding: 16px; background: rgba(29, 23, 48, .6); }
+.molde-descarga { width: min(100%, 760px); max-height: 100%; overflow: hidden auto; padding: 24px; border-radius: 22px; background: var(--molde-yeso); box-shadow: 0 30px 80px -20px rgba(0, 0, 0, .5); }
+.molde-descarga-cabeza { display: flex; align-items: center; gap: 12px; }
+.molde-descarga h2 { flex: 1; margin: 0; font: 700 32px/36px var(--molde-f-marca); text-wrap: balance; }
+.molde-descarga > p { max-width: 680px; margin: 12px 0 20px; color: var(--molde-tinta-2); text-wrap: pretty; }
+.molde-descarga-acciones { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 20px; }
 .molde-archivo { border: 1px solid var(--molde-linea); border-radius: 16px; overflow: hidden; background: var(--molde-superficie); }
-.molde-archivo h2 { margin: 0; padding: 12px 16px; border-bottom: 1px solid var(--molde-linea); font: 600 16px/24px monospace; }
-.molde-archivo pre { margin: 0; padding: 16px; height: clamp(160px, 38dvh, 440px); overflow: auto; font: 400 14px/20px monospace; white-space: pre-wrap; overflow-wrap: anywhere; }
+.molde-archivo h3 { margin: 0; padding: 12px 16px; border-bottom: 1px solid var(--molde-linea); font: 600 16px/24px monospace; }
+.molde-archivo pre { margin: 0; padding: 16px; height: clamp(140px, 30dvh, 360px); overflow: auto; font: 400 14px/20px monospace; white-space: pre-wrap; overflow-wrap: anywhere; }
 .molde-archivo pre:focus-visible { outline-offset: -4px; }
-.molde-resumen { margin-top: 16px; }
+.molde-resumen { margin-top: 12px; }
 .molde-resumen summary { min-height: 44px; padding: 12px 0; cursor: pointer; font-weight: 600; }
 .molde-resumen-fichas { display: flex; flex-wrap: wrap; gap: 8px; padding: 8px 0 16px; }
-.terminado .molde-aviso { position: fixed; bottom: 16px; }
+.terminado .molde-aviso { bottom: 16px; }
 @media (max-width: 760px) {
   .molde-descarga { padding: 16px; }
-  .molde-descarga h1 { font-size: 30px; line-height: 36px; }
+  .molde-velo { padding: 8px; }
+  .molde-descarga h2 { font-size: 26px; line-height: 30px; }
   .molde-descarga > p { margin-bottom: 16px; }
   .molde-descarga-acciones { flex-direction: column; margin-bottom: 16px; }
 }

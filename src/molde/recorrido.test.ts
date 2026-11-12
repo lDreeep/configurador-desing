@@ -2,7 +2,7 @@ import { configInicial } from '../estado';
 import { rondaPorClave, rondasDe, type ClaveRonda } from '../rondas';
 import type { Config } from '../tipos';
 import { PASOS } from '../pasos/pasos';
-import { AJUSTES, CLAVE_ELEGIDAS, elegir, guardarElegidas, INICIO_MOLDE, leerElegidas, LISTO_MOLDE, posiciones, resolverPaso, siguiente, valorDeFicha } from './recorrido';
+import { AJUSTES, CLAVE_ELEGIDAS, elegir, guardarElegidas, INICIO_MOLDE, leerElegidas, LISTO_MOLDE, posiciones, resolverPaso, rondasDelRecorrido, siguiente, valorDeFicha } from './recorrido';
 
 const memoria = () => {
   const m = new Map<string, string>();
@@ -16,25 +16,26 @@ function paso(c: Config, elegidas: ReadonlySet<ClaveRonda>, clave: ClaveRonda, i
 }
 
 describe('recorrido de Molde (C2)', () => {
-  it('Proyecto → Color → Layout → Estilo, y después las ideas opcionales', () => {
+  it('recorrido corto (I3): Qué es → Estructura → Estilo → Color → Lo propio, y después «listo»', () => {
     let s = { config: configInicial(), elegidas: new Set<ClaveRonda>() as ReadonlySet<ClaveRonda>, siguiente: '' };
     expect(siguiente(s.config, s.elegidas)).toBe('proyecto');
     s = paso(s.config, s.elegidas, 'proyecto', 'tienda');
     expect(s.siguiente).toBe('rubro');
     s = paso(s.config, s.elegidas, 'rubro');
-    expect(s.siguiente).toBe('color');
-    s = paso(s.config, s.elegidas, 'color', 'menta');
     expect(s.siguiente).toBe('layout');
-    expect(s.config.visual.paleta).toBe('menta');
     s = paso(s.config, s.elegidas, 'layout');
     expect(s.siguiente).toBe('estilo');
     s = paso(s.config, s.elegidas, 'estilo');
-    expect(s.siguiente).toBe('piezas');
-    // El estilo no pisa el color elegido.
+    expect(s.siguiente).toBe('color');
+    s = paso(s.config, s.elegidas, 'color', 'menta');
     expect(s.config.visual.paleta).toBe('menta');
-    // Con todas elegidas, sigue «listo».
-    for (const r of rondasDe(s.config)) if (!s.elegidas.has(r.clave)) s = paso(s.config, s.elegidas, r.clave);
+    expect(s.siguiente).toBe('galeria:producto');
+    // Lo que el recorrido no pregunta se ajusta sin moverse de su ficha, y no hace falta para terminar.
+    expect(paso(s.config, s.elegidas, 'letra').siguiente).toBe('letra');
+    for (const r of rondasDelRecorrido(s.config)) if (!s.elegidas.has(r.clave)) s = paso(s.config, s.elegidas, r.clave);
     expect(s.siguiente).toBe(LISTO_MOLDE);
+    expect(siguiente(s.config, s.elegidas)).toBe(LISTO_MOLDE);
+    expect(s.elegidas.has('letra')).toBe(false);
   });
 
   it('cambiar de proyecto conserva lo común y vuelve a pedir lo de la rama', () => {

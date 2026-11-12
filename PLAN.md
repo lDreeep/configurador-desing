@@ -602,7 +602,7 @@ fichas, como hoy los ajustes finos. No se borra ningún catálogo ni cambia el e
     recomendado, sin pisar lo que la persona cambió a mano (`ContextoRonda.elegidas`). Test: el export de
     un recorrido de 4 pasos no deja ninguna sección vacía.
   - Hecho: `conValoresPorDefecto` en `src/rondas/comunes.ts`; lo llaman `PROYECTO`, `RUBRO` y `ESTILO` al aplicar (solo con `ctx`). No marca las rondas como elegidas. Tests en `rondas.test.ts`.
-- [ ] **I3 · Interfaz del recorrido corto** — Fable 5.2 (u Opus 5.5) · ChatGPT: no (criterio visual) · depende de I1
+- [x] **I3 · Interfaz del recorrido corto** — Fable 5.2 (u Opus 5.5) · ChatGPT: no (criterio visual) · depende de I1 · hecha 2026-11-11
   - `src/molde/Molde.tsx`: recorrer `pasosDe`, mostrar «paso 2 de 4», pasos con más de una ronda en una
     sola pantalla, y las fichas de lo no preguntado bajo «Ajustar». Rutas viejas (`#/letra`…) siguen
     abriendo su ficha (`navegacion.ts`). Revisar `npm run peso`.
@@ -616,6 +616,18 @@ fichas, como hoy los ajustes finos. No se borra ningún catálogo ni cambia el e
     «Seguir editando». El botón abre la ventana de descarga de hoy (`molde-descarga`).
   - Antes de programar: maqueta de la bandeja y del final en `maqueta/`, a 1440 y 390 px, para que
     quien dirige elija mirando.
+  - Hecho: `Molde.tsx` recorre `pasosDe` (la pregunta dice «Paso 2 de 5 · Estructura») y `recorrido.ts`
+    suma `rondasDelRecorrido` y `despuesDe`; las fichas de lo no preguntado van bajo «Ajustar», en el pie.
+    El lienzo ya no es `inert`: se scrollea y se toca, los links y formularios no navegan ni envían, y la
+    vista previa se abre donde está la página. Final: página entera, «Descargar» (abre `molde-descarga`
+    como ventana) y «Seguir editando».
+  - **Decisión de quien dirige (2026-11-12), en vez de la bandeja:** la página queda siempre en grande y
+    las ideas siguen saliendo del centro, encima de ella (se mantiene la decisión 3, con arrastrar al
+    centro). Al scrollear o tocar la página, las ideas se recogen arriba, en el botón de la pregunta;
+    tocarlo las vuelve a abrir. No hubo maqueta en `maqueta/`: se eligió mirando la versión programada.
+  - **Queda para I4:** `DESIGN.md` §5, §8 y §12 y `CLAUDE.md`; sumar al e2e scrollear la página y tocar un
+    botón de la muestra. Con Estilo antes que Color, la ronda Color no filtra las paletas que no pasan AA
+    con el estilo ya elegido (antes Estilo filtraba por paleta): revisarlo en los datos (`comunes.ts`).
 - [ ] **I4 · Cierre** — Sonnet 5.5 · ChatGPT: Sol · depende de I2 e I3
   - e2e táctil con el recorrido nuevo: scrollear la página con una ronda abierta, tocar un botón de la
     muestra, llegar al final y descargar desde el botón de la esquina. `DESIGN.md` §5, §8 (decisión)

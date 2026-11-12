@@ -50,11 +50,17 @@ const clic = async (el: HTMLElement) => {
   await act(() => new Promise((r) => setTimeout(r, 40)));
 };
 
+/** Avanza por el recorrido (primera idea, o «Siguiente» donde la ronda queda abierta) hasta llegar a una ronda. */
+const avanzar = async (hasta: string) => {
+  for (let i = 0; i < 12 && pasoActual() !== hasta; i++) await clic(conBoton('Siguiente') ?? ideas()[0]);
+  expect(pasoActual()).toBe(hasta);
+};
+
 beforeEach(() => localStorage.clear());
 afterEach(desmontar);
 
 describe('Molde (C2)', () => {
-  it('con mouse: pasar muestra la idea en la página, clic o arrastrar al centro la elige', async () => {
+  it('con mouse: pasar muestra la idea en la página, clic o arrastrar al centro la elige; la página se usa sin salir de Molde', async () => {
     await montar();
     await clic(conBoton('Empezar'));
     expect(pasoActual()).toBe('proyecto');
@@ -68,9 +74,9 @@ describe('Molde (C2)', () => {
 
     await clic(idea('Tienda'));
     await clic(ideas()[0]);
-    expect(pasoActual()).toBe('color');
+    expect(pasoActual()).toBe('layout');
     expect(fichas()).toEqual(['ProyectoTienda', 'RubroRopa']);
-
+    expect(caja.querySelector('.molde-paso')!.textContent).toMatch(/^Paso 2 de \d · Estructura$/);
     // Arrastrar una idea hasta el centro también la elige.
     const b = ideas()[1];
     const [ox, oy] = [parseFloat(b.style.getPropertyValue('--x')), parseFloat(b.style.getPropertyValue('--y'))];
@@ -78,8 +84,33 @@ describe('Molde (C2)', () => {
     puntero(b, 'pointermove', { clientX: 500 - ox / 2, clientY: 500 - oy / 2 });
     puntero(b, 'pointerup', { clientX: 500 - ox, clientY: 500 - oy });
     await act(() => new Promise((r) => setTimeout(r, 40)));
-    expect(pasoActual()).toBe('layout');
+    expect(pasoActual()).toBe('estilo');
     expect(fichas()).toHaveLength(3);
+
+    // I3: la página ya no está apagada, pero sus links y formularios no sacan de Molde ni envían nada.
+    const lienzo = caja.querySelector('.molde-lienzo')!;
+    expect(lienzo.hasAttribute('inert')).toBe(false);
+    expect(lienzo.getAttribute('aria-hidden')).toBeNull();
+    const enlace = document.createElement('a');
+    enlace.href = 'https://example.com/';
+    caja.querySelector('.molde-base')!.append(enlace);
+    const toque = new MouseEvent('click', { bubbles: true, cancelable: true });
+    act(() => void enlace.dispatchEvent(toque));
+    expect(toque.defaultPrevented).toBe(true);
+    const envio = new Event('submit', { bubbles: true, cancelable: true });
+    act(() => void enlace.dispatchEvent(envio));
+    expect(envio.defaultPrevented).toBe(true);
+
+    // Tocar (o scrollear) la página recoge las ideas en el botón de la pregunta; tocarlo las vuelve a abrir.
+    const pregunta = caja.querySelector<HTMLButtonElement>('.molde-pregunta')!;
+    expect(pregunta.getAttribute('aria-expanded')).toBe('true');
+    puntero(lienzo, 'pointerdown');
+    expect(pregunta.getAttribute('aria-expanded')).toBe('false');
+    expect(caja.querySelector('.molde-ideas')!.hasAttribute('inert')).toBe(true);
+    expect(caja.querySelector('.molde')!.classList.contains('recogidas')).toBe(true);
+    await clic(pregunta);
+    expect(pregunta.getAttribute('aria-expanded')).toBe('true');
+    expect(caja.querySelector('.molde-ideas')!.hasAttribute('inert')).toBe(false);
   });
 
   it('con teclado: las ideas son botones, el foco muestra y Enter (clic del botón) elige', async () => {
@@ -89,22 +120,27 @@ describe('Molde (C2)', () => {
     expect(vistaPrevia()).not.toBeNull();
     await clic(idea('Landing'));
     await clic(ideas()[0]);
-    expect(pasoActual()).toBe('color');
+    expect(pasoActual()).toBe('layout');
     // Al cambiar de ronda el foco va a la pregunta, y de ahí Tab llega a las ideas.
     expect(document.activeElement?.classList.contains('molde-pregunta')).toBe(true);
     act(() => ideas()[0].focus());
+    await avanzar('color');
+    expect(conBoton('Terminar')).toBeUndefined();
     await clic(ideas()[0]);
-    await clic(ideas()[0]);
-    expect(pasoActual()).toBe('estilo');
-    await clic(ideas()[0]);
-    expect(pasoActual()).toBe('piezas');
-    expect(fichas().map((f) => f!.replace(/^(Proyecto|Rubro|Color|Layout|Estilo).*/, '$1'))).toEqual(['Proyecto', 'Rubro', 'Color', 'Layout', 'Estilo']);
-    // Con las cuatro obligatorias se puede terminar.
-    await clic(conBoton('Terminar'));
+    expect(fichas().slice(0, 3).map((f) => f!.replace(/^(Proyecto|Rubro|Layout).*/, '$1'))).toEqual(['Proyecto', 'Rubro', 'Layout']);
+    // Lo que no se pregunta queda bajo «Ajustar».
+    expect([...caja.querySelectorAll('.molde-ajustar .molde-ficha')].map((f) => f.textContent!.replace(/^(Piezas|Letra|Entrada|Iconos|Tono|Densidad).*/, '$1'))).toEqual(['Piezas', 'Letra', 'Entrada', 'Iconos', 'Tono', 'Densidad']);
+    // Con las obligatorias se puede terminar: queda la página entera, sin bandeja, y «Descargar» en la esquina.
+    if (pasoActual() !== 'listo') await clic(conBoton('Terminar'));
     expect(pasoActual()).toBe('listo');
+    expect(caja.querySelector('.molde-pie')).toBeNull();
+    expect(ideas()).toHaveLength(0);
+    expect(caja.querySelector('.molde-base .pg')).not.toBeNull();
+    expect(conBoton('Seguir editando')).toBeTruthy();
+    expect(caja.querySelector('.molde-descarga')).toBeNull();
+    await clic(conBoton('Descargar'));
     expect(conBoton('Descargar DESIGN.md')).toBeTruthy();
     expect(conBoton('Descargar HTML')).toBeTruthy();
-    expect(caja.querySelector('.molde-pie')).toBeNull();
     expect(caja.querySelector('.molde-archivo pre')!.textContent).toContain('formato: design-md');
     const resumen = caja.querySelector<HTMLDetailsElement>('.molde-resumen')!;
     expect(resumen.open).toBe(false);
@@ -171,9 +207,11 @@ describe('Molde (C2)', () => {
     await clic(idea('Tienda'));
     await clic(ideas()[0]);
     await clic(ideas()[0]);
-    expect(pasoActual()).toBe('layout');
+    expect(pasoActual()).toBe('estilo');
     // En una ronda que todavía no se eligió no hay ajustes finos.
     expect(conBoton('Ajustes finos')).toBeUndefined();
+    await clic(ideas()[0]);
+    await clic(ideas()[0]);
 
     await clic([...caja.querySelectorAll<HTMLButtonElement>('.molde-ficha')].find((f) => f.textContent!.startsWith('Color'))!);
     expect(pasoActual()).toBe('color');
@@ -184,10 +222,9 @@ describe('Molde (C2)', () => {
     expect(ideas()).toHaveLength(0);
     expect(document.activeElement?.id).toBe('molde-ajustes-titulo');
 
-    // Paleta personalizada: la ficha pasa a «A tu medida» y la página la usa.
+    // Paleta personalizada: la página la usa y, al cerrar, la ficha dice «A tu medida».
     await clic([...panel.querySelectorAll<HTMLButtonElement>('.opcion')].find((b) => b.textContent!.startsWith('Personalizada'))!);
     expect(JSON.parse(localStorage.getItem('configurador-diseno:v1')!).visual.paleta).toBe('personalizada');
-    expect(fichas().find((f) => f!.startsWith('Color'))).toBe('ColorA tu medida');
 
     // La nota del paso se escribe acá también.
     expect(panel.querySelector('.nota textarea')).not.toBeNull();
@@ -196,16 +233,14 @@ describe('Molde (C2)', () => {
     await act(async () => panel.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true })));
     expect(caja.querySelector('.molde-ajustes')).toBeNull();
     expect(ideas().length).toBeGreaterThan(0);
+    expect(fichas().find((f) => f!.startsWith('Color'))).toBe('ColorA tu medida');
   });
 
   it('la ficha Estilo ajusta la sensación sin pisar el color elegido', async () => {
     await montar('proyecto');
     await clic(idea('Landing'));
+    await avanzar('color');
     await clic(ideas()[0]);
-    await clic(ideas()[0]);
-    await clic(ideas()[0]);
-    await clic(ideas()[0]);
-    expect(pasoActual()).toBe('piezas');
     await clic([...caja.querySelectorAll<HTMLButtonElement>('.molde-ficha')].find((f) => f.textContent!.startsWith('Estilo'))!);
     const colorAntes = fichas().find((f) => f!.startsWith('Color'));
     await clic(conBoton('Ajustes finos'));
@@ -215,9 +250,9 @@ describe('Molde (C2)', () => {
     expect(panel.querySelector('[data-paso="forma"]')).not.toBeNull();
     const opciones = [...panel.querySelectorAll<HTMLButtonElement>('[data-paso="direccion"] .opcion')];
     await clic(opciones.find((b) => b.getAttribute('aria-pressed') !== 'true')!);
-    expect(fichas().find((f) => f!.startsWith('Color'))).toBe(colorAntes);
     await clic(conBoton('Listo'));
     expect(caja.querySelector('.molde-ajustes')).toBeNull();
+    expect(fichas().find((f) => f!.startsWith('Color'))).toBe(colorAntes);
   });
 
   it('un paso sin proyecto vuelve a Proyecto', async () => {

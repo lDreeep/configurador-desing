@@ -3,7 +3,7 @@
 // para que las fichas y la página sobrevivan a recargar.
 
 import { useEffect, useState } from 'react';
-import { faltanObligatorias, rondasDe, type ClaveRonda, type Ronda } from '../rondas';
+import { faltanObligatorias, pasosDe, rondasDe, type ClaveRonda, type Ronda } from '../rondas';
 import type { Config, PasoId } from '../tipos';
 
 export const CLAVE_ELEGIDAS = 'molde:elegidas';
@@ -48,9 +48,19 @@ export function useElegidas() {
   return [elegidas, setElegidas] as const;
 }
 
-/** La primera ronda sin elegir (las obligatorias van primero en `rondasDe`), o `listo` si no queda ninguna. */
+/** Las rondas del recorrido corto (PLAN.md §10), en orden: las de cada paso de `pasosDe`, una tras otra. */
+export const rondasDelRecorrido = (c: Config): Ronda[] => pasosDe(c).flatMap((p) => p.rondas);
+
+/** La primera ronda del recorrido sin elegir, o `listo` si no queda ninguna. Las de «Ajustar» no se piden. */
 export function siguiente(c: Config, elegidas: ReadonlySet<ClaveRonda>): string {
-  return rondasDe(c).find((r) => !elegidas.has(r.clave))?.clave ?? LISTO_MOLDE;
+  return rondasDelRecorrido(c).find((r) => !elegidas.has(r.clave))?.clave ?? LISTO_MOLDE;
+}
+
+/** La ronda que viene después de `clave` en el recorrido, o `listo` tras la última. Una de «Ajustar» se queda donde está. */
+export function despuesDe(c: Config, clave: ClaveRonda): string {
+  const rondas = rondasDelRecorrido(c);
+  const i = rondas.findIndex((r) => r.clave === clave);
+  return i < 0 ? clave : (rondas[i + 1]?.clave ?? LISTO_MOLDE);
 }
 
 /** Qué se muestra para un paso de la URL: una ronda, el inicio o el final. Un paso que no corresponde se corrige. */
@@ -69,7 +79,7 @@ export function resolverPaso(c: Config, elegidas: ReadonlySet<ClaveRonda>, paso:
 }
 
 /**
- * Elegir una opción: aplica la ronda, la marca como elegida y dice qué ronda sigue.
+ * Elegir una opción: aplica la ronda, la marca como elegida y dice qué ronda sigue (la misma, si es de «Ajustar»).
  * Cambiar de proyecto conserva color, estilo, piezas y letra; las rondas de la rama anterior se vuelven a elegir.
  */
 export function elegir(c: Config, elegidas: ReadonlySet<ClaveRonda>, ronda: Ronda, id: string) {
@@ -77,7 +87,7 @@ export function elegir(c: Config, elegidas: ReadonlySet<ClaveRonda>, ronda: Rond
   const disponibles = new Set(rondasDe(config).map((r) => r.clave));
   const nuevas = new Set([...elegidas, ronda.clave].filter((k) => disponibles.has(k)));
   if (!config.proyecto.rubro) nuevas.delete('rubro');
-  return { config, elegidas: nuevas as ReadonlySet<ClaveRonda>, siguiente: siguiente(config, nuevas) };
+  return { config, elegidas: nuevas as ReadonlySet<ClaveRonda>, siguiente: despuesDe(config, ronda.clave) };
 }
 
 /** El nombre de lo elegido en una ronda, para su ficha. */
