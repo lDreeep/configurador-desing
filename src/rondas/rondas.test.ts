@@ -96,6 +96,25 @@ describe('rondas de Molde (C1)', () => {
     }
   });
 
+  it('Color después de Estilo ofrece todas y solo las paletas que pasan AA (I4)', () => {
+    const paletas = Object.keys(PALETAS) as (keyof typeof PALETAS)[];
+    const base = conTipo('landing');
+    // Solo estilos alcanzables en el recorrido: retro_os no pasa AA con ninguna paleta (A3).
+    for (const { id } of ESTILO.opciones(base)) {
+      const c = ESTILO.aplicar(base, id, { elegidas: new Set<ClaveRonda>(['proyecto', 'rubro']) });
+      const opciones = COLOR.opciones(c);
+      expect(opciones.length, id).toBeGreaterThan(0);
+      expect(opciones.map((o) => o.id).sort(), id).toEqual(paletas.filter((p) => pasaAA(p, id as EstiloId)).sort());
+      for (const op of opciones) {
+        const elegida = COLOR.aplicar(c, op.id);
+        expect(elegida.visual.estilo).toBe(id);
+        expect(pasaAA(elegida.visual.paleta as keyof typeof PALETAS, id as EstiloId), `${id}/${op.id}`).toBe(true);
+      }
+    }
+    const brutal = ESTILO.aplicar(base, 'neobrutalismo');
+    expect(COLOR.opciones(brutal).some((o) => o.id === 'papel')).toBe(false);
+  });
+
   it('elegir estilo no cambia el color, ni la letra o las piezas si ya se eligieron', () => {
     let c = COLOR.aplicar(conTipo('landing'), 'papel');
     c = LETRA.aplicar(c, 'fraunces+dm_sans');

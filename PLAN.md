@@ -625,13 +625,20 @@ fichas, como hoy los ajustes finos. No se borra ningún catálogo ni cambia el e
     las ideas siguen saliendo del centro, encima de ella (se mantiene la decisión 3, con arrastrar al
     centro). Al scrollear o tocar la página, las ideas se recogen arriba, en el botón de la pregunta;
     tocarlo las vuelve a abrir. No hubo maqueta en `maqueta/`: se eligió mirando la versión programada.
-  - **Queda para I4:** `DESIGN.md` §5, §8 y §12 y `CLAUDE.md`; sumar al e2e scrollear la página y tocar un
+  - **Resuelto en I4 (se conserva el pendiente original como registro):** `DESIGN.md` §5, §8 y §12 y `CLAUDE.md`; sumar al e2e scrollear la página y tocar un
     botón de la muestra. Con Estilo antes que Color, la ronda Color no filtra las paletas que no pasan AA
     con el estilo ya elegido (antes Estilo filtraba por paleta): revisarlo en los datos (`comunes.ts`).
-- [ ] **I4 · Cierre** — Sonnet 5.5 · ChatGPT: Sol · depende de I2 e I3
+- [x] **I4 · Cierre** — Sonnet 5.5 · ChatGPT: Sol · depende de I2 e I3
   - e2e táctil con el recorrido nuevo: scrollear la página con una ronda abierta, tocar un botón de la
     muestra, llegar al final y descargar desde el botón de la esquina. `DESIGN.md` §5, §8 (decisión)
     y §12; `CLAUDE.md` (estructura).
+  - Hecha 2026-11-11: e2e con gesto táctil real sobre lienzo y vista previa, ideas que se recogen y
+    reabren, respuesta del botón de muestra sin cambiar ronda ni configuración, final y descargas
+    DESIGN.md/HTML desde la esquina, con y sin movimiento reducido. Capas aisladas para que la base
+    no intercepte los toques de la vista previa. Color filtra por AA con el estilo elegido, con test
+    de regresión; prueba de arrastre espera dos cuadros en vez de un tiempo fijo. Documentación en
+    DESIGN.md §5, D94–D95 y §12, y estructura en CLAUDE.md. Verificados typecheck, 210 tests, lint,
+    peso (201,7 kB de 250 kB) y test:e2e (incluye landing/dashboard con axe en escritorio y celular).
 
 **Orden con la tanda H:** I1 → I2 e I3 en paralelo → I4. H3 (celulares) y H5 (el archivo con otras IA)
 pueden ir ya. **H4 (pruebas con personas) va después de I4**: no tiene sentido probar un recorrido

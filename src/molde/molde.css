@@ -34,7 +34,8 @@
 /* La página trae sus propios z-index: se aíslan para que nada de ella quede encima de las ideas. */
 .molde-lienzo { isolation: isolate; }
 /* La página se usa mientras se arma (I3): cada capa se scrollea como una página. */
-.molde-capa { position: absolute; inset: 0; overflow: hidden auto; overscroll-behavior: contain; }
+/* Cada página conserva sus z-index dentro de su capa: la base nunca tapa la vista previa. */
+.molde-capa { position: absolute; inset: 0; overflow: hidden auto; overscroll-behavior: contain; isolation: isolate; }
 .molde-capa > .pg { min-height: 100%; }
 /* La vista previa se abre en círculo desde el centro, sobre la página */
 .molde-prev { clip-path: circle(0 at 50% 50%); transition: clip-path 220ms ease-in; }

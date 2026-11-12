@@ -1,11 +1,11 @@
 import { rubrosDe, rubroPorId } from '../rubros';
-// Las rondas que ve todo proyecto: Proyecto → Rubro → Color → Layout → Estilo (obligatorias)
-// y Piezas · Letra · Entrada (opcionales). Las propias de cada tipo están en ramas.ts.
+// Registro de rondas comunes. El orden del recorrido corto lo define pasos.ts:
+// Proyecto → Rubro → Layout → Estilo → Color. Las propias de cada tipo están en ramas.ts.
 
 import { DISENO_POR_ESTILO } from '../botones-por-estilo';
 import { APARICIONES, LECTURAS, COMBINACIONES, DENSIDADES, DIRECCIONES, FUENTES, MOVIMIENTOS, PALETAS, TIPOS_PROYECTO } from '../catalogo';
 import { ICONOS, TONOS } from '../catalogo-textos';
-import { estilosPara, LISTA_ESTILOS } from '../compatibilidad';
+import { estilosPara, LISTA_ESTILOS, pasaAA } from '../compatibilidad';
 import { aplicarTipo } from '../estado';
 import { ESTILOS, LAYOUTS } from '../estilos-visuales';
 import { aplicarPaquete, FAMILIAS, familiasPara, paqueteN } from '../familias';
@@ -61,11 +61,13 @@ export const COLOR: Ronda = {
   ficha: 'Color',
   pregunta: '¿Qué colores?',
   obligatoria: true,
-  // Se elige antes que el estilo: van primero las paletas que declaran los estilos recomendados para el tipo.
-  // D13 antepone las recomendaciones del rubro.
+  // I4: Color va después de Estilo; se conservan las recomendaciones de tipo y rubro,
+  // pero nunca se ofrece una paleta que no pase AA con el estilo que ya está en la página.
   opciones: (c) => {
     const rec = recs(c).estilos.flatMap((e) => ESTILOS[e].paletas);
-    return primeroRecomendados(LISTA_PALETAS, conRubro(recRubro(c)?.paletas, rec)).map(({ id, recomendada }) => ({
+    const estilo = c.visual.estilo;
+    const usables = estilo === 'clasico' ? LISTA_PALETAS : LISTA_PALETAS.filter((id) => pasaAA(id, estilo));
+    return primeroRecomendados(usables, conRubro(recRubro(c)?.paletas, rec)).map(({ id, recomendada }) => ({
       id,
       nombre: PALETAS[id].nombre,
       descripcion: `Modo ${PALETAS[id].modo}`,
@@ -89,8 +91,7 @@ export const LAYOUT: Ronda = {
       descripcion: LAYOUTS[id].descripcion,
       recomendada,
     })),
-  // Las plantillas de autor traen su receta (estilo, colores, letra) en el modo rápido; en Molde el color
-  // y el estilo ya se eligieron antes, así que acá solo cambia el layout.
+  // En Molde solo cambia el layout: la receta de autor no pisa las elecciones de otras rondas.
   aplicar: (c, id) => ({ ...c, visual: { ...c.visual, layout: id as LayoutId } }),
   elegida: (c) => c.visual.layout,
 };
@@ -116,7 +117,7 @@ export const ESTILO: Ronda = {
       // Sin sello si la paleta elegida no está entre las que el estilo declara: se puede, pero no es su receta.
       recomendada: recomendada || (c.visual.paleta !== 'personalizada' && ESTILOS[id].paletas.includes(c.visual.paleta)),
     })),
-  // El estilo trae forma, movimiento, botón y letra; el color ya está elegido y no se toca.
+  // El estilo trae forma, movimiento, botón y letra; conserva el color (se pregunta después).
   // Si la persona ya eligió letra o piezas, tampoco se pisan.
   aplicar: (c, id, ctx) => {
     const e = ESTILOS[id as EstiloId];
