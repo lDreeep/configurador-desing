@@ -20,12 +20,14 @@ function ConUbicacion({ inicial }: { inicial: string }) {
 
 let raiz: Root;
 let caja: HTMLDivElement;
+// Las ideas se abren en dos cuadros. Esperarlos evita arrastrar desde (0, 0) si el runner está ocupado.
+const esperarIdeas = () => act(() => new Promise<void>((resolve) => requestAnimationFrame(() => requestAnimationFrame(() => resolve()))));
 const montar = async (paso = 'inicio') => {
   caja = document.createElement('div');
   document.body.append(caja);
   raiz = createRoot(caja);
   await act(async () => raiz.render(<ConUbicacion inicial={paso} />));
-  await act(() => new Promise((r) => setTimeout(r, 40)));
+  await esperarIdeas();
 };
 const desmontar = () => {
   act(() => raiz.unmount());
@@ -47,7 +49,7 @@ function puntero(el: Element, tipo: string, init: MouseEventInit = {}) {
 }
 const clic = async (el: HTMLElement) => {
   await act(async () => el.click());
-  await act(() => new Promise((r) => setTimeout(r, 40)));
+  await esperarIdeas();
 };
 
 /** Avanza por el recorrido (primera idea, o «Siguiente» donde la ronda queda abierta) hasta llegar a una ronda. */

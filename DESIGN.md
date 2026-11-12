@@ -2,7 +2,7 @@
 
 > **Versión del formato:** 0.9.2 (borrador)
 > **Última actualización:** 2026-11-11
-> **Estado:** configurador en v0.2 (10 pasos + export): 8 direcciones, 13 paletas + personalizada, 23 fuentes, botones y movimiento detallados. Falta la primera ronda de pruebas con IA (§9).
+> **Estado:** Molde con recorrido corto de hasta 5 pasos, página usable mientras se arma y descarga de DESIGN.md y HTML al final. Falta la primera ronda de pruebas con IA (§9).
 
 Este documento define **qué archivo exporta el configurador** y **cómo lo tiene que leer una IA** para construir una web o una app. Es también el documento vivo del proyecto: acá se registran las decisiones, lo que aprendemos en las pruebas y lo que falta hacer.
 
@@ -906,6 +906,34 @@ F1 implementa la salida opcional de rubro (§2), fondo animado (§19), scroll y 
 
 Este es el plan de construcción. Estados: `[MVP]` primera versión · `[v0.2]` siguiente · `[futuro]` más adelante · `[idea]` sin decidir.
 
+### Recorrido actual de Molde (I1–I4)
+
+`pasosDe(config)` agrupa las rondas en un máximo de 5 pasos. El contador muestra el grupo;
+la URL identifica la ronda. Proyecto, Rubro, Layout, Estilo y Color son elecciones obligatorias;
+las demás se pueden omitir.
+
+| Paso | Llena | Cómo se elige (implementado) |
+|---|---|---|
+| 1. Qué es | §2, §3 y §4 (plantillas del tipo), recomendaciones por rubro | Proyecto y Rubro dentro del mismo paso |
+| 2. Estructura | §19 y §22 | Layout y Secciones; estas últimas solo para landing, sitio y portfolio cuando el layout las admite |
+| 3. Estilo | §5, §7–§13, §19–§21 y tokens de §16 | Resuelve letra, piezas, iconos, tono, entrada y densidad con los recomendados del estilo, tipo y rubro, sin pisar rondas cambiadas a mano |
+| 4. Color | §6 y §16 | Recomendadas por tipo y rubro primero, filtradas por contraste AA con el estilo ya elegido |
+| 5. Lo propio | §7, §8, §12 o §21, según la rama | Rondas del tipo filtradas por lo que admite el layout; el paso desaparece si no tiene rondas disponibles |
+| Ajustar (fichas, fuera de los pasos) | Secciones de cada decisión y §16 | Letra, Piezas, Iconos, Tono, Entrada y Densidad, además de las rondas fuera del recorrido; las rutas anteriores, como `#/letra`, abren su ficha y sus ajustes finos |
+| Página terminada y descarga | Genera §1, §14–§18 y los archivos con lo elegido | `#/listo` muestra la página entera y usable, sin ideas. «Descargar» fijo en una esquina abre la ventana con DESIGN.md y HTML; «Seguir editando» vuelve al recorrido |
+
+La página y la vista previa se pueden scrollear y tocar durante una ronda. Al hacerlo, las ideas
+se recogen en el botón de la pregunta y se vuelven a abrir tocándolo. Los enlaces internos llevan
+a su sección; los demás enlaces y los formularios de muestra no navegan ni envían datos.
+Las secciones elegidas mantienen su orden (D92). Agrupar las elecciones no agrega campos al export
+ni cambia su versión (0.9.2). La selección por rondas del fondo animado sigue pendiente de conexión.
+
+### Controles detallados y estados anteriores
+
+La tabla siguiente conserva el registro de construcción de cada control. Sus números ya no son
+los pasos del recorrido: los controles de `src/pasos/` se reutilizan en los ajustes finos de las fichas.
+Los estados futuros conservan su alcance pendiente.
+
 | Paso del configurador | Llena | Estado | Cómo se elige |
 |---|---|---|---|
 | 1. ¿Qué es tu proyecto? | §2, §4 (parcial) | `[MVP]` hecho | Tipo con tarjetas visuales; nombre, descripción y objetivo como texto corto |
@@ -1291,10 +1319,10 @@ Formato: fecha · decisión · por qué · alternativas descartadas.
 | D82 | 2026-11-11 | **Ver antes de elegir:** pasar el mouse muestra la idea en toda la página y la opción se vuelve translúcida; clic o arrastrar al centro la elige. En celular: un toque muestra y «Usar» confirma | Elegir viendo el resultado real, no una miniatura | Elegir y recién después ver |
 | D83 | 2026-11-11 | **Nunca vuelve a blanco:** lo elegido queda; solo «Empezar de cero» vacía la página | Evita perder trabajo por un clic | Reiniciar al cambiar de ronda |
 | D84 | 2026-11-11 | **Sin modo avanzado aparte:** lo elegido queda como fichas; tocar una vuelve a abrir esa ronda y sus ajustes finos | Un solo recorrido en vez de dos modos | Mantener modo rápido y avanzado separados |
-| D85 | 2026-11-11 | **Ramas:** cada tipo de proyecto ve sus propias rondas y recomendaciones, no todo el catálogo (una landing ve fondo animado y scroll; un sistema de stock ve estadísticas) | Cada proyecto necesita decisiones distintas | Mismas rondas para todos |
+| D85 | 2026-11-11 | [ampliada por D94] **Ramas:** cada tipo de proyecto ve sus propias rondas y recomendaciones, no todo el catálogo (una landing ve fondo animado y scroll; un sistema de stock ve estadísticas) | Cada proyecto necesita decisiones distintas | Mismas rondas para todos |
 | D86 | 2026-11-11 | **Scroll combinable:** se puede elegir más de un efecto de scroll, uno por zona (`PLAN.md` §7.4) | Los efectos de zonas distintas no se pisan y dan más combinaciones | Un único efecto por página |
 | D87 | 2026-11-11 | **Portada:** casi en blanco, con piezas en movimiento; al bajar se arman páginas al azar y «Empezar» sube y queda fijo | Mostrar el producto en acción sin texto de más | Portada con explicación larga |
-| D88 | 2026-11-11 | **Descarga:** `DESIGN.md` y, además, la página armada en HTML. Orden de rondas: Proyecto → Rubro → Color → Layout → Estilo (obligatorias), luego Piezas · Letra · Entrada · rondas de la rama (opcionales), y Ajustar → Descargar | La persona se lleva algo que ya puede abrir, y puede terminar cuando quiera | Solo `DESIGN.md` |
+| D88 | 2026-11-11 | **Descarga:** `DESIGN.md` y, además, la página armada en HTML. [orden reemplazado por D94] Orden de rondas: Proyecto → Rubro → Color → Layout → Estilo (obligatorias), luego Piezas · Letra · Entrada · rondas de la rama (opcionales), y Ajustar → Descargar | La persona se lleva algo que ya puede abrir, y puede terminar cuando quiera | Solo `DESIGN.md` |
 | D89 | 2026-11-11 | Motor de scroll combinable (`src/scroll.ts`, tarea D7): cada efecto tiene zona, CSS y versión quieta; se combinan hasta 3, uno por zona. Elegir uno de una zona ocupada lo reemplaza, elegir uno ya puesto lo saca y, si pasan de 3, sale el más viejo. Solo animan `opacity`, `translate`, `scale`, `filter` y `clip-path` como propiedades sueltas, dentro de @supports y prefers-reduced-motion. En Molde la ronda Scroll queda abierta para sumar efectos («Seguir» pasa a la siguiente) y la página se baja sola. Los 14 efectos de §7.4 de PLAN.md (4 portada, 4 texto, 4 galería, 2 página); tres usan `background-size`, `background-color` o un `@property` entero porque no hay otra forma; el export los suma en F1 | Con propiedades sueltas, un efecto no pisa el `transform` del estilo ni la animación de la entrada, y dos efectos de zonas distintas nunca animan el mismo elemento (lo verifica un test) | Rechazar el clic cuando la zona está ocupada (obliga a sacar a mano); librerías de scroll (D72) |
 | D90 | 2026-11-11 | 12 layouts genéricos más (46 en total, 33 genéricos), cada uno con una idea propia: línea de tiempo que se pinta al bajar y termina en el botón, antes y después con una barra que se arrastra, mapa que responde a la lista, carta impresa con talón, agenda semanal con la hora de ahora, tablero con una tarjeta a medio mover, muro de publicaciones, documentación con índice, link en bio, compra en una sola página, portada con buscador y pantalla partida con scroll independiente. Van al final de la lista; los códigos de combinación suman el prefijo `~` para los layouts de índice 36 o más. Las pantallas de app y las páginas de un solo fin no llevan el argumento de landing, y link en bio tampoco lleva pie | Tarea D3 de `PLAN.md`: las ramas de Molde (tienda, app, blog, sitio) necesitan estructuras propias, no variaciones del hero partido | Reordenar la lista (rompe los códigos ya compartidos); un carácter más para todos los códigos (rompe los viejos) |
 | D91 | 2026-11-11 | Rondas opcionales de iconos, tono y densidad (tarea D11, `src/rondas/comunes.ts`). `Config` suma `iconos`, `tono` y `visual.densidad` (todos `null` hasta elegir). Iconos (8 opciones, `ICONOS`) llena §11; Tono (6 opciones con frase de ejemplo, `TONOS`) llena §13; Densidad (`DENSIDADES`) reemplaza a la de la dirección en §8 y en `--espacio-*` de la vista previa. §11 y §13 se exportan solo si se eligieron, para no inventar lo que la persona no decidió. La densidad va en todos los tipos (al final de la rama; en dashboard, en su lugar de la tabla 7.1). La ronda de lectura del blog sigue pendiente | Tenían formato definido pero nunca se habían implementado; son ideas chicas que todos pueden querer | Exportar §11 y §13 siempre con valores por defecto |
@@ -1308,6 +1336,13 @@ Formato: fecha · decisión · por qué · alternativas descartadas.
 ---
 
 Decisión 2026-11-08: plantilla «Tracción» aprobada a partir de una maqueta visual. Se suma autor_concesionario con receta azul eléctrico, Archivo y Work Sans, selector de vehículos, ficha y consulta simulada. Se conserva el orden de los layouts existentes para mantener los códigos compartidos. Las imágenes son ilustraciones generadas con IA, identificadas como tales.
+
+Decisiones de cierre del recorrido corto (PLAN.md §10):
+
+| # | Fecha | Decisión | Motivo | Alternativa descartada |
+|---|---|---|---|---|
+| D94 | 2026-11-11 | Qué es → Estructura → Estilo → Color → Lo propio, máximo 5 pasos. Las ramas se filtran por tipo y layout. Letra, Piezas, Iconos, Tono, Entrada y Densidad salen de los recomendados y se cambian desde Ajustar, sin pisar elecciones manuales. Color filtra por AA con el estilo elegido. Amplía D85 y reemplaza el orden de D88 | Menos pasos y decisiones pertinentes | Preguntar cada ronda por separado |
+| D95 | 2026-11-11 | Lienzo y vista previa se scrollean y responden a toques; las ideas siguen saliendo del centro (D81) y se recogen arriba al usar la página. Enlaces internos llevan a su sección; los demás enlaces y formularios no navegan ni envían. Final: página entera sin ideas, Descargar fijo en la esquina abre la ventana de archivos y Seguir editando vuelve al recorrido | Probar el diseño mientras se arma y ver el resultado antes de descargar | Lienzo inerte, bandeja permanente o esconder la página al terminar |
 
 ## 9. Registro de pruebas
 
@@ -1430,6 +1465,7 @@ Lo que todavía no tiene lugar en §5. Se mueve allá cuando se decide hacerlo.
 
 | Versión | Fecha | Cambios |
 |---|---|---|
+| 0.9.2 (sin cambio de formato) | 2026-11-11 | I4: cierre de I1–I3; §5 documenta los grupos y Ajustar, D94–D95 registran la página usable y el final. Color filtra las paletas por AA con el estilo elegido. Se aíslan las capas para que la base no intercepte la vista previa. E2E táctil cubre scroll real con ideas abiertas en lienzo y vista previa, botón de muestra y descargas desde la esquina, también con movimiento reducido. |
 | 0.9.2 | 2026-11-11 | D14: §7 suma `lectura` opcional para blogs (`ancho_maximo`, `tamano`, `interlineado`) y su CSS compartido con la página; `largo_de_linea_max` toma el ancho elegido. §16 suma dos tokens de lectura solo con elección activa. La escala general de la UI se conserva. Un archivo 0.9.1 sigue siendo válido. |
 | 0.9.1 | 2026-11-11 | F1 agrega rubro y fondo animado opcionales, exporta la combinación de scroll y el CSS real de las entradas. Incluye JS solo para luz_cursor. Los campos ausentes conservan el comportamiento anterior, por lo que un archivo 0.9.0 sigue siendo válido. |
 | 0.9.0 | 2026-11-11 | Secciones nuevas opcionales: §11 (`iconos`: `libreria`, `estilo`, `grosor`, `tamano`) y §13 (`voz`, `tratamiento`, `largo_de_textos`), solo si se eligieron; §8 `densidad` puede venir de la ronda Densidad. Sección nueva §22 «Secciones de la página» (opcional; solo landing, sitio y portfolio): `orden` y, por cada sección, `id`, `nombre`, `para_que`, `diseno`, `diseno_nombre` y `estructura`; con §22, §19 no escribe `layout_argumento`. Un archivo 0.8.9 sigue siendo válido. |

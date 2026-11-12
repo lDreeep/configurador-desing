@@ -46,8 +46,8 @@ Antes de dar una tarea por terminada: `npm run typecheck && npm test`.
 | `src/rubros.ts` | Los 39 rubros por tipo de proyecto, con su contenido de muestra. Es **datos**; los largos de texto no pasan los de `contenido-tipo.ts` (lo verifica el test). |
 | `src/recomendados.ts` | Qué layouts, estilos, botones, cajas y componentes se recomiendan para cada tipo de proyecto. Es **datos**; las rondas los muestran primero (nunca esconden el resto). |
 | `src/estilos.css` | Estilos de la interfaz (`--ui-*`) y de la vista previa (`.pv-*`, solo tokens exportados). |
-| `src/molde/` | Recorrido principal montado por `App.tsx`: `Molde.tsx` (lienzo, ideas, fichas y descargas), `Portada.tsx` + `portada.css` (portada E2, carga aparte), `recorrido.ts` (rondas elegidas y ajustes), `Ajustes.tsx` (controles reutilizados de `PASOS`, carga aparte) y `molde.css`. Rutas `#/inicio`, `#/<ronda>` y `#/listo`. |
-| `src/rondas/` | Rondas de Molde: `ronda.ts` (tipo `Ronda`), `comunes.ts` (las de cualquier proyecto), `ramas.ts` (las de cada tipo de proyecto) e `index.ts` (`rondasDe(config)`). Es **datos**, sin UI. |
+| `src/molde/` | Recorrido principal montado por `App.tsx`: `Molde.tsx` (hasta 5 pasos agrupados, lienzo y vista previa usables que recogen las ideas al tocarlos, fichas Ajustar y final a pantalla completa con descarga en una ventana), `Portada.tsx` + `portada.css` (portada E2, carga aparte), `recorrido.ts` (`rondasDelRecorrido`, `despuesDe`, rondas elegidas y ajustes), `Ajustes.tsx` (controles reutilizados de `PASOS`, carga aparte) y `molde.css`. Rutas `#/inicio`, `#/<ronda>` y `#/listo`. |
+| `src/rondas/` | Rondas de Molde: `ronda.ts` (tipo `Ronda`), `comunes.ts` (las de cualquier proyecto), `ramas.ts` (las de cada tipo de proyecto) e `index.ts` (`rondasDe(config)`, conservado para las fichas); `pasos.ts` agrupa Qué es → Estructura → Estilo → Color → Lo propio (`pasosDe`, `rondasDeAjustar`, `pasoDeRonda`); `admite-layout.ts` filtra por las capacidades de los 46 layouts, sin entrar en la carga inicial. `comunes.ts` aplica valores por defecto sin pisar elecciones manuales y filtra Color por AA con el estilo elegido. Es **datos**, sin UI. |
 | `src/fondos-animados.ts` | Los 16 fondos animados (CSS, y el JS mínimo de `luz_cursor`). Datos base en `fondos-animados-base.ts`. Se exportan en §19. |
 | `src/scroll.ts` | Los 14 efectos de scroll combinables, uno por zona de la página. Es **datos**; datos base en `scroll-base.ts`. Se exportan en §12. |
 | `src/navegacion.ts` | Ronda en la URL y localStorage, historial Atrás/Adelante y migración de rutas y ubicaciones anteriores (`rapido`, `detallado`, `avanzado`, `molde`) a `#/<ronda>`. |
@@ -61,7 +61,7 @@ Antes de dar una tarea por terminada: `npm run typecheck && npm test`.
 | `src/pasos/visual.tsx`, `src/pasos/PasoExportar.tsx` | Controles reutilizados por los ajustes finos: dirección, color, tipografía, forma, botones y movimiento (`visual.tsx`), y exportar (`PasoExportar.tsx`). |
 | `src/export/estructuras-layout.ts` | Cómo se arma cada layout de `LAYOUTS` para el export (§19). Al sumar un layout, sumar acá su estructura; TypeScript avisa si falta. |
 | `src/export/aparicion.ts` | Reutiliza las reglas y los keyframes de `estilos.css` para la aparición de los elementos en el export. |
-| `e2e/molde-tactil.e2e.mjs`, `scripts/` | Prueba de Molde en celular (`npm run test:e2e`), y `scripts/peso-inicial.mjs` (`npm run peso`) y `scripts/comprobar-concesionario.mjs` (CI). |
+| `e2e/molde-tactil.e2e.mjs`, `scripts/` | Prueba de Molde en celular (`npm run test:e2e`): recorrido corto, gesto táctil real sobre lienzo y vista previa con ideas abiertas, botón de muestra y descargas desde la esquina, con y sin movimiento reducido; `e2e/punta-a-punta.e2e.mjs` prueba landing y dashboard con axe en escritorio y celular, y `scripts/peso-inicial.mjs` (`npm run peso`) y `scripts/comprobar-concesionario.mjs` (CI). |
 
 ## Carga inicial
 
