@@ -1,0 +1,445 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Molde · fondos de la portada (maqueta H7)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700&family=Inter:wght@400;500;600&family=Fraunces:wght@600&family=Playfair+Display:wght@600&family=Space+Grotesk:wght@600&family=Unbounded:wght@600&family=Syne:wght@700&family=JetBrains+Mono:wght@600&family=Caveat:wght@700&family=Bebas+Neue&family=Instrument+Serif&family=DM+Serif+Display&display=swap">
+<style>
+  /* El marco de Molde (yeso, tinta, silicona), igual que src/molde/molde.css. */
+  :root {
+    --yeso: #f7f8fa; --superficie: #ffffff; --tinta: #1d1730; --tinta-2: #5a5470; --linea: #d5d9e0;
+    --silicona: #d81e6a; --sobre-silicona: #ffffff; --sombra: rgba(29, 23, 48, .18);
+    --f-marca: 'Bricolage Grotesque', 'Trebuchet MS', sans-serif;
+    --curva: cubic-bezier(.2, .8, .2, 1);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --yeso: #15121c; --superficie: #2a2338; --tinta: #f1eef6; --tinta-2: #b0a9c0; --linea: #443b58;
+      --silicona: #ff6ba3; --sobre-silicona: #1d1730; --sombra: rgba(0, 0, 0, .55); color-scheme: dark; }
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; }
+  body { margin: 0; overflow: hidden; background: var(--yeso); color: var(--tinta); font: 16px/1.45 Inter, system-ui, sans-serif; }
+  button { font: inherit; color: inherit; border: 0; background: none; cursor: pointer; }
+  :focus-visible { outline: 3px solid var(--silicona); outline-offset: 3px; }
+
+  .portada { position: fixed; inset: 0; overflow: hidden; touch-action: none; }
+  .barra { position: absolute; inset: 0 0 auto; height: 64px; z-index: 8; display: flex; align-items: center; padding: 0 20px; pointer-events: none; }
+  .marca { display: flex; align-items: center; gap: 9px; border-radius: 10px; background: var(--yeso); font: 700 24px/1 var(--f-marca); letter-spacing: -.02em; }
+  .marca i { width: 19px; height: 19px; border: 4px solid var(--silicona); border-radius: 6px; }
+
+  /* El fondo: un lienzo para los tres dibujados y la página de muestra para la linterna. */
+  .fondo { position: absolute; inset: 64px 16px 88px; border-radius: 22px; overflow: hidden; contain: strict; }
+  .fondo canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .fondo [hidden] { display: none; }
+  .etiqueta { position: absolute; left: 0; top: 0; z-index: 2; border-radius: 99px; padding: 6px 10px; white-space: nowrap; font-size: 12px; font-weight: 600;
+    background: var(--tinta); color: var(--yeso); will-change: transform; pointer-events: none; }
+
+  /* Linterna (la de hoy): la página en gris y, dentro de la lente, la misma página con un estilo puesto. */
+  .pagina { position: absolute; inset: 0; padding: clamp(16px, 3vw, 40px); background: var(--p-fondo); color: var(--p-texto); font-family: var(--p-letra); }
+  .pagina nav { display: flex; gap: 24px; align-items: center; font-weight: 600; }
+  .pagina nav b { margin-right: auto; font-size: 20px; }
+  .pagina h2 { margin: clamp(24px, 6vh, 72px) 0 12px; max-width: 13ch; font: var(--p-peso) clamp(32px, 6vw, 84px)/.98 var(--p-titulos); letter-spacing: -.02em; }
+  .pagina p { margin: 0 0 20px; max-width: 44ch; color: var(--p-suave); }
+  .pagina .boton { display: inline-block; padding: 12px 22px; border-radius: var(--p-radio); background: var(--p-acento); color: var(--p-sobre); font-weight: 600; }
+  .pagina .tarjetas { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 14px; margin-top: clamp(20px, 5vh, 48px); }
+  .pagina .tarjetas div { height: 190px; padding: 16px; border-radius: var(--p-radio); background: var(--p-superficie); border: var(--p-borde); box-shadow: var(--p-sombra); font-weight: 600; }
+  .pagina .tarjetas i { display: block; height: 96px; margin-bottom: 12px; border-radius: calc(var(--p-radio) * .6); background: var(--p-acento); opacity: .85; }
+  .fantasma { --p-fondo: #fff; --p-superficie: #f2f4f8; --p-texto: #121826; --p-suave: #5b6474; --p-acento: #5b6474; --p-sobre: #fff; --p-radio: 12px;
+    --p-letra: Inter, sans-serif; --p-titulos: Inter, sans-serif; --p-peso: 700; --p-borde: 0; --p-sombra: none; opacity: .16; filter: grayscale(1); }
+  .lente { position: absolute; inset: 0; clip-path: circle(min(15vw, 15vh) at 72% 34%); will-change: clip-path; }
+  .aro { position: absolute; left: 0; top: 0; border-radius: 50%; box-shadow: 0 0 0 1.5px var(--tinta), 0 20px 45px -18px var(--sombra); pointer-events: none; }
+  .v0 { --p-fondo: #fff8f4; --p-superficie: #fbe9df; --p-texto: #2a1712; --p-suave: #6e4d44; --p-acento: #c2410c; --p-sobre: #fff; --p-radio: 22px;
+    --p-letra: Inter, sans-serif; --p-titulos: Fraunces, serif; --p-peso: 600; --p-borde: 0; --p-sombra: 0 18px 30px -22px rgba(42, 23, 18, .5); }
+  .v1 { --p-fondo: #fff; --p-superficie: #f0f0f0; --p-texto: #000; --p-suave: #4a4a4a; --p-acento: #ff5a1f; --p-sobre: #000; --p-radio: 0px;
+    --p-letra: 'Space Grotesk', sans-serif; --p-titulos: 'Space Grotesk', sans-serif; --p-peso: 600; --p-borde: 2.5px solid #000; --p-sombra: 6px 6px 0 #000; }
+  .v2 { --p-fondo: #0e0f12; --p-superficie: #1a1c22; --p-texto: #f3f4f6; --p-suave: #a0a6b2; --p-acento: #c6f24e; --p-sobre: #0e0f12; --p-radio: 14px;
+    --p-letra: Inter, sans-serif; --p-titulos: Syne, sans-serif; --p-peso: 700; --p-borde: 1px solid #3a3e48; --p-sombra: none; }
+
+  /* Título y botón, como en la portada real. Nunca va texto directo sobre el fondo: lleva velo. */
+  .centro { position: absolute; left: 50%; top: 36%; transform: translate(-50%, -50%); z-index: 4; width: min(92%, 620px); display: grid; justify-items: center; gap: 16px; text-align: center; pointer-events: none; }
+  /* El velo es una caja difuminada, no un óvalo: en celular el óvalo dejaba las puntas del párrafo sobre el fondo. */
+  .centro::before { content: ''; position: absolute; inset: -18px -6px; z-index: -1; border-radius: 48px; background: var(--yeso); filter: blur(22px); }
+  .centro h1 { margin: 0; font: 700 clamp(36px, 5.4vw, 72px)/.96 var(--f-marca); letter-spacing: -.035em; }
+  .centro p { margin: 0; max-width: 42ch; color: var(--tinta-2); font-size: 18px; }
+  .palabra { color: var(--silicona); }
+  .empezar { position: absolute; left: 50%; top: 64%; translate: -50% -50%; z-index: 6; min-height: 64px; padding: 0 34px; border-radius: 999px;
+    background: var(--silicona); color: var(--sobre-silicona); font-size: 20px; font-weight: 600; transition: scale 140ms; }
+  .empezar:active { scale: .94; }
+
+  /* Controles de la maqueta: qué fondo se mira y cuánto cuesta. */
+  .pie { position: absolute; inset: auto 0 0; z-index: 8; min-height: 88px; display: flex; align-items: center; justify-content: space-between; gap: 12px 20px; flex-wrap: wrap;
+    padding: 10px max(16px, env(safe-area-inset-right, 0px)) calc(10px + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px)); }
+  .selector { display: flex; gap: 4px; margin: 0; padding: 4px; border: 0; border-radius: 16px; background: var(--superficie); box-shadow: 0 0 0 1px var(--linea); }
+  .selector legend { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+  .selector label { position: relative; display: grid; place-items: center; min-height: 44px; padding: 0 16px; border-radius: 12px; font-weight: 600; font-size: 15px; color: var(--tinta-2); cursor: pointer; }
+  .selector input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+  .selector label:has(:checked) { background: var(--tinta); color: var(--yeso); }
+  .selector label:has(:focus-visible) { outline: 3px solid var(--silicona); outline-offset: 2px; }
+  .medida { margin: 0; color: var(--tinta-2); font-size: 14px; font-variant-numeric: tabular-nums; }
+  .medida b { color: var(--tinta); font-weight: 600; }
+  @media (max-width: 760px) {
+    .fondo { inset: 60px 12px 148px; }
+    .pie { justify-content: center; min-height: 148px; }
+    .selector label { padding: 0 11px; font-size: 14px; }
+    .centro p { font-size: 16px; }
+  }
+</style>
+</head>
+<body>
+<div class="portada" id="portada">
+  <header class="barra"><span class="marca"><i aria-hidden="true"></i>Molde</span></header>
+
+  <div class="fondo" id="fondo" aria-hidden="true">
+    <div id="linterna">
+      <div class="pagina fantasma"></div>
+      <div class="lente" id="lente">
+        <div class="pagina v0"></div>
+        <div class="pagina v1" hidden></div>
+        <div class="pagina v2" hidden></div>
+      </div>
+      <i class="aro" id="aro"></i>
+    </div>
+    <canvas id="lienzo" hidden></canvas>
+    <span class="etiqueta" id="etiqueta"></span>
+  </div>
+
+  <div class="centro">
+    <h1>Armá el diseño<br>de tu <span class="palabra" id="palabra">página</span></h1>
+    <p>Del botón salen ideas. Las que elegís se quedan en la página, y al final te la llevás armada.</p>
+  </div>
+  <button type="button" class="empezar">Empezar</button>
+
+  <footer class="pie">
+    <fieldset class="selector">
+      <legend>Fondo de la portada</legend>
+      <label><input type="radio" name="fondo" value="linterna" checked>Linterna</label>
+      <label><input type="radio" name="fondo" value="reticula">Retícula</label>
+      <label><input type="radio" name="fondo" value="letras">Letras</label>
+      <label><input type="radio" name="fondo" value="colores">Colores</label>
+    </fieldset>
+    <p class="medida" id="medida" role="status">Midiendo…</p>
+  </footer>
+</div>
+
+<template id="molde-pagina">
+  <nav><b>Cuadra</b><span>Tienda</span><span>Envíos</span></nav>
+  <h2>Ropa de barrio, hecha acá</h2>
+  <p>Remeras, buzos y gorras de talleres del barrio. Envíos a todo el país.</p>
+  <span class="boton">Ver la tienda</span>
+  <div class="tarjetas"><div><i></i>Remera lisa</div><div><i></i>Buzo canguro</div><div><i></i>Gorra</div><div><i></i>Medias</div></div>
+</template>
+
+<script>
+(() => {
+  'use strict';
+  // Datos del catálogo real (src/catalogo.ts): paletas y combinaciones de letra.
+  const PALETAS = [
+    ['Azul eléctrico', '#2F5BFF', '#F2F4F8', '#121826', '#C9D0DE'],
+    ['Bosque', '#1F7A4D', '#E9EDE3', '#17251C', '#C3CBBA'],
+    ['Coral cálido', '#C2410C', '#FBE9DF', '#2A1712', '#E8C6B4'],
+    ['Caramelo', '#6D28D9', '#FFEFC7', '#1F1A3D', '#EBD39B'],
+    ['Tinta y lima', '#C6F24E', '#1A1C22', '#0E0F12', '#3A3E48'],
+    ['Menta', '#0F766E', '#E2F3EA', '#0F2A1F', '#B9DCC9'],
+    ['Lavanda', '#6741D9', '#EFEAFB', '#1E1636', '#D3CAEE'],
+  ];
+  const LETRAS = [
+    ['Cálida', '600 1em Fraunces, serif'], ['Elegante', "600 1em 'Playfair Display', serif"], ['Tech', "600 1em 'Space Grotesk', sans-serif"],
+    ['Juguetona', '600 .82em Unbounded, sans-serif'], ['Creativa', '700 1em Syne, sans-serif'], ['Developer', "600 .86em 'JetBrains Mono', monospace"],
+    ['A mano', '700 1.2em Caveat, cursive'], ['Afiche', "400 1.15em 'Bebas Neue', sans-serif"], ['Editorial', "400 1.1em 'Instrument Serif', serif"],
+    ['Con estilo', "400 1em 'DM Serif Display', serif"],
+  ];
+  const ESTILOS = ['Cálido · Coral cálido', 'Neobrutal · Alto contraste', 'Oscuro · Tinta y lima'];
+  const PALABRAS = ['página', 'tienda', 'landing', 'app', 'portfolio', 'sistema'];
+
+  const $ = (id) => document.getElementById(id);
+  const portada = $('portada'), fondo = $('fondo'), lienzo = $('lienzo'), linterna = $('linterna'), lente = $('lente'), aro = $('aro');
+  const etiqueta = $('etiqueta'), palabra = $('palabra'), medida = $('medida');
+  const ctx = lienzo.getContext('2d');
+  for (const p of document.querySelectorAll('.pagina')) p.append($('molde-pagina').content.cloneNode(true));
+  const variantes = [...lente.children];
+
+  const quieto = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const oscuro = window.matchMedia('(prefers-color-scheme: dark)');
+  let color = {};
+  const leerColores = () => {
+    const cs = getComputedStyle(document.documentElement);
+    for (const k of ['yeso', 'superficie', 'tinta', 'tinta-2', 'linea', 'silicona']) color[k] = cs.getPropertyValue('--' + k).trim();
+  };
+
+  let W = 0, H = 0, chico = false, actual = 'linterna', turno = 0;
+  // El «cursor»: el mouse, el dedo mientras toca o, si no hay ninguno, un paseo solo (así se mueve en celular).
+  let puntero = null, cx = 0, cy = 0;
+  const paseo = (t) => [W * (.5 + .34 * Math.sin(t * .00037)), H * (.44 + .26 * Math.sin(t * .00053 + 1))];
+
+  // ---------- Linterna (la de hoy) ----------
+  const Linterna = {
+    nombre: () => ESTILOS[turno % ESTILOS.length],
+    preparar() {
+      this.radio = Math.min(W, H) * (chico ? .3 : .24);
+      aro.style.width = aro.style.height = this.radio * 2 + 'px';
+    },
+    cuadro() {
+      const r = this.radio;
+      lente.style.clipPath = `circle(${r}px at ${cx}px ${cy}px)`;
+      aro.style.transform = `translate(${cx - r}px,${cy - r}px)`;
+      const v = turno % variantes.length;
+      if (this.v !== v) { variantes.forEach((el, i) => { el.hidden = i !== v; }); this.v = v; }
+      return r + 8;
+    },
+  };
+
+  // ---------- Retícula que se curva ----------
+  // Las columnas y las guías de una maqueta. Cada punto de cada línea es un resorte: el cursor lo empuja
+  // y vuelve con rebote.
+  const Reticula = {
+    nombre: () => `${this_cols()} columnas`,
+    preparar() {
+      const cols = this_cols(), margen = Math.max(20, W * .06), canal = chico ? 14 : 24;
+      const ancho = (W - margen * 2 - canal * (cols - 1)) / cols;
+      const paso = 28, filas = Math.ceil(H / paso) + 1, largo = Math.ceil(W / paso) + 1;
+      const linea = (n, f) => { const p = new Float32Array(n * 6); for (let i = 0; i < n; i++) { const [x, y] = f(i); p[i * 6] = p[i * 6 + 2] = x; p[i * 6 + 1] = p[i * 6 + 3] = y; } return p; };
+      this.verticales = [];
+      for (let c = 0; c < cols; c++) for (const x of [margen + c * (ancho + canal), margen + c * (ancho + canal) + ancho]) this.verticales.push(linea(filas, (i) => [x, i * paso]));
+      this.horizontales = [];
+      for (let y = 56; y < H; y += chico ? 64 : 56) this.horizontales.push(linea(largo, (i) => [i * paso, y]));
+      this.radio = chico ? 130 : 190;
+    },
+    mover(p) {
+      const R = this.radio, R2 = R * R;
+      for (let i = 0; i < p.length; i += 6) {
+        const ox = p[i], oy = p[i + 1];
+        let tx = ox, ty = oy;
+        const dx = ox - cx, dy = oy - cy, d2 = dx * dx + dy * dy;
+        if (d2 < R2 && d2 > .01) { const d = Math.sqrt(d2), f = (1 - d / R) ** 2 * R * .42 / d; tx += dx * f; ty += dy * f; }
+        p[i + 4] = (p[i + 4] + (tx - p[i + 2]) * .11) * .84;
+        p[i + 5] = (p[i + 5] + (ty - p[i + 3]) * .11) * .84;
+        p[i + 2] += p[i + 4];
+        p[i + 3] += p[i + 5];
+      }
+    },
+    asentar(p) { for (let k = 0; k < 90; k++) this.mover(p); },
+    trazo(p) { ctx.moveTo(p[2], p[3]); for (let i = 6; i < p.length; i += 6) ctx.lineTo(p[i + 2], p[i + 3]); },
+    cuadro(_t, fijo) {
+      const todas = [...this.verticales, ...this.horizontales];
+      for (const p of todas) fijo ? this.asentar(p) : this.mover(p);
+      ctx.clearRect(0, 0, W, H);
+      // Las columnas, apenas teñidas: es lo que distingue una retícula de maquetación de una cuadrícula cualquiera.
+      ctx.fillStyle = color.silicona;
+      ctx.globalAlpha = .07;
+      for (let c = 0; c < this.verticales.length; c += 2) {
+        const a = this.verticales[c], b = this.verticales[c + 1];
+        ctx.beginPath();
+        this.trazo(a);
+        for (let i = b.length - 6; i >= 0; i -= 6) ctx.lineTo(b[i + 2], b[i + 3]);
+        ctx.fill();
+      }
+      ctx.globalAlpha = 1;
+      ctx.lineWidth = 1;
+      ctx.strokeStyle = color.linea;
+      ctx.beginPath();
+      for (const p of this.horizontales) this.trazo(p);
+      ctx.stroke();
+      ctx.strokeStyle = color.silicona;
+      ctx.globalAlpha = .55;
+      ctx.beginPath();
+      for (const p of this.verticales) this.trazo(p);
+      ctx.stroke();
+      ctx.globalAlpha = 1;
+      return 26;
+    },
+  };
+  function this_cols() { return W < 600 ? 4 : W < 1000 ? 8 : 12; }
+
+  // ---------- Campo de letras ----------
+  // Una trama de «Aa». Cerca del cursor cada una pasa a otra letra del catálogo; al alejarse vuelve despacio,
+  // así que detrás del cursor queda una ola. Cada anillo alrededor del cursor usa una combinación distinta.
+  const Letras = {
+    nombre: () => LETRAS[turno % LETRAS.length][0],
+    preparar() {
+      const lado = this.lado = chico ? 62 : 86;
+      const cols = Math.ceil(W / lado), filas = Math.ceil(H / lado);
+      const ox = (W - cols * lado) / 2 + lado / 2, oy = (H - filas * lado) / 2 + lado / 2;
+      this.celdas = [];
+      for (let f = 0; f < filas; f++) for (let c = 0; c < cols; c++) this.celdas.push({ x: ox + c * lado, y: oy + f * lado, a: 0, letra: 0 });
+      this.radio = chico ? 150 : 250;
+      this.sellar();
+    },
+    // Cada «Aa» se dibuja una sola vez en un sello aparte; por cuadro solo se copian (dibujar texto en cada
+    // cuadro costaba 13 ms y bajaba de 60 cuadros por segundo).
+    sellar() {
+      const dpr = Math.min(window.devicePixelRatio || 1, 2), px = this.lado * .42, lado = Math.ceil(this.lado * 1.5);
+      const sello = (fuente, tinte) => {
+        const c = document.createElement('canvas');
+        c.width = c.height = Math.round(lado * dpr);
+        const x = c.getContext('2d');
+        x.scale(dpr, dpr);
+        x.textAlign = 'center'; x.textBaseline = 'middle'; x.fillStyle = tinte; x.font = fuente;
+        x.fillText('Aa', lado / 2, lado / 2);
+        return c;
+      };
+      this.tam = lado;
+      this.base = sello(`500 ${px}px Inter, system-ui, sans-serif`, color['tinta-2']);
+      this.sellos = LETRAS.map(([, fuente]) => sello(fuente.replace(/([\d.]+)em/, (_, n) => `${px * n * 1.3}px`), color.tinta));
+    },
+    cuadro(_t, fijo) {
+      const R = this.radio, lado = this.lado, tam = this.tam;
+      ctx.clearRect(0, 0, W, H);
+      for (const c of this.celdas) {
+        const d = Math.hypot(c.x - cx, c.y - cy), cerca = d < R;
+        if (cerca && c.a < .08) c.letra = (Math.floor(d / (lado * .9)) + turno) % LETRAS.length;
+        const meta = cerca ? 1 - (d / R) ** 3 : 0;
+        c.a = fijo ? meta : c.a + (meta - c.a) * (meta > c.a ? .2 : .028);
+        if (c.a < .96) {
+          ctx.globalAlpha = .3 * (1 - c.a);
+          ctx.drawImage(this.base, c.x - tam / 2, c.y - tam / 2, tam, tam);
+        }
+        if (c.a > .02) {
+          // El sello está hecho al tamaño más grande: crece de 1 a 1,3 con la cercanía.
+          const t = tam * (1 + .3 * c.a) / 1.3;
+          ctx.globalAlpha = c.a;
+          ctx.drawImage(this.sellos[c.letra], c.x - t / 2, c.y - t / 2, t, t);
+        }
+      }
+      ctx.globalAlpha = 1;
+      return 30;
+    },
+  };
+
+  // ---------- Muestrario de colores ----------
+  // Cuadraditos neutros. El cursor los da vuelta y muestran una paleta del catálogo; se van apagando
+  // y vuelven a darse vuelta solos: queda un rastro.
+  const Colores = {
+    nombre: () => PALETAS[turno % PALETAS.length][0],
+    preparar() {
+      const lado = this.lado = chico ? 30 : 40, paso = this.paso = lado + (chico ? 5 : 7);
+      const cols = Math.ceil(W / paso), filas = Math.ceil(H / paso);
+      const ox = (W - cols * paso) / 2 + paso / 2, oy = (H - filas * paso) / 2 + paso / 2;
+      this.celdas = [];
+      for (let f = 0; f < filas; f++) for (let c = 0; c < cols; c++) this.celdas.push({ x: ox + c * paso, y: oy + f * paso, calor: 0, giro: 0, tinte: '', rol: 1 + (c * 3 + f * 5 + ((c * f) % 3)) % 4 });
+      this.radio = chico ? 84 : 120;
+    },
+    cuadro(_t, fijo) {
+      const R = this.radio, lado = this.lado, paleta = PALETAS[turno % PALETAS.length];
+      ctx.clearRect(0, 0, W, H);
+      const redondo = !!ctx.roundRect;
+      for (const c of this.celdas) {
+        const d = Math.hypot(c.x - cx, c.y - cy);
+        if (d < R) { if (c.calor < .3) c.tinte = paleta[c.rol]; c.calor = 1; } else c.calor *= .982;
+        const meta = c.calor > .3 ? 1 : 0;
+        c.giro = fijo ? meta : c.giro + (meta - c.giro) * .17;
+        // Dar vuelta: el ancho se achica hasta cero y vuelve a abrirse con la otra cara.
+        const ancho = lado * Math.abs(Math.cos(c.giro * Math.PI));
+        const cara = c.giro > .5;
+        ctx.fillStyle = cara ? c.tinte : color.linea;
+        ctx.globalAlpha = cara ? .35 + .65 * Math.min(1, c.calor * 1.6) : .5;
+        ctx.beginPath();
+        if (redondo) ctx.roundRect(c.x - ancho / 2, c.y - lado / 2, ancho, lado, Math.min(7, ancho / 2));
+        else ctx.rect(c.x - ancho / 2, c.y - lado / 2, ancho, lado);
+        ctx.fill();
+      }
+      ctx.globalAlpha = 1;
+      return 30;
+    },
+  };
+
+  const FONDOS = { linterna: Linterna, reticula: Reticula, letras: Letras, colores: Colores };
+
+  // ---------- Bucle, medición y controles ----------
+  let raf = 0, cuadros = 0, costo = 0, peor = 0, antes = 0, desde = 0;
+  // Para las pruebas: cuántos cuadros se pidieron y lo último medido.
+  window.__fondos = { rafs: 0, medicion: null };
+
+  function medir() {
+    const caja = fondo.getBoundingClientRect();
+    W = caja.width; H = caja.height; chico = window.innerWidth < 600;
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    lienzo.width = Math.round(W * dpr); lienzo.height = Math.round(H * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    leerColores();
+    FONDOS[actual].preparar();
+    [cx, cy] = [W * .72, H * .34];
+  }
+
+  function dibujar(t, fijo) {
+    const f = FONDOS[actual];
+    const bajo = f.cuadro(t, fijo);
+    etiqueta.textContent = f.nombre();
+    etiqueta.style.transform = `translate(${cx}px,${cy + bajo}px) translateX(-50%)`;
+  }
+
+  function cuadro(t) {
+    window.__fondos.rafs++;
+    const inicio = performance.now();
+    const [ox, oy] = puntero ? [puntero.x, puntero.y] : paseo(t);
+    cx += (ox - cx) * .15; cy += (oy - cy) * .15;
+    dibujar(t, false);
+    // Medición: cuadros por segundo reales, costo del dibujo y el peor intervalo entre dos cuadros.
+    const ahora = performance.now();
+    costo += ahora - inicio;
+    if (antes) peor = Math.max(peor, t - antes);
+    antes = t;
+    if (!desde) desde = t;
+    cuadros++;
+    if (t - desde >= 1000) {
+      const m = { fps: Math.round(cuadros * 1000 / (t - desde)), costo: costo / cuadros, peor };
+      window.__fondos.medicion = m;
+      medida.innerHTML = `<b>${m.fps}</b> cuadros por segundo · <b>${m.costo.toFixed(1).replace('.', ',')} ms</b> por cuadro · peor cuadro <b>${Math.round(m.peor)} ms</b>`;
+      cuadros = 0; costo = 0; peor = 0; desde = t;
+    }
+    raf = requestAnimationFrame(cuadro);
+  }
+
+  function arrancar() {
+    cancelAnimationFrame(raf);
+    raf = 0; cuadros = 0; costo = 0; peor = 0; antes = 0; desde = 0;
+    const esLinterna = actual === 'linterna';
+    linterna.hidden = !esLinterna;
+    lienzo.hidden = esLinterna;
+    medir();
+    if (quieto.matches) {
+      // Movimiento reducido: un solo cuadro, quieto, con el efecto ya puesto. No corre ningún requestAnimationFrame.
+      dibujar(0, true);
+      medida.textContent = 'Movimiento reducido: el fondo queda quieto.';
+    } else {
+      medida.textContent = 'Midiendo…';
+      raf = requestAnimationFrame(cuadro);
+    }
+  }
+
+  function elegir(id) {
+    if (!FONDOS[id]) id = 'linterna';
+    actual = id;
+    const radio = document.querySelector(`input[name=fondo][value=${id}]`);
+    if (radio) radio.checked = true;
+    if (location.hash !== '#' + id) history.replaceState(null, '', '#' + id);
+    arrancar();
+  }
+
+  const local = (e) => { const c = fondo.getBoundingClientRect(); return { x: e.clientX - c.left, y: e.clientY - c.top }; };
+  portada.addEventListener('pointermove', (e) => { if (e.pointerType === 'mouse' || e.buttons || e.pressure > 0) puntero = local(e); });
+  portada.addEventListener('pointerdown', (e) => { if (!e.target.closest('.pie, .empezar')) puntero = local(e); });
+  for (const tipo of ['pointerup', 'pointercancel', 'pointerleave']) portada.addEventListener(tipo, (e) => { if (e.pointerType !== 'mouse' || tipo === 'pointerleave') puntero = null; });
+  document.addEventListener('change', (e) => { if (e.target.name === 'fondo') elegir(e.target.value); });
+  window.addEventListener('resize', arrancar);
+  window.addEventListener('hashchange', () => elegir(location.hash.slice(1)));
+  quieto.addEventListener('change', arrancar);
+  oscuro.addEventListener('change', arrancar);
+  // Cada 2,4 s cambia la palabra del título y lo que muestra el fondo (otro estilo, otra letra, otra paleta).
+  setInterval(() => {
+    if (document.hidden || quieto.matches) return;
+    turno++;
+    palabra.textContent = PALABRAS[turno % PALABRAS.length];
+  }, 2400);
+  // Las letras llegan después: se vuelve a dibujar cuando están (con movimiento reducido es el único redibujo).
+  const alLlegarLetras = () => { if (actual !== 'letras') return; Letras.sellar(); if (quieto.matches) dibujar(0, true); };
+  document.fonts?.ready.then(alLlegarLetras);
+  document.fonts?.addEventListener?.('loadingdone', alLlegarLetras);
+
+  elegir(location.hash.slice(1) || 'linterna');
+})();
+</script>
+</body>
+</html>
