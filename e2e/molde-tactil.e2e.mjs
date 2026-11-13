@@ -146,6 +146,21 @@ async function recorrer(browser, reducedMotion) {
   assert.equal(await page.locator('.molde-pie').count(), 0);
   assert.ok(await page.locator('.molde-base .pg').isVisible());
   const esquina = page.getByRole('button', { name: 'Descargar', exact: true });
+  await page.getByRole('button', { name: 'Guardar', exact: true }).tap();
+  const favoritos = page.getByRole('dialog', { name: 'Favoritos' });
+  for (const nombre of ['Primero', 'Segundo']) {
+    await favoritos.getByLabel('Nombre del diseño').fill(nombre);
+    await favoritos.getByRole('button', { name: 'Guardar', exact: true }).tap();
+    await favoritos.getByRole('checkbox', { name: nombre }).check();
+  }
+  for (const width of [1440, 390]) {
+    await page.setViewportSize({ width, height: width === 390 ? 844 : 900 });
+    const muestras = favoritos.locator('.favoritos-comparacion > section');
+    await muestras.last().locator('.pg').waitFor();
+    const [a, b] = await Promise.all([muestras.first().boundingBox(), muestras.last().boundingBox()]);
+    assert.ok(width === 390 ? b.y >= a.y + a.height - 1 : b.x >= a.x + a.width - 1);
+  }
+  await favoritos.getByRole('button', { name: 'Abrir Primero' }).tap();
   const cajaEsquina = await esquina.boundingBox();
   assert.ok(cajaEsquina && cajaEsquina.width >= 44 && cajaEsquina.height >= 44);
   assert.ok(cajaEsquina.x + cajaEsquina.width <= 390 && cajaEsquina.y + cajaEsquina.height <= 844, 'Descargar fuera de pantalla');

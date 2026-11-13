@@ -1,0 +1,11 @@
+.favoritos { width: min(96vw, 90rem); max-height: 90dvh; box-sizing: border-box; padding: clamp(12px, 3vw, 32px); border-radius: 12px; }
+.favoritos::backdrop { background: rgb(0 0 0 / .55); }
+.favoritos header, .favoritos form, .favorito-fila { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.favoritos header, .favorito-fila { justify-content: space-between; }
+.favoritos label { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; overflow-wrap: anywhere; }
+.favoritos form label { flex-wrap: wrap; }
+.favoritos input:not([type=checkbox]), .favoritos button { min-height: 44px; max-width: 100%; }
+.favorito-fila label { flex: 1; }
+.favoritos-comparacion { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.favoritos-comparacion section { min-width: 0; overflow: auto; }
+@media (max-width: 700px) { .favoritos-comparacion { grid-template-columns: minmax(0, 1fr); } }
