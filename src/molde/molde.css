@@ -188,3 +188,19 @@
   .molde-descarga > p { margin-bottom: 16px; }
   .molde-descarga-acciones { flex-direction: column; margin-bottom: 16px; }
 }
+
+/* H8: orden independiente de las ideas; se puede plegar para usar el lienzo. */
+.molde-orden { position: absolute; z-index: 9; right: 16px; top: 72px; width: min(360px, calc(100% - 32px)); max-height: calc(100% - 224px); overflow: auto; padding: 8px; border-radius: 16px; background: var(--molde-superficie); color: var(--molde-tinta); box-shadow: 0 0 0 1px var(--molde-linea); }
+.molde-orden summary { min-height: 44px; display: list-item; align-content: center; cursor: pointer; }
+.molde-orden p { margin: 8px 0; font-size: 14px; }
+.molde-orden ol { list-style: none; padding: 0; margin: 0; }
+.molde-orden li { display: flex; align-items: center; gap: 4px; }
+.molde-orden li span { flex: 1; min-width: 0; font-size: 14px; }
+.molde .molde-orden button { min-width: 44px; min-height: 44px; padding: 4px; border-radius: 8px; color: var(--molde-tinta); background: var(--molde-superficie); }
+.molde .molde-orden button:hover:not(:disabled) { background: var(--molde-linea); }
+.molde .molde-orden button:active:not(:disabled) { transform: scale(.98); }
+.molde-orden button:disabled { opacity: .4; }
+.molde-orden button:focus-visible, .molde-orden summary:focus-visible { outline: 2px solid currentColor; outline-offset: -2px; }
+.molde-orden .molde-manija { touch-action: none; cursor: grab; }
+.molde-orden li.molde-destino { outline: 2px dashed currentColor; outline-offset: -2px; }
+.molde-orden .molde-manija:active { cursor: grabbing; }

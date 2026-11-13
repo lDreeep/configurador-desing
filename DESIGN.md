@@ -925,7 +925,9 @@ las demás se pueden omitir.
 La página y la vista previa se pueden scrollear y tocar durante una ronda. Al hacerlo, las ideas
 se recogen en el botón de la pregunta y se vuelven a abrir tocándolo. Los enlaces internos llevan
 a su sección; los demás enlaces y los formularios de muestra no navegan ni envían datos.
-Las secciones elegidas mantienen su orden (D92). Agrupar las elecciones no agrega campos al export
+Las secciones elegidas mantienen su orden (D92). H8 permite reordenarlas en la ronda
+Secciones arrastrando las manijas o con los botones Subir y Bajar; el orden se guarda
+y se usa en la página y en §22, sin agregar campos al formato. Agrupar las elecciones no agrega campos al export
 ni cambia su versión (0.9.2). La selección por rondas del fondo animado sigue pendiente de conexión.
 
 ### Controles detallados y estados anteriores
@@ -1345,6 +1347,20 @@ Decisiones de cierre del recorrido corto (PLAN.md §10):
 | D95 | 2026-11-11 | Lienzo y vista previa se scrollean y responden a toques; las ideas siguen saliendo del centro (D81) y se recogen arriba al usar la página. Enlaces internos llevan a su sección; los demás enlaces y formularios no navegan ni envían. Final: página entera sin ideas, Descargar fijo en la esquina abre la ventana de archivos y Seguir editando vuelve al recorrido | Probar el diseño mientras se arma y ver el resultado antes de descargar | Lienzo inerte, bandeja permanente o esconder la página al terminar |
 
 ## 9. Registro de pruebas
+
+### H8 · Orden de secciones (2026-11-13)
+
+Reordenar mantiene los diseños y la selección. Tests de moverSeccion y combinarSecciones,
+orden en §22, botones, foco estable y arrastre en OrdenSecciones.test.tsx.
+El formato y VERSION_FORMATO siguen en 0.9.2.
+
+Validación: typecheck, 212 tests, lint y peso pasan (201,8 kB de 250 kB).
+`node e2e/orden-secciones.e2e.mjs` pasa en Chromium a 1440 y 390 px: arrastre
+real con mouse y dedo, teclado, persistencia y controles de 44 px; capturas revisadas.
+`npm run test:e2e` se ejecutó y vuelve a fallar en la comprobación de la clase
+`toque` del botón con movimiento reducido (`molde-tactil.e2e.mjs:85`), como en H5.
+No se modificó ni relajó esa comprobación.
+
 
 ### H4 · Pruebas del recorrido con tres personas (síntesis del 2026-11-13)
 

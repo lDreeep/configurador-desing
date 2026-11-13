@@ -73,3 +73,14 @@ export function combinarSecciones(actual: readonly SeccionDisenoId[], id: Seccio
   if (limpio.includes(id)) return limpio.filter((x) => x !== id);
   return limpiarSecciones([...limpio, id]);
 }
+
+/** Mueve una sección existente al lugar de otra, sin cambiar diseños ni selección. */
+export function moverSeccion(actual: readonly SeccionDisenoId[], id: SeccionDisenoId, destino: SeccionDisenoId): SeccionDisenoId[] {
+  const lista = limpiarSecciones(actual);
+  const desde = lista.indexOf(id);
+  const hasta = lista.indexOf(destino);
+  if (desde < 0 || hasta < 0 || desde === hasta) return lista;
+  lista.splice(desde, 1);
+  lista.splice(hasta, 0, id);
+  return lista;
+}
