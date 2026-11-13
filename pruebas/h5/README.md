@@ -88,3 +88,7 @@ pendiente como ampliación opcional de H5, sin atribuir resultados inexistentes.
 No hay diferencias con main en `src/`, `e2e/`, dependencias ni configuración:
 H5 agrega evidencia y documentación, y un script de reproducción. El fallo e2e
 queda visible para el cierre de calidad; los controles no se presentan como todos verdes.
+
+Ejecutado aparte `node e2e/punta-a-punta.e2e.mjs`: pasó landing y dashboard en
+escritorio claro y celular oscuro, con axe en cada ronda. Esto no elimina el fallo
+del recorrido táctil reducido del comando `npm run test:e2e`.
