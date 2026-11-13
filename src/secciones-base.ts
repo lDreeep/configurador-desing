@@ -9,39 +9,55 @@ export type SeccionId = 'beneficios' | 'pasos' | 'precios' | 'testimonios' | 'pr
 export type SeccionDisenoId =
   | 'beneficios_renglones'
   | 'beneficios_destacado'
+  | 'beneficios_corrido'
   | 'pasos_fila'
   | 'pasos_escalera'
+  | 'pasos_flechas'
   | 'precios_planes'
   | 'precios_tabla'
+  | 'precios_carta'
   | 'testimonios_cita'
   | 'testimonios_tres'
+  | 'testimonios_globos'
   | 'preguntas_acordeon'
   | 'preguntas_abiertas'
+  | 'preguntas_lado'
   | 'equipo_retratos'
   | 'equipo_lista'
+  | 'equipo_tira'
   | 'numeros_fila'
   | 'numeros_protagonista'
+  | 'numeros_franja'
   | 'contacto_formulario'
-  | 'contacto_datos';
+  | 'contacto_datos'
+  | 'contacto_maneras';
 
 /** A qué sección pertenece cada diseño (un test verifica que coincide con `DISENOS_SECCION`). */
 export const SECCION_DE_DISENO: Record<SeccionDisenoId, SeccionId> = {
   beneficios_renglones: 'beneficios',
   beneficios_destacado: 'beneficios',
+  beneficios_corrido: 'beneficios',
   pasos_fila: 'pasos',
   pasos_escalera: 'pasos',
+  pasos_flechas: 'pasos',
   precios_planes: 'precios',
   precios_tabla: 'precios',
+  precios_carta: 'precios',
   testimonios_cita: 'testimonios',
   testimonios_tres: 'testimonios',
+  testimonios_globos: 'testimonios',
   preguntas_acordeon: 'preguntas',
   preguntas_abiertas: 'preguntas',
+  preguntas_lado: 'preguntas',
   equipo_retratos: 'equipo',
   equipo_lista: 'equipo',
+  equipo_tira: 'equipo',
   numeros_fila: 'numeros',
   numeros_protagonista: 'numeros',
+  numeros_franja: 'numeros',
   contacto_formulario: 'contacto',
   contacto_datos: 'contacto',
+  contacto_maneras: 'contacto',
 };
 
 /** Tipos de proyecto que arman su página con secciones (PLAN.md §7.9). */
@@ -65,7 +81,7 @@ export function limpiarSecciones(ids: readonly unknown[] | undefined): SeccionDi
 }
 
 /**
- * Elegir un diseño: si ya estaba, la sección sale; si la sección estaba con el otro diseño, cambia
+ * Elegir un diseño: si ya estaba, la sección sale; si la sección estaba con otro diseño, cambia
  * de diseño sin moverse; si no estaba, entra al final. El orden de la lista es el de la página.
  */
 export function combinarSecciones(actual: readonly SeccionDisenoId[], id: SeccionDisenoId): SeccionDisenoId[] {

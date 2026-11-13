@@ -1,10 +1,10 @@
 // Secciones de la página (PLAN.md tarea D12; la idea «catálogo de secciones» de DESIGN.md §10).
 // Es DATOS: qué secciones puede llevar una landing, un sitio o un portfolio debajo de su portada,
-// con dos diseños cada una y la estructura que se exporta en §22.
+// con tres diseños cada una y la estructura que se exporta en §22.
 //
 // Reglas:
 // - La persona elige cuáles van y en qué orden: el orden es el orden en que las fue eligiendo.
-// - Va un diseño por sección. Elegir el otro diseño de una sección ya puesta lo cambia sin moverla
+// - Va un diseño por sección. Elegir otro diseño de una sección ya puesta lo cambia sin moverla
 //   de lugar; elegir el mismo la saca (`combinarSecciones`).
 // - Cuando hay secciones elegidas, reemplazan al argumento genérico del layout (`layout_argumento`).
 // - Quien las dibuja es `src/rapido/secciones.tsx`, solo con los tokens de `sistema.ts`.
@@ -70,6 +70,13 @@ export const DISENOS_SECCION: Record<SeccionDisenoId, DisenoSeccion> = {
     estructura:
       'Grilla de 2 columnas (1,2fr y 1fr). A la izquierda, un bloque con fondo del color de acento suave, radio grande y mucho espacio interno: arriba el título de la sección en texto chico y abajo, pegado al borde inferior, el primer beneficio en la fuente de títulos (32 a 56 px) con su explicación. A la derecha, los demás beneficios apilados como tarjetas del sistema (`.pg-card`), cada una con título y una línea de texto. El bloque grande mide el alto de la columna derecha. En celular, una columna: primero el bloque grande.',
   },
+  beneficios_corrido: {
+    seccion: 'beneficios',
+    nombre: 'Texto corrido',
+    descripcion: 'Los beneficios en un solo párrafo de letra grande, uno detrás del otro; el nombre de cada uno va resaltado.',
+    estructura:
+      'Título de la sección arriba, en texto chico. Debajo, una lista (`<ul>`) que se ve como un solo párrafo: cada `<li>` va en línea (`display: inline`), uno detrás del otro, en letra grande (22 a 40 px, interlineado 1,35, hasta 34 caracteres de ancho por renglón en promedio, ancho máximo de 1.100 px). Dentro de cada ítem, el nombre del beneficio va en la fuente de títulos con un resaltado de fondo del color de acento suave (como un marcador, con `box-decoration-break: clone` para que acompañe los cortes de renglón) y su explicación sigue en el mismo renglón en texto secundario. Sin tarjetas, sin iconos, sin viñetas y sin numerar. En celular, igual, en 22 px.',
+  },
   pasos_fila: {
     seccion: 'pasos',
     nombre: 'En fila',
@@ -83,6 +90,13 @@ export const DISENOS_SECCION: Record<SeccionDisenoId, DisenoSeccion> = {
     descripcion: 'Cada paso arranca más a la derecha que el anterior, con el número enorme al costado.',
     estructura:
       'Título de la sección a la izquierda. Lista ordenada (`<ol>`) vertical donde cada paso se corre a la derecha respecto del anterior (margen izquierdo de 0, 12% y 24% del ancho), como escalones. Cada paso es una fila: el número en la fuente de títulos, muy grande (56 a 104 px) y del color de acento (`--color-acento-texto`), y a su derecha el nombre del paso y su texto, con una línea fina arriba. En celular, sin corrimiento: todos alineados a la izquierda y el número baja a 48 px.',
+  },
+  pasos_flechas: {
+    seccion: 'pasos',
+    nombre: 'Flechas',
+    descripcion: 'Tres bloques encastrados con forma de flecha, cada uno un poco más teñido que el anterior.',
+    estructura:
+      'Título de la sección y, debajo, una lista ordenada (`<ol>`) de 3 bloques en fila, sin separación, encastrados: cada bloque termina en punta a la derecha y el siguiente tiene la muesca que la recibe (`clip-path` con un polígono; la punta mide 28 px). El fondo de cada bloque es el color de acento mezclado con el fondo de la página, cada vez más fuerte (10%, 18% y 26% de acento con `color-mix`), así el avance se lee sin leer los números. Adentro, el número del paso en texto chico y negrita, el nombre del paso en la fuente de títulos y una línea de texto; el texto siempre del color de texto principal. El primero tiene el borde izquierdo recto y el último el derecho recto, con el radio medio en esas esquinas. En celular, una columna: los bloques se apilan y la punta apunta hacia abajo.',
   },
   precios_planes: {
     seccion: 'precios',
@@ -98,6 +112,13 @@ export const DISENOS_SECCION: Record<SeccionDisenoId, DisenoSeccion> = {
     estructura:
       'Título y una línea de aclaración. Debajo, una tabla real (`<table>` con `<caption>` oculta a la vista, `<th scope="col">` para cada plan y `<th scope="row">` para cada característica). El encabezado de cada plan tiene el nombre y el precio en la fuente de títulos. Las celdas dicen «Sí», «No» o el valor (por ejemplo «2 rondas»); nunca solo un icono. La columna del plan más elegido tiene fondo del color de acento suave de arriba a abajo. Renglones separados por una línea fina; sin rayado. La tabla no lleva botones: se pide con el botón principal de la página. En celular, la tabla queda dentro de una región con scroll horizontal (`role="region"`, `aria-label`, `tabindex="0"`) y la primera columna queda fija.',
   },
+  precios_carta: {
+    seccion: 'precios',
+    nombre: 'Carta',
+    descripcion: 'Como la carta de un bar: el nombre de cada plan, una línea de puntos y el precio al final del renglón.',
+    estructura:
+      'Título y una línea de aclaración. Debajo, una lista (`<ul>`) de renglones con ancho máximo de 880 px. Cada renglón tiene arriba una fila con el nombre del plan en la fuente de títulos (24 a 36 px), una línea de puntos que ocupa el espacio libre (`border-bottom: 2px dotted` del color de borde, alineada a la línea de base) y el precio en la fuente de títulos con números tabulares; debajo, en texto secundario, para quién es y lo que incluye, separado por comas, y el período del precio. El plan más elegido lleva al lado del nombre la etiqueta «El más elegido» (fondo de acento, texto sobre acento) y su línea de puntos es del color de acento. Sin tarjetas y sin botones: se pide con el botón principal de la página. En celular, el precio baja debajo del nombre y la línea de puntos desaparece.',
+  },
   testimonios_cita: {
     seccion: 'testimonios',
     nombre: 'Una cita grande',
@@ -111,6 +132,13 @@ export const DISENOS_SECCION: Record<SeccionDisenoId, DisenoSeccion> = {
     descripcion: 'Tres testimonios cortos lado a lado, separados por líneas, sin tarjetas.',
     estructura:
       'Título de la sección y, debajo, 3 columnas iguales separadas por una línea fina vertical. Cada columna es un `<figure>`: la cita (`<blockquote>`, 18 a 20 px, texto principal) arriba y, pegado abajo, el nombre en negrita con el rol en texto secundario. Las tres terminan a la misma altura. Sin tarjetas, sin comillas gigantes y sin estrellas. En celular, una columna: las líneas pasan a ser horizontales.',
+  },
+  testimonios_globos: {
+    seccion: 'testimonios',
+    nombre: 'En globos',
+    descripcion: 'Tres testimonios como globos de diálogo, uno a cada lado, con quien lo dijo debajo.',
+    estructura:
+      'Título de la sección y, debajo, 3 `<figure>` apilados que se alternan: el primero y el tercero pegados a la izquierda, el segundo a la derecha, cada uno con un ancho máximo del 62% del contenedor. La cita (`<blockquote>`, 18 a 22 px) va dentro de un globo con el fondo de superficie, borde fino del color de borde y radio grande en tres esquinas; la esquina de abajo del lado donde está quien habla queda recta. Debajo del globo, del mismo lado, el `<figcaption>` con un círculo de 44 px con las iniciales (fondo de acento), el nombre en negrita y el rol en texto secundario. El globo de la derecha usa el fondo del color de acento suave. Sin comillas gigantes y sin estrellas. En celular, cada globo ocupa hasta el 92% del ancho y se mantiene la alternancia.',
   },
   preguntas_acordeon: {
     seccion: 'preguntas',
@@ -126,6 +154,13 @@ export const DISENOS_SECCION: Record<SeccionDisenoId, DisenoSeccion> = {
     estructura:
       'Título de la sección arriba. Debajo, una lista de definiciones (`<dl>`) en 2 columnas con bastante espacio entre sí: cada pregunta (`<dt>`) en la fuente de títulos (20 a 24 px) y su respuesta (`<dd>`) debajo en texto secundario. Cada par tiene una línea fina arriba. Nada se abre ni se cierra. En celular, una columna.',
   },
+  preguntas_lado: {
+    seccion: 'preguntas',
+    nombre: 'Respuesta al lado',
+    descripcion: 'Las preguntas en una lista a la izquierda; al tocar una, su respuesta aparece grande a la derecha.',
+    estructura:
+      'Título de la sección arriba. Debajo, grilla de 2 columnas (1fr y 1,2fr). Cada pregunta es un `<button>` con `aria-expanded` y `aria-controls` (área táctil de 44 px, foco visible) y su respuesta es el panel que controla; siempre hay una sola abierta y al cargar es la primera. Los botones se apilan en la columna izquierda, separados por una línea fina; el abierto queda en negrita con una barra de 3 px del color de acento a la izquierda. El panel abierto ocupa la columna derecha de arriba a abajo: fondo del color de acento suave, radio grande, mucho espacio interno y la respuesta en 20 a 28 px (hasta 34 caracteres por renglón), alineada arriba. Cambia sin animación. En celular, una columna: el panel abierto aparece justo debajo de su pregunta.',
+  },
   equipo_retratos: {
     seccion: 'equipo',
     nombre: 'Retratos',
@@ -139,6 +174,13 @@ export const DISENOS_SECCION: Record<SeccionDisenoId, DisenoSeccion> = {
     descripcion: 'Sin fotos: cada nombre en letra grande, con su rol al costado, como los créditos de una película.',
     estructura:
       'Título de la sección a la izquierda. Debajo, una lista (`<ul>`) de renglones a todo el ancho separados por una línea fina: el nombre en la fuente de títulos (26 a 44 px) a la izquierda y el rol en texto secundario alineado a la derecha, sobre la misma línea de base. Sin fotos ni avatares. En celular, el rol baja debajo del nombre, alineado a la izquierda.',
+  },
+  equipo_tira: {
+    seccion: 'equipo',
+    nombre: 'Tira de fotos',
+    descripcion: 'Los retratos pegados uno al otro en una sola tira, como las fotos de una cabina.',
+    estructura:
+      'Título de la sección y una línea de presentación. Debajo, una sola pieza con borde fino del color de borde y radio grande que recorta su contenido (`overflow: hidden`): adentro, 4 `<figure>` en columnas iguales, sin separación, divididos por una línea fina vertical. Cada uno tiene arriba el retrato (proporción 3:4, `object-fit: cover`, sin radio propio; mientras no haya foto, un bloque con las iniciales grandes en la fuente de títulos, alternando el fondo del color de acento suave y el de superficie) y debajo, con espacio interno, el nombre en negrita y el rol en texto secundario. Sin redes sociales ni biografías. En celular, 2 columnas por 2 filas dentro de la misma pieza, con líneas finas entre todas y los dos fondos alternados en damero.',
   },
   numeros_fila: {
     seccion: 'numeros',
@@ -154,6 +196,13 @@ export const DISENOS_SECCION: Record<SeccionDisenoId, DisenoSeccion> = {
     estructura:
       'Grilla de 2 columnas (1,5fr y 1fr), alineadas abajo. A la izquierda, la cifra principal en la fuente de títulos, enorme (72 a 168 px, interlineado 0,9) y del color de acento (`--color-acento-texto`), con su oración debajo en texto de 18 a 22 px. A la derecha, las otras dos cifras apiladas (28 a 40 px), cada una con su oración y una línea fina arriba. En celular, una columna: primero la cifra principal.',
   },
+  numeros_franja: {
+    seccion: 'numeros',
+    nombre: 'Franja de color',
+    descripcion: 'Las tres cifras sobre una franja del color de acento que cruza la página.',
+    estructura:
+      'Una franja a todo el ancho del contenido con fondo del color de acento, radio grande y espacio interno amplio (32 a 72 px). Adentro, una lista de definiciones (`<dl>`) en una fila de 3 grupos repartidos a lo ancho (`justify-content: space-between`), cada uno del ancho de su cifra, que no se corta: la cifra en la fuente de títulos (44 a 80 px, números tabulares, interlineado 1) y debajo una oración corta que dice qué mide (16 a 18 px). Todo el texto de la franja usa el color de texto sobre acento, sin transparencia, para que pase contraste AA. En el HTML la explicación es el `<dt>` y la cifra el `<dd>`, aunque la cifra se vea primero. Sin líneas divisorias, sin iconos y sin animación. Es el único bloque de la página con fondo de acento pleno además del botón principal. En celular, una columna, con 24 px entre cifras.',
+  },
   contacto_formulario: {
     seccion: 'contacto',
     nombre: 'Con formulario',
@@ -167,6 +216,13 @@ export const DISENOS_SECCION: Record<SeccionDisenoId, DisenoSeccion> = {
     descripcion: 'Sin formulario: el mail en letra enorme para tocar y, debajo, dirección, horario y teléfono.',
     estructura:
       'Título de la sección en texto chico y, debajo, el mail como un link `mailto:` en la fuente de títulos, muy grande (28 a 72 px, se corta por palabra si no entra), subrayado con una línea de 2 px del color de acento. Debajo, 3 columnas con una línea fina arriba: dirección (`<address>`), horario y teléfono (link `tel:`), cada una con su nombre en texto secundario y el dato en texto principal. Los links tienen área táctil de 44 px y foco visible. En celular, una columna.',
+  },
+  contacto_maneras: {
+    seccion: 'contacto',
+    nombre: 'Tres maneras',
+    descripcion: 'Tres renglones grandes: llamar, escribir o ir. Los dos primeros se tocan enteros.',
+    estructura:
+      'Título de la sección y la línea que dice en cuánto tiempo se responde. Debajo, una lista (`<ul>`) de 3 renglones a todo el ancho separados por una línea fina. Cada renglón es una grilla de 2 columnas (1fr y 1,4fr) alineada a la línea de base: a la izquierda el verbo en la fuente de títulos (28 a 52 px): «Llamar», «Escribir», «Venir»; a la derecha el dato en 18 a 22 px. «Llamar» y «Escribir» son links (`tel:` y `mailto:`) que ocupan todo el renglón, con área táctil de 64 px como mínimo y foco visible; al pasar el mouse el verbo toma el color de acento (`--color-acento-texto`). «Venir» no es link: muestra la dirección (`<address>`) y debajo el horario en texto secundario. Sin iconos y sin formulario. En celular, una columna: el dato baja debajo del verbo.',
   },
 };
 
