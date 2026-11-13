@@ -7,7 +7,7 @@ const server = await createServer({ server: { port: 5204, strictPort: true } });
 await server.listen();
 let browser;
 try {
-  browser = await chromium.launch({ headless: true });
+  browser = await chromium.launch({ headless: true, executablePath: process.env.CHROMIUM_PATH || undefined });
   const { configInicial, aplicarTipo } = await server.ssrLoadModule('/src/estado.ts');
   const c = aplicarTipo(configInicial(), 'landing');
   c.proyecto.nombre = 'Prueba de interacciones';

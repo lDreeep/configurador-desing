@@ -3,7 +3,7 @@ import { chromium } from 'playwright';
 import assert from 'node:assert/strict';
 const server = await createServer({ server: { port: 5203, strictPort: true } });
 await server.listen();
-const browser = await chromium.launch({ headless: true });
+const browser = await chromium.launch({ headless: true, executablePath: process.env.CHROMIUM_PATH || undefined });
 try {
   const { aplicarTipo, configInicial } = await server.ssrLoadModule('/src/estado.ts');
   for (const width of [1440, 390]) {

@@ -14,7 +14,7 @@ try {
   // El lienzo de Molde es inerte. Probar la misma página fuera del editor permite usar sus controles.
   await build({ build: { outDir, rollupOptions: { input: 'scripts/concesionario.html' } } });
   server = await preview({ build: { outDir }, preview: { host: '127.0.0.1', port: 0 } });
-  browser = await chromium.launch();
+  browser = await chromium.launch({ executablePath: process.env.CHROMIUM_PATH || undefined });
   const context = await browser.newContext({ viewport: { width: 1440, height: 1000 }, reducedMotion: 'reduce' });
   const page = await context.newPage();
   const errors = [];
