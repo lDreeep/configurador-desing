@@ -2,6 +2,8 @@
 // Si cambiás la salida, actualizá la especificación y su historial de cambios.
 
 import { ESTILOS_BOTON, INTEGRACIONES, LIBRERIAS_ICONOS, PATRONES_NAV, TAMANOS_BOTON } from '../catalogo';
+import { admiteInteracciones, claseCursor, claseHoverTarjetas } from '../interacciones-base';
+import { cssCursor, cssHoverTarjetas, SELECTOR_TARJETAS } from '../interacciones';
 import { CSS_LECTURA } from '../lectura';
 import type { BotonEstiloId } from '../tipos';
 import type { Config } from '../tipos';
@@ -25,7 +27,7 @@ import { cssDeAparicion } from './aparicion';
 
 import { CSS_CONCESIONARIO as cssConcesionario } from '../rapido/concesionario-estilos';
 
-export const VERSION_FORMATO = '0.9.2';
+export const VERSION_FORMATO = '0.10.0';
 
 /** Lo que agregan todas las páginas que no son de autor ni app (D77): el argumento de una landing. */
 export const ARGUMENTO_LANDING =
@@ -460,6 +462,22 @@ que_se_anima:
 respetar_movimiento_reducido: si${nota(c, 'movimiento')}`,
   );
 
+  if (admiteInteracciones(c.proyecto.tipo)) {
+    if (c.visual.hoverTarjetas !== null && c.visual.hoverTarjetas !== undefined) {
+      const id = c.visual.hoverTarjetas;
+      secciones[secciones.length - 1] += '\n\n' + yaml(`tarjetas:
+  al_pasar_el_mouse: ${id}
+  clase: ${claseHoverTarjetas(id)}
+  selector: ${q(SELECTOR_TARJETAS)}`) + '\n\n```css\n' + cssHoverTarjetas(id) + '\n```';
+    }
+    if (c.visual.cursor) {
+      const id = c.visual.cursor;
+      secciones[secciones.length - 1] += '\n\n' + yaml(`cursor:
+  estilo: ${id}
+  clase: ${claseCursor(id)}
+  tactil_y_movimiento_reducido: normal`) + '\n\n```css\n' + cssCursor(id) + '\n```';
+    }
+  }
   const efectos = limpiarScroll(c.visual.scroll);
   if (efectos.length) secciones[secciones.length - 1] += '\n\n' + yaml(`scroll:
   maximo: 3

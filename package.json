@@ -8,7 +8,7 @@
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
     "test": "vitest run",
-    "test:e2e": "node e2e/molde-tactil.e2e.mjs && node e2e/punta-a-punta.e2e.mjs",
+    "test:e2e": "node e2e/interacciones.e2e.mjs && node e2e/molde-tactil.e2e.mjs && node e2e/punta-a-punta.e2e.mjs",
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
     "peso": "npm run build && node scripts/peso-inicial.mjs"

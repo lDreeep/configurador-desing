@@ -57,8 +57,8 @@ describe('pasos del recorrido corto (I1)', () => {
       const claves = pasos.flatMap((p) => p.rondas.map((r) => r.clave));
       expect(claves.includes('scroll'), layout).toBe(ADMITE_LAYOUT[layout].scroll);
       expect(claves.includes('secciones'), layout).toBe(ADMITE_LAYOUT[layout].secciones);
-      // Sin nada propio para mostrar, no hay quinto paso.
-      expect(pasos.length, layout).toBe(ADMITE_LAYOUT[layout].scroll ? 5 : 4);
+      // H12 agrega hover y cursor opcionales incluso cuando el layout no tiene scroll.
+      expect(pasos.length, layout).toBe(5);
     }
     // Secciones solo para landing, sitio y portfolio.
     for (const tipo of ['tienda', 'app_web', 'app_movil', 'dashboard', 'blog'] as const)

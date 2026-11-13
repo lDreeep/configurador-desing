@@ -9,6 +9,7 @@ import { clasesDeCaja, CSS_CAJA, paramsDe } from '../cajas';
 import { llevaArgumento } from '../estilos-visuales';
 import type { FondoId } from '../fondos';
 import { sistemaDeDiseno } from '../export/sistema';
+import { clasesInteracciones } from '../interacciones-base';
 import { claseScroll, ELEMENTO_SCROLL } from '../scroll-base';
 import { cargarHojaPagina, datosDeHoja, useHojaPagina } from './hoja';
 import { useFuentes } from '../fuentes';
@@ -437,6 +438,7 @@ function PaginaConHoja({ config, contenido: propio }: { config: Config; contenid
   const conDiseno = config.botones.diseno !== 'ninguno';
   const clases = [
     'pg pgp',
+    ...clasesInteracciones(config),
     s.lectura ? 'pg-lectura' : '',
     `pg-l-${v.layout}`,
     v.layout.startsWith('autor_') ? 'pg-autor' : '',
