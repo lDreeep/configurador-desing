@@ -4,6 +4,9 @@
 
 // Los diseños de caja: al cargarse quedan registrados para `paramsDe` (cajas.ts).
 import '../cajas-disenos';
+import { HOVERS, CURSORES } from '../catalogo';
+import type { HoverId, CursorId } from '../tipos';
+import { cssCursor, cssHoverTarjetas } from '../interacciones';
 import { cssDeEstilo } from '../estilos-css';
 import { ESTILOS } from '../estilos-visuales';
 import { CSS_LECTURA } from '../lectura';
@@ -24,5 +27,5 @@ export function cssDePagina(): string {
   const fondos = (Object.keys(FONDOS) as FondoId[]).map((id) => cssDeFondo(id, SELECTOR_FONDO(id)));
   // Los efectos de scroll, cada uno limitado a su clase en la raíz (scroll.ts).
   const scroll = (Object.keys(EFECTOS_SCROLL) as ScrollId[]).map((id) => cssDeScroll(id, `.pg.${claseScroll(id)}`));
-  return [...estilos, ...auto, ...fondos, ...scroll, CSS_LECTURA].join('\n');
+  return [...estilos, ...auto, ...fondos, ...scroll, CSS_LECTURA, ...Object.keys(HOVERS).map((id) => cssHoverTarjetas(id as HoverId)), ...Object.keys(CURSORES).map((id) => cssCursor(id as CursorId))].join('\n');
 }

@@ -201,6 +201,7 @@ export type RadioId = 'recto' | 'apenas_suave' | 'suave' | 'pildora';
 export type ElevacionId = 'plana' | 'suave' | 'marcada' | 'dura';
 export type BordesId = 'ninguno' | 'sutil' | 'marcado';
 export type MovimientoId = 'minimo' | 'rapido' | 'sutil' | 'expresivo';
+export type CursorId = 'normal' | 'punto' | 'anillo' | 'cruz';
 export type HoverId = 'nada' | 'oscurecer' | 'brillo' | 'elevar' | 'escalar' | 'sombra' | 'desplazar';
 export type PresionarId = 'nada' | 'hundir';
 export type AparicionId =
@@ -428,6 +429,9 @@ export interface Config {
     bordes: BordesId;
     movimiento: MovimientoId;
     hover: HoverId;
+    /** H12: null conserva el hover de las cajas y el cursor del navegador. */
+    hoverTarjetas: HoverId | null;
+    cursor: CursorId | null;
     presionar: PresionarId;
     aparicion: AparicionId;
     cambio: CambioId;

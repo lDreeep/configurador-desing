@@ -119,9 +119,9 @@ export const CSS_CAJA = `& {
 &.caja-forma-esquina_cortada { clip-path: polygon(0 0, calc(100% - 22px) 0, 100% 22px, 100% 100%, 0 100%); }
 &.caja-forma-ticket { -webkit-mask: radial-gradient(circle 11px at 0 50%, transparent 98%, #000) left / 51% 100% no-repeat, radial-gradient(circle 11px at 100% 50%, transparent 98%, #000) right / 51% 100% no-repeat; mask: radial-gradient(circle 11px at 0 50%, transparent 98%, #000) left / 51% 100% no-repeat, radial-gradient(circle 11px at 100% 50%, transparent 98%, #000) right / 51% 100% no-repeat; }
 &.caja-forma-filete { background: transparent; border: none; border-top: 1px solid var(--color-texto); border-radius: 0; box-shadow: none; padding-left: 0; padding-right: 0; }
-&.caja-hover-elevar:hover { transform: translateY(-4px); }
-&.caja-hover-borde:hover { border-color: var(--caja-color-marca); outline: 2px solid var(--caja-color-marca); outline-offset: -2px; }
-&.caja-hover-escala:hover { transform: scale(1.025); }
-&.caja-hover-inclinar:hover { transform: perspective(900px) rotateX(4deg) rotateY(-5deg); }
-&.caja-hover-brillo:hover { filter: brightness(1.06); box-shadow: 0 0 0 1px var(--caja-color-marca), 0 0 36px color-mix(in srgb, var(--caja-color-marca) 45%, transparent); }
+&.caja-hover-elevar:hover:not(:where(.pg[class*="tarjetas-hover-"] .pg-card, .pg[class*="tarjetas-hover-"] .cm-producto)) { transform: translateY(-4px); }
+&.caja-hover-borde:hover:not(:where(.pg[class*="tarjetas-hover-"] .pg-card, .pg[class*="tarjetas-hover-"] .cm-producto)) { border-color: var(--caja-color-marca); outline: 2px solid var(--caja-color-marca); outline-offset: -2px; }
+&.caja-hover-escala:hover:not(:where(.pg[class*="tarjetas-hover-"] .pg-card, .pg[class*="tarjetas-hover-"] .cm-producto)) { transform: scale(1.025); }
+&.caja-hover-inclinar:hover:not(:where(.pg[class*="tarjetas-hover-"] .pg-card, .pg[class*="tarjetas-hover-"] .cm-producto)) { transform: perspective(900px) rotateX(4deg) rotateY(-5deg); }
+&.caja-hover-brillo:hover:not(:where(.pg[class*="tarjetas-hover-"] .pg-card, .pg[class*="tarjetas-hover-"] .cm-producto)) { filter: brightness(1.06); box-shadow: 0 0 0 1px var(--caja-color-marca), 0 0 36px color-mix(in srgb, var(--caja-color-marca) 45%, transparent); }
 @media (prefers-reduced-motion: reduce) { & { transition: none; } &:hover { transform: none; } }`;

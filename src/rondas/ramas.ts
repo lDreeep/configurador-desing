@@ -4,6 +4,8 @@
 // Las que salen de la galería ya funcionan (opciones de `CATEGORIAS`, recomendadas de `recomendados.ts`).
 // Las que piden catálogo nuevo quedan anotadas con su tarea y `rondasDe` no las devuelve hasta que existan.
 
+import { CURSORES, HOVERS } from '../catalogo';
+import type { CursorId, HoverId } from '../tipos';
 import { CATEGORIAS } from '../galeria';
 import type { CategoriaId } from '../galeria/base';
 import { RECOMENDADOS } from '../recomendados';
@@ -86,14 +88,29 @@ export const RONDA_SECCIONES: Ronda = {
 
 const SECCIONES: EntradaRama = { ronda: RONDA_SECCIONES, ficha: RONDA_SECCIONES.ficha, pregunta: RONDA_SECCIONES.pregunta };
 
+export const RONDA_HOVER_TARJETAS: Ronda = {
+  clave: 'hover_tarjetas', ficha: 'Al pasar el mouse', pregunta: '¿Qué hacen las tarjetas al pasar el mouse?', obligatoria: false,
+  opciones: () => Object.entries(HOVERS).map(([id, op]) => ({ id, nombre: op.nombre, descripcion: id === 'nada' ? 'Las tarjetas quedan quietas' : op.descripcion, recomendada: false })),
+  aplicar: (c, id) => Object.prototype.hasOwnProperty.call(HOVERS, id) ? { ...c, visual: { ...c.visual, hoverTarjetas: id as HoverId } } : c,
+  elegida: (c) => c.visual.hoverTarjetas,
+};
+export const RONDA_CURSOR: Ronda = {
+  clave: 'cursor', ficha: 'Cursor', pregunta: '¿Cómo se ve el cursor?', obligatoria: false,
+  opciones: () => Object.entries(CURSORES).map(([id, op]) => ({ id, ...op, recomendada: false })),
+  aplicar: (c, id) => Object.prototype.hasOwnProperty.call(CURSORES, id) ? { ...c, visual: { ...c.visual, cursor: id as CursorId } } : c,
+  elegida: (c) => c.visual.cursor,
+};
+const INTERACCIONES: EntradaRama[] = [RONDA_HOVER_TARJETAS, RONDA_CURSOR].map((ronda) => ({ ronda, ficha: ronda.ficha, pregunta: ronda.pregunta }));
+
 export const RAMAS: Record<TipoProyecto, EntradaRama[]> = {
-  landing: [FONDO_ANIMADO, SCROLL, SECCIONES],
+  landing: [FONDO_ANIMADO, SCROLL, SECCIONES, ...INTERACCIONES],
   sitio: [FONDO_ANIMADO, SCROLL, SECCIONES, { galeria: 'pie', ficha: 'Pie de página', pregunta: '¿Cómo cierra cada página?' }],
-  portfolio: [FONDO_ANIMADO, SCROLL, SECCIONES, { galeria: 'carrusel', ficha: 'Galería de trabajos', pregunta: '¿Cómo se muestran tus trabajos?' }],
+  portfolio: [FONDO_ANIMADO, SCROLL, SECCIONES, { galeria: 'carrusel', ficha: 'Galería de trabajos', pregunta: '¿Cómo se muestran tus trabajos?' }, ...INTERACCIONES],
   tienda: [
     { galeria: 'producto', ficha: 'Tarjeta de producto', pregunta: '¿Cómo se ve cada producto?' },
     { galeria: 'formulario', ficha: 'Carrito y compra', pregunta: '¿Cómo se completa la compra?' },
     { galeria: 'buscador', ficha: 'Buscador y filtros', pregunta: '¿Cómo se busca en la tienda?' },
+    ...INTERACCIONES,
   ],
   app_web: [
     { galeria: 'nav_web', ficha: 'Navegación', pregunta: '¿Cómo se pasa de una pantalla a otra?' },
