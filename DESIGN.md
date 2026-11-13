@@ -1,7 +1,7 @@
 # DESIGN.md: especificación del formato
 
-> **Versión del formato:** 0.9.3 (borrador)
-> **Última actualización:** 2026-11-11
+> **Versión del formato:** 0.10.0 (borrador)
+> **Última actualización:** 2026-11-13
 > **Estado:** Molde con recorrido corto de hasta 5 pasos, página usable mientras se arma y descarga de DESIGN.md y HTML al final. Falta la primera ronda de pruebas con IA (§9).
 
 Este documento define **qué archivo exporta el configurador** y **cómo lo tiene que leer una IA** para construir una web o una app. Es también el documento vivo del proyecto: acá se registran las decisiones, lo que aprendemos en las pruebas y lo que falta hacer.
@@ -134,7 +134,7 @@ Todo archivo exportado empieza con este bloque, que permite saber con qué versi
 
 ```yaml
 formato: design-md
-version_formato: 0.9.3
+version_formato: 0.10.0
 generado_por: configurador-diseno
 fecha: 2026-11-06
 idioma: es
@@ -585,6 +585,39 @@ nota: "nada que rebote en formularios"
 
 ---
 
+#### Tarjetas y cursor (opcional, desde 0.10.0)
+
+En §12, solo para landing, tienda y portfolio, se agregan dos bloques opcionales:
+
+```yaml
+tarjetas:
+  al_pasar_el_mouse: elevar   # nada | oscurecer | brillo | elevar | escalar | sombra | desplazar
+  clase: tarjetas-hover-elevar
+  selector: ":is(.pg-card, .cm-producto)"
+cursor:
+  estilo: anillo             # normal | punto | anillo | cruz
+  clase: cursor-anillo
+  tactil_y_movimiento_reducido: normal
+```
+
+Las clases se ponen en la raíz `.pg`. Cada bloque va acompañado de su CSS completo,
+el mismo que usa la página (`src/interacciones.ts`). Sin `tarjetas` se conserva
+el hover del preset de caja; sin `cursor` se conserva el del navegador. Los
+archivos anteriores siguen siendo válidos: ambos campos tienen ese comportamiento
+por defecto. Elegir `nada` no agrega hover y neutraliza el del preset de caja;
+conserva las rotaciones del layout. Elegir `normal` mantiene
+los cursores nativos. No se altera el hover de los botones.
+
+El hover explícito de tarjetas gana sobre el hover de §20 y se aplica solo a
+`.pg-card` y `.cm-producto`. Usa los tokens de duración, curva y sombra de §16.
+Los efectos de H12 no se activan con tacto o movimiento reducido. Los cursores
+propios son SVG embebidos en CSS con hotspot 12 12 y fallback `auto`; se activan
+solo con `hover: hover`, `pointer: fine` y `prefers-reduced-motion: no-preference`.
+Son formas de 24 px con negro y blanco fijos para contrastar con cualquier paleta.
+No requieren JavaScript, no ocultan el cursor y conservan las señales nativas de
+links, botones y campos. En los demás tipos, las elecciones se conservan al volver
+pero no se aplican a la página ni se escriben en el export.
+
 ### §13. Contenido y tono
 
 ```yaml
@@ -930,6 +963,14 @@ Secciones arrastrando las manijas o con los botones Subir y Bajar; el orden se g
 y se usa en la página y en §22, sin agregar campos al formato. Agrupar las elecciones no agrega campos al export
 ni cambia su versión (0.9.2). La selección por rondas del fondo animado sigue pendiente de conexión.
 
+### H12 · Rondas opcionales de interacción
+
+Al final de la rama de landing, tienda y portfolio se pueden elegir «Al pasar el
+mouse» (los siete efectos de HOVERS, aplicados a tarjetas) y «Cursor» (normal, punto,
+anillo y cruz). Ambas se pueden omitir y quedan como fichas para volver a editar.
+Se guardan en `visual.hoverTarjetas` y `visual.cursor`; `null` conserva el aspecto
+anterior. No precargan elecciones de estilo ni modifican el hover de botones.
+
 ### Controles detallados y estados anteriores
 
 La tabla siguiente conserva el registro de construcción de cada control. Sus números ya no son
@@ -980,7 +1021,7 @@ Así se vería un archivo real generado por el MVP. Las secciones `[v0.2]` apare
 ````markdown
 ```yaml
 formato: design-md
-version_formato: 0.9.3
+version_formato: 0.10.0
 generado_por: configurador-diseno
 fecha: 2026-11-06
 idioma: es
@@ -1346,8 +1387,33 @@ Decisiones de cierre del recorrido corto (PLAN.md §10):
 | D94 | 2026-11-11 | Qué es → Estructura → Estilo → Color → Lo propio, máximo 5 pasos. Las ramas se filtran por tipo y layout. Letra, Piezas, Iconos, Tono, Entrada y Densidad salen de los recomendados y se cambian desde Ajustar, sin pisar elecciones manuales. Color filtra por AA con el estilo elegido. Amplía D85 y reemplaza el orden de D88 | Menos pasos y decisiones pertinentes | Preguntar cada ronda por separado |
 | D95 | 2026-11-11 | Lienzo y vista previa se scrollean y responden a toques; las ideas siguen saliendo del centro (D81) y se recogen arriba al usar la página. Enlaces internos llevan a su sección; los demás enlaces y formularios no navegan ni envían. Final: página entera sin ideas, Descargar fijo en la esquina abre la ventana de archivos y Seguir editando vuelve al recorrido | Probar el diseño mientras se arma y ver el resultado antes de descargar | Lienzo inerte, bandeja permanente o esconder la página al terminar |
 | D96 | 2026-11-13 | Tercer diseño para cada una de las 8 secciones (H9): `beneficios_corrido`, `pasos_flechas`, `precios_carta`, `testimonios_globos`, `preguntas_lado`, `equipo_tira`, `numeros_franja` y `contacto_maneras`. Cada uno parte de una idea que los otros dos no usan (un párrafo, bloques encastrados, una carta, una conversación, una respuesta al lado, una tira, una franja de color, tres verbos) y ninguno suma tarjetas numeradas ni sombras. `numeros_franja` es el único bloque con fondo de acento pleno: su texto usa el color sobre acento sin transparencia. `preguntas_lado` usa botones con `aria-expanded` en vez de pestañas para que en celular la respuesta quede debajo de su pregunta. | Quien elegía secciones tenía solo dos caminos por sección; con tres, dos páginas con las mismas secciones se parecen menos. No cambia la forma de §22: solo hay más valores posibles en `diseno`, por eso es 0.9.3 |
+| D97 | 2026-11-13 | H12: dos rondas opcionales para landing, tienda y portfolio. Hover de tarjetas independiente de botones, con prioridad sobre el hover de caja; cursor CSS embebido solo para mouse sin movimiento reducido. Defaults null conservan archivos anteriores | Pedido explícito de H12; sin librerías ni seguimiento del puntero por JS | Cursor oculto con un elemento que sigue al mouse; pisar el hover de botones |
 
 ## 9. Registro de pruebas
+
+### H12 · Hover de tarjetas y cursor (2026-11-13)
+
+Pruebas de rondas por tipo, migración de configs anteriores, ids inválidos,
+persistencia, independencia de los botones y §12 con el mismo CSS que la página.
+Export de landing, tienda y portfolio con las siete opciones de hover y cuatro de
+cursor; los bloques YAML se parsean. No es una prueba independiente con dos IA.
+
+`e2e/interacciones.e2e.mjs`, integrado en `npm run test:e2e`, comprueba elección
+de las dos rondas, persistencia tras recargar, siete hover y cuatro cursores,
+prioridad sobre el hover de caja (incluido borde), señales nativas de los botones,
+HTML exportado sin red y fallback táctil/movimiento reducido a 1440 y 390 px.
+También comprueba que «Nada» conserva las rotaciones propias del layout.
+
+Controles de cierre: typecheck, 218 tests, lint y peso pasan (202,5 kB de 250 kB, con H9 integrado).
+H12 pasa en Chromium a 1440/390 px, incluido HTML sin red. Una corrida del e2e
+general pasó completa (táctil normal/reducido, landing/dashboard con axe en ambos
+tamaños). Las repeticiones posteriores del comando integrado pasaron H12 y el
+recorrido táctil normal, pero fallaron en la observación de la clase `toque` del
+botón con movimiento reducido (`e2e/molde-tactil.e2e.mjs:85`), el mismo fallo
+intermitente registrado en H5/H8. No se modificó ni relajó ese test; no se declara
+toda la suite e2e estable. Capturas revisadas en escritorio y celular.
+
+
 
 ### H8 · Orden de secciones (2026-11-13)
 
@@ -1545,6 +1611,7 @@ Lo que todavía no tiene lugar en §5. Se mueve allá cuando se decide hacerlo.
 
 | Versión | Fecha | Cambios |
 |---|---|---|
+| 0.10.0 | 2026-11-13 | H12: §12 suma tarjetas y cursor opcionales con su CSS, defaults que conservan lo anterior, hover por mouse y cursor normal en tacto/movimiento reducido. §5 suma las dos rondas para landing, tienda y portfolio. Archivos 0.9.2 y 0.9.3 siguen siendo válidos. |
 | 0.9.3 | 2026-11-13 | H9 (D96): §22 suma un tercer diseño a cada sección (`beneficios_corrido`, `pasos_flechas`, `precios_carta`, `testimonios_globos`, `preguntas_lado`, `equipo_tira`, `numeros_franja`, `contacto_maneras`), cada uno con su `estructura`. No hay campos nuevos ni cambia el significado de los existentes: un archivo 0.9.2 sigue siendo válido. |
 | 0.9.2 (sin cambio de formato) | 2026-11-11 | I4: cierre de I1–I3; §5 documenta los grupos y Ajustar, D94–D95 registran la página usable y el final. Color filtra las paletas por AA con el estilo elegido. Se aíslan las capas para que la base no intercepte la vista previa. E2E táctil cubre scroll real con ideas abiertas en lienzo y vista previa, botón de muestra y descargas desde la esquina, también con movimiento reducido. |
 | 0.9.2 | 2026-11-11 | D14: §7 suma `lectura` opcional para blogs (`ancho_maximo`, `tamano`, `interlineado`) y su CSS compartido con la página; `largo_de_linea_max` toma el ancho elegido. §16 suma dos tokens de lectura solo con elección activa. La escala general de la UI se conserva. Un archivo 0.9.1 sigue siendo válido. |

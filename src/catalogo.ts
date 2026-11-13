@@ -497,6 +497,14 @@ export const HOVERS: Record<HoverId, { nombre: string; descripcion: string }> = 
   desplazar: { nombre: 'Desplazar', descripcion: 'Se corre en diagonal, ideal con sombra dura' },
 };
 
+/** Cursores CSS (H12); el normal mantiene las señales nativas de cada control. */
+export const CURSORES = {
+  normal: { nombre: 'Normal', descripcion: 'El cursor del navegador' },
+  punto: { nombre: 'Punto', descripcion: 'Un punto con borde de contraste' },
+  anillo: { nombre: 'Anillo', descripcion: 'Un círculo con el centro libre' },
+  cruz: { nombre: 'Cruz', descripcion: 'Una cruz fina y precisa' },
+} satisfies Record<import('./tipos').CursorId, { nombre: string; descripcion: string }>;
+
 export const PRESIONAR: Record<PresionarId, { nombre: string; descripcion: string }> = {
   nada: { nombre: 'Nada', descripcion: 'Sin respuesta al tocar' },
   hundir: { nombre: 'Hundir', descripcion: 'Se achica al tocar, se siente físico' },

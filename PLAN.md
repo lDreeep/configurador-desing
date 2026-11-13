@@ -399,8 +399,8 @@ se despliega desde el botón.
 | Link para compartir lo armado | sumar a B1 (el estado ya va en la URL) | todos |
 | Guardar favoritos y comparar dos | después de C5 | todos |
 | Importar un `DESIGN.md` para seguir editándolo | después de F1 (está pendiente en `DESIGN.md` §5) | todos |
-| Efecto al pasar el mouse por las tarjetas | ronda nueva con los 7 hover que ya existen | landing, tienda, portfolio |
-| Cursor propio | después de D6 | landing, portfolio |
+| Efecto al pasar el mouse por las tarjetas | H12 hecha: ronda opcional con los 7 hover existentes | landing, tienda, portfolio |
+| Cursor propio | H12 hecha: cuatro opciones CSS, con fallback normal en tacto/reducido | landing, tienda, portfolio |
 
 ---
 
@@ -568,7 +568,8 @@ probar con personas y recién después sumar cosas. Cada tarea trae el pedido li
     > avisa). Tiene que aceptar desde la versión 0.8.8 hasta la actual. Test de ida y vuelta: para muchas
     > configs, exportar → importar → exportar da el mismo archivo. Actualizá §5 y §12 de `DESIGN.md`.
 
-- [ ] **H12 · Efecto al pasar el mouse por las tarjetas y cursor propio** — Sonnet 5.5 · ChatGPT: Sol
+- [x] **H12 · Efecto al pasar el mouse por las tarjetas y cursor propio** — Sonnet 5.5 · ChatGPT: Sol
+  - Hecha (2026-11-13): siete hover de tarjetas independientes del botón y cuatro cursores CSS; rondas opcionales para landing, tienda y portfolio. Estado normalizado, CSS compartido con el lienzo y export §12. Formato 0.10.0; fallback nativo en tacto y movimiento reducido.
   - Las dos ideas de §7.9 que quedaron sin hacer.
   - Pedido:
     > Leé `CLAUDE.md`, `DESIGN.md` y `PLAN.md` (§7.9). Hacé H12: sumá dos rondas opcionales para landing,
@@ -714,4 +715,4 @@ En H4, a las tres personas les gustó navegar por Molde. La traba apareció **de
 | H9 · Más diseños por sección | Postergar. J1 permite evaluar los diseños existentes en otras vistas antes de ampliar el catálogo. |
 | H10 · Favoritos y comparación | Postergar. La comparación guardada resolvería otra necesidad; en H4 se quiso explorar una misma elección. |
 | H11 · Importar un DESIGN.md | Postergar hasta validar el export en J6. Los cambios de alcance y destinos de J4 afectan qué podría reconstruir el importador. |
-| H12 · Hover y cursor | Postergar. Sumar dos rondas aumentaría las decisiones cuando algunas personas ya sintieron largo el recorrido. |
+| H12 · Hover y cursor | [Reemplazado por pedido explícito de H12 el 2026-11-13; implementada]. Decisión original: postergar. Sumar dos rondas aumentaría las decisiones cuando algunas personas ya sintieron largo el recorrido. |

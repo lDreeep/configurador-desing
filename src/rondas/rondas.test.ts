@@ -27,12 +27,12 @@ describe('rondas de Molde (C1)', () => {
 
   it('las ramas siguen la tabla 7.1 de PLAN.md', () => {
     const fichas = (t: TipoProyecto) => RAMAS[t].map((e) => e.ficha);
-    expect(fichas('landing')).toEqual(['Fondo animado', 'Scroll', 'Secciones']);
-    expect(fichas('tienda')).toEqual(['Tarjeta de producto', 'Carrito y compra', 'Buscador y filtros']);
+    expect(fichas('landing')).toEqual(['Fondo animado', 'Scroll', 'Secciones', 'Al pasar el mouse', 'Cursor']);
+    expect(fichas('tienda')).toEqual(['Tarjeta de producto', 'Carrito y compra', 'Buscador y filtros', 'Al pasar el mouse', 'Cursor']);
     expect(fichas('dashboard')).toEqual(['Métricas', 'Gráficos', 'Tablas', 'Densidad']);
     for (const t of TIPOS) expect(RAMAS[t].length, t).toBeGreaterThanOrEqual(2);
     // Lo que todavía no existe queda anotado con su tarea.
-    expect(fichas('portfolio')).toEqual(['Fondo animado', 'Scroll', 'Secciones', 'Galería de trabajos']);
+    expect(fichas('portfolio')).toEqual(['Fondo animado', 'Scroll', 'Secciones', 'Galería de trabajos', 'Al pasar el mouse', 'Cursor']);
     expect(rondasPendientes(conTipo('landing')).map((p) => p.tarea)).toEqual(['D6']);
     expect(rondasPendientes(conTipo('tienda')).map((p) => p.clave)).toEqual([]);
   });
