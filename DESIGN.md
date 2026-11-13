@@ -1,6 +1,6 @@
 # DESIGN.md: especificación del formato
 
-> **Versión del formato:** 0.9.2 (borrador)
+> **Versión del formato:** 0.9.3 (borrador)
 > **Última actualización:** 2026-11-11
 > **Estado:** Molde con recorrido corto de hasta 5 pasos, página usable mientras se arma y descarga de DESIGN.md y HTML al final. Falta la primera ronda de pruebas con IA (§9).
 
@@ -134,7 +134,7 @@ Todo archivo exportado empieza con este bloque, que permite saber con qué versi
 
 ```yaml
 formato: design-md
-version_formato: 0.9.2
+version_formato: 0.9.3
 generado_por: configurador-diseno
 fecha: 2026-11-06
 idioma: es
@@ -856,7 +856,7 @@ secciones:
   - id: beneficios                         # beneficios | pasos | precios | testimonios | preguntas | equipo | numeros | contacto
     nombre: "Beneficios"
     para_que: "Qué se lleva la persona, punto por punto."
-    diseno: beneficios_renglones           # uno de los dos diseños de esa sección (tabla de abajo)
+    diseno: beneficios_renglones           # uno de los tres diseños de esa sección (tabla de abajo)
     diseno_nombre: "En renglones"
     estructura: "Título de la sección arriba a la izquierda. Debajo, una lista…"   # descripción para reproducirla, con lo que pasa en celular
   - id: precios
@@ -864,18 +864,18 @@ secciones:
     …
 ```
 
-Las 8 secciones y sus 2 diseños (fuente de verdad: `src/secciones.ts`):
+Las 8 secciones y sus 3 diseños (fuente de verdad: `src/secciones.ts`; el tercero de cada una llegó en 0.9.3):
 
 | Sección (`id`) | Diseños (`diseno`) |
 |---|---|
-| `beneficios` Beneficios | `beneficios_renglones` (una lista a todo el ancho) · `beneficios_destacado` (uno grande adelante y el resto al costado) |
-| `pasos` Cómo funciona | `pasos_fila` (en fila, unidos por una línea) · `pasos_escalera` (cada paso más a la derecha, con el número enorme) |
-| `precios` Precios | `precios_planes` (tres tarjetas, la más elegida marcada) · `precios_tabla` (tabla comparativa) |
-| `testimonios` Testimonios | `testimonios_cita` (una cita grande) · `testimonios_tres` (tres cortos lado a lado) |
-| `preguntas` Preguntas frecuentes | `preguntas_acordeon` (se abren al tocar) · `preguntas_abiertas` (todas a la vista, en dos columnas) |
-| `equipo` Equipo | `equipo_retratos` (grilla de retratos) · `equipo_lista` (nombres grandes, sin fotos) |
-| `numeros` Números | `numeros_fila` (tres cifras iguales) · `numeros_protagonista` (una cifra gigante y dos chicas) |
-| `contacto` Contacto | `contacto_formulario` (datos y formulario corto) · `contacto_datos` (el mail enorme y los datos debajo) |
+| `beneficios` Beneficios | `beneficios_renglones` (una lista a todo el ancho) · `beneficios_destacado` (uno grande adelante y el resto al costado) · `beneficios_corrido` (un solo párrafo grande, con el nombre de cada beneficio resaltado) |
+| `pasos` Cómo funciona | `pasos_fila` (en fila, unidos por una línea) · `pasos_escalera` (cada paso más a la derecha, con el número enorme) · `pasos_flechas` (tres bloques encastrados en punta, cada vez más teñidos) |
+| `precios` Precios | `precios_planes` (tres tarjetas, la más elegida marcada) · `precios_tabla` (tabla comparativa) · `precios_carta` (nombre, línea de puntos y precio, como una carta) |
+| `testimonios` Testimonios | `testimonios_cita` (una cita grande) · `testimonios_tres` (tres cortos lado a lado) · `testimonios_globos` (tres globos de diálogo que alternan de lado) |
+| `preguntas` Preguntas frecuentes | `preguntas_acordeon` (se abren al tocar) · `preguntas_abiertas` (todas a la vista, en dos columnas) · `preguntas_lado` (lista de preguntas y la respuesta de la elegida, grande, al lado) |
+| `equipo` Equipo | `equipo_retratos` (grilla de retratos) · `equipo_lista` (nombres grandes, sin fotos) · `equipo_tira` (los retratos pegados en una sola tira) |
+| `numeros` Números | `numeros_fila` (tres cifras iguales) · `numeros_protagonista` (una cifra gigante y dos chicas) · `numeros_franja` (las tres cifras sobre una franja del color de acento) |
+| `contacto` Contacto | `contacto_formulario` (datos y formulario corto) · `contacto_datos` (el mail enorme y los datos debajo) · `contacto_maneras` (tres renglones grandes: llamar, escribir, venir) |
 
 - Va un diseño por sección y cada sección aparece una sola vez. `orden` repite los `id` de `secciones`, en el mismo orden.
 - Las secciones van después de la composición del layout (§19) y antes del cierre con el pie. Cuando hay §22, reemplaza a `layout_argumento`.
@@ -951,7 +951,7 @@ Los estados futuros conservan su alcance pendiente.
 | 10. Movimiento | §12 | `[v0.2]` hecho | 4 niveles + hover (7), al presionar (2), aparición (5) y cambio de pantalla (5), cada uno por separado; «Repetir animación» en la vista previa |
 | 11. Iconos e imágenes | §11 | `[v0.2]` hecho | Ronda opcional Iconos: 8 opciones (librería + estilo) que llenan `iconos` (`libreria`, `estilo`, `grosor`, `tamano`). `imagenes`, `emojis_en_ui` y `logo` quedan `[futuro]` |
 | 12. Contenido y tono | §13 | `[v0.2]` hecho | Ronda opcional Tono: 6 opciones con una frase de ejemplo (voz, tratamiento y largo de los textos). `formato` (fecha, moneda) y `ejemplos_de_microcopy` quedan `[futuro]` |
-| 14. Secciones de la página (ronda de Molde, solo landing, sitio y portfolio) | §22 | `[v0.9]` hecho | 8 secciones con 2 diseños cada una; se eligen varias y el orden de la página es el orden en que se eligen. Elegir el otro diseño de una sección la cambia sin moverla; elegir el mismo la saca |
+| 14. Secciones de la página (ronda de Molde, solo landing, sitio y portfolio) | §22 | `[v0.9]` hecho | 8 secciones con 3 diseños cada una (el tercero desde 0.9.3); se eligen varias y el orden de la página es el orden en que se eligen. Elegir otro diseño de una sección la cambia sin moverla; elegir el mismo la saca |
 | 13. Revisar y exportar | §17, §18, genera §1, §14, §15, §16 | `[MVP]` hecho | Resumen, notas generales, lista de pendientes, descarga |
 
 **Funciones transversales:**
@@ -980,7 +980,7 @@ Así se vería un archivo real generado por el MVP. Las secciones `[v0.2]` apare
 ````markdown
 ```yaml
 formato: design-md
-version_formato: 0.9.2
+version_formato: 0.9.3
 generado_por: configurador-diseno
 fecha: 2026-11-06
 idioma: es
@@ -1345,6 +1345,7 @@ Decisiones de cierre del recorrido corto (PLAN.md §10):
 |---|---|---|---|---|
 | D94 | 2026-11-11 | Qué es → Estructura → Estilo → Color → Lo propio, máximo 5 pasos. Las ramas se filtran por tipo y layout. Letra, Piezas, Iconos, Tono, Entrada y Densidad salen de los recomendados y se cambian desde Ajustar, sin pisar elecciones manuales. Color filtra por AA con el estilo elegido. Amplía D85 y reemplaza el orden de D88 | Menos pasos y decisiones pertinentes | Preguntar cada ronda por separado |
 | D95 | 2026-11-11 | Lienzo y vista previa se scrollean y responden a toques; las ideas siguen saliendo del centro (D81) y se recogen arriba al usar la página. Enlaces internos llevan a su sección; los demás enlaces y formularios no navegan ni envían. Final: página entera sin ideas, Descargar fijo en la esquina abre la ventana de archivos y Seguir editando vuelve al recorrido | Probar el diseño mientras se arma y ver el resultado antes de descargar | Lienzo inerte, bandeja permanente o esconder la página al terminar |
+| D96 | 2026-11-13 | Tercer diseño para cada una de las 8 secciones (H9): `beneficios_corrido`, `pasos_flechas`, `precios_carta`, `testimonios_globos`, `preguntas_lado`, `equipo_tira`, `numeros_franja` y `contacto_maneras`. Cada uno parte de una idea que los otros dos no usan (un párrafo, bloques encastrados, una carta, una conversación, una respuesta al lado, una tira, una franja de color, tres verbos) y ninguno suma tarjetas numeradas ni sombras. `numeros_franja` es el único bloque con fondo de acento pleno: su texto usa el color sobre acento sin transparencia. `preguntas_lado` usa botones con `aria-expanded` en vez de pestañas para que en celular la respuesta quede debajo de su pregunta. | Quien elegía secciones tenía solo dos caminos por sección; con tres, dos páginas con las mismas secciones se parecen menos. No cambia la forma de §22: solo hay más valores posibles en `diseno`, por eso es 0.9.3 |
 
 ## 9. Registro de pruebas
 
@@ -1511,7 +1512,7 @@ Lo que todavía no tiene lugar en §5. Se mueve allá cuando se decide hacerlo.
   - Se descartan los genéricos (puntos que se apartan del cursor, partículas, fluido): ya son lo que se ve en todas partes y no hablan del producto.
   - Reglas para cualquiera: en celular se mueve solo o con el toque; con `prefers-reduced-motion` queda quieto; nunca va texto directo encima (velo); no suma a la carga inicial (`npm run peso`).
   - Tests futuros: que el fondo no baje de 60 cuadros por segundo a 1440 × 900 y a 390 × 844 (como se midió en D6); que con movimiento reducido no haya `requestAnimationFrame` corriendo; que el título y «Empezar» pasen contraste AA con el fondo detrás en cualquier posición de la lente.
-- ~~**Catálogo de secciones de landing**~~: hecho (D92, formato 0.9.0, §22). Queda como idea reordenar arrastrando y sumar más diseños por sección.
+- ~~**Catálogo de secciones de landing**~~: hecho (D92, formato 0.9.0, §22). Queda como idea reordenar arrastrando. El tercer diseño por sección llegó en 0.9.3 (D96).
 - **Plantillas de estructura por tipo de proyecto**: que elegir "tienda" ya proponga pantallas típicas.
 - **Más direcciones visuales**: lujoso, juguetón, editorial.
 - **Catálogo de animaciones** con vista previa de cada una.
@@ -1544,6 +1545,7 @@ Lo que todavía no tiene lugar en §5. Se mueve allá cuando se decide hacerlo.
 
 | Versión | Fecha | Cambios |
 |---|---|---|
+| 0.9.3 | 2026-11-13 | H9 (D96): §22 suma un tercer diseño a cada sección (`beneficios_corrido`, `pasos_flechas`, `precios_carta`, `testimonios_globos`, `preguntas_lado`, `equipo_tira`, `numeros_franja`, `contacto_maneras`), cada uno con su `estructura`. No hay campos nuevos ni cambia el significado de los existentes: un archivo 0.9.2 sigue siendo válido. |
 | 0.9.2 (sin cambio de formato) | 2026-11-11 | I4: cierre de I1–I3; §5 documenta los grupos y Ajustar, D94–D95 registran la página usable y el final. Color filtra las paletas por AA con el estilo elegido. Se aíslan las capas para que la base no intercepte la vista previa. E2E táctil cubre scroll real con ideas abiertas en lienzo y vista previa, botón de muestra y descargas desde la esquina, también con movimiento reducido. |
 | 0.9.2 | 2026-11-11 | D14: §7 suma `lectura` opcional para blogs (`ancho_maximo`, `tamano`, `interlineado`) y su CSS compartido con la página; `largo_de_linea_max` toma el ancho elegido. §16 suma dos tokens de lectura solo con elección activa. La escala general de la UI se conserva. Un archivo 0.9.1 sigue siendo válido. |
 | 0.9.1 | 2026-11-11 | F1 agrega rubro y fondo animado opcionales, exporta la combinación de scroll y el CSS real de las entradas. Incluye JS solo para luz_cursor. Los campos ausentes conservan el comportamiento anterior, por lo que un archivo 0.9.0 sigue siendo válido. |
