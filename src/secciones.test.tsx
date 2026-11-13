@@ -28,12 +28,12 @@ const con = (tipo: TipoProyecto, secciones: SeccionDisenoId[]): Config => {
 const html = (c: Config) => renderToStaticMarkup(<Pagina config={c} />);
 
 describe('secciones de la página (D12)', () => {
-  it('hay 8 secciones con 2 diseños cada una, con nombre, descripción y estructura para el export', () => {
+  it('hay 8 secciones con 3 diseños cada una, con nombre, descripción y estructura para el export', () => {
     expect(LISTA_SECCIONES).toHaveLength(8);
-    expect(LISTA_DISENOS_SECCION).toHaveLength(16);
+    expect(LISTA_DISENOS_SECCION).toHaveLength(24);
     for (const s of LISTA_SECCIONES) {
       const disenos = LISTA_DISENOS_SECCION.filter((id) => seccionDe(id) === s);
-      expect(disenos, s).toHaveLength(2);
+      expect(disenos, s).toHaveLength(3);
       for (const id of disenos) expect(id.startsWith(`${s}_`), id).toBe(true);
       expect(SECCIONES[s].nombre && SECCIONES[s].descripcion, s).toBeTruthy();
     }
@@ -44,7 +44,7 @@ describe('secciones de la página (D12)', () => {
       // La estructura dice qué pasa en celular: es lo que la IA suele inventar.
       expect(d.estructura, id).toMatch(/celular/i);
     }
-    expect(new Set(LISTA_DISENOS_SECCION.map((id) => DISENOS_SECCION[id].nombre + seccionDe(id))).size).toBe(16);
+    expect(new Set(LISTA_DISENOS_SECCION.map((id) => DISENOS_SECCION[id].nombre + seccionDe(id))).size).toBe(24);
   });
 
   it('las piden landing, sitio y portfolio, con 6 recomendadas que existen y no repiten sección', () => {

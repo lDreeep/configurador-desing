@@ -399,8 +399,8 @@ se despliega desde el botón.
 | Link para compartir lo armado | sumar a B1 (el estado ya va en la URL) | todos |
 | Guardar favoritos y comparar dos | después de C5 | todos |
 | Importar un `DESIGN.md` para seguir editándolo | después de F1 (está pendiente en `DESIGN.md` §5) | todos |
-| Efecto al pasar el mouse por las tarjetas | ronda nueva con los 7 hover que ya existen | landing, tienda, portfolio |
-| Cursor propio | después de D6 | landing, portfolio |
+| Efecto al pasar el mouse por las tarjetas | H12 hecha: ronda opcional con los 7 hover existentes | landing, tienda, portfolio |
+| Cursor propio | H12 hecha: cuatro opciones CSS, con fallback normal en tacto/reducido | landing, tienda, portfolio |
 
 ---
 
@@ -540,13 +540,18 @@ probar con personas y recién después sumar cosas. Cada tarea trae el pedido li
     > fichas y también con teclado (botones «subir» y «bajar», 44 px, con `aria-label`). El orden sale en §22
     > del export como hoy. Test de `combinarSecciones` y del orden en el export.
 
-- [ ] **H9 · Más diseños por sección** — Claude Fable 5.2 · ChatGPT: no
+- [x] **H9 · Más diseños por sección** — Claude Fable 5.2 · ChatGPT: no
   - Pedido:
     > Leé `CLAUDE.md`, `DESIGN.md` y `PLAN.md`. Cargá la skill `frontend-design`. Hacé H9: sumá un tercer
     > diseño a cada una de las 8 secciones de `src/secciones.ts`, cada uno con una idea propia (nada de
     > cards numeradas 01/02/03 ni la misma sombra en todo), dibujado en `src/rapido/secciones.tsx` +
     > `secciones.css` solo con tokens. Revisalos con al menos 6 estilos a 1440 y 390 px. Seguí la regla de
     > `CLAUDE.md` para cambios en el export (§22, versión y §12).
+  - Hecho 2026-11-13: `beneficios_corrido`, `pasos_flechas`, `precios_carta`, `testimonios_globos`, `preguntas_lado`,
+    `equipo_tira`, `numeros_franja` y `contacto_maneras` (24 diseños en total). Revisados con 6 estilos
+    (producto amable, vidrio, cyber, bauhaus, clay y editorial; paletas claras y oscuras) a 1440 y 390 px, sin
+    desbordes. Formato 0.9.3, D96. Las recomendadas por tipo (`SECCIONES_RECOMENDADAS`) no cambiaron: los
+    nuevos se ofrecen después de las recomendadas.
 
 - [x] **H10 · Guardar favoritos y comparar dos** — Opus 5.5 · ChatGPT: Astra
   - Pedido:

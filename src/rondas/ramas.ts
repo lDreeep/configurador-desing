@@ -62,7 +62,7 @@ export const SIN_SECCIONES = 'ninguna';
 
 /**
  * Secciones (D12): qué secciones lleva la página y en qué orden. Cada opción es una sección con uno de
- * sus dos diseños. El orden de la página es el orden en que se eligen; elegir el otro diseño de una
+ * sus tres diseños. El orden de la página es el orden en que se eligen; elegir otro diseño de una
  * sección ya puesta lo cambia sin moverla, y elegir el mismo la saca.
  */
 export const RONDA_SECCIONES: Ronda = {
