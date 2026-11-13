@@ -1346,6 +1346,17 @@ Decisiones de cierre del recorrido corto (PLAN.md §10):
 
 ## 9. Registro de pruebas
 
+### H4 · Pruebas del recorrido con tres personas (síntesis del 2026-11-13)
+
+A las tres personas les gustó la manera de navegar por Molde. Al intentar explorar la página de muestra, apareció una dificultad distinta: la barra no las llevaba a otras vistas donde pudieran ver cómo quedaban sus elecciones de diseño. También señalaron que muchos botones no respondían.
+
+| Prioridad | Observación y frecuencia | Costo observado | Arreglo propuesto para evaluar | Tamaño estimado |
+|---|---|---|---|---|
+| 1 | La barra de la muestra no llevaba a otro contenido y varios botones parecían inactivos. El resumen no indica cuántas personas encontraron cada problema. | Impidió explorar cómo se aplicaba el diseño al resto de la interfaz. | Hacer que la barra abra secciones o vistas de muestra dentro del lienzo, conservando el diseño y el paso actual. Dar a los botones una respuesta local visible acorde con su acción. | Mediano para conectar vistas y comprobar los controles de cada layout. |
+| 2 | A algunas personas el recorrido les pareció largo. No hay un recuento exacto. | Se percibió esfuerzo por la cantidad de pasos. No se registró en cuál ni si produjo abandonos. | Probar un acceso «Ver resultado» después de elegir la estructura, con la opción de volver a ajustar el diseño. | Chico para probar el atajo con el resultado y los ajustes existentes. |
+
+El orden refleja el costo observado. Las notas son grupales y no permiten comparar frecuencias por problema. Tampoco detallan los proyectos, las elecciones inmediatas, cuántas personas descargaron ni qué opinaron del archivo.
+
 ### H5 · Lectura de tres exports por una IA receptora (2026-11-13)
 
 Formato 0.9.2, base `88b7b90`. Se generaron con `generarDesignMd` una landing
@@ -1508,6 +1519,8 @@ Lo que todavía no tiene lugar en §5. Se mueve allá cuando se decide hacerlo.
 | Q5 | ¿El configurador va en español solamente o bilingüe? | Las claves están en español (D8) | Abierta. |
 | Q6 | ¿Usamos `si`/`no` o `true`/`false` en el YAML? | Con YAML 1.2 `si`/`no` son texto; un lector YAML 1.1 lee `no` como `false`. Para una IA da igual; para importadores de terceros, no | Abierta. Decidir al hacer el importador (v0.2). |
 | Q7 | ¿Se documenta o se corrige la diferencia de §11 y §8 entre la especificación y el export? | G5: §11 no escribe `grosor` con estilo `relleno` y suma `regla`; §8 escribe `padding_componente` (que el ejemplo de §3 no tiene) y no escribe `espacio_entre_secciones` (que el ejemplo sí tiene). Según CLAUDE.md gana este documento: cambiar el export sería un cambio de formato | Abierta. |
+| Q8 | ¿Qué destinos esperaban abrir desde la barra y qué respuesta esperaban de los botones de la muestra? | H4: faltó identificar los controles y layouts concretos. | Abierta. |
+| Q9 | ¿En qué paso ya querían ver el resultado y cuántas personas llegaron a descargarlo? | H4: algunas percibieron demasiados pasos. Falta observar la descarga y qué les pareció el archivo. | Abierta. |
 
 ---
 

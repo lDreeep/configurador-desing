@@ -476,7 +476,8 @@ probar con personas y recién después sumar cosas. Cada tarea trae el pedido li
     > sumá una comprobación al e2e cuando se pueda. Lo que no puedas reproducir, decímelo.
     > [tu lista]
 
-- [ ] **H4 · Pruebas con personas** — quien dirige · síntesis con Opus 5.5 / Astra
+- [x] **H4 · Pruebas con personas** — quien dirige · síntesis con Opus 5.5 / Astra
+  - Hecha el 2026-11-13 con notas grupales de tres personas. Síntesis y propuestas en `DESIGN.md` §9, preguntas abiertas Q8 y Q9 en §11.
   - 3 a 5 personas que nunca lo vieron, cada una con una idea de proyecto propia. Mirá sin ayudar y anotá: dónde dudan, qué no entienden, qué eligen sin pensar, si llegan a descargar, y qué opinan del resultado.
   - Pedido para la síntesis (pegando tus notas):
     > Leé `CLAUDE.md`, `DESIGN.md` y `PLAN.md`. Hacé H4: abajo van mis notas de pruebas con personas.
