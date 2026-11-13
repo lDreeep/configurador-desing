@@ -214,6 +214,13 @@ async function recorrer(browser, reducedMotion) {
 try {
   await esperarServidor();
   const browser = await chromium.launch({ executablePath: process.env.CHROMIUM_PATH || undefined });
+  const importacion = await browser.newPage();
+  await importacion.goto(URL_BASE);
+  await importacion.getByLabel('Abrir un DESIGN.md').setInputFiles('pruebas/h5/tienda/DESIGN.md');
+  await importacion.waitForURL('**/#/listo');
+  await importacion.getByRole('button', { name: 'Seguir editando' }).click();
+  assert.equal(await importacion.evaluate(() => JSON.parse(localStorage.getItem('configurador-diseno:v1')).proyecto.nombre), 'Taller Arcilla');
+  await importacion.close();
   await recorrer(browser, false);
   console.log('ok: recorrido táctil a 390 px');
   await recorrer(browser, true);

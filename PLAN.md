@@ -560,7 +560,7 @@ probar con personas y recién después sumar cosas. Cada tarea trae el pedido li
     > para ver lado a lado (dos `Pagina` con su config, en celular una arriba de la otra). Cuidá el peso: todo
     > esto baja aparte. Tests de guardar, abrir y borrar, y una prueba e2e de comparar.
 
-- [ ] **H11 · Importar un `DESIGN.md` para seguir editándolo** — Opus 5.5 · ChatGPT: Astra
+- [x] **H11 · Importar un `DESIGN.md` para seguir editándolo** — Opus 5.5 · ChatGPT: Astra
   - Está como pendiente en `DESIGN.md` §5.
   - Pedido:
     > Leé `CLAUDE.md`, `DESIGN.md` y `PLAN.md`. Hacé H11: en la portada, «Abrir un DESIGN.md» lee un archivo

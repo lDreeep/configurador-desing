@@ -1004,7 +1004,7 @@ Los estados futuros conservan su alcance pendiente.
 | Descargar `DESIGN.md` | `[MVP]` hecho |
 | Copiar el contenido al portapapeles | `[MVP]` hecho |
 | Guardar el progreso en el navegador | `[MVP]` hecho |
-| **Importar un `DESIGN.md` para seguir editándolo** | `[v0.2]`. Clave para iterar: el archivo es a la vez salida y entrada. |
+| **Importar un `DESIGN.md` para seguir editándolo** | `[v0.2]`. Hecho en H11. Desde la portada, «Abrir un DESIGN.md» reconstruye la configuración desde el YAML de versiones 0.8.8 a 0.10.0 y abre el resultado editable. Se indican las secciones que requieren revisión. |
 | Verificación automática de contraste | `[v0.2]` hecho (en vivo en el paso de color y anotada en §18) |
 | Exportar `preview.html` con la página del lienzo y las fotos incorporadas | Hecho en Molde |
 | Exportar tokens como Tailwind y JSON | `[v0.2]` |
@@ -1613,6 +1613,7 @@ Lo que todavía no tiene lugar en §5. Se mueve allá cuando se decide hacerlo.
 |---|---|---|
 | 0.10.0 | 2026-11-13 | H12: §12 suma tarjetas y cursor opcionales con su CSS, defaults que conservan lo anterior, hover por mouse y cursor normal en tacto/movimiento reducido. §5 suma las dos rondas para landing, tienda y portfolio. Archivos 0.9.2 y 0.9.3 siguen siendo válidos. |
 | 0.9.3 | 2026-11-13 | H9 (D96): §22 suma un tercer diseño a cada sección (`beneficios_corrido`, `pasos_flechas`, `precios_carta`, `testimonios_globos`, `preguntas_lado`, `equipo_tira`, `numeros_franja`, `contacto_maneras`), cada uno con su `estructura`. No hay campos nuevos ni cambia el significado de los existentes: un archivo 0.9.2 sigue siendo válido. |
+| 0.9.3 (importación) | 2026-11-13 | H11: apertura local de archivos desde 0.8.8. Se recuperan las elecciones representadas en el archivo. |
 | 0.9.2 (sin cambio de formato) | 2026-11-11 | I4: cierre de I1–I3; §5 documenta los grupos y Ajustar, D94–D95 registran la página usable y el final. Color filtra las paletas por AA con el estilo elegido. Se aíslan las capas para que la base no intercepte la vista previa. E2E táctil cubre scroll real con ideas abiertas en lienzo y vista previa, botón de muestra y descargas desde la esquina, también con movimiento reducido. |
 | 0.9.2 | 2026-11-11 | D14: §7 suma `lectura` opcional para blogs (`ancho_maximo`, `tamano`, `interlineado`) y su CSS compartido con la página; `largo_de_linea_max` toma el ancho elegido. §16 suma dos tokens de lectura solo con elección activa. La escala general de la UI se conserva. Un archivo 0.9.1 sigue siendo válido. |
 | 0.9.1 | 2026-11-11 | F1 agrega rubro y fondo animado opcionales, exporta la combinación de scroll y el CSS real de las entradas. Incluye JS solo para luz_cursor. Los campos ausentes conservan el comportamiento anterior, por lo que un archivo 0.9.0 sigue siendo válido. |
