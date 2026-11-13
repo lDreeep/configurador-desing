@@ -21,7 +21,9 @@ describe('importar DESIGN.md', () => {
     const { config, avisos } = importarDesignMd(md);
     expect(avisos).toEqual([]);
 
-    expect(generarDesignMd(config, '2026-11-13')).toBe(generarDesignMd(original as Config, '2026-11-13'));
+    // H5 guardó estas configs con JSON.stringify; el JSON pierde los tipos literales del catálogo.
+    const configDeReferencia = original as unknown as Config;
+    expect(generarDesignMd(config, '2026-11-13')).toBe(generarDesignMd(configDeReferencia, '2026-11-13'));
   });
   it.each(Object.keys(DIRECCIONES) as DireccionId[])('ida y vuelta exacta: %s', id => {
     const c = aplicarDireccion(configInicial(), id);
