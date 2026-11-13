@@ -1,0 +1,172 @@
+{
+  "proyecto": {
+    "nombre": "Depósito Sur",
+    "tipo": "dashboard",
+    "descripcion": "Dashboard interno para revisar las ventas de un distribuidor.",
+    "objetivo": "Detectar caídas de ventas y revisar pedidos",
+    "publicoQuienes": "Analistas y responsables comerciales",
+    "publicoContexto": "Uso en Argentina, en escritorio y celular.",
+    "nivelTecnico": "bajo",
+    "plataformas": [
+      "web_movil",
+      "web_escritorio"
+    ],
+    "rubro": "ventas"
+  },
+  "estructura": {
+    "patron": "menu_lateral",
+    "patronMovil": "hamburguesa",
+    "pantallas": [
+      {
+        "nombre": "Resumen",
+        "proposito": "Métricas clave de un vistazo",
+        "secciones": [
+          "indicadores",
+          "grafico_principal",
+          "alertas"
+        ],
+        "accionPrincipal": "Exportar",
+        "id": "resumen_6z"
+      },
+      {
+        "nombre": "Reportes",
+        "proposito": "Analizar en detalle",
+        "secciones": [
+          "filtros",
+          "tabla"
+        ],
+        "accionPrincipal": "Descargar reporte",
+        "id": "reportes_70"
+      },
+      {
+        "nombre": "Usuarios",
+        "proposito": "Gestionar quién accede",
+        "secciones": [
+          "buscador",
+          "tabla_de_usuarios"
+        ],
+        "accionPrincipal": "Invitar usuario",
+        "id": "usuarios_71"
+      },
+      {
+        "nombre": "Ajustes",
+        "proposito": "Configuración general",
+        "secciones": [
+          "preferencias"
+        ],
+        "accionPrincipal": "Guardar cambios",
+        "id": "ajustes_72"
+      }
+    ],
+    "editadas": false
+  },
+  "funciones": {
+    "acciones": [
+      "Filtrar ventas por fecha",
+      "Revisar pedidos",
+      "Exportar el informe filtrado"
+    ],
+    "integraciones": [],
+    "fueraDeAlcance": [
+      "Implementar servicios externos sin confirmar proveedor y credenciales"
+    ],
+    "requiereCuenta": "si"
+  },
+  "visual": {
+    "direccion": "tecnico",
+    "estilo": "minimal_tecnico",
+    "paleta": "marina_naval",
+    "fuenteTitulos": "inter",
+    "fuenteTexto": "inter",
+    "pesoTitulos": 600,
+    "espaciadoTitulos": "apretado",
+    "escala": "sutil",
+    "radio": "apenas_suave",
+    "elevacion": "plana",
+    "bordes": "sutil",
+    "movimiento": "rapido",
+    "hover": "oscurecer",
+    "presionar": "hundir",
+    "aparicion": "fundido",
+    "cambio": "fundido",
+    "ambosModos": true,
+    "fondo": "ninguno",
+    "scroll": [],
+    "densidad": "compacta",
+    "lectura": null,
+    "secciones": [],
+    "fondoAnimado": "ninguno",
+    "layout": "bento",
+    "antiReferencias": [],
+    "paletaPersonalizada": {
+      "fondo": "#FFFFFF",
+      "texto": "#121826",
+      "acento": "#2F5BFF",
+      "manual": {}
+    }
+  },
+  "botones": {
+    "estilo": "relleno",
+    "tamano": "normal",
+    "mayusculas": false,
+    "icono": "ninguno",
+    "diseno": "metal_oscuro",
+    "color": "acento",
+    "efecto": "del_diseno"
+  },
+  "iconos": {
+    "libreria": "lucide",
+    "estilo": "trazo",
+    "grosor": 1.75
+  },
+  "tono": {
+    "voz": "neutra",
+    "tratamiento": "vos",
+    "largo": "medio"
+  },
+  "cajas": {
+    "preset": "invertida",
+    "ajustes": {}
+  },
+  "componentes": {
+    "boton_sec": "oscuro",
+    "boton_icono": "oscuro",
+    "campo": "contorno",
+    "selector": "oscuro",
+    "interruptor": "clasico",
+    "casilla": "oscura",
+    "deslizador": "oscuro",
+    "nav_movil": "oscura",
+    "nav_web": "oscura",
+    "etiqueta": "suave",
+    "aviso": "oscura",
+    "cargando": "anillo",
+    "progreso": "fina",
+    "acordeon": "oscuro",
+    "avatar": "circulo",
+    "tooltip": "oscuro",
+    "modal": "oscura",
+    "metrica": "oscura",
+    "grafico": "barras",
+    "tabla": "lineas",
+    "desplegable": "oscuro",
+    "buscador": "simple",
+    "paginacion": "numeros",
+    "migas": "barra",
+    "pasos": "circulos",
+    "vacio": "centrado",
+    "calendario": "oscuro",
+    "carrusel": "clasico",
+    "pie": "oscuro",
+    "formulario": "oscuro",
+    "subir": "oscuro",
+    "producto": "clasica",
+    "notificaciones": "oscura",
+    "usuario": "oscuro",
+    "acceso": "oscuro",
+    "wizard": "oscuro",
+    "reserva": "oscuro"
+  },
+  "notas": {},
+  "notasGenerales": "Proyecto ficticio para auditar el export. No inventes testimonios, precios ni métricas como si fueran reales."
+}

@@ -1346,6 +1346,28 @@ Decisiones de cierre del recorrido corto (PLAN.md §10):
 
 ## 9. Registro de pruebas
 
+### H5 · Lectura de tres exports por una IA receptora (2026-11-13)
+
+Formato 0.9.2, base `88b7b90`. Se generaron con `generarDesignMd` una landing
+(Turno Sur), un dashboard (Depósito Sur, ambos modos) y una tienda (Taller Arcilla),
+con configs y pedidos variados. Evidencia, método y revisión por caso en
+[pruebas/h5/README.md](pruebas/h5/README.md); cada carpeta conserva config, export y pedido.
+Reproducir: `node scripts/h5-exportar.mjs`. Los 61 bloques YAML se pudieron parsear.
+
+Revisor: Codex en esta sesión, como lector del archivo. No se ejecutaron Claude y
+ChatGPT independientes ni se construyeron apps: no hay resultado visual que puntuar.
+P1–P3 se conservan pendientes. Es la revisión solicitada en H5; la comparación con
+dos IA queda como ampliación opcional.
+
+Resultados: H5-1, CTA y secciones incompatibles en landing (§2/§3/§19/§22);
+H5-2, pantallas de plantilla y acciones sin destino; H5-3, datos e integraciones
+sin definir aunque §18 declare que nada bloquea; H5-4, argumento de landing en
+dashboard y tienda; H5-5, CSS literal con medidas propias y mínimos de 40 px frente a tokens
+y 44 px; H5-6, catálogo de componentes confundible con alcance obligatorio;
+H5-7, layouts y estados sin asociación por pantalla. Q7 sigue abierta: se observa
+`padding_componente` en las tres muestras, sin corregir la diferencia en silencio.
+Las prioridades y propuestas están en §10 y el informe. No cambia el formato.
+
 ### H3 · Prueba en un celular real (2026-11-13)
 
 Quien dirige probó Molde en un Google Pixel 9 Pro XL y confirmó que completó el recorrido
@@ -1391,6 +1413,26 @@ ofrece con ninguna paleta. No mide el brillo del botón Y2K ni los fondos con te
 ---
 
 ## 10. Backlog e ideas
+
+### Propuestas de H5 (2026-11-13; sin implementar)
+
+Derivadas de la [revisión reproducible](pruebas/h5/README.md). Son propuestas para
+priorizar en H6; no cambian §3 ni VERSION_FORMATO (sigue en 0.9.2).
+
+- **Alta — H5-1:** una sola estructura efectiva y CTA, sincronizados entre §2, §3,
+  §19 y §22; declarar cómo las secciones elegidas reemplazan el contenido del layout.
+- **Alta — H5-2/H5-3:** distinguir plantilla de alcance confirmado, conectar acciones
+  con pantallas/destinos y separar pendientes que bloquean maqueta de los que bloquean
+  implementación. Modelo de datos, permisos e integraciones deben poder declararse
+  sin esconder faltantes detrás de «Nada bloquea».
+- **Alta — H5-5:** resolver CSS literal frente a tokens, cajas y accesibilidad;
+  documentar precedencia y exportar mínimos táctiles coherentes. Requiere prueba
+  visual y de interacción posterior; la revisión de texto no certifica WCAG.
+- **Media — H5-4/H5-6:** argumento según tipo de proyecto y componentes marcados
+  como disponibles o usados; no transformar ejemplos de galería en funciones pedidas.
+- **Media — H5-7:** layouts, piezas y estados por pantalla, como extensión opcional.
+- **Validación posterior:** ensayar los tres pedidos en Claude y ChatGPT, guardar
+  respuestas y maquetas y medir fidelidad. No hay resultados de ese ensayo todavía.
 
 ### Plan del modo rápido (decidido, ver D21)
 
