@@ -45,3 +45,6 @@
 @media (prefers-reduced-motion: reduce) {
   .portada-aro { width: min(30vw, 30vh); height: min(30vw, 30vh); left: 72%; top: 34%; translate: -50% -50%; }
 }
+.portada-importar { position: absolute; z-index: 6; bottom: 16px; right: 16px; padding: 0 14px; min-height: 44px; display: grid; align-items: center; background: white; color: #171717; border: 1px solid currentColor; border-radius: 8px; cursor: pointer; }
+.portada-importar input { position: absolute; inset: 0; width: 100%; opacity: 0; cursor: pointer; }
+.portada-importar:focus-within { outline: 3px solid currentColor; outline-offset: 2px; }

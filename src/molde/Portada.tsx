@@ -38,7 +38,7 @@ function suscribir(aviso: () => void) {
   return () => consulta?.removeEventListener('change', aviso);
 }
 
-export function Portada({ empezar }: { empezar: () => void }) {
+export function Portada({ empezar, abrir }: { empezar: () => void; abrir: (archivo: File) => void }) {
   const raiz = useRef<HTMLDivElement>(null);
   const quieta = useSyncExternalStore(suscribir, () => movimiento()?.matches ?? false);
 
@@ -188,6 +188,13 @@ export function Portada({ empezar }: { empezar: () => void }) {
       <h1>Armá el diseño<br />de tu <span className="portada-palabra">página</span></h1>
       <p>Del botón salen ideas. Las que elegís se quedan en la página, y al final te la llevás armada.</p>
     </div>
+    <label className="portada-importar">Abrir un DESIGN.md
+      <input type="file" accept=".md,text/markdown" onChange={e => {
+        const archivo = e.target.files?.[0];
+        e.target.value = '';
+        if (archivo) abrir(archivo);
+      }} />
+    </label>
     <button type="button" className="molde-empezar" onClick={empezar}>Empezar</button>
   </div>;
 }

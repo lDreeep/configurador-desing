@@ -384,7 +384,19 @@ export function Molde({ config, setConfig, reiniciar, paso: pasoUrl, ir }: Props
 
         {paso === INICIO_MOLDE && (
           <Suspense fallback={<div className="molde-centro"><button type="button" className="molde-empezar" onClick={() => ir(siguiente(config, elegidas))}>Empezar</button></div>}>
-            <Portada empezar={() => ir(siguiente(config, elegidas))} />
+            <Portada abrir={async archivo => {
+              try {
+                const { importarDesignMd } = await import('../export/importarDesignMd');
+                const { config: importada, avisos } = importarDesignMd(await archivo.text());
+                setConfig(importada);
+                const rondas = [...rondasDelRecorrido(importada), ...rondasDeAjustar(importada)];
+                setElegidas(new Set(rondas.filter(r => r.elegida(importada) || r.obligatoria).map(r => r.clave)));
+                setAviso(avisos.length ? 'Diseño abierto. Revisá las secciones con datos faltantes o distintos: ' + avisos.join(', ') + '.' : 'Diseño abierto. Podés seguir editándolo.');
+                ir(LISTO_MOLDE);
+              } catch (error) {
+                setAviso(error instanceof Error ? error.message : 'No se pudo abrir el archivo.');
+              }
+            }} empezar={() => ir(siguiente(config, elegidas))} />
           </Suspense>
         )}
 
