@@ -228,7 +228,7 @@ Estado: `[ ]` pendiente · `[x]` hecha. Marcala al terminar.
 - [x] **D12 · Secciones de la página** — Fable 5.2 · depende de D3
   - Ronda nueva para landing, sitio y portfolio: elegir qué secciones lleva la página (precios, testimonios, preguntas frecuentes, contacto, equipo) y en qué orden. Es la idea «catálogo de secciones» de `DESIGN.md` §10.
   - Listo cuando: hay 8 secciones con 2 variantes cada una y el export las describe en §3.
-  - Hecha: catálogo en `src/secciones.ts` (8 secciones × 2 diseños, con su `estructura`), contenido de muestra en `src/rapido/contenido-secciones.ts` y dibujo en `src/rapido/secciones.tsx` + `secciones.css`. `visual.secciones` en `Config` (lo limpia `normalizar`). La ronda `RONDA_SECCIONES` (`src/rondas/ramas.ts`) elige varias: el orden de la página es el orden en que se eligen; en Molde la página va sola hasta la sección que se mira. Las secciones reemplazan al argumento del layout. Export: §22, formato 0.9.0, decisión D92. Tests en `src/secciones.test.tsx`. Pendiente: no se pueden reordenar sin sacar y volver a elegir; el export a HTML (F1) tiene que incluir `secciones.css`; de los 20 estilos solo se revisaron a ojo tres (sin estilo, neobrutalismo y terminal), a 1440 y 390 px.
+  - Hecha: catálogo en `src/secciones.ts` (8 secciones × 2 diseños, con su `estructura`), contenido de muestra en `src/rapido/contenido-secciones.ts` y dibujo en `src/rapido/secciones.tsx` + `secciones.css`. `visual.secciones` en `Config` (lo limpia `normalizar`). La ronda `RONDA_SECCIONES` (`src/rondas/ramas.ts`) elige varias: el orden de la página es el orden en que se eligen; en Molde la página va sola hasta la sección que se mira. Las secciones reemplazan al argumento del layout. Export: §22, formato 0.9.0, decisión D92. Tests en `src/secciones.test.tsx`. Resuelto en H8: se pueden reordenar sin sacar y volver a elegir; pendiente original conservado como registro: no se podían reordenar; el export a HTML (F1) tiene que incluir `secciones.css`; de los 20 estilos solo se revisaron a ojo tres (sin estilo, neobrutalismo y terminal), a 1440 y 390 px.
 
 - [x] **D13 · Ronda Rubro** — Sonnet 5.5 · ChatGPT: Sol · depende de D1 y D10 (conviene en la misma sesión que F1)
   - Guardar el rubro en `Config` (lo limpia `normalizar`), sacar «Rubro» de `rondasPendientes()` y ponerla después de Proyecto (decisión D88). Con el rubro en `Config`, `COLOR`, `LAYOUT`, `ESTILO` y `PIEZAS` de `src/rondas/comunes.ts` pasan `conRubro(…)` a `primeroRecomendados` (lo que dejó pendiente D10). La página usa el contenido de muestra del rubro.
@@ -532,7 +532,8 @@ probar con personas y recién después sumar cosas. Cada tarea trae el pedido li
     de la portada de hoy, que en celular deja las puntas del párrafo sobre el fondo. La maqueta usa datos
     copiados del catálogo y una página de muestra propia: llevar uno a `src/` es otra tarea (y `npm run peso`).
 
-- [ ] **H8 · Reordenar las secciones arrastrando** — Sonnet 5.5 · ChatGPT: Sol
+- [x] **H8 · Reordenar las secciones arrastrando** — Sonnet 5.5 · ChatGPT: Sol
+  - Hecha (2026-11-13): lista plegable con arrastre de manijas (mouse y dedo), botones Subir/Bajar de 44 px, foco estable y aviso de posición. Persiste el orden, conserva diseños y lo usa en §22. Tests unitarios y e2e propio a 1440/390 px.
   - Pedido:
     > Leé `CLAUDE.md`, `DESIGN.md` y `PLAN.md`. Hacé H8: en la ronda Secciones (`src/rondas/ramas.ts`,
     > `src/molde/Molde.tsx`) permití cambiar el orden de las secciones elegidas sin sacarlas, arrastrando las

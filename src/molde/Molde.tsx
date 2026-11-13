@@ -16,6 +16,7 @@ import { esDisenoSeccion, seccionDe } from '../secciones';
 import type { Config, LayoutId } from '../tipos';
 import { AJUSTES, despuesDe, elegir, INICIO_MOLDE, LISTO_MOLDE, POR_VEZ, posiciones, resolverPaso, rondasDelRecorrido, siguiente, useElegidas, valorDeFicha } from './recorrido';
 import './molde.css';
+import { OrdenSecciones } from './OrdenSecciones';
 const Portada = lazy(() => import('./Portada').then((m) => ({ default: m.Portada })));
 
 const Ajustes = lazy(() => import('./Ajustes'));
@@ -336,6 +337,12 @@ export function Molde({ config, setConfig, reiniciar, paso: pasoUrl, ir }: Props
                 {ronda.pregunta}
               </button>
             </h2>
+            {ronda.clave === 'secciones' && config.visual.secciones.length > 0 && (
+              <OrdenSecciones lista={config.visual.secciones} onCambiar={(secciones) => {
+                setVista(null);
+                setConfig((actual) => ({ ...actual, visual: { ...actual.visual, secciones } }));
+              }} />
+            )}
             <RondaAbierta
               key={ronda.clave}
               ronda={ronda}

@@ -18,7 +18,7 @@ import {
   TIPOS_CON_SECCIONES,
   type SeccionDisenoId,
 } from './secciones';
-import { SECCION_DE_DISENO } from './secciones-base';
+import { moverSeccion, SECCION_DE_DISENO } from './secciones-base';
 import type { Config, TipoProyecto } from './tipos';
 
 const con = (tipo: TipoProyecto, secciones: SeccionDisenoId[]): Config => {
@@ -159,4 +159,22 @@ describe('secciones de la página (D12)', () => {
     expect(Object.keys(SECCION_DE_DISENO).sort()).toEqual([...LISTA_DISENOS_SECCION].sort());
     for (const id of LISTA_DISENOS_SECCION) expect(SECCION_DE_DISENO[id], id).toBe(DISENOS_SECCION[id].seccion);
   });
+});
+
+it('H8 mueve sin mutar, conserva diseños al combinar y exporta el orden nuevo', () => {
+  const original: SeccionDisenoId[] = ['beneficios_renglones', 'precios_planes', 'contacto_datos'];
+  const nueva = moverSeccion(original, 'contacto_datos', 'beneficios_renglones');
+  expect(original).toEqual(['beneficios_renglones', 'precios_planes', 'contacto_datos']);
+  expect(nueva).toEqual(['contacto_datos', 'beneficios_renglones', 'precios_planes']);
+  expect(moverSeccion(nueva, 'contacto_datos', 'contacto_datos')).toEqual(nueva);
+  expect(moverSeccion(nueva, 'equipo_lista', 'contacto_datos')).toEqual(nueva);
+  expect(moverSeccion([], 'contacto_datos', 'beneficios_renglones')).toEqual([]);
+  expect(moverSeccion(nueva, 'contacto_datos', 'precios_planes')).toEqual(['beneficios_renglones', 'precios_planes', 'contacto_datos']);
+  const cambiada = combinarSecciones(nueva, 'precios_tabla');
+  expect(cambiada).toEqual(['contacto_datos', 'beneficios_renglones', 'precios_tabla']);
+  const md = generarDesignMd(con('landing', cambiada));
+  const parte = md.split('## 22. Secciones de la página')[1];
+  const datos = parse(parte.split('```yaml')[1].split('```')[0]);
+  expect(datos.orden).toEqual(['contacto', 'beneficios', 'precios']);
+  expect(datos.secciones.map((s: { diseno: string }) => s.diseno)).toEqual(cambiada);
 });
