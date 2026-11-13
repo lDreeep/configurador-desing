@@ -467,7 +467,8 @@ probar con personas y recién después sumar cosas. Cada tarea trae el pedido li
     > las fotos de `public/fotos/`, las fuentes y las rutas `#/…` funcionen bajo la subcarpeta del repositorio.
     > Explicame qué tengo que activar yo en Settings → Pages. Anotá la URL en `README.md`.
 
-- [ ] **H3 · Probar en celulares reales** — quien dirige · arreglos con Sonnet 5.5 / Sol
+- [x] **H3 · Probar en celulares reales** — quien dirige · arreglos con Sonnet 5.5 / Sol
+  - Hecha (2026-11-13): quien dirige completó el recorrido y llegó a descargar en un Google Pixel 9 Pro XL, sin problemas observados. Navegador y versión no informados. No hicieron falta arreglos. La prueba cubre ese equipo; no se informó una prueba en iPhone ni en un celular viejo o de gama baja. Registro en `DESIGN.md` §9.
   - Abrir la URL de H2 en tu celular y en uno viejo o barato si podés: Android y iPhone. Anotá todo: lento, se traba, no se lee, el toque no responde, las fuentes tardan.
   - Pedido para los arreglos (pegando tu lista):
     > Leé `CLAUDE.md` y `PLAN.md`. Hacé H3: abajo va la lista de problemas que vi en celulares reales

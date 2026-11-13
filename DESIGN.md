@@ -1346,6 +1346,14 @@ Decisiones de cierre del recorrido corto (PLAN.md §10):
 
 ## 9. Registro de pruebas
 
+### H3 · Prueba en un celular real (2026-11-13)
+
+Quien dirige probó Molde en un Google Pixel 9 Pro XL y confirmó que completó el recorrido
+y llegó a descargar, sin problemas observados. Navegador y versión no informados.
+No se reportaron fallas para reproducir ni fueron necesarios cambios de código.
+El resultado corresponde a ese equipo: no se informó una prueba en iPhone ni en un celular
+viejo o de gama baja.
+
 Cada vez que pasamos un export por una IA, se anota acá. Es lo que valida (o corrige) el formato.
 
 | # | Fecha | Versión | Proyecto de prueba | IA | Respetó | Ignoró o inventó | Cambio que generó |
