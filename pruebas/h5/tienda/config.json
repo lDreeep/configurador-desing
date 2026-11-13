@@ -1,0 +1,178 @@
+{
+  "proyecto": {
+    "nombre": "Taller Arcilla",
+    "tipo": "tienda",
+    "descripcion": "Tienda de piezas de cerámica hechas a mano.",
+    "objetivo": "Comprar piezas con envío dentro de Argentina",
+    "publicoQuienes": "Personas que compran objetos para su casa desde el celular",
+    "publicoContexto": "Uso en Argentina, en escritorio y celular.",
+    "nivelTecnico": "bajo",
+    "plataformas": [
+      "web_movil",
+      "web_escritorio"
+    ],
+    "rubro": "artesanias"
+  },
+  "estructura": {
+    "patron": "barra_superior",
+    "patronMovil": "hamburguesa",
+    "pantallas": [
+      {
+        "nombre": "Inicio",
+        "proposito": "Mostrar productos destacados",
+        "secciones": [
+          "hero",
+          "categorias",
+          "destacados"
+        ],
+        "accionPrincipal": "Ver catálogo",
+        "id": "inicio_dx"
+      },
+      {
+        "nombre": "Catálogo",
+        "proposito": "Explorar y filtrar productos",
+        "secciones": [
+          "filtros",
+          "grilla_de_productos"
+        ],
+        "accionPrincipal": "Agregar al carrito",
+        "id": "catalogo_dy"
+      },
+      {
+        "nombre": "Producto",
+        "proposito": "Decidir la compra",
+        "secciones": [
+          "galeria",
+          "detalle",
+          "relacionados"
+        ],
+        "accionPrincipal": "Agregar al carrito",
+        "id": "producto_dz"
+      },
+      {
+        "nombre": "Carrito",
+        "proposito": "Revisar antes de pagar",
+        "secciones": [
+          "items",
+          "resumen"
+        ],
+        "accionPrincipal": "Ir a pagar",
+        "id": "carrito_e0"
+      }
+    ],
+    "editadas": false
+  },
+  "funciones": {
+    "acciones": [
+      "Buscar productos",
+      "Elegir variante y cantidad",
+      "Agregar al carrito",
+      "Pagar el pedido"
+    ],
+    "integraciones": [
+      "pagos",
+      "email"
+    ],
+    "fueraDeAlcance": [
+      "Implementar servicios externos sin confirmar proveedor y credenciales"
+    ],
+    "requiereCuenta": "no"
+  },
+  "visual": {
+    "direccion": "editorial",
+    "estilo": "editorial",
+    "paleta": "arcilla",
+    "fuenteTitulos": "instrument_serif",
+    "fuenteTexto": "source_serif",
+    "pesoTitulos": 400,
+    "espaciadoTitulos": "apretado",
+    "escala": "sutil",
+    "radio": "recto",
+    "elevacion": "plana",
+    "bordes": "ninguno",
+    "movimiento": "sutil",
+    "hover": "elevar",
+    "presionar": "hundir",
+    "aparicion": "escalonada",
+    "cambio": "fundido",
+    "ambosModos": false,
+    "fondo": "ninguno",
+    "scroll": [],
+    "densidad": "normal",
+    "lectura": null,
+    "secciones": [],
+    "fondoAnimado": "ninguno",
+    "layout": "mosaico",
+    "antiReferencias": [],
+    "paletaPersonalizada": {
+      "fondo": "#FFFFFF",
+      "texto": "#121826",
+      "acento": "#2F5BFF",
+      "manual": {}
+    }
+  },
+  "botones": {
+    "estilo": "contorno",
+    "tamano": "normal",
+    "mayusculas": false,
+    "icono": "ninguno",
+    "diseno": "papel_recortado",
+    "color": "acento",
+    "efecto": "del_diseno"
+  },
+  "iconos": {
+    "libreria": "lucide",
+    "estilo": "trazo",
+    "grosor": 1.75
+  },
+  "tono": {
+    "voz": "cercana",
+    "tratamiento": "vos",
+    "largo": "corto"
+  },
+  "cajas": {
+    "preset": "papel",
+    "ajustes": {}
+  },
+  "componentes": {
+    "boton_sec": "punteado",
+    "boton_icono": "relleno",
+    "campo": "cuaderno",
+    "selector": "pildora",
+    "interruptor": "clasico",
+    "casilla": "dibujada",
+    "deslizador": "clasico",
+    "nav_movil": "clasica",
+    "nav_web": "clasica",
+    "etiqueta": "sello",
+    "aviso": "costado",
+    "cargando": "anillo",
+    "progreso": "fina",
+    "acordeon": "numerado",
+    "avatar": "circulo",
+    "tooltip": "oscuro",
+    "modal": "centrada",
+    "metrica": "simple",
+    "grafico": "barras",
+    "tabla": "lineas",
+    "desplegable": "clasico",
+    "buscador": "simple",
+    "paginacion": "numeros",
+    "migas": "barra",
+    "pasos": "circulos",
+    "vacio": "punteado",
+    "calendario": "clasico",
+    "carrusel": "clasico",
+    "pie": "simple",
+    "formulario": "papel",
+    "subir": "minimo",
+    "producto": "ficha_editorial",
+    "notificaciones": "clasica",
+    "usuario": "clasico",
+    "acceso": "tarjeta",
+    "wizard": "circulos",
+    "reserva": "franja"
+  },
+  "notas": {},
+  "notasGenerales": "Proyecto ficticio para auditar el export. No inventes testimonios, precios ni métricas como si fueran reales."
+}

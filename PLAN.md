@@ -485,7 +485,7 @@ probar con personas y recién después sumar cosas. Cada tarea trae el pedido li
     > No cambies código.
     > [tus notas]
 
-- [ ] **H5 · Probar el `DESIGN.md` con otras IA** — Sonnet 5.5 · ChatGPT: Sol
+- [x] **H5 · Probar el `DESIGN.md` con otras IA** — Sonnet 5.5 · ChatGPT: Sol
   - El producto es el archivo: hay que ver si una IA construye bien la app con él.
   - Pedido:
     > Leé `CLAUDE.md`, `DESIGN.md` y `PLAN.md`. Hacé H5: generá tres `DESIGN.md` con Molde (una landing, un
@@ -493,6 +493,7 @@ probar con personas y recién después sumar cosas. Cada tarea trae el pedido li
     > que le daría una persona a otra IA para construir la app. Después revisá el archivo como si fueras esa
     > IA: qué datos faltan, qué es ambiguo, qué se contradice. Proponé los cambios al formato y anotá todo en
     > `DESIGN.md` §9 (prueba) y §10 (cambios propuestos). No cambies el formato todavía.
+  - Hecha (2026-11-13): tres exports 0.9.2 con configs y pedidos reproducibles en `pruebas/h5/`, script `scripts/h5-exportar.mjs` y revisión por Codex como IA receptora. Hallazgos H5-1 a H5-7 en `DESIGN.md` §9; propuestas en §10, sin cambiar el formato. No se construyeron apps ni se ejecutó la ampliación opcional con dos IA independientes.
   - Mejor todavía: probalo vos con dos IA distintas (Claude y ChatGPT) y pegá lo que construyeron junto con el pedido.
 
 - [ ] **H6 · Plan nuevo con lo aprendido** — Opus 5.5 · ChatGPT: Astra

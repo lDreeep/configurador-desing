@@ -1,0 +1,152 @@
+{
+  "proyecto": {
+    "nombre": "Turno Sur",
+    "tipo": "landing",
+    "descripcion": "Landing de una app de turnos para barberías.",
+    "objetivo": "Pedir una demostración",
+    "publicoQuienes": "Dueños de barberías de Argentina",
+    "publicoContexto": "Uso en Argentina, en escritorio y celular.",
+    "nivelTecnico": "bajo",
+    "plataformas": [
+      "web_movil",
+      "web_escritorio"
+    ],
+    "rubro": "producto_digital"
+  },
+  "estructura": {
+    "patron": "sin_navegacion",
+    "patronMovil": "sin_navegacion",
+    "pantallas": [
+      {
+        "nombre": "Inicio",
+        "proposito": "Presentar la propuesta y conseguir el contacto",
+        "secciones": [
+          "hero",
+          "beneficios",
+          "como_funciona",
+          "testimonios",
+          "precios",
+          "preguntas_frecuentes",
+          "contacto"
+        ],
+        "accionPrincipal": "Empezar ahora",
+        "id": "inicio_4"
+      }
+    ],
+    "editadas": false
+  },
+  "funciones": {
+    "acciones": [
+      "Conocer los beneficios",
+      "Pedir una demostración por email"
+    ],
+    "integraciones": [
+      "email"
+    ],
+    "fueraDeAlcance": [
+      "Implementar servicios externos sin confirmar proveedor y credenciales"
+    ],
+    "requiereCuenta": "no"
+  },
+  "visual": {
+    "direccion": "jugueton",
+    "estilo": "producto_amable",
+    "paleta": "azul_electrico",
+    "fuenteTitulos": "plus_jakarta",
+    "fuenteTexto": "plus_jakarta",
+    "pesoTitulos": 700,
+    "espaciadoTitulos": "apretado",
+    "escala": "sutil",
+    "radio": "pildora",
+    "elevacion": "suave",
+    "bordes": "ninguno",
+    "movimiento": "sutil",
+    "hover": "elevar",
+    "presionar": "hundir",
+    "aparicion": "escalonada",
+    "cambio": "fundido",
+    "ambosModos": false,
+    "fondo": "ninguno",
+    "scroll": [],
+    "densidad": "aireada",
+    "lectura": null,
+    "secciones": [
+      "beneficios_renglones",
+      "preguntas_acordeon",
+      "contacto_formulario"
+    ],
+    "fondoAnimado": "ninguno",
+    "layout": "hero_partido",
+    "antiReferencias": [],
+    "paletaPersonalizada": {
+      "fondo": "#FFFFFF",
+      "texto": "#121826",
+      "acento": "#2F5BFF",
+      "manual": {}
+    }
+  },
+  "botones": {
+    "estilo": "relleno",
+    "tamano": "normal",
+    "mayusculas": false,
+    "icono": "ninguno",
+    "diseno": "solido",
+    "color": "acento",
+    "efecto": "del_diseno"
+  },
+  "iconos": {
+    "libreria": "lucide",
+    "estilo": "trazo",
+    "grosor": 1.75
+  },
+  "tono": {
+    "voz": "cercana",
+    "tratamiento": "vos",
+    "largo": "corto"
+  },
+  "cajas": {
+    "preset": "superficie",
+    "ajustes": {}
+  },
+  "componentes": {
+    "boton_sec": "contorno",
+    "boton_icono": "fantasma",
+    "campo": "contorno",
+    "selector": "pildora",
+    "interruptor": "clasico",
+    "casilla": "cuadrada",
+    "deslizador": "clasico",
+    "nav_movil": "clasica",
+    "nav_web": "clasica",
+    "etiqueta": "suave",
+    "aviso": "tarjeta",
+    "cargando": "anillo",
+    "progreso": "fina",
+    "acordeon": "lineas",
+    "avatar": "circulo",
+    "tooltip": "oscuro",
+    "modal": "centrada",
+    "metrica": "simple",
+    "grafico": "barras",
+    "tabla": "lineas",
+    "desplegable": "clasico",
+    "buscador": "simple",
+    "paginacion": "numeros",
+    "migas": "chevron",
+    "pasos": "circulos",
+    "vacio": "centrado",
+    "calendario": "clasico",
+    "carrusel": "clasico",
+    "pie": "columnas",
+    "formulario": "apilado",
+    "subir": "zona",
+    "producto": "clasica",
+    "notificaciones": "clasica",
+    "usuario": "clasico",
+    "acceso": "tarjeta",
+    "wizard": "circulos",
+    "reserva": "pastillas"
+  },
+  "notas": {},
+  "notasGenerales": "Proyecto ficticio para auditar el export. No inventes testimonios, precios ni métricas como si fueran reales."
+}
