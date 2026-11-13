@@ -497,7 +497,8 @@ probar con personas y recién después sumar cosas. Cada tarea trae el pedido li
   - Hecha (2026-11-13): tres exports 0.9.2 con configs y pedidos reproducibles en `pruebas/h5/`, script `scripts/h5-exportar.mjs` y revisión por Codex como IA receptora. Hallazgos H5-1 a H5-7 en `DESIGN.md` §9; propuestas en §10, sin cambiar el formato. No se construyeron apps ni se ejecutó la ampliación opcional con dos IA independientes.
   - Mejor todavía: probalo vos con dos IA distintas (Claude y ChatGPT) y pegá lo que construyeron junto con el pedido.
 
-- [ ] **H6 · Plan nuevo con lo aprendido** — Opus 5.5 · ChatGPT: Astra
+- [x] **H6 · Plan nuevo con lo aprendido** — Opus 5.5 · ChatGPT: Astra
+  - Hecha el 2026-11-13. La tanda J en §10 recoge las pruebas H3–H5 y decide el destino de H7–H12.
   - Pedido:
     > Leé `CLAUDE.md`, `DESIGN.md` (sobre todo §9, §10 y §11) y `PLAN.md`. Hacé H6: con los resultados de
     > H3, H4 y H5, armá el plan siguiente en `PLAN.md` §10, con el mismo formato que la sección 5 (código,
@@ -646,3 +647,48 @@ fichas, como hoy los ajustes finos. No se borra ningún catálogo ni cambia el e
 **Orden con la tanda H:** I1 → I2 e I3 en paralelo → I4. H3 (celulares) y H5 (el archivo con otras IA)
 pueden ir ya. **H4 (pruebas con personas) va después de I4**: no tiene sentido probar un recorrido
 que se va a cambiar. H7 (fondos de la portada) y el resto del backlog, después de H6.
+
+### Tanda J · Explorar la muestra, llegar al resultado y construir desde el export
+
+En H4, a las tres personas les gustó navegar por Molde. La traba apareció **dentro de la muestra**: la barra y varios botones impedían ver cómo quedaba el diseño en otros contenidos. Algunas personas sintieron largo el recorrido. Las notas grupales no identifican los controles concretos ni cuántas llegaron a descargar. Por eso J1 atiende la exploración, J2 prueba un atajo y J3 observa ambos cambios. H3 aporta una descarga exitosa en un Pixel 9 Pro XL. H5 aporta una lectura de tres archivos 0.9.2 por Codex; queda por medir qué construyen otras IA con ellos. Evidencia en [DESIGN.md §9](DESIGN.md#9-registro-de-pruebas).
+
+- [ ] **J1 · Navegar y probar la página de muestra** — Claude Sonnet 5.5 · ChatGPT Sol · depende de H4 e I4
+  - Listo cuando: en una landing y un dashboard, la barra muestra la sección o vista indicada y el botón principal produce una respuesta visible acorde a su acción. Una prueba e2e verifica con teclado y toque que se conservan el paso y las elecciones.
+  - Pedido listo para pegar:
+    > Leé CLAUDE.md, DESIGN.md §9 (H4) y PLAN.md §10. Hacé J1. Relevá los destinos y controles que dibujan las muestras de landing y dashboard. Conectá la barra con contenido del lienzo y los botones con acciones locales, sin enviar formularios ni salir de Molde. Probá también volver a elegir una idea después de explorar.
+
+- [ ] **J2 · Ver el resultado desde Estructura** — Claude Sonnet 5.5 · ChatGPT Sol · depende de J1
+  - Listo cuando: desde Estructura se puede abrir el resultado, descargar con las elecciones actuales y retomar la edición. Un e2e cubre el atajo y otro conserva el recorrido completo.
+  - Pedido listo para pegar:
+    > Leé CLAUDE.md, DESIGN.md §9 (H4) y PLAN.md §10. Hacé J2. Probá «Ver resultado» al completar Estructura. Reutilizá el final, la descarga y los valores recomendados. Verificá que «Seguir editando» recupere lo elegido y que siga siendo posible recorrer todos los pasos.
+
+- [ ] **J3 · Observar exploración y descarga** — quien dirige · síntesis con Claude Opus 5.5 / ChatGPT Astra · depende de J1 y J2 publicados
+  - Listo cuando: hay notas por persona de tres sesiones que permiten responder Q8 y Q9 o precisar qué falta. Quedan identificados los equipos probados y se decide si conservar o ajustar el atajo.
+  - Pedido listo para pegar:
+    > Leé DESIGN.md §9 y §11 y PLAN.md §10. Hacé J3 con estas notas: [pegá las tres sesiones]. Para cada persona registrá proyecto, control y destino esperado, respuesta observada, momento en que quiso ver el resultado, descarga y opinión. Procurá incluir un iPhone y un Android de gama baja para ampliar H3. Indicá la cobertura real y registrá los resultados en §9.
+
+- [ ] **J4 · Alinear el export con el proyecto elegido** — Claude Opus 5.5 · ChatGPT Astra · depende de H5; abordar después de J1 y J2
+  - Listo cuando: las tres configs de H5 tienen pruebas que verifican coherencia de CTA, secciones, destinos, alcance y pendientes. La tienda y el dashboard describen su propio tipo. El catálogo distingue piezas disponibles de las usadas.
+  - Pedido listo para pegar:
+    > Leé CLAUDE.md, DESIGN.md §3 y §10 y pruebas/h5/README.md. Hacé J4. Resolvé H5-1 a H5-4 y H5-6. Derivá el CTA y la estructura efectivos una sola vez. Distinguí las pantallas confirmadas de las de plantilla y declará los destinos desconocidos. En §18 separá lo que impide maquetar de los datos, permisos e integraciones pendientes para implementar. Regenerá los tres casos y actualizá la especificación y versión según §7.
+
+- [ ] **J5 · Resolver las contradicciones entre el CSS y los tokens** — Claude Sonnet 5.5 · ChatGPT Sol · depende de J4
+  - Listo cuando: el export explica la precedencia de las reglas y una muestra construida con el CSS exportado conserva el diseño y tiene controles táctiles de al menos 44 px. Se registra la resolución de Q7.
+  - Pedido listo para pegar:
+    > Leé CLAUDE.md, DESIGN.md §3, §10 y Q7 y PLAN.md §10. Hacé J5 sobre los casos de H5-5. Contrastá CSS literal, tokens y cajas. Corregí los mínimos de 40 px y documentá la precedencia. Revisá grosor de iconos y espaciado contra la especificación. Verificá medidas y foco en navegador, regenerá los ejemplos y actualizá la versión y el historial.
+
+- [ ] **J6 · Construir con los tres pedidos de H5** — quien dirige con Claude y ChatGPT independientes · síntesis con Claude Opus 5.5 / ChatGPT Astra · depende de J4 y J5
+  - Listo cuando: quedan los pedidos, respuestas y maquetas de landing, dashboard y tienda de ambas IA, con una comparación por caso y una decisión sobre H5-7.
+  - Pedido listo para pegar:
+    > Leé DESIGN.md §9, pruebas/h5/README.md y PLAN.md §10. Hacé J6. Pasá a cada IA el mismo export actualizado y el pedido de cada caso. Guardá lo que construyó cada una. Compará CTA, navegación, tokens, estados y funciones inventadas con el lienzo y el pedido. Registrá en §9 si hace falta asociar layouts, piezas y estados por pantalla (H5-7), con un ejemplo concreto.
+
+**Decisiones sobre el backlog H7–H12**
+
+| Idea | Decisión para esta tanda |
+|---|---|
+| H7 · Fondos de portada | Postergar. La dificultad observada apareció al explorar la muestra, después de la portada. |
+| H8 · Reordenar secciones | Postergar. H4 registró problemas para abrir contenido; no se reportó dificultad para cambiar el orden. |
+| H9 · Más diseños por sección | Postergar. J1 permite evaluar los diseños existentes en otras vistas antes de ampliar el catálogo. |
+| H10 · Favoritos y comparación | Postergar. La comparación guardada resolvería otra necesidad; en H4 se quiso explorar una misma elección. |
+| H11 · Importar un DESIGN.md | Postergar hasta validar el export en J6. Los cambios de alcance y destinos de J4 afectan qué podría reconstruir el importador. |
+| H12 · Hover y cursor | Postergar. Sumar dos rondas aumentaría las decisiones cuando algunas personas ya sintieron largo el recorrido. |
