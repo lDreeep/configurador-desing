@@ -547,7 +547,7 @@ probar con personas y recién después sumar cosas. Cada tarea trae el pedido li
     > `secciones.css` solo con tokens. Revisalos con al menos 6 estilos a 1440 y 390 px. Seguí la regla de
     > `CLAUDE.md` para cambios en el export (§22, versión y §12).
 
-- [ ] **H10 · Guardar favoritos y comparar dos** — Opus 5.5 · ChatGPT: Astra
+- [x] **H10 · Guardar favoritos y comparar dos** — Opus 5.5 · ChatGPT: Astra
   - Pedido:
     > Leé `CLAUDE.md`, `DESIGN.md` y `PLAN.md`. Hacé H10: en la pantalla final de Molde, «Guardar» guarda la
     > config actual con un nombre en `localStorage` (hasta 10). Una lista permite abrir, borrar y elegir dos

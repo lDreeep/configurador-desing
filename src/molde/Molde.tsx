@@ -18,6 +18,7 @@ import { AJUSTES, despuesDe, elegir, INICIO_MOLDE, LISTO_MOLDE, POR_VEZ, posicio
 import './molde.css';
 const Portada = lazy(() => import('./Portada').then((m) => ({ default: m.Portada })));
 
+const FavoritosPanel = lazy(() => import('./FavoritosPanel'));
 const Ajustes = lazy(() => import('./Ajustes'));
 
 interface Props {
@@ -145,6 +146,8 @@ export function Molde({ config, setConfig, reiniciar, paso: pasoUrl, ir }: Props
   // Las ideas recogidas arriba, en el botón de la pregunta: la página queda libre para usarla.
   const [recogidas, setRecogidas] = useState(false);
   const tamano = useTamano(raiz);
+  const [favoritos, setFavoritos] = useState(false);
+  const botonFavoritos = useRef<HTMLButtonElement>(null);
   const [descargando, setDescargando] = useState(false);
   const tituloFinal = useRef<HTMLHeadingElement>(null);
   const tituloDescarga = useRef<HTMLHeadingElement>(null);
@@ -383,12 +386,17 @@ export function Molde({ config, setConfig, reiniciar, paso: pasoUrl, ir }: Props
             <button type="button" className="molde-btn molde-btn-2" onClick={() => ir(delRecorrido[delRecorrido.length - 1].clave)}>
               Seguir editando
             </button>
+            <button ref={botonFavoritos} className="molde-btn molde-btn-2" aria-haspopup="dialog" onClick={() => setFavoritos(true)}>Guardar</button>
             <button ref={botonDescargar} type="button" className="molde-btn molde-btn-1" aria-haspopup="dialog" onClick={() => setDescargando(true)}>
               Descargar
             </button>
           </div>
         )}
 
+        {terminado && favoritos && <Suspense fallback={null}><FavoritosPanel config={config} elegidas={elegidas}
+          cerrar={() => { setFavoritos(false); botonFavoritos.current?.focus(); }}
+          abrir={f => { setConfig(f.config); setElegidas(new Set(f.elegidas)); setFavoritos(false); botonFavoritos.current?.focus(); }}
+        /></Suspense>}
         {terminado && descargando && (
           <div className="molde-velo" onClick={(e) => e.target === e.currentTarget && cerrarDescarga()}>
             <section
