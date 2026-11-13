@@ -508,13 +508,29 @@ probar con personas y recién después sumar cosas. Cada tarea trae el pedido li
 
 ### Backlog (opcionales: H6 decide cuáles van y en qué orden)
 
-- [ ] **H7 · Probar los otros fondos de la portada** — Claude Fable 5.2 (u Opus 5.5) · ChatGPT: no (es criterio visual)
+- [x] **H7 · Probar los otros fondos de la portada** — Claude Fable 5.2 (u Opus 5.5) · ChatGPT: no (es criterio visual)
   - Pedido:
     > Leé `CLAUDE.md`, `PLAN.md` y la entrada «Fondos interactivos para la portada de Molde» de `DESIGN.md`
     > §10. Cargá la skill `frontend-design`. Hacé H7: armá `maqueta/fondos.html` con la portada actual y un
     > selector para cambiar entre la linterna (la de hoy), la retícula que se curva, el campo de letras y el
     > muestrario de colores. Cumplí las reglas de esa entrada (celular, movimiento reducido, velo, 60 cuadros
     > por segundo) y medí cada uno. No toques `src/`: elijo yo mirándolos.
+  - Hecho 2026-11-13: `maqueta/fondos.html` (selector abajo; `#reticula`, `#letras`, `#colores` abren directo).
+    Falta que quien dirige elija mirándolos. Medido con Chromium sin pantalla, 4 s por fondo, el peor segundo:
+
+    | Fondo | 1440 × 900 | 390 × 844 | 390 × 844, procesador 4 veces más lento |
+    |---|---|---|---|
+    | Linterna (hoy) | 60 c/s · 0,05 ms por cuadro | 60 c/s · 0,05 ms | 60 c/s · 0,14 ms |
+    | Retícula | 60 c/s · 0,15 ms | 60 c/s · 0,09 ms | 60 c/s · 0,32 ms |
+    | Campo de letras | 60 c/s · 0,36 ms | 60 c/s · 0,21 ms | 36 a 42 c/s · 1,2 ms (dos corridas) |
+    | Muestrario | 60 c/s · 0,46 ms | 60 c/s · 0,22 ms | 58 c/s · 0,82 ms |
+
+    Con `prefers-reduced-motion` ninguno pide `requestAnimationFrame` (0 en los cuatro). El campo de letras
+    dibuja cada «Aa» una sola vez y la copia: dibujando texto en cada cuadro daba 49 c/s en escritorio. Su
+    caída en el celular lento no viene del código (1,2 ms) sino de pintar muchas copias con transparencia:
+    medirlo en un celular real antes de elegirlo. El velo del título es una caja difuminada en vez del óvalo
+    de la portada de hoy, que en celular deja las puntas del párrafo sobre el fondo. La maqueta usa datos
+    copiados del catálogo y una página de muestra propia: llevar uno a `src/` es otra tarea (y `npm run peso`).
 
 - [ ] **H8 · Reordenar las secciones arrastrando** — Sonnet 5.5 · ChatGPT: Sol
   - Pedido:
