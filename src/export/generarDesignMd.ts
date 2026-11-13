@@ -25,7 +25,7 @@ import { cssDeAparicion } from './aparicion';
 
 import { CSS_CONCESIONARIO as cssConcesionario } from '../rapido/concesionario-estilos';
 
-export const VERSION_FORMATO = '0.9.2';
+export const VERSION_FORMATO = '0.9.3';
 
 /** Lo que agregan todas las páginas que no son de autor ni app (D77): el argumento de una landing. */
 export const ARGUMENTO_LANDING =

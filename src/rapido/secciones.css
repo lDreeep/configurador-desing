@@ -137,9 +137,91 @@
 .pgp .pg-sec-datos dt { font-size: 14px; }
 .pgp .pg-sec-datos dd a { display: inline-flex; align-items: center; min-height: 44px; margin: -11px 0; }
 
+/* ---------- Terceros diseños (H9) ---------- */
+
+/* Beneficios · texto corrido: un solo párrafo; el nombre de cada beneficio va resaltado como con marcador. */
+.pgp .pg-sec-beneficios_corrido .pg-sec-titulo, .pgp .pg-sec-contacto_maneras .pg-sec-titulo { font-family: var(--fuente-texto); font-size: 15px; font-weight: 600; letter-spacing: 0; color: var(--color-texto-suave); }
+.pgp .pg-sec-corrido { max-width: 1100px; font-size: clamp(22px, 3.1cqw, 40px); line-height: 1.35; text-wrap: pretty; }
+.pgp .pg-sec-corrido > li { display: inline; }
+.pgp .pg-sec-corrido b { padding: .04em .22em; border-radius: var(--radio-pequeno); background: var(--color-acento-suave); -webkit-box-decoration-break: clone; box-decoration-break: clone; font-family: var(--fuente-titulos); font-weight: var(--titulos-peso); letter-spacing: var(--titulos-espaciado); }
+
+/* Pasos · flechas: tres bloques encastrados, cada uno un poco más teñido. */
+.pgp .pg-sec-pasos_flechas .pg-sec-lista-pasos { --punta: 28px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.pgp .pg-sec-pasos_flechas .pg-sec-lista-pasos > li { flex-direction: column; gap: 14px; margin-left: calc(var(--punta) * -1 + 4px); padding: clamp(20px, 2.6cqw, 36px) calc(var(--punta) + clamp(12px, 1.6cqw, 24px)) clamp(20px, 2.6cqw, 36px) calc(var(--punta) + clamp(16px, 2cqw, 28px));
+  background: color-mix(in srgb, var(--color-acento) var(--tinte), var(--color-fondo));
+  clip-path: polygon(0 0, calc(100% - var(--punta)) 0, 100% 50%, calc(100% - var(--punta)) 100%, 0 100%, var(--punta) 50%); }
+.pgp .pg-sec-pasos_flechas .pg-sec-lista-pasos > li:nth-child(1) { --tinte: 10%; margin-left: 0; padding-left: clamp(16px, 2cqw, 28px); border-radius: var(--radio-medio) 0 0 var(--radio-medio); clip-path: polygon(0 0, calc(100% - var(--punta)) 0, 100% 50%, calc(100% - var(--punta)) 100%, 0 100%); }
+.pgp .pg-sec-pasos_flechas .pg-sec-lista-pasos > li:nth-child(2) { --tinte: 18%; }
+.pgp .pg-sec-pasos_flechas .pg-sec-lista-pasos > li:nth-child(3) { --tinte: 26%; border-radius: 0 var(--radio-medio) var(--radio-medio) 0; clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%, var(--punta) 50%); }
+.pgp .pg-sec-pasos_flechas .pg-sec-numero { font-size: 14px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.pgp .pg-sec-pasos_flechas .pg-sec-paso .pg-sec-suave { color: var(--color-texto); }
+
+/* Precios · carta: nombre, línea de puntos y precio. */
+.pgp .pg-sec-carta { display: flex; flex-direction: column; gap: clamp(20px, 3cqw, 36px); max-width: 880px; }
+.pgp .pg-sec-carta > li { display: flex; flex-direction: column; gap: 6px; }
+.pgp .pg-sec-carta-fila { display: flex; align-items: baseline; gap: 12px; }
+.pgp .pg-sec-puntos { flex: 1; min-width: 24px; border-bottom: 2px dotted var(--color-borde); translate: 0 -.3em; }
+.pgp .pg-sec-carta .pg-sec-elegido .pg-sec-puntos { border-color: var(--color-acento); }
+.pgp .pg-sec-carta .pg-sec-sello { position: static; translate: 0 -.3em; flex: none; }
+.pgp .pg-sec-carta-precio { flex: none; font-family: var(--fuente-titulos); font-weight: var(--titulos-peso); letter-spacing: var(--titulos-espaciado); font-size: clamp(22px, 2.8cqw, 36px); line-height: 1.12; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.pgp .pg-sec-carta > li > .pg-sec-suave { max-width: 62ch; font-size: 15px; }
+
+/* Testimonios · en globos: una conversación; el del medio habla desde la derecha. */
+.pgp .pg-sec-globos { display: flex; flex-direction: column; gap: clamp(20px, 3cqw, 36px); }
+.pgp .pg-sec-globos > figure { display: flex; flex-direction: column; gap: 12px; align-self: flex-start; max-width: 62%; }
+.pgp .pg-sec-globos > figure:nth-child(even) { align-self: flex-end; align-items: flex-end; }
+.pgp .pg-sec-globos blockquote { padding: clamp(16px, 2.2cqw, 28px) clamp(18px, 2.6cqw, 32px); border: 1px solid var(--color-borde); border-radius: var(--radio-grande); border-bottom-left-radius: 0; background: var(--color-superficie); font-size: clamp(17px, 1.9cqw, 22px); line-height: 1.4; text-wrap: pretty; }
+.pgp .pg-sec-globos > figure:nth-child(even) blockquote { border-radius: var(--radio-grande); border-bottom-right-radius: 0; border-color: transparent; background: var(--color-acento-suave); }
+.pgp .pg-sec-globos > figure:nth-child(even) figcaption { flex-direction: row-reverse; text-align: right; }
+
+/* Preguntas · respuesta al lado: una abierta por vez; su respuesta ocupa la otra columna. */
+.pgp .pg-sec-lado { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); column-gap: clamp(20px, 4cqw, 56px); }
+.pgp .pg-sec-lado > button { grid-column: 1; display: flex; align-items: center; min-height: 44px; padding: 14px 0 14px 16px; border: 0; border-top: 1px solid var(--color-borde); border-left: 3px solid transparent; background: none; color: var(--color-texto-suave); font: inherit; font-size: clamp(16px, 1.5cqw, 19px); text-align: left; cursor: pointer; }
+.pgp .pg-sec-lado > button:hover { color: var(--color-texto); }
+.pgp .pg-sec-lado > button[aria-expanded='true'] { border-left-color: var(--color-acento); color: var(--color-texto); font-weight: 600; }
+.pgp .pg-sec-lado > button:focus-visible { outline: 2px solid var(--color-acento); outline-offset: -2px; }
+.pgp .pg-sec-lado > p { grid-column: 2; grid-row: 1 / -1; padding: clamp(24px, 3.6cqw, 48px); border-radius: var(--radio-grande); background: var(--color-acento-suave); font-size: clamp(20px, 2.3cqw, 28px); line-height: 1.3; text-wrap: pretty; }
+.pgp .pg-sec-lado > p[hidden] { display: none; }
+
+/* Equipo · tira de fotos: una sola pieza, los retratos pegados. */
+.pgp .pg-sec-tira { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); overflow: hidden; border: 1px solid var(--color-borde); border-radius: var(--radio-grande); }
+.pgp .pg-sec-tira > figure { display: flex; flex-direction: column; min-width: 0; box-shadow: -1px -1px 0 var(--color-borde); }
+.pgp .pg-sec-tira .pg-sec-retrato { aspect-ratio: 3 / 4; border-radius: 0; }
+.pgp .pg-sec-tira > figure:nth-child(even) .pg-sec-retrato { background: var(--color-superficie); }
+.pgp .pg-sec-tira figcaption { padding: clamp(12px, 1.6cqw, 20px); }
+
+/* Números · franja de color: las cifras sobre el acento pleno. */
+.pgp .pg-sec-numeros_franja .pg-sec-cifras { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 24px clamp(24px, 5cqw, 72px); padding: clamp(32px, 5cqw, 72px); border-radius: var(--radio-grande); background: var(--color-acento); color: var(--color-sobre-acento); }
+.pgp .pg-sec-numeros_franja dd { font-size: clamp(44px, 5.6cqw, 80px); }
+.pgp .pg-sec-numeros_franja .pg-sec-cifras > div { flex: 0 1 auto; }
+.pgp .pg-sec-numeros_franja dt { max-width: 24ch; color: inherit; font-size: clamp(16px, 1.5cqw, 18px); }
+
+/* Contacto · tres maneras: llamar, escribir o ir. */
+.pgp .pg-sec-maneras > li { border-top: 1px solid var(--color-borde); }
+.pgp .pg-sec-maneras > li:last-child { border-bottom: 1px solid var(--color-borde); }
+.pgp .pg-sec-maneras > li > * { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr); gap: 4px clamp(20px, 5cqw, 72px); align-items: baseline; min-height: 64px; padding: clamp(14px, 2cqw, 24px) 0; font-size: clamp(18px, 1.8cqw, 22px); text-decoration: none; overflow-wrap: anywhere; }
+.pgp .pg-sec-maneras > li > * > span:last-child { display: flex; flex-direction: column; gap: 2px; }
+.pgp .pg-sec-verbo { font-family: var(--fuente-titulos); font-weight: var(--titulos-peso); letter-spacing: var(--titulos-espaciado); font-size: clamp(28px, 4.2cqw, 52px); line-height: 1.05; transition: color var(--duracion-rapida, 120ms) var(--curva-salida); }
+.pgp .pg-sec-maneras a:hover .pg-sec-verbo { color: var(--color-acento-texto); }
+.pgp .pg-sec-maneras .pg-sec-suave { font-size: 15px; }
+
 @container (max-width: 760px) {
   .pgp .pg-sec-renglones > li, .pgp .pg-sec-dos, .pgp .pg-sec-contacto_formulario .pg-sec-dos, .pgp .pg-sec-faq, .pgp .pg-sec-respuestas, .pgp .pg-sec-planes, .pgp .pg-sec-voces, .pgp .pg-sec-datos,
   .pgp .pg-sec-numeros_fila .pg-sec-cifras, .pgp .pg-sec-numeros_protagonista .pg-sec-cifras, .pgp .pg-sec-pasos_fila .pg-sec-lista-pasos { grid-template-columns: minmax(0, 1fr); }
+  .pgp .pg-sec-pasos_flechas .pg-sec-lista-pasos, .pgp .pg-sec-lado, .pgp .pg-sec-maneras > li > * { grid-template-columns: minmax(0, 1fr); }
+  .pgp .pg-sec-numeros_franja .pg-sec-cifras { flex-direction: column; }
+  .pgp .pg-sec-pasos_flechas .pg-sec-lista-pasos > li:nth-child(n) { margin: calc(var(--punta) * -1 + 4px) 0 0; padding: calc(var(--punta) + 16px) 20px calc(var(--punta) + 12px); border-radius: 0; clip-path: polygon(0 0, 50% var(--punta), 100% 0, 100% calc(100% - var(--punta)), 50% 100%, 0 calc(100% - var(--punta))); }
+  .pgp .pg-sec-pasos_flechas .pg-sec-lista-pasos > li:nth-child(1) { margin-top: 0; padding-top: 20px; border-radius: var(--radio-medio) var(--radio-medio) 0 0; clip-path: polygon(0 0, 100% 0, 100% calc(100% - var(--punta)), 50% 100%, 0 calc(100% - var(--punta))); }
+  .pgp .pg-sec-pasos_flechas .pg-sec-lista-pasos > li:nth-child(3) { padding-bottom: 20px; border-radius: 0 0 var(--radio-medio) var(--radio-medio); clip-path: polygon(0 0, 50% var(--punta), 100% 0, 100% 100%, 0 100%); }
+  .pgp .pg-sec-carta-fila { flex-wrap: wrap; }
+  .pgp .pg-sec-puntos { display: none; }
+  .pgp .pg-sec-carta-precio { flex-basis: 100%; }
+  .pgp .pg-sec-globos > figure { max-width: 92%; }
+  .pgp .pg-sec-lado > p { grid-column: 1; grid-row: auto; margin: 4px 0 16px; padding: 20px; font-size: 18px; }
+  .pgp .pg-sec-tira { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  /* En 2 × 2 los fondos se alternan en damero, no por columna. */
+  .pgp .pg-sec-tira > figure:nth-child(n) .pg-sec-retrato { background: var(--color-acento-suave); }
+  .pgp .pg-sec-tira > figure:is(:nth-child(4n + 2), :nth-child(4n + 3)) .pg-sec-retrato { background: var(--color-superficie); }
   .pgp .pg-sec-creditos > li > .pg-sec-suave { text-align: left; }
   .pgp .pg-sec-renglones > li > .pg-sec-suave { padding-top: 0; }
   .pgp .pg-sec-faq > .pg-sec-titulo { position: static; }
@@ -159,5 +241,5 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .pgp .pg-sec-faq summary::after { transition: none; }
+  .pgp .pg-sec-faq summary::after, .pgp .pg-sec-verbo { transition: none; }
 }

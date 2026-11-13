@@ -90,7 +90,7 @@ function BeneficiosDestacado({ k, m }: Props) {
   );
 }
 
-function Pasos({ id, m }: Props & { id: 'pasos_fila' | 'pasos_escalera' }) {
+function Pasos({ id, m }: Props & { id: 'pasos_fila' | 'pasos_escalera' | 'pasos_flechas' }) {
   return (
     <Marco id={id} titulo={m.pasos.titulo}>
       {(h) => (
@@ -115,7 +115,7 @@ function Pasos({ id, m }: Props & { id: 'pasos_fila' | 'pasos_escalera' }) {
   );
 }
 
-/** Lo que incluye un plan, leído de los renglones de la tabla: una sola fuente para los dos diseños. */
+/** Lo que incluye un plan, leído de los renglones de la tabla: una sola fuente para los tres diseños. */
 const incluye = (m: ContenidoSecciones, plan: number) =>
   m.precios.filas.flatMap((f) => {
     const v = f.valores[plan];
@@ -355,7 +355,7 @@ function EquipoLista({ m }: Props) {
   );
 }
 
-function Numeros({ id, m }: Props & { id: 'numeros_fila' | 'numeros_protagonista' }) {
+function Numeros({ id, m }: Props & { id: 'numeros_fila' | 'numeros_protagonista' | 'numeros_franja' }) {
   return (
     <Marco id={id} titulo={m.numeros.titulo} tituloOculto>
       {(h) => (
@@ -451,23 +451,198 @@ function ContactoDatos({ m }: Props) {
   );
 }
 
+/** Texto corrido: los beneficios como un solo párrafo; el nombre de cada uno va resaltado. */
+function BeneficiosCorrido({ k, m }: Props) {
+  return (
+    <Marco id="beneficios_corrido" titulo={m.beneficios.titulo}>
+      {(h) => (
+        <>
+          {h}
+          <ul className="pg-sec-corrido">
+            {k.items.map((it) => (
+              <li key={it.titulo}>
+                <b>{it.titulo}</b> <span className="pg-sec-suave">{it.texto.replace(/\.?$/, '.')}</span>{' '}
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
+    </Marco>
+  );
+}
+
+/** Carta: nombre, línea de puntos y precio, como la carta de un bar. */
+function PreciosCarta({ m }: Props) {
+  const p = m.precios;
+  return (
+    <Marco id="precios_carta" titulo={p.titulo}>
+      {(h) => (
+        <>
+          <div className="pg-sec-cabeza">
+            {h}
+            <p className="pg-sec-suave">{p.nota}</p>
+          </div>
+          <ul className="pg-sec-carta">
+            {p.planes.map((plan, i) => (
+              <li key={plan.nombre} className={i === p.destacado ? 'pg-sec-elegido' : ''}>
+                <span className="pg-sec-carta-fila">
+                  <span className="pg-sec-grande">{plan.nombre}</span>
+                  {i === p.destacado && <span className="pg-sec-sello">El más elegido</span>}
+                  <span className="pg-sec-puntos" aria-hidden="true" />
+                  <b className="pg-sec-carta-precio">{plan.precio}</b>
+                </span>
+                <span className="pg-sec-suave">
+                  {plan.para}. {incluye(m, i).join(', ')}. {plan.periodo.replace(/^./, (x) => x.toUpperCase())}.
+                </span>
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
+    </Marco>
+  );
+}
+
+/** En globos: tres voces como una conversación, alternando de lado. */
+function TestimoniosGlobos({ m }: Props) {
+  return (
+    <Marco id="testimonios_globos" titulo={m.testimonios.titulo}>
+      {(h) => (
+        <>
+          {h}
+          <div className="pg-sec-globos">
+            {m.testimonios.citas.map((x) => (
+              <figure key={x.nombre}>
+                <blockquote>{x.texto}</blockquote>
+                <Autor nombre={x.nombre} rol={x.rol} avatar />
+              </figure>
+            ))}
+          </div>
+        </>
+      )}
+    </Marco>
+  );
+}
+
+/** Respuesta al lado: una pregunta abierta por vez; su respuesta ocupa la otra columna. */
+function PreguntasLado({ k, m }: Props) {
+  const id = useId();
+  const [abierta, setAbierta] = useState(0);
+  return (
+    <Marco id="preguntas_lado" titulo={m.preguntas.titulo}>
+      {(h) => (
+        <>
+          {h}
+          <div className="pg-sec-lado" style={{ gridTemplateRows: `repeat(${k.preguntas.length}, auto) 1fr` }}>
+            {k.preguntas.map(([p, r], i) => (
+              <Fragment key={p}>
+                <button type="button" aria-expanded={i === abierta} aria-controls={`${id}-${i}`} onClick={() => setAbierta(i)}>
+                  {p}
+                </button>
+                <p id={`${id}-${i}`} hidden={i !== abierta}>
+                  {r}
+                </p>
+              </Fragment>
+            ))}
+          </div>
+        </>
+      )}
+    </Marco>
+  );
+}
+
+/** Tira de fotos: los retratos pegados en una sola pieza. */
+function EquipoTira({ m }: Props) {
+  const e = m.equipo;
+  return (
+    <Marco id="equipo_tira" titulo={e.titulo}>
+      {(h) => (
+        <>
+          <div className="pg-sec-cabeza">
+            {h}
+            <p className="pg-sec-suave">{e.bajada}</p>
+          </div>
+          <div className="pg-sec-tira">
+            {e.personas.map((p) => (
+              <figure key={p.nombre}>
+                <span className="pg-sec-retrato" aria-hidden="true">
+                  {iniciales(p.nombre)}
+                </span>
+                <Autor nombre={p.nombre} rol={p.rol} />
+              </figure>
+            ))}
+          </div>
+        </>
+      )}
+    </Marco>
+  );
+}
+
+/** Tres maneras: llamar, escribir o ir, en renglones grandes. */
+function ContactoManeras({ m }: Props) {
+  const x = m.contacto;
+  return (
+    <Marco id="contacto_maneras" titulo={x.titulo}>
+      {(h) => (
+        <>
+          <div className="pg-sec-cabeza">
+            {h}
+            <p className="pg-sec-suave">{x.bajada}</p>
+          </div>
+          <ul className="pg-sec-maneras">
+            <li>
+              <a href={`tel:${soloNumeros(x.telefono)}`}>
+                <span className="pg-sec-verbo">Llamar</span>
+                <span>{x.telefono}</span>
+              </a>
+            </li>
+            <li>
+              <a href={`mailto:${x.mail}`}>
+                <span className="pg-sec-verbo">Escribir</span>
+                <span>{x.mail}</span>
+              </a>
+            </li>
+            <li>
+              <div>
+                <span className="pg-sec-verbo">Venir</span>
+                <span>
+                  <address>{x.direccion}</address>
+                  <span className="pg-sec-suave">{x.horario}</span>
+                </span>
+              </div>
+            </li>
+          </ul>
+        </>
+      )}
+    </Marco>
+  );
+}
+
 const DIBUJAR: Record<SeccionDisenoId, (p: Props) => ReactNode> = {
   beneficios_renglones: (p) => <BeneficiosRenglones {...p} />,
   beneficios_destacado: (p) => <BeneficiosDestacado {...p} />,
+  beneficios_corrido: (p) => <BeneficiosCorrido {...p} />,
   pasos_fila: (p) => <Pasos id="pasos_fila" {...p} />,
   pasos_escalera: (p) => <Pasos id="pasos_escalera" {...p} />,
+  pasos_flechas: (p) => <Pasos id="pasos_flechas" {...p} />,
   precios_planes: (p) => <PreciosPlanes {...p} />,
   precios_tabla: (p) => <PreciosTabla {...p} />,
+  precios_carta: (p) => <PreciosCarta {...p} />,
   testimonios_cita: (p) => <TestimoniosCita {...p} />,
   testimonios_tres: (p) => <TestimoniosTres {...p} />,
+  testimonios_globos: (p) => <TestimoniosGlobos {...p} />,
   preguntas_acordeon: (p) => <PreguntasAcordeon {...p} />,
   preguntas_abiertas: (p) => <PreguntasAbiertas {...p} />,
+  preguntas_lado: (p) => <PreguntasLado {...p} />,
   equipo_retratos: (p) => <EquipoRetratos {...p} />,
   equipo_lista: (p) => <EquipoLista {...p} />,
+  equipo_tira: (p) => <EquipoTira {...p} />,
   numeros_fila: (p) => <Numeros id="numeros_fila" {...p} />,
   numeros_protagonista: (p) => <Numeros id="numeros_protagonista" {...p} />,
+  numeros_franja: (p) => <Numeros id="numeros_franja" {...p} />,
   contacto_formulario: (p) => <ContactoFormulario {...p} />,
   contacto_datos: (p) => <ContactoDatos {...p} />,
+  contacto_maneras: (p) => <ContactoManeras {...p} />,
 };
 
 /** Las secciones que esta config dibuja: las elegidas, si su tipo de proyecto las lleva. */

@@ -11,7 +11,7 @@ import configDashboard from '../../pruebas/h5/dashboard/config.json';
 import type { Config } from '../tipos';
 import { DIRECCIONES } from '../catalogo';
 import { aplicarDireccion, configInicial } from '../estado';
-import { generarDesignMd } from './generarDesignMd';
+import { generarDesignMd, VERSION_FORMATO } from './generarDesignMd';
 import { importarDesignMd } from './importarDesignMd';
 import type { DireccionId } from '../tipos';
 
@@ -34,12 +34,12 @@ describe('importar DESIGN.md', () => {
     expect(generarDesignMd(importarDesignMd(md).config)).toBe(md);
   });
   it.each(['0.8.8','0.8.9','0.9.0','0.9.1'])('acepta encabezados históricos y secciones opcionales ausentes: %s', version => {
-    const md = generarDesignMd(configInicial()).replace('version_formato: 0.9.2','version_formato: '+version);
+    const md = generarDesignMd(configInicial()).replace('version_formato: '+VERSION_FORMATO,'version_formato: '+version);
     expect(importarDesignMd(md).config.visual.layout).toBe('hero_partido');
   });
   it('rechaza versiones desconocidas y recupera campos ilegibles con aviso', () => {
     const md = generarDesignMd(configInicial());
-    expect(() => importarDesignMd(md.replace('version_formato: 0.9.2','version_formato: 2.0.0'))).toThrow();
+    expect(() => importarDesignMd(md.replace('version_formato: '+VERSION_FORMATO,'version_formato: 2.0.0'))).toThrow();
     const r = importarDesignMd(md.replace('layout: hero_partido','layout: inexistente'));
     expect(r.config.visual.layout).toBe('hero_partido');
     expect(r.avisos).toContain(19);

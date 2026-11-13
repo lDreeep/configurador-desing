@@ -39,8 +39,8 @@ export function importarDesignMd(md: string) {
   const { datos, errores } = bloques(md);
   const sec = (n: number) => datos[n] ?? {};
   const cab = sec(0);
-  if (cab.formato !== 'design-md' || !['0.8.8','0.8.9','0.9.0','0.9.1','0.9.2'].includes(texto(cab.version_formato)))
-    throw new Error('Elegí un DESIGN.md de Molde entre las versiones 0.8.8 y 0.9.2.');
+  if (cab.formato !== 'design-md' || !['0.8.8','0.8.9','0.9.0','0.9.1','0.9.2','0.9.3'].includes(texto(cab.version_formato)))
+    throw new Error('Elegí un DESIGN.md de Molde entre las versiones 0.8.8 y 0.9.3.');
   if (!datos[2] && !datos[19]) throw new Error('No se encontró el proyecto ni el diseño de la página.');
 
   const c = configInicial();
