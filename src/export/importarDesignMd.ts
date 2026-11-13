@@ -6,7 +6,7 @@ import { configInicial, normalizar } from '../estado';
 import { BOTONES, EFECTOS_TOQUE, efectoDe } from '../botones-disenos';
 import { CAJAS, OPCIONES_CAJA } from '../cajas-disenos';
 import { CATEGORIAS } from '../galeria';
-import { generarDesignMd } from './generarDesignMd';
+import { generarDesignMd, VERSION_FORMATO } from './generarDesignMd';
 
 type Mapa = Record<string, unknown>;
 const mapa = (x: unknown): Mapa => x && typeof x === 'object' && !Array.isArray(x) ? x as Mapa : {};
@@ -39,8 +39,8 @@ export function importarDesignMd(md: string) {
   const { datos, errores } = bloques(md);
   const sec = (n: number) => datos[n] ?? {};
   const cab = sec(0);
-  if (cab.formato !== 'design-md' || !['0.8.8','0.8.9','0.9.0','0.9.1','0.9.2','0.9.3'].includes(texto(cab.version_formato)))
-    throw new Error('Elegí un DESIGN.md de Molde entre las versiones 0.8.8 y 0.9.3.');
+  if (cab.formato !== 'design-md' || !['0.8.8','0.8.9','0.9.0','0.9.1','0.9.2','0.9.3',VERSION_FORMATO].includes(texto(cab.version_formato)))
+    throw new Error(`Elegí un DESIGN.md de Molde entre las versiones 0.8.8 y ${VERSION_FORMATO}.`);
   if (!datos[2] && !datos[19]) throw new Error('No se encontró el proyecto ni el diseño de la página.');
 
   const c = configInicial();
@@ -103,6 +103,8 @@ export function importarDesignMd(md: string) {
   if (i.libreria) Object.assign(c,{ iconos: { libreria: i.libreria, estilo: i.estilo, grosor: typeof i.grosor === 'number' ? i.grosor : 2 } });
   if (tono.voz) Object.assign(c,{ tono: { voz: tono.voz, tratamiento: tono.tratamiento, largo: tono.largo_de_textos } });
   const mov = sec(12), anim = mapa(mov.que_se_anima);
+  v.hoverTarjetas = claves(catalogo.HOVERS).find(id => id === mapa(mov.tarjetas).al_pasar_el_mouse) ?? null;
+  v.cursor = claves(catalogo.CURSORES).find(id => id === mapa(mov.cursor).estilo) ?? null;
   v.movimiento = opcion(mov.nivel,catalogo.MOVIMIENTOS,v.movimiento);
   v.hover = opcion(anim.hover_botones,catalogo.HOVERS,v.hover);
   v.presionar = opcion(anim.al_presionar,catalogo.PRESIONAR,v.presionar);

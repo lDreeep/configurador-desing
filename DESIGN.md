@@ -1004,7 +1004,7 @@ Los estados futuros conservan su alcance pendiente.
 | Descargar `DESIGN.md` | `[MVP]` hecho |
 | Copiar el contenido al portapapeles | `[MVP]` hecho |
 | Guardar el progreso en el navegador | `[MVP]` hecho |
-| **Importar un `DESIGN.md` para seguir editándolo** | `[v0.2]`. Hecho en H11. Desde la portada, «Abrir un DESIGN.md» reconstruye la configuración desde el YAML de versiones 0.8.8 a 0.9.3 y abre el resultado editable. Se indican las secciones que requieren revisión. |
+| **Importar un `DESIGN.md` para seguir editándolo** | `[v0.2]`. Hecho en H11. Desde la portada, «Abrir un DESIGN.md» reconstruye la configuración desde el YAML de versiones 0.8.8 a 0.10.0 y abre el resultado editable. Se indican las secciones que requieren revisión. |
 | Verificación automática de contraste | `[v0.2]` hecho (en vivo en el paso de color y anotada en §18) |
 | Exportar `preview.html` con la página del lienzo y las fotos incorporadas | Hecho en Molde |
 | Exportar tokens como Tailwind y JSON | `[v0.2]` |

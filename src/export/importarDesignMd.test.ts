@@ -35,7 +35,18 @@ describe('importar DESIGN.md', () => {
     const md = generarDesignMd(c);
     expect(generarDesignMd(importarDesignMd(md).config)).toBe(md);
   });
-  it.each(['0.8.8','0.8.9','0.9.0','0.9.1'])('acepta encabezados históricos y secciones opcionales ausentes: %s', version => {
+  it('recupera las interacciones de tarjetas y cursor del formato actual', () => {
+    const c = configInicial();
+    c.proyecto.tipo = 'landing';
+    c.visual.hoverTarjetas = 'elevar';
+    c.visual.cursor = 'anillo';
+    const md = generarDesignMd(c);
+    const { config, avisos } = importarDesignMd(md);
+    expect(avisos).toEqual([]);
+    expect(config.visual).toMatchObject({ hoverTarjetas: 'elevar', cursor: 'anillo' });
+    expect(generarDesignMd(config)).toBe(md);
+  });
+  it.each(['0.8.8','0.8.9','0.9.0','0.9.1','0.9.2','0.9.3'])('acepta encabezados históricos y secciones opcionales ausentes: %s', version => {
     const md = generarDesignMd(configInicial()).replace('version_formato: '+VERSION_FORMATO,'version_formato: '+version);
     expect(importarDesignMd(md).config.visual.layout).toBe('hero_partido');
   });
